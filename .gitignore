@@ -1,0 +1,35 @@
+# Dependencies
+/node_modules/
+/vendor/
+/db/*
+
+# Asset yang di-generate atau file lokal (sesuaikan jika direktori assets Anda di-track)
+/assets/img/User/*
+!/assets/img/User/.gitkeep
+
+# Environment variables & configuration
+.env
+.env.local
+.env.*.local
+
+# Logs & Cache
+/logs/
+*.log
+/storage/*.key
+/cache/
+/tmp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE & Editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
