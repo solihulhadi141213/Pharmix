@@ -16,7 +16,8 @@
 <script src="node_modules/jspdf/dist/jspdf.umd.min.js"></script>
 
 <!-- Custome JS -->
-<script src="assets/js/main.js"></script>
+<script src="assets/js/main.js?v=<?php echo date('YmdHis'); ?>"></script>
+
 <script type="text/javascript">
     $(document).ready(function(){
         // Format mata uang.

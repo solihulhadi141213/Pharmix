@@ -22,7 +22,13 @@
 
 <!-- Custome CSS -->
 <link href="assets/css/style.css?v=<?php echo date('YmdHis'); ?>" rel="stylesheet">
+<script>
+    if (localStorage.getItem('theme_mode') === 'dark') {
+        document.documentElement.classList.add('dark-mode');
+    }
+</script>
 
 <!-- Header JS -->
 <script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="node_modules/marked/marked.min.js"></script>
+

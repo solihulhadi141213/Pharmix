@@ -4,63 +4,107 @@
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
-    //Tangkap id_mitra
+
+    //Tangkap id_supplier
     if(empty($_POST['id_supplier'])){
         echo '  <div class="row">';
         echo '      <div class="col-md-6 mb-3">';
         echo '          ID Supplier Tidak Boleh Kosong!.';
         echo '      </div>';
         echo '  </div>';
-    }else{
-        $id_supplier=$_POST['id_supplier'];
-        //Buka data supplier
-        $QrySupplier = mysqli_query($Conn,"SELECT * FROM supplier WHERE id_supplier='$id_supplier'")or die(mysqli_error($Conn));
-        $DataSupplier = mysqli_fetch_array($QrySupplier);
-        $id_supplier= $DataSupplier['id_supplier'];
-        $nama_supplier= $DataSupplier['nama_supplier'];
-        if(empty($DataSupplier['alamat_supplier'])){
-            $alamat_supplier='-';
-        }else{
-            $alamat_supplier= $DataSupplier['alamat_supplier'];
-        }
-        if(empty($DataSupplier['email_supplier'])){
-            $email_supplier='-';
-        }else{
-            $email_supplier= $DataSupplier['email_supplier'];
-        }
-        if(empty($DataSupplier['kontak_supplier'])){
-            $kontak_supplier='-';
-        }else{
-            $kontak_supplier= $DataSupplier['kontak_supplier'];
-        }
-        //Hitung volume transaksi
-        $Sum = mysqli_fetch_array(mysqli_query($Conn, "SELECT SUM(total) AS total FROM transaksi_jual_beli WHERE id_supplier='$id_supplier'"));
-        $jumlah_transaksi = $Sum['total'];
-        $VolumeTransaksi = "Rp " . number_format($jumlah_transaksi,0,',','.');
-        echo '
-            <input type="hidden" name="id" value="'.$id_supplier.'">
-            <input type="hidden" name="Sub" value="DetailSupplier">
-            <input type="hidden" name="Page" value="Supplier">
-            <div class="row mb-2">
-                <div class="col-4"><small>Nama Supplier</small></div>
-                <div class="col-8"><small><code class="text-grayish">'.$nama_supplier.'</code></small></div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-4"><small>Email</small></div>
-                <div class="col-8"><small><code class="text-grayish">'.$email_supplier.'</code></small></div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-4"><small>Kontak</small></div>
-                <div class="col-8"><small><code class="text-grayish">'.$kontak_supplier.'</code></small></div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-4"><small>Alamat</small></div>
-                <div class="col-8"><small><code class="text-grayish">'.$alamat_supplier.'</code></small></div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-4"><small>Volume Transaksi</small></div>
-                <div class="col-8"><small><code class="text-grayish">'.$VolumeTransaksi.'</code></small></div>
-            </div>
-        ';
+        exit;
     }
+
+    $id_supplier = (int) $_POST['id_supplier'];
+
+    //Ambil detail supplier dan total volume transaksi dalam 1 query
+    $sql = "
+        SELECT
+            s.id_supplier,
+            s.nama_supplier,
+            s.alamat_supplier,
+            s.email_supplier,
+            s.kontak_supplier,
+            COALESCE(SUM(t.total), 0) AS total_transaksi
+        FROM supplier s
+        LEFT JOIN transaksi_jual_beli t ON t.id_supplier = s.id_supplier
+        WHERE s.id_supplier = ?
+        GROUP BY
+            s.id_supplier,
+            s.nama_supplier,
+            s.alamat_supplier,
+            s.email_supplier,
+            s.kontak_supplier
+        LIMIT 1
+    ";
+    $stmt = $Conn->prepare($sql);
+    if(!$stmt){
+        echo '  <div class="row">';
+        echo '      <div class="col-md-6 mb-3 text-danger">';
+        echo '          Gagal menyiapkan data supplier.';
+        echo '      </div>';
+        echo '  </div>';
+        exit;
+    }
+    $stmt->bind_param("i", $id_supplier);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $DataSupplier = $result->fetch_assoc();
+    $stmt->close();
+
+    if(empty($DataSupplier)){
+        echo '  <div class="row">';
+        echo '      <div class="col-md-6 mb-3 text-danger">';
+        echo '          Data supplier tidak ditemukan.';
+        echo '      </div>';
+        echo '  </div>';
+        exit;
+    }
+
+    $id_supplier = $DataSupplier['id_supplier'];
+    $nama_supplier = $DataSupplier['nama_supplier'];
+    if(empty($DataSupplier['alamat_supplier'])){
+        $alamat_supplier='-';
+    }else{
+        $alamat_supplier= $DataSupplier['alamat_supplier'];
+    }
+    if(empty($DataSupplier['email_supplier'])){
+        $email_supplier='-';
+    }else{
+        $email_supplier= $DataSupplier['email_supplier'];
+    }
+    if(empty($DataSupplier['kontak_supplier'])){
+        $kontak_supplier='-';
+    }else{
+        $kontak_supplier= $DataSupplier['kontak_supplier'];
+    }
+    //Hitung volume transaksi
+    $jumlah_transaksi = (float) ($DataSupplier['total_transaksi'] ?? 0);
+    $VolumeTransaksi = "Rp " . number_format($jumlah_transaksi,0,',','.');
+    echo '
+        <input type="hidden" name="id" value="'.$id_supplier.'">
+        <input type="hidden" name="Sub" value="DetailSupplier">
+        <input type="hidden" name="Page" value="Supplier">
+        <div class="row mb-2">
+            <div class="col-4"><small>Nama Supplier</small></div>
+            <div class="col-8"><small><code class="text-grayish">'.$nama_supplier.'</code></small></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-4"><small>Email</small></div>
+            <div class="col-8"><small><code class="text-grayish">'.$email_supplier.'</code></small></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-4"><small>Kontak</small></div>
+            <div class="col-8"><small><code class="text-grayish">'.$kontak_supplier.'</code></small></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-4"><small>Alamat</small></div>
+            <div class="col-8"><small><code class="text-grayish">'.$alamat_supplier.'</code></small></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-4"><small>Volume Transaksi</small></div>
+            <div class="col-8"><small><code class="text-grayish">'.$VolumeTransaksi.'</code></small></div>
+        </div>
+    ';
+
 ?>
