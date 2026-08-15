@@ -10,7 +10,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6 mt-3">
+                        <div class="col-md-12 mt-3">
                             <label for="batas">Data</label>
                             <select name="batas" id="batas" class="form-control">
                                 <option value="5">5</option>
@@ -22,7 +22,7 @@
                                 <option value="500">500</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mt-3">
+                        <div class="col-md-12 mt-3">
                             <label for="OrderBy">Mode Urutan</label>
                             <select name="OrderBy" id="OrderBy" class="form-control">
                                 <option value="">Pilih</option>
@@ -34,14 +34,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6 mt-3">
+                        <div class="col-md-12 mt-3">
                             <label for="ShortBy">Tipe Urutan</label>
                             <select name="ShortBy" id="ShortBy" class="form-control">
                                 <option value="ASC">A To Z</option>
                                 <option selected value="DESC">Z To A</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mt-3">
+                        <div class="col-md-12 mt-3">
                             <label for="KeywordBy">Pencarian</label>
                             <select name="KeywordBy" id="KeywordBy" class="form-control">
                                 <option value="">Pilih</option>
@@ -60,10 +60,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-check"></i> Tampilkan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -71,6 +71,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="ModalTambahFitur" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
@@ -126,10 +127,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -138,7 +139,7 @@
     </div>
 </div>
 <div class="modal fade" id="ModalHapusFitur" tabindex="-1">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesHapusFitur" autocomplete="off">
                 <div class="modal-header">
@@ -146,27 +147,32 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12 text-center" id="FormHapusFitur">
+                    <div class="row mb-2">
+                        <div class="col-md-12" id="FormHapusFitur">
                             
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            <code>Apakah anda yakin akan menghapus data tersebut?</code>
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <div class="alert alert-danger">
+                                <small>
+                                    <b>Penting !</b> Menghapus data tersebut mungkin akan mempengaruhi bagaimana sistem bekerja melakukan validasi akses pengguna terhadap fitur aplikasi. <br>
+                                    <i>Apakah anda yakin akan menghapus data tersebut?</i>
+                                </small>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 text-center" id="NotifikasiHapusFitur">
+                    <div class="row mb-2">
+                        <div class="col-md-12" id="NotifikasiHapusFitur">
                             
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tidak
                     </button>
                 </div>
@@ -195,10 +201,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tidak
                     </button>
                 </div>
@@ -222,7 +228,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle"></i> Tutup
                 </button>
             </div>

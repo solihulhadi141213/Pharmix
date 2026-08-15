@@ -6,6 +6,8 @@
     date_default_timezone_set("Asia/Jakarta");
     $JmlHalaman=0;
     $page=0;
+    $allowed_order_by = ['id_akses_fitur','kategori','nama','kode','keterangan'];
+    $allowed_keyword_by = ['id_akses_fitur','kategori','nama','kode','keterangan'];
     //Validasi Akses
     if(empty($SessionIdAkses)){
         echo '
@@ -28,6 +30,7 @@
         }else{
             $keyword="";
         }
+        $keyword_like = '%'.$keyword.'%';
         //batas
         if(!empty($_POST['batas'])){
             $batas=$_POST['batas'];
@@ -54,19 +57,36 @@
             $page="1";
             $posisi = 0;
         }
+        if(!in_array($OrderBy, $allowed_order_by, true)){
+            $OrderBy = "id_akses_fitur";
+        }
+        if(!in_array($ShortBy, ['ASC','DESC'], true)){
+            $ShortBy = "DESC";
+        }
+        if(!empty($keyword_by) && !in_array($keyword_by, $allowed_keyword_by, true)){
+            $keyword_by = "";
+        }
         if(empty($keyword_by)){
             if(empty($keyword)){
-                $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_akses_fitur FROM akses_fitur"));
+                $stmt_jml = mysqli_prepare($Conn, "SELECT COUNT(id_akses_fitur) AS jml_data FROM akses_fitur");
             }else{
-                $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_akses_fitur FROM akses_fitur WHERE kategori like '%$keyword%' OR nama like '%$keyword%' OR kode like '%$keyword%' OR keterangan like '%$keyword%'"));
+                $stmt_jml = mysqli_prepare($Conn, "SELECT COUNT(id_akses_fitur) AS jml_data FROM akses_fitur WHERE kategori LIKE ? OR nama LIKE ? OR kode LIKE ? OR keterangan LIKE ?");
+                mysqli_stmt_bind_param($stmt_jml, "ssss", $keyword_like, $keyword_like, $keyword_like, $keyword_like);
             }
         }else{
             if(empty($keyword)){
-                $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_akses_fitur FROM akses_fitur"));
+                $stmt_jml = mysqli_prepare($Conn, "SELECT COUNT(id_akses_fitur) AS jml_data FROM akses_fitur");
             }else{
-                $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_akses_fitur FROM akses_fitur WHERE $keyword_by like '%$keyword%'"));
+                $sql_jml = "SELECT COUNT(id_akses_fitur) AS jml_data FROM akses_fitur WHERE $keyword_by LIKE ?";
+                $stmt_jml = mysqli_prepare($Conn, $sql_jml);
+                mysqli_stmt_bind_param($stmt_jml, "s", $keyword_like);
             }
         }
+        mysqli_stmt_execute($stmt_jml);
+        $result_jml = mysqli_stmt_get_result($stmt_jml);
+        $row_jml = mysqli_fetch_assoc($result_jml);
+        $jml_data = isset($row_jml['jml_data']) ? (int) $row_jml['jml_data'] : 0;
+        mysqli_stmt_close($stmt_jml);
         //Mengatur Halaman
         $JmlHalaman = ceil($jml_data/$batas); 
         if(empty($jml_data)){
@@ -82,25 +102,69 @@
             //KONDISI PENGATURAN MASING FILTER
             if(empty($keyword_by)){
                 if(empty($keyword)){
-                    $query = mysqli_query($Conn, "SELECT*FROM akses_fitur ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
+                    $sql = "SELECT af.*, COALESCE(ap.jumlah_pengguna, 0) AS jumlah_pengguna
+                            FROM akses_fitur af
+                            LEFT JOIN (
+                                SELECT id_akses_fitur, COUNT(id_akses) AS jumlah_pengguna
+                                FROM akses_ijin
+                                GROUP BY id_akses_fitur
+                            ) ap ON ap.id_akses_fitur = af.id_akses_fitur
+                            ORDER BY af.$OrderBy $ShortBy
+                            LIMIT ?, ?";
+                    $query = mysqli_prepare($Conn, $sql);
+                    mysqli_stmt_bind_param($query, "ii", $posisi, $batas);
                 }else{
-                    $query = mysqli_query($Conn, "SELECT*FROM akses_fitur WHERE kategori like '%$keyword%' OR nama like '%$keyword%' OR kode like '%$keyword%' OR keterangan like '%$keyword%' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
+                    $sql = "SELECT af.*, COALESCE(ap.jumlah_pengguna, 0) AS jumlah_pengguna
+                            FROM akses_fitur af
+                            LEFT JOIN (
+                                SELECT id_akses_fitur, COUNT(id_akses) AS jumlah_pengguna
+                                FROM akses_ijin
+                                GROUP BY id_akses_fitur
+                            ) ap ON ap.id_akses_fitur = af.id_akses_fitur
+                            WHERE af.kategori LIKE ? OR af.nama LIKE ? OR af.kode LIKE ? OR af.keterangan LIKE ?
+                            ORDER BY af.$OrderBy $ShortBy
+                            LIMIT ?, ?";
+                    $query = mysqli_prepare($Conn, $sql);
+                    mysqli_stmt_bind_param($query, "ssssii", $keyword_like, $keyword_like, $keyword_like, $keyword_like, $posisi, $batas);
                 }
             }else{
                 if(empty($keyword)){
-                    $query = mysqli_query($Conn, "SELECT*FROM akses_fitur ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
+                    $sql = "SELECT af.*, COALESCE(ap.jumlah_pengguna, 0) AS jumlah_pengguna
+                            FROM akses_fitur af
+                            LEFT JOIN (
+                                SELECT id_akses_fitur, COUNT(id_akses) AS jumlah_pengguna
+                                FROM akses_ijin
+                                GROUP BY id_akses_fitur
+                            ) ap ON ap.id_akses_fitur = af.id_akses_fitur
+                            ORDER BY af.$OrderBy $ShortBy
+                            LIMIT ?, ?";
+                    $query = mysqli_prepare($Conn, $sql);
+                    mysqli_stmt_bind_param($query, "ii", $posisi, $batas);
                 }else{
-                    $query = mysqli_query($Conn, "SELECT*FROM akses_fitur WHERE $keyword_by like '%$keyword%' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
+                    $sql = "SELECT af.*, COALESCE(ap.jumlah_pengguna, 0) AS jumlah_pengguna
+                            FROM akses_fitur af
+                            LEFT JOIN (
+                                SELECT id_akses_fitur, COUNT(id_akses) AS jumlah_pengguna
+                                FROM akses_ijin
+                                GROUP BY id_akses_fitur
+                            ) ap ON ap.id_akses_fitur = af.id_akses_fitur
+                            WHERE af.$keyword_by LIKE ?
+                            ORDER BY af.$OrderBy $ShortBy
+                            LIMIT ?, ?";
+                    $query = mysqli_prepare($Conn, $sql);
+                    mysqli_stmt_bind_param($query, "sii", $keyword_like, $posisi, $batas);
                 }
             }
-            while ($data = mysqli_fetch_array($query)) {
+            mysqli_stmt_execute($query);
+            $result = mysqli_stmt_get_result($query);
+            while ($data = mysqli_fetch_array($result)) {
                 $id_akses_fitur= $data['id_akses_fitur'];
                 $kategori= $data['kategori'];
                 $nama= $data['nama'];
                 $kode= $data['kode'];
                 $keterangan= $data['keterangan'];
                 //Jumlah Pengguna
-                $JumlahPengguna =mysqli_num_rows(mysqli_query($Conn, "SELECT id_akses FROM akses_ijin WHERE id_akses_fitur='$id_akses_fitur'"));
+                $JumlahPengguna = (int) $data['jumlah_pengguna'];
                 if(empty($JumlahPengguna)){
                     $label_jumlah_pengguna='<span class="badge badge-danger">NULL</span>';
                 }else{
@@ -109,30 +173,35 @@
                 echo '
                     <tr>
                         <td><small>'.$no.'</small></td>
-                        <td><small>'.$kategori.'</small></td>
                         <td>
                             <a href="javascript:void(0);" class="text text-decoration-underline" data-bs-toggle="modal" data-bs-target="#ModalDetailFitur" data-id="'.$id_akses_fitur.'">
                                 <small>'.$nama.'</small>
                             </a>
                         </td>
+                        <td><small>'.$kategori.'</small></td>
                         <td><small class="text-muted">'.$kode.'</small></td>
                         <td><small>'.$label_jumlah_pengguna.'</small></td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-outline-dark btn-floating"  data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-three-dots"></i>
+                            <button type="button" class="btn btn-sm btn-secondary btn-floating"  data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                                 <li class="dropdown-header text-start">
                                     <h6>Option</h6>
                                 </li>
                                 <li>
+                                    <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalDetailFitur" data-id="'.$id_akses_fitur.'">
+                                        <i class="bi bi-info-circle"></i> Detail
+                                    </a>
+                                </li>
+                                <li>
                                     <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalEditFitur" data-id="'.$id_akses_fitur.'">
-                                        <i class="bi bi-pencil"></i> Edit Fitur
+                                        <i class="bi bi-pencil"></i> Edit
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalHapusFitur" data-id="'.$id_akses_fitur.'">
-                                        <i class="bi bi-x"></i> Hapus Fitur
+                                        <i class="bi bi-x"></i> Hapus
                                     </a>
                                 </li>
                             </ul>
@@ -141,6 +210,7 @@
                 ';
                 $no++;
             }
+            mysqli_stmt_close($query);
         }
     }
 ?>
