@@ -32,4 +32,4 @@
 </script>
 
 <!-- Scan QR -->
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script src="node_modules/jsqr/dist/jsQR.js"></script>

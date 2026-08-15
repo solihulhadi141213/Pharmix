@@ -114,12 +114,12 @@
                                 <small>'.$nama_barang.'</small>
                             </a>
                         </td>
-                        <td><small>'.$kategori_barang.'</small></td>
-                        <td><small>'.$stok_barang_rp.' '.$satuan_barang.'</small></td>
-                        <td><small>'.$harga_beli_rp.'</small></td>
+                        <td><small class="text text-muted">'.$kategori_barang.'</small></td>
+                        <td><small class="text text-muted">'.$stok_barang_rp.' '.$satuan_barang.'</small></td>
+                        <td><small class="text text-muted">'.$harga_beli_rp.'</small></td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-floating btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-three-dots"></i>
+                            <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                                 <li class="dropdown-header text-start">

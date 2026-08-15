@@ -40,30 +40,22 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-8">
-                                <b class="card-title"># Daftar Barang</b>
-                            </div>
-                            <div class="col-4 text-end">
-                                <button 
-                                type="button" 
-                                class="btn btn-md btn-outline-secondary btn-floating modal_scan_barang" 
-                                data-bs-toggle="tooltip" 
-                                data-bs-placement="top" 
-                                data-bs-custom-class="custom-tooltip" 
-                                data-bs-title="Scan Kode Barang">
+                            <div class="col-12 text-end">
+                                <button type="button"  class="btn btn-md btn-info btn-floating modal_scan_barang" title="Scan Kode Barang">
                                     <i class="bi bi-qr-code-scan"></i>
                                 </button>
-                                <a class="btn btn-md btn-outline-dark btn-floating" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false" title="Opsi Lanjutan">
-                                    <i class="bi bi-three-dots"></i>
+                                <button type="button"  class="btn btn-md btn-secondary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalFilter" title="Filter">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                <button type="button"  class="btn btn-md btn-secondary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalKategoriHarga" title="Multi Harga">
+                                    <i class="bi bi-tags"></i>
+                                </button>
+                                <a class="btn btn-md btn-secondary btn-floating" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false" title="Opsi Lanjutan">
+                                    <i class="bi bi-download"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                                     <li class="dropdown-header text-start">
                                         <h6>Option</h6>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalFilter">
-                                            <i class="bi bi-funnel"></i> Filter
-                                        </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalExportBarang">
@@ -75,11 +67,6 @@
                                             <i class="bi bi-upload"></i> Import
                                         </a>
                                     </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalKategoriHarga">
-                                            <i class="bi bi-cash-coin"></i> Multi Harga
-                                        </a>
-                                    </li>
                                 </ul>
                                 <button type="button" class="btn btn-md btn-primary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalTambahBarang" title="Tambah Data Barang">
                                     <i class="bi bi-plus-lg"></i>
@@ -88,7 +75,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="tabel table-responsive">
+                        <div class="tabel table-responsive mt-3">
                             <table class="table table-hover table-striped">
                                 <thead>
                                     <tr>

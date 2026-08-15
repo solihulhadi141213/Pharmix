@@ -8,6 +8,7 @@
     "jquery": "^3.7.1",
     "jquery-mask-plugin": "^1.14.16",
     "jspdf": "^3.0.0",
+    "jsqr": "^1.4.0",
     "marked": "^15.0.7",
     "mdb-ui-kit": "^8.2.0",
     "quill": "^2.0.3",

@@ -231,60 +231,176 @@ function ShowRiwayatTransaksi(id_barang) {
 }
 
 let video = document.getElementById('qr-video');
+let canvas = document.createElement('canvas');
+let context = canvas.getContext('2d', {
+    willReadFrequently: true
+});
 let scanning = false;
 let videoStream = null;
 
+// START SCANNER
 function startQRScanner() {
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-        .then(function (stream) {
-            videoStream = stream;
-            video.srcObject = stream;
-            video.setAttribute("playsinline", true); // Agar tidak fullscreen di iOS
-            
-            video.onloadedmetadata = () => {
-                video.play();
-                scanning = true;
-                scanQRCode(); // Mulai scan setelah video siap
-            };
-        })
-        .catch(function (err) {
-            console.error("Error accessing camera: ", err);
-        });
-}
 
-function stopQRScanner() {
-    scanning = false;
-    if (videoStream) {
-        videoStream.getTracks().forEach(track => track.stop());
+    // Pastikan jsQR tersedia
+    if (typeof jsQR === 'undefined') {
+        console.error('Library jsQR belum dimuat.');
+        alert('Scanner QR tidak dapat digunakan karena library jsQR belum dimuat.');
+        return;
     }
-}
 
-function scanQRCode() {
-    if (scanning) {
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        
-        // Cek apakah video sudah siap dengan dimensi valid
-        if (video.videoWidth > 0 && video.videoHeight > 0) {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            const code = jsQR(imageData.data, canvas.width, canvas.height);
-            
-            if (code) {
-                $('#get_resume_kode_barang').val(code.data);
-                stopQRScanner();
-                // $('#ModalScanBarang').modal('hide');
-            } else {
-                requestAnimationFrame(scanQRCode);
+    // Pastikan browser mendukung kamera
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Browser tidak mendukung akses kamera.');
+        return;
+    }
+
+    navigator.mediaDevices.getUserMedia({
+        video: {
+            facingMode: {
+                ideal: 'environment'
             }
+        },
+        audio: false
+    })
+    .then(function (stream) {
+        videoStream = stream;
+        video.srcObject = stream;
+        video.setAttribute('playsinline', true);
+        video.setAttribute('autoplay', true);
+        video.muted = true;
+        video.onloadedmetadata = function () {
+            video.play()
+                .then(function () {
+                    scanning = true;
+                    console.log(
+                        'Scanner dimulai:',
+                        video.videoWidth,
+                        'x',
+                        video.videoHeight
+                    );
+                    scanQRCode();
+
+                })
+                .catch(function (error) {
+                    console.error('Video gagal dimainkan:', error);
+                });
+        };
+    })
+    .catch(function (error) {
+
+        console.error('Gagal mengakses kamera:', error);
+
+        if (error.name === 'NotAllowedError') {
+            alert('Akses kamera ditolak. Silakan izinkan kamera pada browser.');
+        } else if (error.name === 'NotFoundError') {
+            alert('Kamera tidak ditemukan.');
         } else {
-            // Tunggu dan coba lagi jika dimensi belum valid
-            requestAnimationFrame(scanQRCode);
+            alert('Kamera tidak dapat digunakan: ' + error.message);
         }
+    });
+}
+
+
+// =====================================================
+// STOP SCANNER
+// =====================================================
+function stopQRScanner() {
+
+    scanning = false;
+
+    if (videoStream) {
+
+        videoStream.getTracks().forEach(function (track) {
+            track.stop();
+        });
+
+        videoStream = null;
     }
+
+    if (video) {
+        video.srcObject = null;
+    }
+
+    console.log('Scanner dihentikan');
+}
+
+
+// =====================================================
+// SCAN QR CODE
+// =====================================================
+function scanQRCode() {
+
+    if (!scanning) {
+        return;
+    }
+
+    // Video belum siap
+    if (
+        video.readyState !== video.HAVE_ENOUGH_DATA ||
+        video.videoWidth === 0 ||
+        video.videoHeight === 0
+    ) {
+
+        requestAnimationFrame(scanQRCode);
+        return;
+    }
+
+
+    // Tentukan ukuran canvas
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+
+    // Ambil gambar dari video
+    context.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    // Ambil pixel gambar
+    const imageData = context.getImageData(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    // Scan QR
+    const code = jsQR(
+        imageData.data,
+        imageData.width,
+        imageData.height,
+        {
+            inversionAttempts: 'dontInvert'
+        }
+    );
+
+
+    if (code) {
+
+        console.log('QR TERDETEKSI:', code.data);
+
+        // Masukkan hasil ke input
+        $('#get_resume_kode_barang')
+            .val(code.data)
+            .trigger('input')
+            .trigger('change');
+
+        // Hentikan kamera
+        stopQRScanner();
+
+        // Fokus ke hasil
+        $('#get_resume_kode_barang').trigger('focus');
+        return;
+    }
+
+    // Lanjut scan
+    requestAnimationFrame(scanQRCode);
 }
 
 
