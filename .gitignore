@@ -1,23 +1,62 @@
-# Dependencies
+# ========================================
+# Pharmix - Git Ignore
+# Tujuan:
+# - aman untuk di-clone
+# - mencegah file sensitif/hasil generate ikut ter-commit
+# - tetap mempertahankan source code utama
+# ========================================
+
+# Dependencies yang bisa dipasang ulang
 /node_modules/
 /vendor/
-/db/*
 
-# Asset yang di-generate atau file lokal (sesuaikan jika direktori assets Anda di-track)
+# File environment / override lokal
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Konfigurasi lokal yang biasanya berisi kredensial
+*_local.php
+*.local.php
+_Config/*local*.php
+_Config/*secret*.php
+
+# Backup database dan dump data
+/db/*
+!/db/.gitkeep
+*.sql
+*.sql.gz
+*.dump
+*.bak
+*.backup
+*.sqlite
+*.sqlite3
+
+# Upload / file hasil generate milik user
 /assets/img/User/*
 !/assets/img/User/.gitkeep
+/assets/upload/*
+/uploads/*
+/upload/*
+/storage/*
+!/storage/.gitkeep
 
-# Environment variables & configuration
-.env
-.env.local
-.env.*.local
-
-# Logs & Cache
-/logs/
-*.log
-/storage/*.key
+# Cache dan file runtime
 /cache/
 /tmp/
+/logs/
+*.log
+*.cache
+*.tmp
+
+# Sertifikat / key / secret file
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.csr
 
 # OS generated files
 .DS_Store
@@ -33,3 +72,8 @@ Thumbs.db
 .vscode/
 *.sublime-project
 *.sublime-workspace
+
+# Package manager / lockfile caches yang tidak diperlukan untuk source
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
