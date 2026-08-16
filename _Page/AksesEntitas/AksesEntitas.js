@@ -1,18 +1,40 @@
 //Fungsi Menampilkan Data
 function filterAndLoadTable() {
     var ProsesFilter = $('#ProsesFilter').serialize();
+
+    // Loading Table
+    $('#TabelAksesEntitas').html('<tr><td colspan="6" class="text-center">Loading...</td></tr>');
+
+    // Show Row
     $.ajax({
         type: 'POST',
         url: '_Page/AksesEntitas/TabelAksesEntitas.php',
         data: ProsesFilter,
         success: function(data) {
-            $('#MenampilkanTabelAksesEntitas').html(data);
+            $('#TabelAksesEntitas').html(data);
         }
     });
 }
 //Menampilkan Data Pertama Kali
 $(document).ready(function() {
+
+    // Menampilkan data pertama kali
     filterAndLoadTable();
+
+    // Pagging
+    $(document).on('click', '#next_button', function() {
+        var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
+        var next_page = page_now + 1;
+        $('#page').val(next_page);
+        filterAndLoadTable(0);
+    });
+    $(document).on('click', '#prev_button', function() {
+        var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
+        var next_page = page_now - 1;
+        $('#page').val(next_page);
+        filterAndLoadTable(0);
+    });
+
     // Ketika class=KelasKategori di check
     $('.KelasKategori').change(function() {
         var kategoriId = $(this).val();

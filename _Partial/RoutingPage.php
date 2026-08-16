@@ -18,7 +18,7 @@
             "Version"           =>  "_Page/Version/Version.php",
             "SettingGeneral"    =>  "_Page/SettingGeneral/SettingGeneral.php",
             "EntitasAkses"      =>  "_Page/EntitasAkses/EntitasAkses.php",
-            "ApiDoc"            =>  "_Page/ApiDoc/ApiDoc.php",
+            "UtangPiutang"            =>  "_Page/UtangPiutang/UtangPiutang.php",
             "Barang"            =>  "_Page/Barang/Barang.php",
             "BarangExpired"     =>  "_Page/BarangExpired/BarangExpired.php",
             "StockOpename"      =>  "_Page/StockOpename/StockOpename.php",

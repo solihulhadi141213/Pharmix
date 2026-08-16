@@ -121,12 +121,12 @@
                             <small>'.$nama.'</small>
                         </a>
                     </td>
-                    <td><small>'.$label_gender.'</small></td>
-                    <td><small>'.$nik.'</small></td>
-                    <td><small>'.$kontak.'</small></td>
-                    <td><small>'.$tanggal_daftar.'</small></td>
+                    <td><small class="text text-muted">'.$label_gender.'</small></td>
+                    <td><small class="text-muted">'.$nik.'</small></td>
+                    <td><small class="text-muted">'.$kontak.'</small></td>
+                    <td><small class="text-muted">'.$tanggal_daftar.'</small></td>
                     <td>
-                        <button type="button" class="btn btn-sm btn-outline-dark btn-floating"  data-bs-toggle="dropdown" aria-expanded="false">
+                        <button type="button" class="btn btn-sm btn-secondary btn-floating"  data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots-vertical"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">

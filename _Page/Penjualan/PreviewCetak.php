@@ -45,24 +45,24 @@
                     </div>
                 ';
             } else {
-                // Ambil Data Transaksi
+                  // Ambil Data Transaksi
                 $id_anggota = $Data['id_anggota'];
-                $kategori = $Data['kategori'];
-                $tanggal = $Data['tanggal'];
-                $subtotal = pembulatan_nilai($Data['subtotal']);
-                $ppn = pembulatan_nilai($Data['ppn']);
-                $diskon = pembulatan_nilai($Data['diskon']);
-                $total = pembulatan_nilai($Data['total']);
-                $cash = pembulatan_nilai($Data['cash']);
-                $kembalian = pembulatan_nilai($Data['kembalian']);
-                $status = $Data['status'];
+                $kategori   = $Data['kategori'];
+                $tanggal    = $Data['tanggal'];
+                $subtotal   = pembulatan_nilai($Data['subtotal']);
+                $ppn        = pembulatan_nilai($Data['ppn']);
+                $diskon     = pembulatan_nilai($Data['diskon']);
+                $total      = pembulatan_nilai($Data['total']);
+                $cash       = pembulatan_nilai($Data['cash']);
+                $kembalian  = pembulatan_nilai($Data['kembalian']);
+                $status     = $Data['status'];
 
-                // Format Rupiah
-                $subtotal_rp = "" . number_format($subtotal, 0, ',', '.');
-                $ppn_rp = "" . number_format($ppn, 0, ',', '.');
-                $diskon_rp = "" . number_format($diskon, 0, ',', '.');
-                $total_rp = "" . number_format($total, 0, ',', '.');
-                $cash_rp = "" . number_format($cash, 0, ',', '.');
+                  // Format Rupiah
+                $subtotal_rp  = "" . number_format($subtotal, 0, ',', '.');
+                $ppn_rp       = "" . number_format($ppn, 0, ',', '.');
+                $diskon_rp    = "" . number_format($diskon, 0, ',', '.');
+                $total_rp     = "" . number_format($total, 0, ',', '.');
+                $cash_rp      = "" . number_format($cash, 0, ',', '.');
                 $kembalian_rp = "" . number_format($kembalian, 0, ',', '.');
 
                 // Ambil Nama Anggota
@@ -81,8 +81,8 @@
                 $id_transaksi_pendek = substr($id_transaksi_jual_beli, 0, 8);
                 //Tampilkan Data
                 echo '
-                    <div class="row mb-3 dashed-underline">
-                        <div class="col-12 mb-3 text-center">
+                    <div class="row mb-3">
+                        <div class="col-12 mb-3 text-center dashed-underline">
                             <b>'.$title_page.'</b><br>
                             <small>'.$alamat_bisnis.'</small><br>
                             <small>Telp : '.$telepon_bisnis.'</small>
@@ -93,35 +93,39 @@
                             <small>Tgl/Jam</small>
                         </div>
                         <div class="col-8 text-end">
-                            <small class="text text-grayish">'.$tanggal_format.'</small>
+                            <small class="text text-dark">'.$tanggal_format.'</small>
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-4">
-                            <small>Yth</small>
+                            <small>Kepada Yth</small>
                         </div>
                         <div class="col-8 text-end">
-                            <small class="text text-grayish">'.$nama_anggota.'</small>
+                            <small class="text text-dark">'.$nama_anggota.'</small>
                         </div>
                     </div>
-                    <div class="row mb-3 dashed-underline">
+                    <div class="row mb-2">
                         <div class="col-4">
                             <small>ID</small>
                         </div>
                         <div class="col-8 text-end">
-                            <small class="text text-grayish">'.$id_transaksi_pendek.'</small>
+                            <small class="text text-dark">'.$id_transaksi_pendek.'</small>
                         </div>
                     </div>
-                    <div class="row mb-3 dashed-underline">
+                    <div class="row mb-2">
                         <div class="col-4">
                             <small>Trans</small>
                         </div>
                         <div class="col-8 text-end">
-                            <small class="text text-grayish">'.$kategori.'</small>
+                            <small class="text text-dark">'.$kategori.'</small>
                         </div>
                     </div>
+
+                    <div class="row mb-3">
+                        <div class="col-12 mb-3 dashed-underline"></div>
+                    </div>
                 ';
-                echo '<div class="row mb-3 dashed-underline">';
+                echo '<div class="row mb-3">';
                 echo '   <div class="col-12">';
                 echo '      <table width="100%">';
                 echo '

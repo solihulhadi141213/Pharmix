@@ -171,8 +171,8 @@
                         <td><small>'.$label_status.'</small></td>
                         <td><small>'.$label_jurnal.'</small></td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-floating btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-three-dots"></i>
+                            <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                                 <li class="dropdown-header text-start">
@@ -195,7 +195,7 @@
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalListAnggotaEdit" data-id="'.$id_transaksi_jual_beli.'" data-mode="List">
-                                        <i class="bi bi-person"></i> Ganti Anggota
+                                        <i class="bi bi-person"></i> Ubah Pasien
                                     </a>
                                 </li>
                                 <li>

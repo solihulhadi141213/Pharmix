@@ -40,8 +40,8 @@
                         <form action="javascript:void(0);" id="ProsesBatas">
                             <div class="row">
                                 <div class="col-md-12 mb-3 text-end">
-                                    <button type="button" class="btn btn-md btn-outline-dark btn-floating" data-bs-toggle="modal" data-bs-target="#ModalFilter" title="Filter Data">
-                                        <i class="bi bi-filter"></i>
+                                    <button type="button" class="btn btn-md btn-secondary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalFilter" title="Filter Data">
+                                        <i class="bi bi-search"></i>
                                     </button>
 
                                     <button type="button" class="btn btn-md btn-primary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalTambahPasien" title="Tambah Data Pasien Baru">
@@ -52,7 +52,7 @@
                         </form>
                     </div>
                     <div class="card-body">
-                        <div class="table table-responsive">
+                        <div class="table table-responsive mt-3">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>

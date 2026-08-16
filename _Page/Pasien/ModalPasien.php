@@ -106,7 +106,7 @@
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Filter
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -168,7 +168,7 @@
                     <button type="submit" class="btn btn-primary btn-rounded" id="TombolTambahPasien">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -190,7 +190,7 @@
                 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle"></i> Tutup
                 </button>
             </div>
@@ -221,7 +221,7 @@
                     <button type="submit" class="btn btn-primary btn-rounded" id="TombolEdit">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -254,7 +254,7 @@
                     <button type="submit" class="btn btn-primary btn-rounded" id="TombolDelete">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>

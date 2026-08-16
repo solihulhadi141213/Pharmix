@@ -73,7 +73,7 @@
                                             $kontak_akses=validateAndSanitizeInput($kontak_akses);
                                             $email_akses=validateAndSanitizeInput($email_akses);
                                             $password1=validateAndSanitizeInput($password1);
-                                            $password1=MD5($password1);
+                                            $passwordHash = password_hash($password1, PASSWORD_DEFAULT);   
                                             //Validasi Gambar
                                             if(!empty($_FILES['image_akses']['name'])){
                                                 //nama gambar

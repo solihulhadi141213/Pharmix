@@ -2,7 +2,24 @@
     //koneksi dan session
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
-    date_default_timezone_set("Asia/Jakarta");
+    include "../../_Config/Session.php";
+    
+    //inisiasi Variabe;
+    $JmlHalaman = 0;
+    $page       = 1;
+
+    // Validasi Sesi Akses
+    if(empty($SessionIdAkses)){
+        echo '
+            <tr>
+                <td colspan="6" class="text-center text-danger">
+                    Sesi Akses Sudah Berakhir! Silahkan Login Ulang
+                </td>
+            </tr>
+        ';
+        exit;
+    }
+    
     //Keyword_by
     if(!empty($_POST['keyword_by'])){
         $keyword_by=$_POST['keyword_by'];
@@ -47,6 +64,8 @@
         $page="1";
         $posisi = 0;
     }
+
+    // Hitung Jumlah Data
     if(empty($keyword_by)){
         if(empty($keyword)){
             $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM akses_entitas"));
@@ -74,155 +93,84 @@
     }else{
         $prev=$page-1;
     }
+
+    // Jika Data Tidak Ada
+    if(empty($jml_data)){
+        echo '
+            <tr>
+                <td colspan="6" class="text-center text-danger">
+                    Tidak Ada Data Yang Ditampilkan.
+                </td>
+            </tr>
+        ';
+        exit;
+    }
+
+    // Nomor Baris Dan Posisi
+    $no = 1+$posisi;
+
+    //Buat Query Berdasarkan Koneisi
+    if(empty($keyword_by)){
+        if(empty($keyword)){
+            $query = mysqli_query($Conn, "SELECT*FROM akses_entitas ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
+        }else{
+            $query = mysqli_query($Conn, "SELECT*FROM akses_entitas WHERE akses like '%$keyword%' OR keterangan like '%$keyword%' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
+        }
+    }else{
+        if(empty($keyword)){
+            $query = mysqli_query($Conn, "SELECT*FROM akses_entitas ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
+        }else{
+            $query = mysqli_query($Conn, "SELECT*FROM akses_entitas WHERE $keyword_by like '%$keyword%' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
+        }
+    }
+    while ($data = mysqli_fetch_array($query)) {
+        $uuid_akses_entitas = $data['uuid_akses_entitas'];
+        $akses              = $data['akses'];
+        $keterangan         = $data['keterangan'];
+        
+        //Jumlah
+        $JumlahPengguna = mysqli_num_rows(mysqli_query($Conn, "SELECT id_akses FROM akses WHERE akses='$akses'"));
+        $JumlahRole     = mysqli_num_rows(mysqli_query($Conn, "SELECT id_akses_referensi FROM akses_referensi WHERE uuid_akses_entitas='$uuid_akses_entitas'"));
+
+        // Tampilkan Baris Sata
+        echo '
+            <tr>
+                <td align="center"><small>'.$no.'</small></td>
+                <td align="left">
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailEntitias" data-id="'.$uuid_akses_entitas.'">
+                        <small>'.$akses.'</small>
+                    </a>
+                </td>
+                <td align="left"><small class="text-muted">'.$keterangan.'</small></td>
+                <td align="left"><small class="text-muted">'.$JumlahPengguna.' User</small></td>
+                <td align="left"><small class="text-muted">'.$JumlahRole.' Record</small></td>
+                <td align="center">
+                    <a class="btn btn-sm btn-secondary btn-floating" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
+                        <li class="dropdown-header text-start">
+                            <h6>Option</h6>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalDetailEntitias" data-id="'.$uuid_akses_entitas.'">
+                                <i class="bi bi-info-circle"></i> Detail
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalEditAksesEntitas" data-id="'.$uuid_akses_entitas.'">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalHapusAksesEntitas" data-id="'.$uuid_akses_entitas.'">
+                                <i class="bi bi-x"></i> Hapus
+                            </a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        ';
+        $no++;
+    }
 ?>
-<script>
-    //ketika klik next
-    $('#NextPage').click(function() {
-        var page=$('#NextPage').val();
-        var batas="<?php echo "$batas"; ?>";
-        var keyword="<?php echo "$keyword"; ?>";
-        var keyword_by="<?php echo "$keyword_by"; ?>";
-        var OrderBy="<?php echo "$OrderBy"; ?>";
-        var ShortBy="<?php echo "$ShortBy"; ?>";
-        $.ajax({
-            url     : "_Page/AksesFitur/TabelAksesFitur.php",
-            method  : "POST",
-            data 	:  { page: page, batas: batas, keyword: keyword, keyword_by: keyword_by, OrderBy: OrderBy, ShortBy: ShortBy },
-            success: function (data) {
-                $('#MenampilkanTabelFitur').html(data);
-                $('#page').val(page);
-            }
-        })
-    });
-    //Ketika klik Previous
-    $('#PrevPage').click(function() {
-        var page = $('#PrevPage').val();
-        var batas="<?php echo "$batas"; ?>";
-        var keyword="<?php echo "$keyword"; ?>";
-        var keyword_by="<?php echo "$keyword_by"; ?>";
-        var OrderBy="<?php echo "$OrderBy"; ?>";
-        var ShortBy="<?php echo "$ShortBy"; ?>";
-        $.ajax({
-            url     : "_Page/AksesFitur/TabelAksesFitur.php",
-            method  : "POST",
-            data 	:  { page: page, batas: batas, keyword: keyword, keyword_by: keyword_by, OrderBy: OrderBy, ShortBy: ShortBy },
-            success : function (data) {
-                $('#MenampilkanTabelFitur').html(data);
-                $('#page').val(page);
-            }
-        })
-    });
-</script>
-<!-- <div class="row mb-3">
-    <div class="col-md-4">
-        <small class="credit">
-            Halaman : <code class="text-grayish"><?php echo "$page/$JmlHalaman"; ?></code>
-        </small><br>
-        <small class="credit">
-            Row : <code class="text-grayish"><?php echo "$jml_data Record"; ?></code>
-        </small>
-    </div>
-</div> -->
-<div class="row mb-3">
-    <div class="table table-responsive">
-        <table class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <td align="center"><b>No</b></td>
-                    <td align="center"><b>Entitias</b></td>
-                    <td align="center"><b>Keterangan</b></td>
-                    <td align="center"><b>Pengguna</b></td>
-                    <td align="center"><b>Role</b></td>
-                    <td align="center"><b>Option</b></td>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                    if(empty($jml_data)){
-                        echo '<tr>';
-                        echo '  <td colspan="6" class="text-center">';
-                        echo '      <code class="text-danger">';
-                        echo '          Tidak Ada Data Entitias Yang Dapat Ditampilkan';
-                        echo '      </code>';
-                        echo '  </td>';
-                        echo '</tr>';
-                    }else{
-                        $no = 1+$posisi;
-                        //KONDISI PENGATURAN MASING FILTER
-                        if(empty($keyword_by)){
-                            if(empty($keyword)){
-                                $query = mysqli_query($Conn, "SELECT*FROM akses_entitas ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
-                            }else{
-                                $query = mysqli_query($Conn, "SELECT*FROM akses_entitas WHERE akses like '%$keyword%' OR keterangan like '%$keyword%' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
-                            }
-                        }else{
-                            if(empty($keyword)){
-                                $query = mysqli_query($Conn, "SELECT*FROM akses_entitas ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
-                            }else{
-                                $query = mysqli_query($Conn, "SELECT*FROM akses_entitas WHERE $keyword_by like '%$keyword%' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
-                            }
-                        }
-                        while ($data = mysqli_fetch_array($query)) {
-                            $uuid_akses_entitas= $data['uuid_akses_entitas'];
-                            $akses= $data['akses'];
-                            $keterangan= $data['keterangan'];
-                            //Jumlah
-                            $JumlahPengguna =mysqli_num_rows(mysqli_query($Conn, "SELECT id_akses FROM akses WHERE akses='$akses'"));
-                            $JumlahRole =mysqli_num_rows(mysqli_query($Conn, "SELECT id_akses_referensi FROM akses_referensi WHERE uuid_akses_entitas='$uuid_akses_entitas'"));
-                ?>
-                            <tr>
-                                <td align="center"><?php echo $no; ?></td>
-                                <td align="left"><?php echo $akses; ?></td>
-                                <td align="left"><?php echo $keterangan; ?></td>
-                                <td align="left"><?php echo "$JumlahPengguna User"; ?></td>
-                                <td align="left"><?php echo "$JumlahRole Record"; ?></td>
-                                <td align="center">
-                                    <a class="btn btn-sm btn-outline-dark btn-rounded" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-three-dots"></i>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
-                                        <li class="dropdown-header text-start">
-                                            <h6>Option</h6>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalDetailEntitias" data-id="<?php echo "$uuid_akses_entitas"; ?>">
-                                                <i class="bi bi-info-circle"></i> Detail
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalEditAksesEntitas" data-id="<?php echo "$uuid_akses_entitas"; ?>">
-                                                <i class="bi bi-pencil"></i> Edit
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalHapusAksesEntitas" data-id="<?php echo "$uuid_akses_entitas"; ?>">
-                                                <i class="bi bi-x"></i> Hapus
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </td>
-                            </tr>
-                <?php
-                            $no++; 
-                        }
-                    }
-                ?>
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="row mt-5">
-    <div class="col-md-12 text-center">
-        <div class="btn-group shadow-0" role="group" aria-label="Basic example">
-            <button class="btn btn-sm btn-info" id="PrevPage" value="<?php echo $prev;?>">
-                <i class="bi bi-chevron-left"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-info">
-                <?php echo "$page of $JmlHalaman"; ?>
-            </button>
-            <button class="btn btn-sm btn-info" id="NextPage" value="<?php echo $next;?>">
-                <i class="bi bi-chevron-right"></i>
-            </button>
-        </div>
-    </div>
-</div>

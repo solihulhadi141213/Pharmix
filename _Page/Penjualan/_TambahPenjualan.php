@@ -65,7 +65,7 @@
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="col-md-12">
-                                        <div class="table table-responsive">
+                                        <div class="table table-responsive mt-3">
                                             <table class="table table-hover table-striped">
                                                 <thead>
                                                     <tr>
@@ -119,7 +119,7 @@
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-4">
-                                                <label for="put_id_anggota_for_add_penjualan"><small>Anggota</small></label>
+                                                <label for="put_id_anggota_for_add_penjualan"><small>Pasien</small></label>
                                             </div>
                                             <div class="col-8">
                                                 <select id="put_id_anggota_for_add_penjualan" name="put_id_anggota_for_add_penjualan" class="form-control form-control-lg" data-bs-toggle="modal" data-bs-target="#ModalPilihAnggota">

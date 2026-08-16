@@ -39,40 +39,21 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-md-8 mb-2">
-                                <b class="card-title"> 
-                                    <i class="bi bi-table"></i> Transaksi Penjualan
-                                </b>
-                            </div>
-                            <div class="col-6 col-sm-6 col-md-2 mb-2">
-                                <a class="btn btn-md btn-outline-dark btn-rounded btn-block" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i> Opsi Lanjutan
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Option</h6>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalFilter">
-                                            <i class="bi bi-funnel"></i> Filter
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalExportTransaksi">
-                                            <i class="bi bi-cloud-arrow-down"></i> Export
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-6 col-sm-6 col-md-2 mb-2">
-                                <button type="button" class="btn btn-md btn-primary btn-block btn-rounded" data-bs-toggle="modal" data-bs-target="#ModalTambahTransaksiPenjualan" title="Tambah Transaksi Penjualan">
-                                    <i class="bi bi-plus-lg"></i> Tambah
+                            <div class="col-12 mb-2 text-end">
+                                <button type="button" class="btn btn-md btn-info btn-floating" data-bs-toggle="modal" data-bs-target="#ModalFilter" title="Filter">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                <button type="button" class="btn btn-md btn-secondary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalExportTransaksi" title="Export/Download">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                                <button type="button" class="btn btn-md btn-primary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalTambahTransaksiPenjualan" title="Tambah Transaksi Penjualan">
+                                    <i class="bi bi-plus-lg"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="tabel table-responsive">
+                        <div class="tabel table-responsive mt-3">
                             <table class="table table-hover table-striped">
                                 <thead>
                                     <tr>
@@ -89,7 +70,7 @@
                                                 <i class="bi bi-question-circle"></i>
                                             </a>
                                         </th>
-                                        <th><b>Anggota</b></th>
+                                        <th><b>Pasien</b></th>
                                         <th><b>Jumlah</b></th>
                                         <th>
                                             <b>Status</b> 

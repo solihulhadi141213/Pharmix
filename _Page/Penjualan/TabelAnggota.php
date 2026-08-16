@@ -55,7 +55,7 @@
             }
             while ($data = mysqli_fetch_array($query)) {
                 $id_anggota= $data['id_anggota'];
-                $nip= $data['nip'];
+                $nip= $data['nik'];
                 $nama= $data['nama'];
                 echo '
                     <tr>

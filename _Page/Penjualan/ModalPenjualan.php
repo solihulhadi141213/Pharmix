@@ -83,10 +83,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Filter
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -177,10 +177,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Filter
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -239,10 +239,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded" id="ButtonExportLaba">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="ButtonExportLaba">
                         <i class="bi bi-download"></i> Export
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -308,10 +308,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded" id="ButtonExportTransaksi">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="ButtonExportTransaksi">
                         <i class="bi bi-download"></i> Export
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -357,7 +357,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle"></i> Tutup
                 </button>
             </div>
@@ -426,7 +426,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle"></i> Tutup
                 </button>
             </div>
@@ -487,7 +487,7 @@
                     <button type="submit" class="btn btn-md btn-primary btn-rounded">
                         <i class="bi bi-plus"></i> Tambahkan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -524,7 +524,7 @@
                     <button type="submit" class="btn btn-md btn-primary btn-rounded">
                         <i class="bi bi-plus"></i> Tambahkan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-toggle="modal" data-bs-target="#ModalCariBarang">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-toggle="modal" data-bs-target="#ModalCariBarang">
                         <i class="bi bi-chevron-left"></i> Kembali
                     </button>
                 </div>
@@ -556,7 +556,7 @@
                     <button type="submit" class="btn btn-md btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -585,10 +585,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-md btn-success btn-rounded" id="ButtonHapusBulk">
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonHapusBulk">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tidak
                     </button>
                 </div>
@@ -601,7 +601,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-dark">
-                    <i class="bi bi-person"></i> Pilih Anggota
+                    <i class="bi bi-person"></i> Pilih Pasien
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -631,8 +631,8 @@
                                 <thead>
                                     <tr>
                                         <th><b>No</b></th>
-                                        <th><b>Anggota</b></th>
-                                        <th><b>No.Induk</b></th>
+                                        <th><b>Nama</b></th>
+                                        <th><b>NIK/KTP</b></th>
                                         <th><b>Opsi</b></th>
                                     </tr>
                                 </thead>
@@ -664,8 +664,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle"></i> tutup
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Tutup
                 </button>
             </div>
         </div>
@@ -700,10 +700,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-md btn-success btn-rounded" id="ButtonResetTransaksi">
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonResetTransaksi">
                         <i class="bi bi-check"></i> Reset
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -755,7 +755,7 @@
                     <button type="submit" class="btn btn-md btn-outline-info btn-rounded" id="ButtonSelengkapnya">
                         <i class="bi bi-three-dots"></i> Selengkapnya
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -768,7 +768,7 @@
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesCetak">
                 <div class="modal-header">
-                    <h5 class="modal-title text-dark"><i class="bi bi-printer"></i> Cetak Transaksi 2</h5>
+                    <h5 class="modal-title text-dark"><i class="bi bi-printer"></i> Cetak Rincian Transaksi </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -809,10 +809,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-md btn-success btn-rounded" id="ButtonCetak">
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonCetak">
                         <i class="bi bi-printer"></i> Cetak
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -841,10 +841,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-md btn-success btn-rounded" id="ButtonEdit">
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonEdit">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -873,10 +873,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-md btn-success btn-rounded" id="ButtonHapus">
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonHapus">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -890,7 +890,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-dark">
-                    <i class="bi bi-person"></i> Pilih Anggota
+                    <i class="bi bi-person"></i> Pilih Pasien
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -955,8 +955,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle"></i> tutup
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Tutup
                 </button>
             </div>
         </div>
@@ -983,10 +983,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-md btn-success btn-rounded" id="ButtonEditAnggota">
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonEditAnggota">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -1056,7 +1056,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle"></i> Tutup
                 </button>
             </div>
@@ -1092,7 +1092,7 @@
                     <button type="submit" class="btn btn-md btn-primary btn-rounded">
                         <i class="bi bi-plus"></i> Tambahkan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-toggle="modal" data-bs-target="#ModalListBarangEdit">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-toggle="modal" data-bs-target="#ModalListBarangEdit">
                         <i class="bi bi-chevron-left"></i> Kembali
                     </button>
                 </div>
@@ -1197,7 +1197,7 @@
                     <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonEditRincian">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x"></i> Tutup
                     </button>
                 </div>
@@ -1230,7 +1230,7 @@
                     <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonHapusRincian">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x"></i> Tutup
                     </button>
                 </div>
@@ -1262,7 +1262,7 @@
                     <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonTambahJurnal">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x"></i> Tutup
                     </button>
                 </div>
@@ -1294,7 +1294,7 @@
                     <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonEditJurnal">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x"></i> Tutup
                     </button>
                 </div>
@@ -1326,7 +1326,7 @@
                     <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonHapusJurnal">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x"></i> Tutup
                     </button>
                 </div>

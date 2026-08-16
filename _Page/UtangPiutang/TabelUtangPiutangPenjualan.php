@@ -6,6 +6,18 @@
     //inisiasi Variabe;
     $JmlHalaman=0;
     $page=1;
+    $allowed_order_by = ['id_transaksi_jual_beli','tanggal','kategori','total','cash','status'];
+    $allowed_keyword_by = ['tanggal','kategori','nama'];
+    if(!function_exists('bind_stmt_params')){
+        function bind_stmt_params($stmt, $types, &$params){
+            $bind_names = [];
+            $bind_names[] = $types;
+            foreach($params as $key => &$value){
+                $bind_names[] = &$value;
+            }
+            return call_user_func_array('mysqli_stmt_bind_param', $bind_names);
+        }
+    }
     if(empty($SessionIdAkses)){
         echo '
             <tr>
@@ -27,6 +39,7 @@
         }else{
             $keyword="";
         }
+        $keyword_like = '%'.$keyword.'%';
         //batas
         if(!empty($_POST['batas'])){
             $batas=$_POST['batas'];
@@ -53,28 +66,57 @@
             $page="1";
             $posisi = 0;
         }
-        if(empty($keyword_by)){
-            if(empty($keyword)){
-                $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_transaksi_jual_beli FROM transaksi_jual_beli WHERE status='Kredit'"));
+        if(!in_array($ShortBy, ['ASC','DESC'], true)){
+            $ShortBy = "DESC";
+        }
+        if(!in_array($OrderBy, $allowed_order_by, true)){
+            $OrderBy = "tanggal";
+        }
+        if(!empty($keyword_by) && !in_array($keyword_by, $allowed_keyword_by, true)){
+            $keyword_by = "";
+        }
+
+        $base_from = "
+            FROM transaksi_jual_beli tjb
+            LEFT JOIN (
+                SELECT id_transaksi_jual_beli, SUM(jumlah) AS total_angsuran
+                FROM transaksi_pembayaran
+                GROUP BY id_transaksi_jual_beli
+            ) tp ON tp.id_transaksi_jual_beli = tjb.id_transaksi_jual_beli
+            LEFT JOIN anggota a ON tjb.id_anggota = a.id_anggota
+        ";
+        $where_clause = " WHERE tjb.status='Kredit' ";
+        $types = "";
+        $params = [];
+        if(!empty($keyword)){
+            if(empty($keyword_by)){
+                $where_clause .= " AND (tjb.tanggal LIKE ? OR tjb.kategori LIKE ? OR a.nama LIKE ?) ";
+                $types .= "sss";
+                $params[] = $keyword_like;
+                $params[] = $keyword_like;
+                $params[] = $keyword_like;
             }else{
-                $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_transaksi_jual_beli FROM transaksi_jual_beli WHERE (tanggal like '%$keyword%' OR kategori like '%$keyword%') AND (status='Kredit')"));
-            }
-        }else{
-            if(empty($keyword)){
-                $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_transaksi_jual_beli FROM transaksi_jual_beli WHERE status='Kredit'"));
-            }else{
-                if ($keyword_by == "nama") {
-                    // Jika pencarian berdasarkan nama anggota
-                    $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT tjb.id_transaksi_jual_beli 
-                        FROM transaksi_jual_beli tjb 
-                        LEFT JOIN anggota a ON tjb.id_anggota = a.id_anggota
-                        WHERE (tjb.kategori='Penjualan' OR tjb.kategori='Retur Penjualan') AND a.nama LIKE '%$keyword%'"));
-                } else {
-                    // Jika pencarian berdasarkan kolom lain di transaksi_jual_beli
-                    $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_transaksi_jual_beli FROM transaksi_jual_beli WHERE ($keyword_by LIKE '%$keyword%') AND (status='Kredit')"));
+                if($keyword_by === "nama"){
+                    $where_clause .= " AND a.nama LIKE ? ";
+                    $types .= "s";
+                    $params[] = $keyword_like;
+                }else{
+                    $where_clause .= " AND tjb.$keyword_by LIKE ? ";
+                    $types .= "s";
+                    $params[] = $keyword_like;
                 }
             }
         }
+
+        $stmt_jml = mysqli_prepare($Conn, "SELECT COUNT(tjb.id_transaksi_jual_beli) AS jml_data ".$base_from.$where_clause);
+        if(!empty($types)){
+            bind_stmt_params($stmt_jml, $types, $params);
+        }
+        mysqli_stmt_execute($stmt_jml);
+        $result_jml = mysqli_stmt_get_result($stmt_jml);
+        $row_jml = mysqli_fetch_assoc($result_jml);
+        $jml_data = isset($row_jml['jml_data']) ? (int) $row_jml['jml_data'] : 0;
+        mysqli_stmt_close($stmt_jml);
         if(empty($jml_data)){
             echo '
                 <tr>
@@ -86,29 +128,27 @@
         }else{
             $no = 1+$posisi;
             //KONDISI PENGATURAN MASING FILTER
-            if(empty($keyword_by)){
-                if(empty($keyword)){
-                    $query = mysqli_query($Conn, "SELECT*FROM transaksi_jual_beli WHERE status='Kredit' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
-                }else{
-                    $query = mysqli_query($Conn, "SELECT*FROM transaksi_jual_beli WHERE (kategori like '%$keyword%' OR tanggal like '%$keyword%') AND (status='Kredit') ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
-                }
+            $sql = "
+                SELECT tjb.*, a.nama, COALESCE(tp.total_angsuran, 0) AS total_angsuran
+                ".$base_from."
+                ".$where_clause."
+                ORDER BY tjb.$OrderBy $ShortBy
+                LIMIT ?, ?
+            ";
+            $query = mysqli_prepare($Conn, $sql);
+            $limit_posisi = (int) $posisi;
+            $limit_batas = (int) $batas;
+            $bind_params = $params;
+            $bind_params[] = $limit_posisi;
+            $bind_params[] = $limit_batas;
+            if(empty($types)){
+                mysqli_stmt_bind_param($query, "ii", $limit_posisi, $limit_batas);
             }else{
-                if(empty($keyword)){
-                    $query = mysqli_query($Conn, "SELECT*FROM transaksi_jual_beli WHERE status='Kredit' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
-                }else{
-                    if ($keyword_by == "nama") {
-                        $query = mysqli_query($Conn, "SELECT tjb.*, a.nama 
-                        FROM transaksi_jual_beli tjb 
-                        LEFT JOIN anggota a ON tjb.id_anggota = a.id_anggota
-                        WHERE (tjb.kategori='Penjualan' OR tjb.kategori='Retur Penjualan') AND (a.nama LIKE '%$keyword%') AND (tjb.status='Kredit') 
-                        ORDER BY $OrderBy $ShortBy 
-                        LIMIT $posisi, $batas");
-                    }else{
-                        $query = mysqli_query($Conn, "SELECT*FROM transaksi_jual_beli WHERE ($keyword_by LIKE '%$keyword%') AND (status='Kredit') ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
-                    }
-                }
+                bind_stmt_params($query, $types."ii", $bind_params);
             }
-            while ($data = mysqli_fetch_array($query)) {
+            mysqli_stmt_execute($query);
+            $result = mysqli_stmt_get_result($query);
+            while ($data = mysqli_fetch_array($result)) {
                 $id_transaksi_jual_beli= $data['id_transaksi_jual_beli'];
                 $kategori= $data['kategori'];
                 $tanggal= $data['tanggal'];
@@ -146,7 +186,7 @@
                     $nama_anggota="-";
                 }else{
                     $id_anggota= $data['id_anggota'];
-                    $nama_anggota=GetDetailData($Conn, 'anggota', 'id_anggota', $id_anggota, 'nama');
+                    $nama_anggota=empty($data['nama']) ? '-' : $data['nama'];
                 }
                 
                 //Format tanggal
@@ -154,15 +194,7 @@
                 $TanggalTransaksi=date('d/m/Y', $strtotime);
 
                 //Hitung Jumlah Pembayaran
-                $sql_angsuran = "SELECT SUM(jumlah) as total_jumlah FROM  transaksi_pembayaran  WHERE id_transaksi_jual_beli='$id_transaksi_jual_beli'";
-                $result_angsuran = $Conn->query($sql_angsuran);
-                if ($result_angsuran->num_rows > 0) {
-                    // Ambil hasil
-                    $row_angsuran = $result_angsuran->fetch_assoc();
-                    $total_angsuran = $row_angsuran["total_jumlah"];
-                } else {
-                    $total_angsuran=0;
-                }
+                $total_angsuran = (float) $data['total_angsuran'];
                 $total_angsuran_rp = "Rp " . number_format($total_angsuran,0,',','.');
 
                 //Hitung Sisa/Selisish
@@ -202,6 +234,7 @@
                 ';
                 $no++;
             }
+            mysqli_stmt_close($query);
             $JmlHalaman = ceil($jml_data/$batas); 
         }
     }

@@ -1,41 +1,56 @@
 <?php
     //Data Penjualan
-    $jumlah_data_penjualan=mysqli_num_rows(mysqli_query($Conn, "SELECT id_transaksi_jual_beli FROM transaksi_jual_beli WHERE kategori='Penjualan'"));
-    $jumlah_data_penjualan_format = "" . number_format($jumlah_data_penjualan,0,',','.');
+    $query_penjualan = "
+        SELECT
+            SUM(CASE WHEN kategori='Penjualan' THEN 1 ELSE 0 END) AS jumlah_data_penjualan,
+            SUM(CASE WHEN kategori='Penjualan' THEN total ELSE 0 END) AS jumlah_penjualan,
+            SUM(CASE WHEN kategori='Retur Penjualan' THEN 1 ELSE 0 END) AS jumlah_data_retur_penjualan,
+            SUM(CASE WHEN kategori='Retur Penjualan' THEN total ELSE 0 END) AS jumlah_retur_penjualan,
+            SUM(CASE WHEN kategori='Penjualan' AND status='Lunas' THEN 1 ELSE 0 END) AS jumlah_data_penjualan_lunas,
+            SUM(CASE WHEN kategori='Penjualan' AND status='Lunas' THEN total ELSE 0 END) AS jumlah_penjualan_lunas,
+            SUM(CASE WHEN kategori='Penjualan' AND status='Kredit' THEN 1 ELSE 0 END) AS jumlah_data_piutang_penjualan,
+            SUM(CASE WHEN kategori='Penjualan' AND status='Kredit' THEN total ELSE 0 END) AS jumlah_piutang_penjualan,
+            SUM(CASE WHEN kategori='Retur Penjualan' AND status='Kredit' THEN 1 ELSE 0 END) AS jumlah_data_utang_penjualan,
+            SUM(CASE WHEN kategori='Retur Penjualan' AND status='Kredit' THEN total ELSE 0 END) AS jumlah_utang_penjualan
+        FROM transaksi_jual_beli
+    ";
+    $stmt_penjualan = mysqli_prepare($Conn, $query_penjualan);
+    mysqli_stmt_execute($stmt_penjualan);
+    $result_penjualan = mysqli_stmt_get_result($stmt_penjualan);
+    $data_penjualan_ringkas = mysqli_fetch_assoc($result_penjualan);
+    mysqli_stmt_close($stmt_penjualan);
 
-    $data_penjualan=mysqli_fetch_array(mysqli_query($Conn, "SELECT SUM(total) AS total FROM transaksi_jual_beli WHERE kategori='Penjualan'"));
-    $jumlah_penjualan = $data_penjualan['total'];
+    $jumlah_data_penjualan = (int) ($data_penjualan_ringkas['jumlah_data_penjualan'] ?? 0);
+    $jumlah_data_penjualan_format = number_format($jumlah_data_penjualan,0,',','.');
+
+    $jumlah_penjualan = (float) ($data_penjualan_ringkas['jumlah_penjualan'] ?? 0);
     $jumlah_penjualan_format = "Rp " . number_format($jumlah_penjualan,0,',','.');
 
-    $jumlah_data_retur_penjualan=mysqli_num_rows(mysqli_query($Conn, "SELECT id_transaksi_jual_beli FROM transaksi_jual_beli WHERE kategori='Retur Penjualan'"));
-    $jumlah_data_retur_penjualan_format = "" . number_format($jumlah_data_retur_penjualan,0,',','.');
+    $jumlah_data_retur_penjualan = (int) ($data_penjualan_ringkas['jumlah_data_retur_penjualan'] ?? 0);
+    $jumlah_data_retur_penjualan_format = number_format($jumlah_data_retur_penjualan,0,',','.');
 
-    $data_retur_penjualan=mysqli_fetch_array(mysqli_query($Conn, "SELECT SUM(total) AS total FROM transaksi_jual_beli WHERE kategori='Retur Penjualan'"));
-    $jumlah_retur_penjualan = $data_retur_penjualan['total'];
+    $jumlah_retur_penjualan = (float) ($data_penjualan_ringkas['jumlah_retur_penjualan'] ?? 0);
     $jumlah_retur_penjualan_format = "Rp " . number_format($jumlah_retur_penjualan,0,',','.');
 
-    $jumlah_penjualan_bersih=$jumlah_penjualan-$jumlah_retur_penjualan;
+    $jumlah_penjualan_bersih = $jumlah_penjualan - $jumlah_retur_penjualan;
     $jumlah_penjualan_bersih_format = "Rp " . number_format($jumlah_penjualan_bersih,0,',','.');
 
-    $jumlah_data_penjualan_lunas=mysqli_num_rows(mysqli_query($Conn, "SELECT id_transaksi_jual_beli FROM transaksi_jual_beli WHERE kategori='Penjualan' AND status='Lunas'"));
-    $jumlah_data_penjualan_lunas_format = "" . number_format($jumlah_data_penjualan_lunas,0,',','.');
+    $jumlah_data_penjualan_lunas = (int) ($data_penjualan_ringkas['jumlah_data_penjualan_lunas'] ?? 0);
+    $jumlah_data_penjualan_lunas_format = number_format($jumlah_data_penjualan_lunas,0,',','.');
 
-    $data_penjualan_lunas=mysqli_fetch_array(mysqli_query($Conn, "SELECT SUM(total) AS total FROM transaksi_jual_beli WHERE kategori='Penjualan' AND status='Lunas'"));
-    $jumlah_penjualan_lunas = $data_penjualan_lunas['total'];
+    $jumlah_penjualan_lunas = (float) ($data_penjualan_ringkas['jumlah_penjualan_lunas'] ?? 0);
     $jumlah_penjualan_lunas_format = "Rp " . number_format($jumlah_penjualan_lunas,0,',','.');
 
-    $jumlah_data_piutang_penjualan=mysqli_num_rows(mysqli_query($Conn, "SELECT id_transaksi_jual_beli FROM transaksi_jual_beli WHERE kategori='Penjualan' AND status='Kredit'"));
-    $jumlah_data_piutang_penjualan_format = "" . number_format($jumlah_data_piutang_penjualan,0,',','.');
+    $jumlah_data_piutang_penjualan = (int) ($data_penjualan_ringkas['jumlah_data_piutang_penjualan'] ?? 0);
+    $jumlah_data_piutang_penjualan_format = number_format($jumlah_data_piutang_penjualan,0,',','.');
 
-    $data_piutang_penjualan=mysqli_fetch_array(mysqli_query($Conn, "SELECT SUM(total) AS total FROM transaksi_jual_beli WHERE kategori='Penjualan' AND status='Kredit'"));
-    $jumlah_piutang_penjualan = $data_piutang_penjualan['total'];
+    $jumlah_piutang_penjualan = (float) ($data_penjualan_ringkas['jumlah_piutang_penjualan'] ?? 0);
     $jumlah_piutang_penjualan_format = "Rp " . number_format($jumlah_piutang_penjualan,0,',','.');
 
-    $jumlah_data_utang_penjualan=mysqli_num_rows(mysqli_query($Conn, "SELECT id_transaksi_jual_beli FROM transaksi_jual_beli WHERE kategori='Retur Penjualan' AND status='Kredit'"));
-    $jumlah_data_utang_penjualan_format = "Rp " . number_format($jumlah_data_utang_penjualan,0,',','.');
+    $jumlah_data_utang_penjualan = (int) ($data_penjualan_ringkas['jumlah_data_utang_penjualan'] ?? 0);
+    $jumlah_data_utang_penjualan_format = number_format($jumlah_data_utang_penjualan,0,',','.');
 
-    $data_utang_penjualan=mysqli_fetch_array(mysqli_query($Conn, "SELECT SUM(total) AS total FROM transaksi_jual_beli WHERE kategori='Retur Penjualan' AND status='Kredit'"));
-    $jumlah_utang_penjualan = $data_utang_penjualan['total'];
+    $jumlah_utang_penjualan = (float) ($data_penjualan_ringkas['jumlah_utang_penjualan'] ?? 0);
     $jumlah_utang_penjualan_format = "Rp " . number_format($jumlah_utang_penjualan,0,',','.');
     //Data Pembelian
 ?>
