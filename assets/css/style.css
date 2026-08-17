@@ -2249,4 +2249,49 @@ body.dark-mode .dashboard .news p {
   color: #94a3b8 !important;
 }
 
+/* TOAST */
+#appToast {
+    border-radius: 12px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
 
+#appToast.toast-success {
+    background: rgba(59, 185, 126, 0.85);
+    color: rgb(46, 119, 56);
+}
+
+#appToast.toast-error {
+    background: rgba(220, 53, 69, 0.85);
+    color: white;
+}
+
+#appToast.toast-warning {
+    background: rgba(255, 193, 7, 0.85);
+    color: #212529;
+}
+
+#appToast.toast-info {
+    background: rgba(13, 202, 240, 0.85);
+    color: #212529;
+}
+
+#appToast .toast-header {
+    background: transparent;
+    color: inherit;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#appToast .toast-body {
+    background: transparent;
+}
+
+#appToast .btn-close {
+    filter: none;
+}
+
+#appToastIcon {
+    margin-right: 12px;
+}

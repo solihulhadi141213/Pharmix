@@ -3,6 +3,17 @@
 <!-- Back to top -->
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
+<!-- Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="appToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i id="appToastIcon" class="bi"></i> <strong id="appToastTitle" class="me-auto"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div id="appToastMessage" class="toast-body"></div>
+    </div>
+</div>
+
 <!-- Vendor JS Files -->
 <script src="node_modules/signature_pad/dist/signature_pad.umd.min.js"></script>
 <script src="node_modules/apexcharts/dist/apexcharts.min.js"></script>

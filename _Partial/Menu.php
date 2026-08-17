@@ -75,7 +75,7 @@
                 </li>
                 <li>
                     <a href="index.php?Page=StockOpename" class="<?php if($PageMenu=="StockOpename"){echo "active";} ?>">
-                        <i class="bi bi-circle"></i><span>Stock Opename</span>
+                        <i class="bi bi-circle"></i><span>Stock Opname</span>
                     </a>
                 </li>
             </ul>

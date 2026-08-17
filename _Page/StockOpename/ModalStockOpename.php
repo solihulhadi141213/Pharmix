@@ -1,16 +1,16 @@
 <div class="modal fade" id="ModalFilterSesi" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
-            <form action="javascript:void(0);" id="ProsesFilterSesi">
+            <form action="javascript:void(0);" id="ProsesFilter">
                 <input type="hidden" name="page" id="page" value="1">
                 <div class="modal-header">
-                    <h5 class="modal-title text-dark"><i class="bi bi-funnel"></i> Filter Sesi</h5>
+                    <h5 class="modal-title text-dark"><i class="bi bi-funnel"></i> Filter Data</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mt-3">
-                            <label for="batas">Data/Limit</label>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="batas">Batas/Limit</label>
                             <select name="batas" id="batas" class="form-control">
                                 <option value="5">5</option>
                                 <option selected value="10">10</option>
@@ -21,44 +21,48 @@
                                 <option value="500">500</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mt-3">
-                            <label for="OrderBy">Mode Urutan</label>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="OrderBy">Order By</label>
                             <select name="OrderBy" id="OrderBy" class="form-control">
                                 <option value="">Pilih</option>
-                                <option value="tanggl">Tanggal</option>
+                                <option value="start_at">Tanggal</option>
                                 <option value="status">Status</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mt-3">
-                            <label for="ShortBy">Tipe Urutan</label>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="ShortBy">Short By</label>
                             <select name="ShortBy" id="ShortBy" class="form-control">
                                 <option value="ASC">A To Z</option>
                                 <option selected value="DESC">Z To A</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mt-3">
-                            <label for="keyword_by_sesi">Pencarian</label>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="keyword_by_sesi">Keyword By</label>
                             <select name="keyword_by" id="keyword_by_sesi" class="form-control">
                                 <option value="">Pilih</option>
-                                <option value="tanggal">Tanggal</option>
+                                <option value="start_at">Tanggal</option>
                                 <option value="status">Status</option>
                             </select>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 mt-3" id="FormFilterKeywordSesi">
-                            <label for="keyword">Kata Kunci</label>
+                        <div class="col-md-12" id="FormFilterKeywordSesi">
+                            <label for="keyword">Keyword</label>
                             <input type="text" name="keyword" id="keyword" class="form-control">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Filter
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -66,21 +70,22 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="ModalFilterBarang" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesFilterBarang">
-                <input type="hidden" name="id_stok_opename" id="put_id_stok_opename_filter_barang" value="">
+                <input type="hidden" id="put_id_stock_opname_filter_barang" name="id_stock_opname" value="">
                 <input type="hidden" name="page" id="page_barang" value="1">
                 <div class="modal-header">
                     <h5 class="modal-title text-dark"><i class="bi bi-funnel"></i> Filter Data</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mt-3">
-                            <label for="batas">Data/Limit</label>
-                            <select name="batas" id="batas" class="form-control">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="batas_barang">Batas/Limit</label>
+                            <select name="batas" id="batas_barang" class="form-control">
                                 <option value="5">5</option>
                                 <option selected value="10">10</option>
                                 <option value="25">25</option>
@@ -90,44 +95,48 @@
                                 <option value="500">500</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mt-3">
-                            <label for="OrderBy">Mode Urutan</label>
-                            <select name="OrderBy" id="OrderBy" class="form-control">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="OrderByBarang">Order By</label>
+                            <select name="OrderBy" id="OrderByBarang" class="form-control">
                                 <option value="">Pilih</option>
                                 <option value="kode_barang">Kode</option>
                                 <option value="nama_barang">Barang</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mt-3">
-                            <label for="ShortBy">Tipe Urutan</label>
-                            <select name="ShortBy" id="ShortBy" class="form-control">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="ShortByBarang">Short By</label>
+                            <select name="ShortBy" id="ShortByBarang" class="form-control">
                                 <option value="ASC">A To Z</option>
                                 <option selected value="DESC">Z To A</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mt-3">
-                            <label for="keyword_by">Pencarian</label>
-                            <select name="keyword_by" id="keyword_by" class="form-control">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="keyword_by_barang">Keyword By</label>
+                            <select name="keyword_by" id="keyword_by_barang" class="form-control">
                                 <option value="">Pilih</option>
                                 <option value="kode_barang">Kode</option>
                                 <option value="nama_barang">Barang</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 mt-3">
-                            <label for="keyword">Kata Kunci</label>
-                            <input type="text" name="keyword" id="keyword" class="form-control">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="keyword_barang">Keyword</label>
+                            <input type="text" name="keyword" id="keyword_barang" class="form-control">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Filter
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -135,28 +144,26 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="ModalTambahSesi" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesTambahSesi">
                 <div class="modal-header">
-                    <h5 class="modal-title text-dark"><i class="bi bi-plus"></i> Tambah Sesi Stock Opename</h5>
+                    <h5 class="modal-title text-dark"><i class="bi bi-plus"></i> Tambah Sesi Stock Opname</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-md-12">
-                            <label for="tanggal">Tanggal Pelaksanaan</label>
-                            <input type="date" class="form-control" name="tanggal" id="tanggal">
+                            <label for="start_at_date">Tanggal Pelaksanaan</label>
+                            <input type="date" class="form-control" name="start_at_date" id="start_at_date" value="<?php echo date('Y-m-d'); ?>">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-12">
-                            <label for="status">Status Pelaksanaan</label>
-                            <select class="form-control" name="status" id="status">
-                                <option value="0">Dalam Pengerjaan</option>
-                                <option value="1">Selesai</option>
-                            </select>
+                            <label for="start_at_time">Jam Pelaksanaan</label>
+                            <input type="time" class="form-control" name="start_at_time" id="start_at_time" value="<?php echo date('H:i:s'); ?>">
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -166,10 +173,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="TombolSimpanSesi">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -178,42 +185,61 @@
     </div>
 </div>
 
-<div class="modal fade" id="ModalEditSesi" tabindex="-1">
+<div class="modal fade" id="ModalDetailSesi" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
-            <form action="javascript:void(0);" id="ProsesEditSesi">
-                <input type="hidden" name="id_stok_opename" id="put_id_stok_opename_edit">
+            <form action="javascript:void(0);" id="ProsesDetailSesi">
+                <input type="hidden" id="put_id_stock_opname" name="id_stock_opname" value="">
                 <div class="modal-header">
-                    <h5 class="modal-title text-dark"><i class="bi bi-pencil"></i> Edit Sesi Stock Opename</h5>
+                    <h5 class="modal-title text-dark"><i class="bi bi-info-circle"></i> Detail Sesi Stock Opname</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-3">
-                        <div class="col-md-12">
-                            <label for="tanggal_edit">Tanggal Pelaksanaan</label>
-                            <input type="date" class="form-control" name="tanggal" id="tanggal_edit">
+                        <div class="col-md-12" id="FormDetailSesi">
+                            <!-- Detail Sesi Akan Tampil Disini -->
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <label for="status_edit">Status Pelaksanaan</label>
-                            <select class="form-control" name="status" id="status_edit">
-                                <option value="0">Dalam Pengerjaan</option>
-                                <option value="1">Selesai</option>
-                            </select>
-                        </div>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="TombolDetailSesiSelengkapnya">
+                        Selengkapnya <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="ModalEditSesi" tabindex="-1">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form action="javascript:void(0);" id="ProsesEditSesi">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark"><i class="bi bi-pencil"></i> Edit Sesi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
                     <div class="row mb-2">
+                        <div class="col-md-12" id="FormEditSesi">
+                            <!-- Notifikasi Tambah Sesi -->
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12" id="NotifikasiEditSesi">
                             <!-- Notifikasi Tambah Sesi -->
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="TombolEditSesi">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -221,65 +247,32 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="ModalHapusSesi" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesHapusSesi">
-                <input type="hidden" name="id_stok_opename" id="put_id_stok_opename_hapus">
                 <div class="modal-header">
-                    <h5 class="modal-title text-dark"><i class="bi bi-trash"></i> Hapus Sesi Stock Opename</h5>
+                    <h5 class="modal-title text-dark"><i class="bi bi-trash"></i> Hapus Sesi</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
+                    <div class="row mb-2">
                         <div class="col-md-12" id="FormHapusSesi">
-
+                            <!-- Form -->
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-md-12" id="NotifikasiHapusSesi">
-                            <!-- Notifikasi Tambah Sesi -->
+                            <!-- Notifikasi -->
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="TombolHapusSesi">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle"></i> Tidak
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="ModalStockOpename" tabindex="-1">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <form action="javascript:void(0);" id="ProsesStockOpename">
-                <div class="modal-header">
-                    <h5 class="modal-title text-dark"><i class="bi bi-pencil"></i> Stock Opename</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2">
-                        <div class="col-md-12" id="FormStockOpename">
-                            <!-- Form Stock Opename -->
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-12" id="NotifikasiStockOpename">
-                            <!-- Notifikasi Stock Opename -->
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-rounded">
-                        <i class="bi bi-save"></i> Simpan
-                    </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -288,26 +281,83 @@
     </div>
 </div>
 
-<div class="modal fade" id="ModalExportStockOpenameBarang" tabindex="-1">
+<div class="modal fade" id="ModalStockOpnameBarang" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
-            <form action="_Page/StockOpename/ProsesExportStockOpename.php" method="POST" target="_blank">
+            <form action="javascript:void(0);" id="ProsesStockOpnameBarang">
                 <div class="modal-header">
-                    <h5 class="modal-title text-dark"><i class="bi bi-download"></i> Export Stock Opename</h5>
+                    <h5 class="modal-title text-dark"><i class="bi bi-pencil"></i> Stock Opname</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-md-12" id="FormExportStockOpenameBarang">
-                            Apakah anda yakin ingin melakukan export data stock opename untuk sesi ini?
+                    <div class="row mb-2">
+                        <div class="col-md-12" id="FormStockOpnameBarang">
+                            <!-- Form Stock Opname -->
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-12" id="NotifikasiStockOpnameBarang">
+                            <!-- Notifikasi Stock Opname -->
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="TombolStockOpnameBarang">
+                        <i class="bi bi-save"></i> Simpan
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="ModalDetailStockOpnameBarang" tabindex="-1">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark"><i class="bi bi-info-circle"></i> Detail Stock Opname</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-2">
+                    <div class="col-md-12" id="FormDetailStockOpnameBarang">
+                        <!-- Form Stock Opname -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalExportStockOpnameBarang" tabindex="-1">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form action="_Page/StockOpename/ProsesExportStockOpname.php" method="POST" target="_blank">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark"><i class="bi bi-download"></i> Export Stock Opname</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12" id="FormExportStockOpnameBarang">
+                            Apakah anda yakin ingin melakukan export data stock Opname untuk sesi ini?
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="TombolExportStockOpnameBarang">
                         <i class="bi bi-download"></i> Export
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
