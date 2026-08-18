@@ -10,7 +10,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12 mt-3">
+                        <div class="col-md-12 mb-2">
                             <label for="batas">Data</label>
                             <select name="batas" id="batas" class="form-control">
                                 <option value="5">5</option>
@@ -22,7 +22,7 @@
                                 <option value="500">500</option>
                             </select>
                         </div>
-                        <div class="col-md-12 mt-3">
+                        <div class="col-md-12 mb-2">
                             <label for="OrderBy">Mode Urutan</label>
                             <select name="OrderBy" id="OrderBy" class="form-control">
                                 <option value="">Pilih</option>
@@ -34,14 +34,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 mt-3">
+                        <div class="col-md-12 mb-2">
                             <label for="ShortBy">Tipe Urutan</label>
                             <select name="ShortBy" id="ShortBy" class="form-control">
                                 <option value="ASC">A To Z</option>
                                 <option selected value="DESC">Z To A</option>
                             </select>
                         </div>
-                        <div class="col-md-12 mt-3">
+                        <div class="col-md-12 mb-2">
                             <label for="KeywordBy">Pencarian</label>
                             <select name="KeywordBy" id="KeywordBy" class="form-control">
                                 <option value="">Pilih</option>
@@ -53,7 +53,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 mt-3" id="FormFilter">
+                        <div class="col-md-12 mb-2" id="FormFilter">
                             <label for="keyword">Kata Kunci Pencarian</label>
                             <input type="text" name="keyword" id="keyword" class="form-control">
                         </div>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary btn-rounded">
-                        <i class="bi bi-check"></i> Tampilkan
+                        <i class="bi bi-filter"></i> Filter
                     </button>
                     <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup

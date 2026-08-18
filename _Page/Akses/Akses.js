@@ -1,134 +1,204 @@
-//Fungsi Menampilkan Data
+//Fungsi Menampilkan Data Akses Pengguna
 function filterAndLoadTable() {
-    var ProsesFilter = $('#ProsesFilter').serialize();
+    // Target And Filter
+    let target = $('#tabel_akses');
+    let data   = $('#ProsesFilter').serialize();
+
+    target.addClass('blur-loading');
+
     $.ajax({
         type: 'POST',
         url: '_Page/Akses/TabelAkses.php',
-        data: ProsesFilter,
-        success: function(data) {
-            $('#MenampilkanTabelAkses').html(data);
+        data: data,
+        dataType: 'json',
+        success: function(res) {
+
+            if(res.status === "success"){
+
+                target.fadeOut(150, function () {
+                    target.html(res.html).fadeIn(150);
+                });
+
+                // Update info page
+                $('#page_info').html('Page ' + res.page + ' Of ' + res.total_page);
+
+                // Handle tombol
+                $('#prev_button').prop('disabled', res.page <= 1);
+                $('#next_button').prop('disabled', res.page >= res.total_page);
+
+            }else{
+                target.html(res.html);
+            }
+
+            target.removeClass('blur-loading');
         }
     });
 }
+
+
 $(document).ready(function() {
+
+    // Menampilkan Data Untuk Pertama Kali
     filterAndLoadTable();
-});
-$('#ProsesFilter').submit(function(){
-    $('#page').val("1");
-    filterAndLoadTable();
-    $('#ModalFilterAkses').modal('hide');
-});
-$('#keyword_by').change(function(){
-    var keyword_by =$('#keyword_by').val();
-    $.ajax({
-        type 	    : 'POST',
-        url 	    : '_Page/Akses/FormFilter.php',
-        data        : {keyword_by: keyword_by},
-        success     : function(data){
-            $('#FormFilter').html(data);
-        }
+
+    // Auto Focus ModalFilter
+    $('#ModalFilter').on('shown.bs.modal', function () {
+        $('#keyword').trigger('focus');
     });
-});
-//Kondisi saat tampilkan password
-$('.form-check-input').click(function(){
-    if($(this).is(':checked')){
-        $('#password1').attr('type','text');
-        $('#password2').attr('type','text');
-    }else{
-        $('#password1').attr('type','password');
-        $('#password2').attr('type','password');
-    }
-});
-//Tambah Akses
-//Proses Tambah Akses
-$('#ProsesTambahAkses').submit(function(){
-    $('#NotifikasiTambahAkses').html('<div class="spinner-border text-secondary" role="status"><span class="sr-only"></span></div>');
-    var form = $('#ProsesTambahAkses')[0];
-    var data = new FormData(form);
-    $.ajax({
-        type 	    : 'POST',
-        url 	    : '_Page/Akses/ProsesTambahAkses.php',
-        data 	    :  data,
-        cache       : false,
-        processData : false,
-        contentType : false,
-        enctype     : 'multipart/form-data',
-        success     : function(data){
-            $('#NotifikasiTambahAkses').html(data);
-            var NotifikasiTambahAksesBerhasil=$('#NotifikasiTambahAksesBerhasil').html();
-            if(NotifikasiTambahAksesBerhasil=="Success"){
-                $('#NotifikasiTambahAkses').html('');
-                $('#page').val("1");
-                $("#ProsesFilter")[0].reset();
-                $("#ProsesTambahAkses")[0].reset();
-                $('#ModalTambahAkses').modal('hide');
-                Swal.fire(
-                    'Success!',
-                    'Tambah Akses Berhasil!',
-                    'success'
-                )
-                //Menampilkan Data
-                filterAndLoadTable();
+
+    //Pagging
+    $(document).on('click', '#next_button', function() {
+        var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
+        var next_page = page_now + 1;
+        $('#page').val(next_page);
+        filterAndLoadTable(0);
+    });
+    $(document).on('click', '#prev_button', function() {
+        var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
+        var next_page = page_now - 1;
+        $('#page').val(next_page);
+        filterAndLoadTable(0);
+    });
+
+    // Ketika Keyword By Diubah
+    $('#keyword_by').change(function(){
+        var keyword_by =$('#keyword_by').val();
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Akses/FormFilter.php',
+            data        : {keyword_by: keyword_by},
+            success     : function(data){
+                $('#FormFilter').html(data);
             }
+        });
+    });
+
+    // Ketika 'Filter' Submit
+    $('#ProsesFilter').submit(function(){
+
+        // Kembalikan Halaman Ke 1
+        $('#page').val("1");
+
+        // Load Function Pemanggilan Data
+        filterAndLoadTable();
+
+        // tutup Modal Filter
+        $('#ModalFilter').modal('hide');
+    });
+
+    //Kondisi saat tampilkan password
+    $('.form-check-input').click(function(){
+        if($(this).is(':checked')){
+            $('#password1').attr('type','text');
+            $('#password2').attr('type','text');
+        }else{
+            $('#password1').attr('type','password');
+            $('#password2').attr('type','password');
         }
     });
-});
-//Detail Akses
-$('#ModalDetailAkses').on('show.bs.modal', function (e) {
-    var id_akses = $(e.relatedTarget).data('id');
-    $('#FormDetailAkses').html("Loading...");
-    $.ajax({
-        type 	    : 'POST',
-        url 	    : '_Page/Akses/FormDetailAkses.php',
-        data        : {id_akses: id_akses},
-        success     : function(data){
-            $('#FormDetailAkses').html(data);
-        }
+
+    // Auto Focus ModalFilter
+    $('#ModalTambahAkses').on('shown.bs.modal', function () {
+        $('#nama_akses').trigger('focus');
     });
-});
-//Edit Akses
-$('#ModalEditAkses').on('show.bs.modal', function (e) {
-    var id_akses = $(e.relatedTarget).data('id');
-    $('#FormEditAkses').html("Loading...");
-    $.ajax({
-        type 	    : 'POST',
-        url 	    : '_Page/Akses/FormEditAkses.php',
-        data        : {id_akses: id_akses},
-        success     : function(data){
-            $('#FormEditAkses').html(data);
-        }
-    });
-});
-//Proses Edit Akses
-$('#ProsesEditAkses').submit(function(){
-    $('#NotifikasiEditAkses').html('<div class="spinner-border text-secondary" role="status"><span class="sr-only"></span></div>');
-    var form = $('#ProsesEditAkses')[0];
-    var data = new FormData(form);
-    $.ajax({
-        type 	    : 'POST',
-        url 	    : '_Page/Akses/ProsesEditAkses.php',
-        data 	    :  data,
-        cache       : false,
-        processData : false,
-        contentType : false,
-        enctype     : 'multipart/form-data',
-        success     : function(data){
-            $('#NotifikasiEditAkses').html(data);
-            var NotifikasiEditAksesBerhasil=$('#NotifikasiEditAksesBerhasil').html();
-            if(NotifikasiEditAksesBerhasil=="Success"){
-                $('#NotifikasiEditAkses').html('');
-                $('#ModalEditAkses').modal('hide');
-                Swal.fire(
-                    'Success!',
-                    'Ubah Informasi Akses Berhasil!',
-                    'success'
-                )
-                //Menampilkan Data
-                filterAndLoadTable();
+
+    //Proses Tambah Akses
+    $('#ProsesTambahAkses').submit(function(){
+        $('#NotifikasiTambahAkses').html('<div class="spinner-border text-secondary" role="status"><span class="sr-only"></span></div>');
+        var form = $('#ProsesTambahAkses')[0];
+        var data = new FormData(form);
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Akses/ProsesTambahAkses.php',
+            data 	    :  data,
+            cache       : false,
+            processData : false,
+            contentType : false,
+            enctype     : 'multipart/form-data',
+            success     : function(data){
+                $('#NotifikasiTambahAkses').html(data);
+                var NotifikasiTambahAksesBerhasil=$('#NotifikasiTambahAksesBerhasil').html();
+                if(NotifikasiTambahAksesBerhasil=="Success"){
+                    $('#NotifikasiTambahAkses').html('');
+                    $('#page').val("1");
+                    $("#ProsesFilter")[0].reset();
+                    $("#ProsesTambahAkses")[0].reset();
+                    $('#ModalTambahAkses').modal('hide');
+                    Swal.fire(
+                        'Success!',
+                        'Tambah Akses Berhasil!',
+                        'success'
+                    )
+                    //Menampilkan Data
+                    filterAndLoadTable();
+                }
             }
-        }
+        });
     });
+
+    //Detail Akses
+    $('#ModalDetail').on('show.bs.modal', function (e) {
+        var id_akses = $(e.relatedTarget).data('id');
+        $('#FormDetail').html("Loading...");
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Akses/FormDetailAkses.php',
+            data        : {id_akses: id_akses},
+            success     : function(data){
+                $('#FormDetail').html(data);
+            }
+        });
+    });
+
+    //Edit Akses
+    $('#ModalEdit').on('show.bs.modal', function (e) {
+        var id_akses = $(e.relatedTarget).data('id');
+        $('#FormEditAkses').html("Loading...");
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Akses/FormEditAkses.php',
+            data        : {id_akses: id_akses},
+            success     : function(data){
+                $('#FormEditAkses').html(data);
+            }
+        });
+    });
+
+    //Proses Edit Akses
+    $('#ProsesEditAkses').submit(function(){
+        $('#NotifikasiEditAkses').html('<div class="spinner-border text-secondary" role="status"><span class="sr-only"></span></div>');
+        var form = $('#ProsesEditAkses')[0];
+        var data = new FormData(form);
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Akses/ProsesEditAkses.php',
+            data 	    :  data,
+            cache       : false,
+            processData : false,
+            contentType : false,
+            enctype     : 'multipart/form-data',
+            success     : function(data){
+                $('#NotifikasiEditAkses').html(data);
+                var NotifikasiEditAksesBerhasil=$('#NotifikasiEditAksesBerhasil').html();
+                if(NotifikasiEditAksesBerhasil=="Success"){
+                    $('#NotifikasiEditAkses').html('');
+                    $('#ModalEdit').modal('hide');
+                    Swal.fire(
+                        'Success!',
+                        'Ubah Informasi Akses Berhasil!',
+                        'success'
+                    )
+                    //Menampilkan Data
+                    filterAndLoadTable();
+                }
+            }
+        });
+    });
+
+
 });
+
+
 //Edit Level Akses
 $('#ModalEditLevelAkses').on('show.bs.modal', function (e) {
     var id_akses = $(e.relatedTarget).data('id');

@@ -37,7 +37,7 @@
                 </li>
                 <li>
                     <a href="index.php?Page=Akses" class="<?php if($PageMenu=="Akses"){echo "active";} ?>">
-                        <i class="bi bi-circle"></i><span>Akses Akses</span>
+                        <i class="bi bi-circle"></i><span>Akses Pengguna</span>
                     </a>
                 </li>
             </ul>

@@ -9,9 +9,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mt-3">
-                            <label for="batas">Data</label>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="batas">Batas/Limit</label>
                             <select name="batas" id="batas" class="form-control">
                                 <option value="5">5</option>
                                 <option selected value="10">10</option>
@@ -22,8 +22,10 @@
                                 <option value="500">500</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mt-3">
-                            <label for="OrderBy">Mode Urutan</label>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="OrderBy">Order By</label>
                             <select name="OrderBy" id="OrderBy" class="form-control">
                                 <option value="">Pilih</option>
                                 <option value="akses">Nama Entitas</option>
@@ -31,16 +33,18 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mt-3">
-                            <label for="ShortBy">Tipe Urutan</label>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="ShortBy">Short By</label>
                             <select name="ShortBy" id="ShortBy" class="form-control">
                                 <option value="ASC">A To Z</option>
                                 <option selected value="DESC">Z To A</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mt-3">
-                            <label for="KeywordBy">Pencarian</label>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="KeywordBy">Keyword By</label>
                             <select name="KeywordBy" id="KeywordBy" class="form-control">
                                 <option value="">Pilih</option>
                                 <option value="akses">Nama Entitas</option>
@@ -48,9 +52,9 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 mt-3" id="FormFilter">
-                            <label for="keyword">Kata Kunci Pencarian</label>
+                    <div class="row mb-4">
+                        <div class="col-md-12" id="FormFilter">
+                            <label for="keyword">Keyword</label>
                             <input type="text" name="keyword" id="keyword" class="form-control">
                         </div>
                     </div>

@@ -1,16 +1,16 @@
-<div class="modal fade" id="ModalFilterAkses" tabindex="-1">
+<div class="modal fade" id="ModalFilter" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesFilter">
-                <input type="hidden" name="page" id="page">
+                <input type="hidden" name="page" id="page" value="1">
                 <div class="modal-header">
                     <h5 class="modal-title text-dark"><i class="bi bi-funnel"></i> Filter Akses</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="batas">Data</label>
+                        <div class="col-md-12">
+                            <label for="batas">Batas/Limit</label>
                             <select name="batas" id="batas" class="form-control">
                                 <option value="10">10</option>
                                 <option value="25">25</option>
@@ -20,8 +20,10 @@
                                 <option value="500">500</option>
                             </select>
                         </div>
-                        <div class="col-md-6 ">
-                            <label for="OrderBy">Mode Urutan</label>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="OrderBy">Order By</label>
                             <select name="OrderBy" id="OrderBy" class="form-control">
                                 <option value="">Pilih</option>
                                 <option value="nama_akses">Nama</option>
@@ -32,15 +34,17 @@
                         </div>
                     </div>
                     <div class="row  mb-3">
-                        <div class="col-md-6 ">
-                            <label for="ShortBy">Tipe Urutan</label>
+                        <div class="col-md-12">
+                            <label for="ShortBy">Short By</label>
                             <select name="ShortBy" id="ShortBy" class="form-control">
                                 <option value="ASC">A To Z</option>
                                 <option value="DESC">Z To A</option>
                             </select>
                         </div>
-                        <div class="col-md-6 ">
-                            <label for="keyword_by">Pencarian</label>
+                    </div>
+                     <div class="row  mb-3">
+                        <div class="col-md-12 ">
+                            <label for="keyword_by">Keyword By</label>
                             <select name="keyword_by" id="keyword_by" class="form-control">
                                 <option value="">Pilih</option>
                                 <option value="nama_akses">Nama</option>
@@ -52,16 +56,16 @@
                     </div>
                     <div class="row  mb-3">
                         <div class="col-md-12 " id="FormFilter">
-                            <label for="keyword">Kata Kunci</label>
+                            <label for="keyword">Keyword By</label>
                             <input type="text" name="keyword" id="keyword" class="form-control">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
-                        <i class="bi bi-save"></i> Filter
+                    <button type="submit" class="btn btn-primary btn-rounded">
+                        <i class="bi bi-filter"></i> Filter
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -69,44 +73,37 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="ModalTambahAkses" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
-            <form action="javascript:void(0);" id="ProsesTambahAkses">
+            <form action="javascript:void(0);" id="ProsesTambahAkses" autocomplete="off">
                 <div class="modal-header">
                     <h5 class="modal-title text-dak"><i class="bi bi-plus"></i> Tambah Akses</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-3">
-                        <div class="col col-md-4">
-                            <label for="nama_akses">Nama Lengkap</label>
-                        </div>
-                        <div class="col col-md-8">
+                        <div class="col col-md-12">
+                            <label for="nama_akses">Nama Pengguna</label>
                             <input type="text" name="nama_akses" id="nama_akses" class="form-control">
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col col-md-4">
+                        <div class="col col-md-12">
                             <label for="kontak_akses">Nomor Kontak</label>
-                        </div>
-                        <div class="col col-md-8">
-                            <input type="text" name="kontak_akses" id="kontak_akses" class="form-control">
+                            <input type="text" name="kontak_akses" id="kontak_akses" class="form-control" placeholder="62">
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col col-md-4">
+                        <div class="col col-md-12">
                             <label for="email_akses">Email</label>
-                        </div>
-                        <div class="col col-md-8">
                             <input type="email" name="email_akses" id="email_akses" class="form-control">
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col col-md-4">
+                        <div class="col col-md-12">
                             <label for="akses">Akses</label>
-                        </div>
-                        <div class="col col-md-8">
                             <select name="akses" id="akses" class="form-control">
                                 <option value="">Pilih</option>
                                 <?php
@@ -126,28 +123,22 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col col-md-4">
+                        <div class="col col-md-12">
                             <label for="image_akses">Photo Profile</label>
-                        </div>
-                        <div class="col col-md-8">
                             <input type="file" name="image_akses" id="image_akses" class="form-control">
-                            <small class="credit">Maximum File 2 Mb (PNG, JPG, JPEG, GIF)</small>
+                            <small class="text-muted">Maximum File 2 Mb (PNG, JPG, JPEG, GIF)</small>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col col-md-4">
+                        <div class="col col-md-12">
                             <label for="password1">Password</label>
-                        </div>
-                        <div class="col col-md-8">
                             <input type="password" name="password1" id="password1" class="form-control">
-                            <small class="credit">Password hanya boleh terdiri dari 6-20 karakter angka dan huruf</small>
+                            <small class="text-muted">Password hanya boleh terdiri dari 6-20 karakter angka dan huruf</small>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col col-md-4">
+                        <div class="col col-md-12">
                             <label for="password2">Ulangi Password</label>
-                        </div>
-                        <div class="col col-md-8">
                             <input type="password" name="password2" id="password2" class="form-control">
                             <small class="credit">
                                 <div class="form-check">
@@ -160,23 +151,16 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4"></div>
-                        <div class="col-md-8">
-                            <code class="text text-primary">
-                                Pastikan data yang anda input sudahh sesuai
-                            </code>
+                        <div class="col-md-12" id="NotifikasiTambahAkses">
+                            <!-- Notifikasi Tambah Akses Akan Muncul Disini -->
                         </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4"></div>
-                        <div class="col-md-8" id="NotifikasiTambahAkses"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="TombolTambahAkses">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -184,7 +168,8 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="ModalDetailAkses" tabindex="-1">
+
+<div class="modal fade" id="ModalDetail" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
@@ -193,20 +178,21 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-12" id="FormDetailAkses">
+                    <div class="col-md-12" id="FormDetail">
                         <!-- Detail Akses Akan di tampilkan disini -->
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle"></i> Tutup
                 </button>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="ModalEditAkses" tabindex="-1">
+
+<div class="modal fade" id="ModalEdit" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesEditAkses">
@@ -233,10 +219,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -244,6 +230,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="ModalEditLevelAkses" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -270,10 +257,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -295,24 +282,16 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4"></div>
-                        <div class="col-md-8">
-                            <code class="text-primary">
-                                Pastikan data yang anda input sudah sesuai
-                            </code>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-12" id="NotifikasiUbahFotoAkses">
                             <!-- Notifikasi Ubah Foto Akses Akan Muncul Disini-->
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -346,10 +325,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -357,6 +336,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="ModalUbahIzinAkses" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
@@ -387,10 +367,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -398,6 +378,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="ModalLogAkses" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -415,14 +396,15 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle"></i> Tutup
                 </button>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="ModalHapusAkses" tabindex="-1">
+
+<div class="modal fade" id="ModalHapus" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesHapusAkses">
@@ -452,10 +434,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tidak
                     </button>
                 </div>

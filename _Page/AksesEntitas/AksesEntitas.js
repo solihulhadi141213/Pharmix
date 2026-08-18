@@ -21,6 +21,16 @@ $(document).ready(function() {
     // Menampilkan data pertama kali
     filterAndLoadTable();
 
+    // Auto Focus ModalFilter
+    $('#ModalFilter').on('shown.bs.modal', function () {
+        $('#keyword').trigger('focus');
+    });
+
+    // Auto Focus ModalTambahAksesEntitas
+    $('#ModalTambahAksesEntitas').on('shown.bs.modal', function () {
+        $('#akses').trigger('focus');
+    });
+
     // Pagging
     $(document).on('click', '#next_button', function() {
         var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
@@ -57,6 +67,7 @@ $(document).ready(function() {
         }
     });
 });
+
 //Filter Data
 $('#ProsesFilter').submit(function(){
     $('#page').val("1");

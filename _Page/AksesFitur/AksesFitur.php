@@ -42,7 +42,7 @@
                             <div class="row">
                                 <div class="col-12 text-end mb-3">
                                     <button type="button" class="btn btn-md btn-secondary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalFilter" title="Filter">
-                                        <i class="bi bi-filter"></i>
+                                        <i class="bi bi-search"></i>
                                     </button>
                                     <button type="button" class="btn btn-md btn-primary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalTambahFitur" title="Tambah Fitur">
                                         <i class="bi bi-plus"></i>
