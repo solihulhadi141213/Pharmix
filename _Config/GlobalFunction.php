@@ -8,6 +8,8 @@
         }
         return $captcha;
     }
+
+    
     function GenerateKodeBarang($length){
         $token = "";
         $codeAlphabet= "0123456789";
@@ -319,21 +321,44 @@
         // Jika semua validasi lolos
         return true;
     }
+
+
     function validateDate($date, $format = 'Y-m-d') {
         $d = DateTime::createFromFormat($format, $date);
         // Pastikan format sesuai dan tanggal valid (misalnya tidak ada 30 Februari)
         return $d && $d->format($format) === $date;
     }
-    function IjinAksesSaya($Conn,$SessionIdAkses,$KodeFitur){
-        $QryParam = mysqli_query($Conn,"SELECT * FROM akses_ijin WHERE id_akses='$SessionIdAkses' AND kode='$KodeFitur'")or die(mysqli_error($Conn));
-        $DataParam = mysqli_fetch_array($QryParam);
-        if(empty($DataParam['id_akses'])){
-            $Response="Tidak Ada";
-        }else{
-            $Response="Ada";
+    
+    // -------------------------------------------
+    // Fungsi Untuk Mengetahui Ijin Akses Pengguna
+    // --------------------------------------------
+    function IjinAksesSaya($Conn, $SessionIdAkses, $KodeFitur) {
+        // Gunakan prepared statement untuk keamanan dari SQL Injection
+        $stmt = mysqli_prepare($Conn, "SELECT id_akses FROM akses_ijin WHERE id_akses = ? AND kode = ? LIMIT 1");
+        
+        if ($stmt) {
+            // Ikat parameter (s = string, ganti jika id_akses berupa integer misal 'i')
+            mysqli_stmt_bind_param($stmt, "ss", $SessionIdAkses, $KodeFitur);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_store_result($stmt);
+            
+            // Cek apakah data ditemukan
+            if (mysqli_stmt_num_rows($stmt) > 0) {
+                $Response = "Ada";
+            } else {
+                $Response = "Tidak Ada";
+            }
+            
+            mysqli_stmt_close($stmt);
+        } else {
+            // Tangani jika query gagal dipersiapkan
+            $Response = "Tidak Ada";
         }
+        
         return $Response;
     }
+
+
     function CekFiturEntitias($Conn,$uuid_akses_entitas,$id_akses_fitur){
         $QryParam = mysqli_query($Conn,"SELECT * FROM akses_referensi WHERE uuid_akses_entitas='$uuid_akses_entitas' AND id_akses_fitur='$id_akses_fitur'")or die(mysqli_error($Conn));
         $DataParam = mysqli_fetch_array($QryParam);

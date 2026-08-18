@@ -8,12 +8,12 @@
     
 
     // Set Captcha
-    $id_captcha = generateRandomString(36);
+    $id_captcha  = generateRandomString(36);
     $unique_code = GenerateCaptcha(5);
 
     // Timestamp
     // Tetapkan waktu sekarang dan waktu expired
-    $timestamp_now = date('Y-m-d H:i:s');
+    $timestamp_now     = date('Y-m-d H:i:s');
     $timestamp_expired = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 
     // Hapus captcha yang sudah expired
