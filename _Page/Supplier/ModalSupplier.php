@@ -4,12 +4,12 @@
             <form action="javascript:void(0);" id="ProsesFilter">
                 <input type="hidden" name="page" id="page" value="1">
                 <div class="modal-header">
-                    <h5 class="modal-title text-dark"><i class="bi bi-funnel"></i> Filter Supplier</h5>
+                    <h5 class="modal-title text-dark"><i class="bi bi-filter"></i> Filter Supplier</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
                             <label for="batas">Limit/Batas</label>
                             <select name="batas" id="batas" class="form-control">
                                 <option value="5">5</option>
@@ -21,46 +21,54 @@
                                 <option value="500">500</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="OrderBy">Mode Urutan</label>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="OrderBy">Order By</label>
                             <select name="OrderBy" id="OrderBy" class="form-control">
-                                <option value="">Pilih..</option>
-                                <option value="nama_supplier">Supplier</option>
-                                <option value="email_supplier">Email</option>
-                                <option value="kontak_supplier">Kontak</option>
+                                <option value="">Pilih</option>
+                                <option value="nama_supplier">Nama Supplier</option>
+                                <option value="email_supplier">Email Perusahaan</option>
+                                <option value="kontak_supplier">Kontak Perusahaan</option>
+                                <option value="pic">PIC</option>
+                                <option value="npwp">NPWP</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="ShortBy">Tipe Urutan</label>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="ShortBy">Short By</label>
                             <select name="ShortBy" id="ShortBy" class="form-control">
                                 <option value="DESC">Z To A</option>
                                 <option value="ASC">A To Z</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="keyword_by">Pencarian</label>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="keyword_by">Keyword By</label>
                             <select name="keyword_by" id="keyword_by" class="form-control">
-                                <option value="">Pilih..</option>
-                                <option value="nama_supplier">Supplier</option>
-                                <option value="email_supplier">Email</option>
-                                <option value="kontak_supplier">Kontak</option>
+                                <option value="">Pilih</option>
+                                <option value="nama_supplier">Nama Supplier</option>
+                                <option value="email_supplier">Email Perusahaan</option>
+                                <option value="kontak_supplier">Kontak Perusahaan</option>
+                                <option value="pic">PIC</option>
+                                <option value="npwp">NPWP</option>
                             </select>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-12 mb-3" id="FormFilterKeyword">
-                            <label for="keyword">Kata Kunci</label>
+                        <div class="col-md-12" id="FormFilterKeyword">
+                            <label for="keyword">Keyword</label>
                             <input type="text" name="keyword" id="keyword" class="form-control">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
-                        <i class="bi bi-save"></i> Filter
+                    <button type="submit" class="btn btn-primary btn-rounded">
+                        <i class="bi bi-filter"></i> Filter
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -68,6 +76,8 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Tambah Supplier -->
 <div class="modal fade" id="ModalTambahSupplier" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
@@ -79,39 +89,51 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12 mb-3">
-                            <label for="nama_supplier">Nama Supplier</label>
-                            <input type="text" name="nama_supplier" id="nama_supplier" class="form-control">
+                            <label for="nama_supplier"><span class="text-danger">*</span> Nama Supplier</label>
+                            <input type="text" name="nama_supplier" id="nama_supplier" class="form-control" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12 mb-3">
-                            <label for="email_supplier">Email</label>
-                            <input type="email" name="email_supplier" id="email_supplier" class="form-control">
+                            <label for="email_supplier">Email Perusahaan</label>
+                            <input type="email" name="email_supplier" id="email_supplier" class="form-control" placeholder="email@domain.com">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12 mb-3">
-                            <label for="kontak_supplier">Kontak</label>
-                            <input type="text" name="kontak_supplier" id="kontak_supplier" class="form-control">
+                            <label for="kontak_supplier">Kontak Perusahaan</label>
+                            <input type="text" name="kontak_supplier" id="kontak_supplier" class="form-control" placeholder="62">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12 mb-3">
-                            <label for="alamat_supplier">Alamat</label>
-                            <input type="text" name="alamat_supplier" id="alamat_supplier" class="form-control">
+                            <label for="alamat_supplier">Alamat Kantor</label>
+                            <input type="text" name="alamat_supplier" id="alamat_supplier" class="form-control" placeholder="Contoh : Jalan Anggrek 4 Nomor 5 Kabupaten Kuningan-Jawa Barat">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="pic">PIC <i>(Person In Charge)</i></label>
+                            <input type="text" name="pic" id="pic" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="npwp">NPWP (Nomor Pokok Wajib Pajak)</label>
+                            <input type="text" name="npwp" id="npwp" class="form-control">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12" id="NotifikasiTambahSupplier">
-                            
+                            <!-- Notifikasi Tambah Supplier -->
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="TombolTambahSupplier">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -119,6 +141,8 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Detail Supplier -->
 <div class="modal fade" id="ModalDetailSupplier" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
@@ -128,13 +152,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="FormDetailSupplier">
-                    
+                    <!-- Detail Supplier -->
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-info btn-rounded">
-                        <i class="bi bi-three-dots"></i> Selengkapnya
+                    <button type="submit" class="btn btn-primary btn-rounded">
+                        Selengkapnya <i class="bi bi-chevron-right"></i>
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -142,31 +166,33 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Edit Supplier -->
 <div class="modal fade" id="ModalEditSupplier" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesEditSupplier">
                 <div class="modal-header">
-                    <h5 class="modal-title text-dark"><i class="bi bi-pencil-square"></i> Edit Supplier</h5>
+                    <h5 class="modal-title text-dark"><i class="bi bi-pencil"></i> Edit Supplier</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12" id="FormEditSupplier">
-
+                            <!-- Form Edit Supplier -->
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12" id="NotifikasiEditSupplier">
-
+                            <!-- Notifikasi Edit Supplier -->
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="TombolEditSupplier">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -174,6 +200,8 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Hapus Supplier -->
 <div class="modal fade" id="ModalHapusSupplier" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
@@ -185,20 +213,20 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12" id="FormHapusSupplier">
-
+                            <!-- Form Hapus Disini -->
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12" id="NotifikasiHapusSupplier">
-
+                            <!-- Notifikasi Hapus Disini -->
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="TombolHapusSupplier">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tidak
                     </button>
                 </div>
@@ -206,6 +234,8 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Export Supplier -->
 <div class="modal fade" id="ModalExportSupplier" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
@@ -227,7 +257,7 @@
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-download"></i> Export
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -285,7 +315,7 @@
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-upload"></i> Import
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -381,10 +411,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Filter
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -436,7 +466,7 @@
                     <button type="submit" class="btn btn-md btn-outline-info btn-rounded" id="ButtonSelengkapnyaTransaksi">
                         <i class="bi bi-three-dots"></i> Selengkapnya
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -486,10 +516,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-md btn-success btn-rounded" id="ButtonExportTransaksi">
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonExportTransaksi">
                         <i class="bi bi-download"></i> Download/Export
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -574,10 +604,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Filter
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -627,10 +657,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-md btn-success btn-rounded" id="ButtonExportRincian">
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonExportRincian">
                         <i class="bi bi-download"></i> Download/Export
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>

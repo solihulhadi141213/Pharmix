@@ -1,15 +1,41 @@
-//Fungsi Menampilkan Data Supplier
+//Fungsi Menampilkan Data
 function ShowData() {
-    var ProsesFilter = $('#ProsesFilter').serialize();
+
+    // Target And Filter
+    let target = $('#tabel_supplier');
+    let data   = $('#ProsesFilter').serialize();
+
+    target.addClass('blur-loading');
+
     $.ajax({
         type    : 'POST',
         url     : '_Page/Supplier/TabelSupplier.php',
-        data    : ProsesFilter,
-        success: function(data) {
-            $('#TabelSupplier').html(data);
+        data    : data,
+        dataType: 'JSON',
+        success : function(res) {
+
+            if(res.status === "success"){
+
+                target.fadeOut(150, function () {
+                    target.html(res.html).fadeIn(150);
+                });
+
+                  // Update info page
+                $('#page_info').html('Page ' + res.page + ' Of ' + res.total_page);
+
+                  // Handle tombol
+                $('#prev_button').prop('disabled', res.page <= 1);
+                $('#next_button').prop('disabled', res.page >= res.total_page);
+
+            }else{
+                target.html(res.html);
+            }
+
+            target.removeClass('blur-loading');
         }
     });
 }
+
 
 //Fungsi Menampilkan Informasi Detail Supplier
 function ShowDetailSupplier(id_supplier) {
@@ -47,6 +73,14 @@ function ShowDetailSupplier(id_supplier) {
                             </div>
                         </div>
                         <div class="col-md-6">
+                            <div class="row mb-2">
+                                <div class="col-4"><small>PIC</small></div>
+                                <div class="col-8"><small class="text text-muted">${response.dataset.pic}</small></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4"><small>NPWP</small></div>
+                                <div class="col-8"><small class="text text-muted">${response.dataset.npwp}</small></div>
+                            </div>
                             <div class="row mb-2">
                                 <div class="col-4"><small>Jumlah Pembelian</small></div>
                                 <div class="col-8"><small class="text text-muted">${response.dataset.jumlah_transaksi_format}</small></div>
@@ -136,33 +170,24 @@ function ShowRiwayatRincianTransaksi(id_supplier) {
 }
 
 $(document).ready(function() {
+
     //Inisiasi Data Pertama Kali
     ShowData();
 
-    //Ketika Batas Diubah
-    $('#batas').change(function(){
-        ShowData();
-    });
-
-    //Ketiika keyword_by Diubah
-    $('#keyword_by').change(function(){
-        var KeywordBy = $('#keyword_by').val();
-        $('#FormFilterKeyword').html('Loading...');
-        $.ajax({
-            type 	    : 'POST',
-            url 	    : '_Page/Supplier/FormFilterKeyword.php',
-            data 	    :  {KeywordBy: KeywordBy},
-            success     : function(data){
-                $('#FormFilterKeyword').html(data);
-            }
-        });
+    // Auto Focus ModalFilter
+    $('#ModalFilter').on('shown.bs.modal', function () {
+        $('#keyword').trigger('focus');
     });
 
     //Ketika Submit Filter
     $('#ProsesFilter').submit(function(){
+        
         //Kembalikan ke halaman 1
         $('#page').val(1);
+        
+        // Reload Data
         ShowData();
+
         //Tutup Modal
         $('#ModalFilter').modal('hide');
     });
@@ -179,6 +204,88 @@ $(document).ready(function() {
         var next_page = page_now - 1;
         $('#page').val(next_page);
         ShowData(0);
+    });
+    
+    // Auto Focus ModalTambahSupplier
+    $('#ModalTambahSupplier').on('shown.bs.modal', function () {
+        $('#nama_supplier').trigger('focus');
+    });
+
+    //Proses Tambah Supplier
+    $('#ProsesTambahSupplier').submit(function(){
+        
+        // Tangkap Data
+        var ProsesTambahSupplier = $('#ProsesTambahSupplier').serialize();
+
+        // Tombol
+        var TombolTambahSupplier = $('#TombolTambahSupplier').html();
+
+        // Loading Tombol
+        $('#TombolSimpanSesi').html('...');
+
+        // Clear Notifikasi Text
+        $('#NotifikasiTambahSupplier').html("");
+
+        // Disable tombol
+        $('#TombolTambahSupplier').prop('disabled', true);
+
+        // Insert Data Dengan AJAX
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Supplier/ProsesTambahSupplier.php',
+            dataType    : 'JSON',
+            data 	    :  ProsesTambahSupplier,
+            success     : function(response){
+
+                // Status & message
+                let status = response.status;
+                let message = response.message;
+
+                // Jika Berhasil
+                if(status=='success'){
+                    //tutup modal
+                    $('#ModalTambahSupplier').modal('hide');
+
+                    //Reset halaman
+                    $('#page').val(1);
+
+                    //Reset Form
+                    $('#ProsesTambahSupplier')[0].reset();
+
+                    //Tampilkan Data
+                    ShowData();
+
+                    //Tampilkan Toast
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data berhasil disimpan.'
+                    );
+                }else{
+                    
+                    // Jika gagal tampilkan notifikasi text
+                    $('#NotifikasiTambahSupplier').html('<div class="alert alert-danger"><small>'+message+'</small></div>');
+                }
+            },
+
+            // Jika Response Bukan JSON Valid
+            error: function(xhr, status, error){
+                // Consol
+                console.log("XHR:", xhr);
+                console.log("STATUS:", status);
+                console.log("ERROR:", error);
+                console.log("RESPONSE:", xhr.responseText);
+
+                // Tampilkan Notifikasi
+                $('#NotifikasiTambahSupplier').html(`<div class="alert alert-danger">Terjadi kesalahan server.</div>`);
+            },
+
+            complete: function(){
+                // Kembalikan Tombol
+                $('#TombolTambahSupplier').prop('disabled', false);
+                $('#TombolTambahSupplier').html(TombolSimpanSesi);
+            }
+        });
     });
 
     //Ketika menampilkan detail supplier
@@ -352,47 +459,7 @@ $(document).ready(function() {
         });
     });
 
-    //Proses Tambah Supplier
-    $('#ProsesTambahSupplier').submit(function(){
-        $('#NotifikasiTambahSupplier').html('<div class="spinner-border text-secondary" role="status"><span class="sr-only"></span></div>');
-        var form = $('#ProsesTambahSupplier')[0];
-        var data = new FormData(form);
-        $.ajax({
-            type 	    : 'POST',
-            url 	    : '_Page/Supplier/ProsesTambahSupplier.php',
-            data 	    :  data,
-            cache       : false,
-            processData : false,
-            contentType : false,
-            enctype     : 'multipart/form-data',
-            success     : function(data){
-                $('#NotifikasiTambahSupplier').html(data);
-                var NotifikasiTambahSupplierBerhasil=$('#NotifikasiTambahSupplierBerhasil').html();
-                if(NotifikasiTambahSupplierBerhasil=="Success"){
-                    $('#NotifikasiTambahSupplier').html("");
-                    //Reset Form Filter
-                    $('#ProsesFilter')[0].reset();
-
-                    //Reset Form ProsesTambahSupplier
-                    $('#ProsesTambahSupplier')[0].reset();
-
-                    //Tutup Modal
-                    $('#ModalTambahSupplier').modal('hide');
-
-                    //Tampilkan Swal
-                    Swal.fire(
-                        'Success!',
-                        'Tambah Supplier Berhasil!',
-                        'success'
-                    )
-
-                    //Tampilkan Data
-                    ShowData(0);
-                }
-            }
-        });
-    });
-
+    
     //Detail Supplier
     $('#ModalDetailSupplier').on('show.bs.modal', function (e) {
         var id_supplier= $(e.relatedTarget).data('id');
@@ -407,88 +474,217 @@ $(document).ready(function() {
         });
     });
 
-    //Edit Supplier
+    //Modal Edit Supplier
     $('#ModalEditSupplier').on('show.bs.modal', function (e) {
+
+        // Tangkap 'id_supplier'
         var id_supplier = $(e.relatedTarget).data('id');
+
+        // Loading Form 'FormEditSupplier'
         $('#FormEditSupplier').html("Loading...");
+
+        // Kosongkan Notifikasi 'NotifikasiEditSupplier'
         $('#NotifikasiEditSupplier').html("");
+
+        // Disable Button
+        $('#TombolEditSupplier').prop('disabled', true);
+
+        // Tampilkan Form Dengan AJAX
         $.ajax({
             type 	    : 'POST',
             url 	    : '_Page/Supplier/FormEditSupplier.php',
             data        : {id_supplier: id_supplier},
-            success     : function(data){
-                $('#FormEditSupplier').html(data);
+            dataType    : 'JSON',
+            success     : function(response){
+
+                // Status & Message
+                var status  = response.status;
+                var message = response.message;
+                var html    = response.html;
+
+                // Jika Berhasil
+                if(status=='success'){
+
+                    // Tampilkan Form
+                    $('#FormEditSupplier').html(html);
+
+                    // Enable Tombol
+                    $('#TombolEditSupplier').prop('disabled', false);
+                }else{
+                    $('#NotifikasiEditSupplier').html('<div class="alert alert-danger text-center"><small><b>Opss!</b> '+message+'</small></div>');
+                }
+            },
+
+            // Jika Response Bukan JSON Valid
+            error: function(xhr, status, error){
+                // Consol
+                console.log("XHR:", xhr);
+                console.log("STATUS:", status);
+                console.log("ERROR:", error);
+                console.log("RESPONSE:", xhr.responseText);
+
+                // Tampilkan Notifikasi
+                $('#NotifikasiEditSupplier').html(`<div class="alert alert-danger">Terjadi kesalahan server.</div>`);
             }
         });
     });
 
     //Proses Edit Supplier
-    $('#ProsesEditSupplier').submit(function(){
-        $('#NotifikasiEditSupplier').html('<div class="spinner-border text-secondary" role="status"><span class="sr-only"></span></div>');
+    $('#ProsesEditSupplier').submit(function(e){
+        e.preventDefault();
+
+        // Menangkap Data
         var form = $('#ProsesEditSupplier')[0];
         var data = new FormData(form);
+
+        // Tangkap Elemnt Tombol
+        var TombolEditSupplier = $('#TombolEditSupplier').html();
+
+        // Disable Tombol 'TombolEditSupplier'
+        $('#TombolEditSupplier').prop('disabled', true);
+
+        // Loading Tombol 'TombolEditSupplier'
+        $('#TombolEditSupplier').html('<div class="spinner-border text-secondary" role="status"><span class="sr-only"></span></div>');
+
+        // Kosongkan Notifikasi  'NotifikasiEditSupplier'
+        $('#NotifikasiEditSupplier').html('');
+        
         $.ajax({
-            type 	    : 'POST',
-            url 	    : '_Page/Supplier/ProsesEditSupplier.php',
-            data 	    :  data,
-            cache       : false,
-            processData : false,
-            contentType : false,
-            enctype     : 'multipart/form-data',
-            success     : function(data){
-                $('#NotifikasiEditSupplier').html(data);
-                var NotifikasiEditSupplierBerhasil=$('#NotifikasiEditSupplierBerhasil').html();
-                if(NotifikasiEditSupplierBerhasil=="Success"){
-                    
-                    //Kosongkan Notifikasi
-                    $('#NotifikasiEditSupplier').html("");
-                    //Reset Form Filter
-                    $('#ProsesEditSupplier')[0].reset();
+            type       : 'POST',
+            url        : '_Page/Supplier/ProsesEditSupplier.php',
+            data       : data,
+            cache      : false,
+            processData: false,
+            contentType: false,
+            dataType   : 'JSON',
+            enctype    : 'multipart/form-data',
+            success    : function(response){
+
+                // Message & Status
+                var status  = response.status;
+                var message = response.message;
+
+                // Apabila Berhasil
+                if(status=='success'){
 
                     //Tutup Modal
                     $('#ModalEditSupplier').modal('hide');
-
-                    //Tampilkan Swal
-                    Swal.fire(
-                        'Success!',
-                        'Edit Supplier Berhasil!',
-                        'success'
-                    )
-
-                    //Tampilkan Data
+                    
+                    // Reload Data
                     ShowData(0);
+
+                    //Tampilkan Toast
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data berhasil disimpan.'
+                    );
 
                     //Jika Posisi Sedang Dalam Detail Supplier
                     if ($("#put_id_supplier_on_detail").length) {
                         var id_supplier=$("#put_id_supplier_on_detail").val();
                         ShowDetailSupplier(id_supplier);
                     }
+
+                }else{
+                    $('#NotifikasiEditSupplier').html('<div class="alert alert-danger"><small>' + message + '</small></div>');
                 }
+            },
+
+            // Jika Response Bukan JSON Valid
+            error: function(xhr, status, error){
+                // Consol
+                console.log("XHR:", xhr);
+                console.log("STATUS:", status);
+                console.log("ERROR:", error);
+                console.log("RESPONSE:", xhr.responseText);
+
+                // Tampilkan Notifikasi
+                $('#NotifikasiEditSupplier').html(`<div class="alert alert-danger">Terjadi kesalahan server.</div>`);
+            },
+            complete: function(){
+                // Kembalikan Tombol
+                $('#TombolEditSupplier').prop('disabled', false);
+                $('#TombolEditSupplier').html(TombolEditSupplier);
             }
         });
     });
 
     //Modal Hapus Supplier
     $('#ModalHapusSupplier').on('show.bs.modal', function (e) {
+
+        // Tangkap 'id_supplier'
         var id_supplier = $(e.relatedTarget).data('id');
+
+        // Loading Form 'FormHapusSupplier'
         $('#FormHapusSupplier').html("Loading...");
+
+        // Kosongkan Notifikasi 'NotifikasiHapusSupplier'
+        $('#NotifikasiHapusSupplier').html("");
+
+        // Disable Button
+        $('#TombolHapusSupplier').prop('disabled', true);
+
+        // Tampilkan Form Dengan AJAX
         $.ajax({
             type 	    : 'POST',
             url 	    : '_Page/Supplier/FormHapusSupplier.php',
             data        : {id_supplier: id_supplier},
-            success     : function(data){
-                $('#FormHapusSupplier').html(data);
-                //Bersihkan Notifikasi
-                $('#NotifikasiHapusSupplier').html("");
+            dataType    : 'JSON',
+            success     : function(response){
+
+                // Status & Message
+                var status  = response.status;
+                var message = response.message;
+                var html    = response.html;
+
+                // Jika Berhasil
+                if(status=='success'){
+
+                    // Tampilkan Form
+                    $('#FormHapusSupplier').html(html);
+
+                    // Enable Tombol
+                    $('#TombolHapusSupplier').prop('disabled', false);
+                }else{
+                    $('#NotifikasiHapusSupplier').html('<div class="alert alert-danger text-center"><small><b>Opss!</b> '+message+'</small></div>');
+                }
+            },
+
+            // Jika Response Bukan JSON Valid
+            error: function(xhr, status, error){
+                // Consol
+                console.log("XHR:", xhr);
+                console.log("STATUS:", status);
+                console.log("ERROR:", error);
+                console.log("RESPONSE:", xhr.responseText);
+
+                // Tampilkan Notifikasi
+                $('#NotifikasiHapusSupplier').html(`<div class="alert alert-danger">Terjadi kesalahan server.</div>`);
             }
         });
     });
 
     //Proses Hapus Supplier
-    $('#ProsesHapusSupplier').submit(function(){
-        $('#NotifikasiHapusSupplier').html('<div class="spinner-border text-secondary" role="status"><span class="sr-only"></span></div>');
+    $('#ProsesHapusSupplier').submit(function(e){
+        e.preventDefault();
+
+        // Tangkap data
         var form = $('#ProsesHapusSupplier')[0];
         var data = new FormData(form);
+
+        // Element Tombol
+        var TombolHapusSupplier = $('#TombolHapusSupplier').html();
+
+        // Disable Button 'TombolHapusSupplier'
+        $('#TombolHapusSupplier').prop('disabled', true);
+
+        // Loading Button 'TombolHapusSupplier'
+        $('#TombolHapusSupplier').html('<div class="spinner-border text-secondary" role="status"><span class="sr-only"></span></div>');
+
+        // Bersihkan Notifikasi
+        $('#NotifikasiHapusSupplier').html('');
+       
         $.ajax({
             type 	    : 'POST',
             url 	    : '_Page/Supplier/ProsesHapusSupplier.php',
@@ -497,29 +693,50 @@ $(document).ready(function() {
             processData : false,
             contentType : false,
             enctype     : 'multipart/form-data',
-            success     : function(data){
-                $('#NotifikasiHapusSupplier').html(data);
-                var NotifikasiHapusSupplierBerhasil=$('#NotifikasiHapusSupplierBerhasil').html();
-                if(NotifikasiHapusSupplierBerhasil=="Success"){
-                    
-                    //Kosongkan Notifikasi
-                    $('#NotifikasiHapusSupplier').html("");
-                    //Reset Form Filter
-                    $('#ProsesHapusSupplier')[0].reset();
+            dataType    : 'JSON',
+            success     : function(response){
+                
+                // Status & Message
+                var status  = response.status;
+                var message = response.message;
+                var html    = response.html;
+
+                // Jika Berhasil
+                if(status=='success'){
 
                     //Tutup Modal
                     $('#ModalHapusSupplier').modal('hide');
-
-                    //Tampilkan Swal
-                    Swal.fire(
-                        'Success!',
-                        'Hapus Supplier Berhasil!',
-                        'success'
-                    )
-
-                    //Tampilkan Data
+                    
+                    // Reload Data
                     ShowData(0);
+
+                    //Tampilkan Toast
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data berhasil dihapus.'
+                    );
+
+                }else{
+                    $('#NotifikasiHapusSupplier').html('<div class="alert alert-danger text-center"><small><b>Opss!</b> '+message+'</small></div>');
                 }
+            },
+
+            // Jika Response Bukan JSON Valid
+            error: function(xhr, status, error){
+                // Consol
+                console.log("XHR:", xhr);
+                console.log("STATUS:", status);
+                console.log("ERROR:", error);
+                console.log("RESPONSE:", xhr.responseText);
+
+                // Tampilkan Notifikasi
+                $('#NotifikasiHapusSupplier').html(`<div class="alert alert-danger">Terjadi kesalahan server.</div>`);
+            },
+            complete: function(){
+                // Kembalikan Tombol
+                $('#TombolHapusSupplier').prop('disabled', false);
+                $('#TombolHapusSupplier').html(TombolHapusSupplier);
             }
         });
     });

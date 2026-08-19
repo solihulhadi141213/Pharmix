@@ -56,10 +56,12 @@
             $Qry->close();
 
             //Buat Variabel
-            $nama_supplier=$Data['nama_supplier'];
-            $alamat_supplier=$Data['alamat_supplier'];
-            $email_supplier=$Data['email_supplier'];
-            $kontak_supplier=$Data['kontak_supplier'];
+            $nama_supplier   = $Data['nama_supplier'];
+            $alamat_supplier = $Data['alamat_supplier'];
+            $email_supplier  = $Data['email_supplier'];
+            $kontak_supplier = $Data['kontak_supplier'];
+            $pic             = $Data['pic'];
+            $npwp            = $Data['npwp'];
 
             //Menghitung Jumlah Total Transaksi Pembelian
             $SumTransaksi = mysqli_fetch_array(mysqli_query($Conn, "SELECT SUM(total) AS total FROM transaksi_jual_beli WHERE id_supplier='$id_supplier'"));
@@ -90,17 +92,19 @@
             
             //Buat Dataset
             $dataset = [
-                "id_supplier" => $id_supplier,
-                "nama_supplier" => $nama_supplier,
-                "email_supplier" => $email_supplier,
-                "kontak_supplier" => $kontak_supplier,
-                "alamat_supplier" => $alamat_supplier,
-                "jumlah_transaksi" => $JumlahTransaksi,
-                "jumlah_transaksi_kredit" => $JumlahTransaksiKredit,
-                "jumlah_transaksi_retur" => $JumlahTransaksiRetur,
-                "jumlah_transaksi_format" => $JumlahTransaksiFormat,
+                "id_supplier"                    => $id_supplier,
+                "nama_supplier"                  => $nama_supplier,
+                "email_supplier"                 => $email_supplier,
+                "kontak_supplier"                => $kontak_supplier,
+                "alamat_supplier"                => $alamat_supplier,
+                "pic"                            => $pic,
+                "npwp"                           => $npwp,
+                "jumlah_transaksi"               => $JumlahTransaksi,
+                "jumlah_transaksi_kredit"        => $JumlahTransaksiKredit,
+                "jumlah_transaksi_retur"         => $JumlahTransaksiRetur,
+                "jumlah_transaksi_format"        => $JumlahTransaksiFormat,
                 "jumlah_transaksi_kredit_format" => $JumlahTransaksiKreditFormat,
-                "jumlah_transaksi_retur_format" => $JumlahTransaksiReturFormat,
+                "jumlah_transaksi_retur_format"  => $JumlahTransaksiReturFormat,
             ];
 
             //Buat Arry Response

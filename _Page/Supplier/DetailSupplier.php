@@ -61,14 +61,19 @@
                             </b>
                         </div>
                         <div class="col-2 text-end">
-                            <a href="index.php?Page=Supplier" class="btn btn-md btn-dark btn-floating" title="Kembali Ke Data Supplier">
+                            <a href="index.php?Page=Supplier" class="btn btn-md btn-primary btn-floating" title="Kembali Ke Data Supplier">
                                 <i class="bi bi-chevron-left"></i>
                             </a>
                         </div>
                     </div>
                 </div>
-                <div class="card-body" id="detail_supplier">
-                    <!-- Menampilkan Detail Supplier Disini -->
+                <div class="card-body">
+                    <div class="row mt-3">
+                        <div class="col-12" id="detail_supplier">
+                            <!-- Menampilkan Detail Supplier Disini -->
+                        </div>
+                    </div>
+                    
                 </div>
                 <div class="card-footer text-end">
                     <button type="button" class="btn btn-floating btn-md btn-secondary" data-bs-toggle="modal" data-bs-target="#ModalEditSupplier" data-id="<?php echo "$id_supplier"; ?>" mode="Detail" title="Edit Supplier">
@@ -100,7 +105,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="table table-responsive">
+                    <div class="table table-responsive mt-3 mb-3">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -163,7 +168,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="table table-responsive">
+                    <div class="table table-responsive mt-3 mb-3">
                         <table class="table table-hover">
                             <thead>
                                 <tr>

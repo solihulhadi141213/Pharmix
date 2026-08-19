@@ -18,7 +18,17 @@
 <script src="node_modules/signature_pad/dist/signature_pad.umd.min.js"></script>
 <script src="node_modules/apexcharts/dist/apexcharts.min.js"></script>
 <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="node_modules/quill/quill.js"></script>
+
+<!-- quill -->
+<?php
+    if(!empty($_GET['Page'])){
+        if($_GET['Page']=="Bantuan"){
+            echo '<script src="node_modules/quill/quill.js"></script>';
+        }
+    }
+?>
+
+<!-- Jquery -->
 <script src="node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script>
 <script src="node_modules/jQuery-Mask-Plugin/dist/jquery.mask.min.js"></script>
 <script src="node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
