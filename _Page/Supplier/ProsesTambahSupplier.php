@@ -61,8 +61,8 @@
     // Validasi Kontak
     if(!empty($_POST['kontak_supplier'])){
         $JumlahKarakterKontak=strlen($_POST['kontak_supplier']);
-        if($JumlahKarakterKontak>20||$JumlahKarakterKontak<6||!preg_match("/^[0-9]*$/", $_POST['kontak_supplier'])){
-            Response("error", "Kontak hanya boleh terdiri dari 6-20 karakter numerik!");
+        if($JumlahKarakterKontak>20){
+            Response("error", "Kontak hanya boleh terdiri dari 6-20 karakter!");
         }
     }
     

@@ -15,8 +15,19 @@
 <link href="node_modules/bootstrap/dist/css/bootstrap.min.css?v=<?php echo date('YmdHis'); ?>" rel="stylesheet">
 <link href="node_modules/bootstrap-icons/font/bootstrap-icons.css?v=<?php echo date('YmdHis'); ?>" rel="stylesheet">
 <link href="node_modules/boxicons/css/boxicons.min.css?v=<?php echo date('YmdHis'); ?>" rel="stylesheet">
-<link href="node_modules/quill/dist/quill.snow.css" rel="stylesheet">
-<link href="node_modules/quill/dist/quill.bubble.css" rel="stylesheet">
+
+<!-- Quil -->
+<?php
+    if(!empty($_GET['Page'])){
+        if($_GET['Page']=="Bantuan"){
+            echo '
+                <link href="node_modules/quill/dist/quill.snow.css" rel="stylesheet">
+                <link href="node_modules/quill/dist/quill.bubble.css" rel="stylesheet">
+            ';
+        }
+    }
+?>
+
 <link href="node_modules/remixicon/fonts/remixicon.css" rel="stylesheet">
 <link href="node_modules/mdb-ui-kit/css/mdb.min.css" rel="stylesheet">
 

@@ -26,10 +26,12 @@
         $sheet->setCellValue('C1', 'Alamat');
         $sheet->setCellValue('D1', 'Email');
         $sheet->setCellValue('E1', 'Kontak');
+        $sheet->setCellValue('F1', 'PIC');
+        $sheet->setCellValue('G1', 'NPWP');
 
         // Mengatur gaya baris judul
-        $sheet->getStyle('A1:E1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:E1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1:G1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:G1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         // Query untuk mendapatkan data
         $query = "SELECT * FROM supplier ORDER BY id_supplier ASC";
         $result = mysqli_query($Conn, $query);
@@ -37,29 +39,42 @@
         $no=1;
         $row = 2; // Mulai dari baris ke-2
         while($data = mysqli_fetch_assoc($result)) {
-            $id_supplier= $data['id_supplier'];
-            $nama_supplier= $data['nama_supplier'];
+            $id_supplier   = $data['id_supplier'];
+            $nama_supplier = $data['nama_supplier'];
             if(empty($data['alamat_supplier'])){
-                $alamat_supplier="-";
+                $alamat_supplier = "";
             }else{
-                $alamat_supplier=$data['alamat_supplier'];
+                $alamat_supplier = $data['alamat_supplier'];
             }
             if(empty($data['email_supplier'])){
-                $email_supplier="-";
+                $email_supplier = "";
             }else{
-                $email_supplier=$data['email_supplier'];
+                $email_supplier = $data['email_supplier'];
             }
             if(empty($data['kontak_supplier'])){
-                $kontak_supplier="-";
+                $kontak_supplier = "";
             }else{
-                $kontak_supplier=$data['kontak_supplier'];
+                $kontak_supplier = $data['kontak_supplier'];
             }
+            if(empty($data['pic'])){
+                $pic = "";
+            }else{
+                $pic = $data['pic'];
+            }
+            if(empty($data['npwp'])){
+                $npwp = "";
+            }else{
+                $npwp = $data['npwp'];
+            }
+            
             // Kolom kode diatur sebagai teks
             $sheet->setCellValueExplicit('A'.$row, $no, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValueExplicit('B'.$row, $nama_supplier, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValueExplicit('C'.$row, $alamat_supplier, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('D'.$row, $email_supplier);
             $sheet->setCellValueExplicit('E'.$row, $kontak_supplier, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValueExplicit('F'.$row, $pic, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValueExplicit('G'.$row, $npwp, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $row++; // Pindah ke baris berikutnya
             $no++; // Pindah ke baris berikutnya
         }

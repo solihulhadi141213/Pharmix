@@ -16,7 +16,17 @@
 
 <!-- Vendor JS Files -->
 <script src="node_modules/signature_pad/dist/signature_pad.umd.min.js"></script>
-<script src="node_modules/apexcharts/dist/apexcharts.min.js"></script>
+
+<!-- apexcharts -->
+<?php
+    if(empty($_GET['Page'])){
+        echo '
+            <script src="node_modules/apexcharts/dist/apexcharts.min.js"></script>
+        ';
+    }
+?>
+
+<!-- bootstrap -->
 <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- quill -->

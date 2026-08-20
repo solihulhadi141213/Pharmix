@@ -26,14 +26,15 @@
             //Menampilkan Form
             echo '
                 <div class="row mb-2">
-                    <div class="col-4"><small>Jumlah Data</small></div>
-                    <div class="col-1"><small>:</small></div>
-                    <div class="col-7"><small class="text text-muted">'.$jml_data.'</small></div>
+                    <div class="col-12 text-center">
+                        <small>Jumlah Data</small><br>
+                        <h2>'.$jml_data.' Baris</h2>
+                    </div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-4"><small>Format Data</small></div>
-                    <div class="col-1"><small>:</small></div>
-                    <div class="col-7"><small class="text text-muted">Excel</small></div>
+                    <div class="col-12 text-center">
+                        <small>Format Data : Excel</small>
+                    </div>
                 </div>
             ';
             echo '

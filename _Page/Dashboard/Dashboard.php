@@ -33,7 +33,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="row">
-                        <div class="col-xxl-3 col-md-6 col-6">
+                        <div class="col-xxl-3 col-md-12 col-12">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Master Obat</h5>
@@ -50,7 +50,7 @@
                             </div>
                         </div>
                         
-                        <div class="col-xxl-3 col-md-6 col-6">
+                        <div class="col-xxl-3 col-md-12 col-12">
                             <div class="card info-card purple-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Penjualan</h5>
@@ -81,7 +81,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xxl-3 col-md-6 col-6">
+                        <div class="col-xxl-3 col-md-12 col-12">
                             <div class="card info-card customers-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Pembelian</h5>
@@ -112,7 +112,7 @@
                             </div>
                         </div>
                         
-                        <div class="col-xxl-3 col-md-6 col-6">
+                        <div class="col-xxl-3 col-md-12 col-12">
                             <div class="card info-card transsaction-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Beban Operasional</h5>

@@ -47,9 +47,8 @@
         sendResponse('error', 'Nama Supplier Tidak Boleh Kosong!');
     }
 
-    if ($kontak_supplier !== '' &&
-        (strlen($kontak_supplier) < 6 || strlen($kontak_supplier) > 20 || !preg_match('/^[0-9]+$/', $kontak_supplier))) {
-        sendResponse('error', 'Kontak hanya boleh terdiri dari 6-20 karakter numerik');
+    if ($kontak_supplier !== '' && strlen($kontak_supplier) > 20) {
+        sendResponse('error', 'Kontak hanya boleh terdiri dari 6-20 karakter');
     }
 
     $stmt = mysqli_prepare(

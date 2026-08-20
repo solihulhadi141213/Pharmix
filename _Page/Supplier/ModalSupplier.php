@@ -265,8 +265,10 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Import -->
 <div class="modal fade" id="ModalImportSupplier" tabindex="-1">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesImportSupplier">
                 <div class="modal-header">
@@ -286,13 +288,13 @@
                                         pada link <a href="_Page/Supplier/Template-Supplier.xlsx">berikut ini</a>.
                                     </li>
                                     <li>
-                                        Isi kolom <b>No, Nama Supplier, Alamat, Email Dan Kontak</b> sesuai data yang anda miliki.
+                                        Isi kolom <b>No, Nama Supplier, Alamat, Email, Kontak, PIC dan NPWP</b> sesuai data yang anda miliki.
                                     </li>
                                     <li>
-                                        Kolom <b>No dan Nama Supplier</b> wajib diisi, selebihnya anda bisa mengosongkannya jika data tidak ada
+                                        Kolom <b>No dan Nama Supplier</b> wajib diisi sebagai data utama identifikasi supplier.
                                     </li>
                                     <li>
-                                        Sistem akan menolak duplikasi data berdasarkan <b>Nama Supplier, Alamat, Email Dan Kontak</b> jika ditemukan identik.
+                                        Sistem akan menolak data jika Nama Supplier sudah terdaftar atau NPWP yang diisi sudah digunakan.
                                     </li>
                                 </ol>
                             </small>
@@ -300,21 +302,51 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-12">
-                            <label for="file_supplier">File Excel</label>
-                            <input type="file" name="file_supplier" id="file_supplier" class="form-control">
-                            <small class="text text-muted">File type excel dan maksimal 10 mb</small>
+                            <label for="file_supplier">Upload File (Excel)</label>
+                            <div class="input-group">
+                                <input type="file" name="file_supplier" id="file_supplier" class="form-control">
+                                <button type="submit" class="btn btn-primary" id="TombolImport">
+                                    <i class="bi bi-upload"></i> Import
+                                </button>
+                            </div>
+                            <small class="text text-muted">Maksimal 10 mb</small>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-12" id="NotifikasiImportSupplier">
-                            <!-- Notifikasi Import Akan Muncul Disini -->
+                        <div class="col-12">
+                            <div class="table-responsive border rounded" style="max-height: 350px; overflow-y: auto;">
+                                <table class="table table-striped table-hover mb-0">
+                                    <thead class="table-light sticky-top">
+                                        <tr>
+                                            <th><b>No</b></th>
+                                            <th><b>Supplier</b></th>
+                                            <th><b>Alamat</b></th>
+                                            <th><b>Email</b></th>
+                                            <th><b>Kontak</b></th>
+                                            <th><b>PIC</b></th>
+                                            <th><b>NPWP</b></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="NotifikasiImportSupplier">
+                                        <tr>
+                                            <td colspan="7" class="text-center">
+                                                <!-- Notifikasi Import Akan Muncul Disini -->
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="button" class="btn btn-primary btn-md w-100" id="TombolSelesai" disabled>
+                                <i class="bi bi-check"></i> Selesai
+                            </button>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-rounded">
-                        <i class="bi bi-upload"></i> Import
-                    </button>
                     <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
@@ -323,6 +355,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="ModalExcelRiwayatTransaksi" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">

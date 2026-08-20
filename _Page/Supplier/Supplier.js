@@ -396,68 +396,7 @@ $(document).ready(function() {
         });
     });
 
-    //Modal Impoer Supplier
-    $('#ModalImportSupplier').on('show.bs.modal', function () {
-        // Reset form dan notifikasi saat modal muncul
-        $('#ProsesImportSupplier')[0].reset();
-        $('#NotifikasiImportSupplier').html('');
-    });
-
-    //Validasi File Import
-    $('#file_supplier').on('change', function () {
-        var file = this.files[0];
-        var validTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
-        var maxSize = 10 * 1024 * 1024; // 10 MB
-
-        // Reset notifikasi
-        $('#NotifikasiImportSupplier').html('');
-
-        if (file) {
-            if (!validTypes.includes(file.type)) {
-                $('#NotifikasiImportSupplier').html('<div class="alert alert-danger">Format file tidak valid. Hanya diperbolehkan file Excel (.xls, .xlsx).</div>');
-                $(this).val(''); // Reset input file
-                return;
-            }
-
-            if (file.size > maxSize) {
-                $('#NotifikasiImportSupplier').html('<div class="alert alert-danger">Ukuran file terlalu besar. Maksimal 10 MB.</div>');
-                $(this).val(''); // Reset input file
-                return;
-            }
-
-            $('#NotifikasiImportSupplier').html('<div class="alert alert-success">File valid dan siap untuk diimport.</div>');
-        }
-    });
-
-    //Proses Import
-    $('#ProsesImportSupplier').on('submit', function (e) {
-        e.preventDefault();
-        var formData = new FormData(this);
-
-        $.ajax({
-            url: '_Page/Supplier/ProsesImportSupplier.php',
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            beforeSend: function () {
-                $('#NotifikasiImportSupplier').html('<div class="alert alert-info">Sedang memproses import...</div>');
-            },
-            success: function (response) {
-                $('#NotifikasiImportSupplier').html(response);
-                
-                //Reset Filter
-                $('#ProsesFilter')[0].reset();
-                
-                //Tampilkan Data
-                ShowData();
-
-            },
-            error: function () {
-                $('#NotifikasiImportSupplier').html('<div class="alert alert-danger">Terjadi kesalahan saat mengimpor data.</div>');
-            }
-        });
-    });
+    
 
     
     //Detail Supplier
@@ -989,7 +928,7 @@ $(document).ready(function() {
     //Modal Export Rincian Transaksi
     $('#ModalExportRincian').on('show.bs.modal', function (e) {
         //Kosongkan Notifikasi
-        $('#NotifikasiExportRincian').html("");
+        $('#NotifikasiExportRincian').html('');
 
         //Kembalikan Button
         $('#ButtonExportRincian').prop('disabled', false).html('<i class="bi bi-download"></i> Download/Export');
@@ -1064,25 +1003,120 @@ $('#RiwayatTransaksi').click(function(){
     });
 });
 
+// Modal Import
+$('#ModalImportSupplier').on('show.bs.modal', function (e) {
+    //Kosongkan Notifikasi
+    $('#NotifikasiImportSupplier').html('<tr><td colspan="7" class="text-center"><small>No Data</small></td></tr>');
 
+    //Disabled Button
+    $('#TombolImport').prop('disabled', true);
 
-//Proses Import Data Anggota
-$('#ProsesImportDataSupplier').submit(function(){
-    $('#NotifikasiLogProsesImport').html('<div class="spinner-border text-secondary" role="status"><span class="sr-only"></span></div>');
-    var form = $('#ProsesImportDataSupplier')[0];
-    var data = new FormData(form);
+    // Reset Form
+    $('#ProsesImportSupplier')[0].reset();
+});
+
+//Validasi File Import
+$('#file_supplier').on('change', function () {
+    var file = this.files[0];
+    var validTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+    var maxSize = 10 * 1024 * 1024; // 10 MB
+
+    // Reset notifikasi
+    $('#NotifikasiImportSupplier').html('');
+
+    if (file) {
+        if (!validTypes.includes(file.type)) {
+            $('#NotifikasiImportSupplier').html('<tr><td colspan="7" class="text-center"><small class="text-danger">Tipe File Tidak Valid</small></td></tr>');
+            $(this).val(''); // Reset input file
+            return;
+        }
+
+        if (file.size > maxSize) {
+            $('#NotifikasiImportSupplier').html('<tr><td colspan="7" class="text-center"><small class="text-danger">Ukuran file terlalu besar. Maksimal 10 MB.</small></td></tr>');
+            $(this).val(''); // Reset input file
+            return;
+        }
+        $('#NotifikasiImportSupplier').html('<tr><td colspan="7" class="text-center"><small class="text-success">Siap Import</small></td></tr>');
+        $('#TombolImport').prop('disabled', false);
+    }
+});
+
+//Proses Import
+$('#ProsesImportSupplier').on('submit', function (e) {
+    e.preventDefault();
+
+    // Tangkap Data
+    var formData = new FormData(this);
+
+    // Loading Notifikasi 'NotifikasiImportSupplier'
+    $('#NotifikasiImportSupplier').html('<tr><td colspan="7" class="text-center"><small>Loading...</small></td></tr>');
+
+    // Disabled 'TombolImport' dan 'TombolSelesai'
+    $('#TombolImport').prop('disabled', true);
+    $('#TombolSelesai').prop('disabled', true);
+
+    // Proses Data Dengan 'AJAX'
     $.ajax({
-        type 	    : 'POST',
-        url 	    : '_Page/Supplier/ProsesImportDataSupplier.php',
-        data 	    :  data,
-        cache       : false,
-        processData : false,
-        contentType : false,
-        enctype     : 'multipart/form-data',
-        success     : function(data){
-            $('#NotifikasiLogProsesImport').html(data);
-            swal("Import Selesai!", "Silahakan Cek Kembali Proses Import Melalui Log!", "success");
+        url        : '_Page/Supplier/ProsesImportSupplier.php',
+        type       : 'POST',
+        data       : formData,
+        dataType   : 'JSON',
+        contentType: false,
+        processData: false,
+        beforeSend : function () {
+            $('#NotifikasiImportSupplier').html('<tr><td colspan="7" class="text-center"><small>Sedang Memproses Data</small></td></tr>');
+        },
+
+        success: function (response) {
+            var status  = response.status;
+            var message = response.message;
+            var html    = response.html;
+
+            // Apabila Berhasil
+            if(status=="success"){
+                // Tampilkan Data
+                $('#NotifikasiImportSupplier').html(html);
+
+                // Enable Tombol Selesai
+                $('#TombolSelesai').prop('disabled', false);
+            }else{
+                $('#NotifikasiImportSupplier').html('<tr><td colspan="7" class="text-center"><small class="text-danger">'+message+'</small></td></tr>');
+
+                // Enamble Tombol
+                $('#TombolImport').prop('disabled', false);
+            }
+        },
+
+        error: function(xhr, status, error){
+            // Consol
+            console.log("XHR:", xhr);
+            console.log("STATUS:", status);
+            console.log("ERROR:", error);
+            console.log("RESPONSE:", xhr.responseText);
+
+            // Tampilkan Notifikasi
+            $('#NotifikasiImportSupplier').html('<tr><td colspan="7" class="text-center"><small class="text-danger">Terjadi kesalahan saat mengimpor data.</small></td></tr>');
+            
+            // Enamble Tombol
+            $('#TombolImport').prop('disabled', false);
         }
     });
+});
+
+// Tombol Selesai
+$('#TombolSelesai').on('click', function () {
+    //Reset Filter
+    $('#ProsesFilter')[0].reset();
+    $('#ProsesImportSupplier')[0].reset();
+
+    //Tampilkan Data
+    ShowData();
+
+    // Tutup Modal
+    $('#ModalImportSupplier').modal('hide');
+
+    // Enable Tombol TombolImport dan TombolSelesai
+    $('#TombolImport').prop('disabled', true);
+    $('#TombolSelesai').prop('disabled', true);
 });
 
