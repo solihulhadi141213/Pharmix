@@ -1,66 +1,82 @@
 <?php
-// Koneksi dan session
-include "../../_Config/Connection.php";
-include "../../_Config/GlobalFunction.php";
-include "../../_Config/Session.php";
+    // Koneksi dan session
+    include "../../_Config/Connection.php";
+    include "../../_Config/GlobalFunction.php";
+    include "../../_Config/Session.php";
 
-// Inisialisasi variabel
-$JmlHalaman = 0;
-$page = 1;
+    // Inisialisasi pagination
+    $JmlHalaman = 0;
+    $page       = 1;
 
-if (empty($SessionIdAkses)) {
-    echo '
-        <tr>
-            <td colspan="7" class="text-center text-danger">
-                Sesi Akses Sudah Berakhir! Silahkan Login Ulang
-            </td>
-        </tr>
-    ';
-} else {
-    // Filter berdasarkan keyword
-    $keyword_by = $_POST['keyword_by'] ?? "";
-    $keyword = $_POST['keyword'] ?? "";
-    $OrderBy = !empty($_POST['OrderBy']) ? $_POST['OrderBy'] : "id_barang_bacth";
-    $ShortBy = !empty($_POST['ShortBy']) ? $_POST['ShortBy'] : "DESC";
-
-    // Pastikan nilai $OrderBy hanya dari kolom yang valid
-    $allowed_columns = ['id_barang_bacth', 'no_batch', 'expired_date', 'qty_batch', 'reminder_date', 'status', 'nama_barang', 'satuan_barang'];
-    if (!in_array($OrderBy, $allowed_columns)) {
-        $OrderBy = 'id_barang_bacth'; // Default jika input tidak valid
+    // Validasi Sesi Akses
+    if (empty($SessionIdAkses)) {
+        echo '
+            <tr>
+                <td colspan="8" class="text-center">
+                    <small class="text-danger">
+                        Sesi Akses Sudah Berakhir! Silahkan Login Ulang
+                    </small>
+                </td>
+            </tr>
+        ';
+        exit;
     }
 
-    $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
-    if ($page < 1) {
-        $page = 1; // Jaga agar tidak negatif
-    }
-    $batas = isset($_POST['batas']) ? (int)$_POST['batas'] : 10;
-    $posisi = ($page - 1) * $batas;
+    // Tangkap dan validasi parameter filter.
+    $keyword_by = trim($_POST['keyword_by'] ?? '');
+    $keyword    = trim($_POST['keyword'] ?? '');
+    $page       = max(1, (int)($_POST['page'] ?? 1));
+    $batas      = (int)($_POST['batas'] ?? 10);
+    $batas      = min(100, max(1, $batas));
+    $posisi     = ($page - 1) * $batas;
 
-    // Query untuk menghitung jumlah data
-    $query_jml = "SELECT COUNT(bb.id_barang_bacth) AS total 
-                  FROM barang_bacth AS bb
-                  JOIN barang AS b ON bb.id_barang = b.id_barang";
-    if (!empty($keyword_by) && !empty($keyword)) {
-        // Jika pencarian berdasarkan kolom tertentu
-        if ($keyword_by === 'nama_barang') {
-            $query_jml .= " WHERE b.nama_barang LIKE '%$keyword%'";
+    $orderColumns = [
+        'id_barang_bacth' => 'bb.id_barang_bacth',
+        'no_batch'        => 'bb.no_batch',
+        'expired_date'    => 'bb.expired_date',
+        'qty_batch'       => 'bb.qty_batch',
+        'reminder_date'   => 'bb.reminder_date',
+        'status'          => 'bb.status',
+        'kode_barang'     => 'b.kode_barang',
+        'nama_barang'     => 'b.nama_barang',
+        'satuan_barang'   => 'b.satuan_barang'
+    ];
+    $keywordColumns = [
+        'no_batch'      => 'bb.no_batch',
+        'expired_date'  => 'bb.expired_date',
+        'reminder_date' => 'bb.reminder_date',
+        'status'        => 'bb.status',
+        'kode_barang'   => 'b.kode_barang',
+        'nama_barang'   => 'b.nama_barang',
+        'satuan_barang' => 'b.satuan_barang'
+    ];
+
+    $orderBy = $orderColumns[$_POST['OrderBy'] ?? ''] ?? 'bb.id_barang_bacth';
+    $sortBy  = strtoupper($_POST['ShortBy'] ?? 'DESC');
+    $sortBy  = in_array($sortBy, ['ASC', 'DESC'], true) ? $sortBy : 'DESC';
+
+    $where = '';
+    if ($keyword !== '') {
+        $escapedKeyword = mysqli_real_escape_string($Conn, $keyword);
+        if (isset($keywordColumns[$keyword_by])) {
+            $where = " WHERE {$keywordColumns[$keyword_by]} LIKE '%$escapedKeyword%'";
         } else {
-            $query_jml .= " WHERE bb.$keyword_by LIKE '%$keyword%'";
+            $where = " WHERE bb.no_batch LIKE '%$escapedKeyword%'
+                OR bb.expired_date LIKE '%$escapedKeyword%'
+                OR bb.reminder_date LIKE '%$escapedKeyword%'
+                OR bb.status LIKE '%$escapedKeyword%'
+                OR b.kode_barang LIKE '%$escapedKeyword%'
+                OR b.nama_barang LIKE '%$escapedKeyword%'
+                OR b.satuan_barang LIKE '%$escapedKeyword%'";
         }
-    } elseif (!empty($keyword)) {
-        // Jika pencarian umum (tanpa kolom tertentu)
-        $query_jml .= " WHERE bb.no_batch LIKE '%$keyword%' 
-                        OR bb.expired_date LIKE '%$keyword%' 
-                        OR bb.reminder_date LIKE '%$keyword%' 
-                        OR bb.status LIKE '%$keyword%'
-                        OR b.nama_barang LIKE '%$keyword%'";
     }
 
-    $result_jml = mysqli_query($Conn, $query_jml);
+    $from = ' FROM barang_bacth AS bb JOIN barang AS b ON bb.id_barang = b.id_barang';
+    $result_jml = mysqli_query($Conn, "SELECT COUNT(bb.id_barang_bacth) AS total$from$where");
     if (!$result_jml) {
-        die("Error dalam query jumlah data: " . mysqli_error($Conn));
+        die('Error dalam query jumlah data: ' . mysqli_error($Conn));
     }
-    $jml_data = mysqli_fetch_assoc($result_jml)['total'];
+    $jml_data = (int)(mysqli_fetch_assoc($result_jml)['total'] ?? 0);
 
     if ($jml_data == 0) {
         echo '
@@ -73,68 +89,54 @@ if (empty($SessionIdAkses)) {
     } else {
         $no = 1 + $posisi;
 
-        // Query utama dengan JOIN tabel `barang`
-        $query = "SELECT bb.*, b.nama_barang, b.satuan_barang 
-                  FROM barang_bacth AS bb
-                  JOIN barang AS b ON bb.id_barang = b.id_barang";
-
-        if (!empty($keyword_by) && !empty($keyword)) {
-            // Jika pencarian berdasarkan kolom tertentu
-            if ($keyword_by === 'nama_barang') {
-                $query .= " WHERE b.nama_barang LIKE '%$keyword%'";
-            } else {
-                $query .= " WHERE bb.$keyword_by LIKE '%$keyword%'";
-            }
-        } elseif (!empty($keyword)) {
-            // Jika pencarian umum (tanpa kolom tertentu)
-            $query .= " WHERE bb.no_batch LIKE '%$keyword%' 
-                        OR bb.expired_date LIKE '%$keyword%' 
-                        OR bb.reminder_date LIKE '%$keyword%' 
-                        OR bb.status LIKE '%$keyword%'
-                        OR b.nama_barang LIKE '%$keyword%'";
-        }
-
-        // Tambahkan ORDER BY dan LIMIT
-        $query .= " ORDER BY $OrderBy $ShortBy 
-                    LIMIT $posisi, $batas";
+        $query = "SELECT bb.*, b.kode_barang, b.nama_barang, b.satuan_barang$from$where
+            ORDER BY $orderBy $sortBy LIMIT $posisi, $batas";
 
         $result = mysqli_query($Conn, $query);
         if (!$result) {
             die("Error dalam query utama: " . mysqli_error($Conn));
         }
 
-        while ($data = mysqli_fetch_array($result)) {
-            $id_barang_bacth = $data['id_barang_bacth'];
-            $id_barang = $data['id_barang'];
-            $no_batch = $data['no_batch'];
-            $expired_date = $data['expired_date'];
-            $qty_batch = $data['qty_batch'];
-            $qty_batch = ($qty_batch == floor($qty_batch)) ? number_format($qty_batch, 0) : $qty_batch;
-            $reminder_date = $data['reminder_date'];
-            $status = $data['status'];
-            $nama_barang = $data['nama_barang'];
-            $satuan_barang = $data['satuan_barang'];
+        while ($data = mysqli_fetch_assoc($result)) {
+            $id_barang_bacth = (int)$data['id_barang_bacth'];
+            $id_barang       = (int)$data['id_barang'];
+            $no_batch        = htmlspecialchars($data['no_batch'] ?? '', ENT_QUOTES, 'UTF-8');
+            $expired_date    = htmlspecialchars($data['expired_date'] ?? '', ENT_QUOTES, 'UTF-8');
+            $qty_batch_value = (float)($data['qty_batch'] ?? 0);
+            $qty_batch       = $qty_batch_value == floor($qty_batch_value)
+                ? number_format($qty_batch_value, 0, ',', '.')
+                : number_format($qty_batch_value, 2, ',', '.');
+            $reminder_date = htmlspecialchars($data['reminder_date'] ?? '', ENT_QUOTES, 'UTF-8');
+            $status        = htmlspecialchars($data['status'] ?? '', ENT_QUOTES, 'UTF-8');
+            $nama_barang   = htmlspecialchars($data['nama_barang'] ?? '', ENT_QUOTES, 'UTF-8');
+            $kode_barang   = htmlspecialchars($data['kode_barang'] ?? '', ENT_QUOTES, 'UTF-8');
+            $satuan_barang = htmlspecialchars($data['satuan_barang'] ?? '', ENT_QUOTES, 'UTF-8');
 
             echo '
                 <tr>
-                    <td><small>' . $no . '</small></td>
+                    <td><small class="text-muted">' . $no . '</small></td>
                     <td>
-                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="' . $id_barang_bacth . '">
-                            <small>' . $no_batch . '</small>
+                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailBarang" data-id="' . $id_barang . '">
+                            <small>' . $kode_barang . '</small>
                         </a>
                     </td>
-                    <td><small>' . $nama_barang . '</small></td>
-                    <td><small>' . $expired_date . '</small></td>
-                    <td><small>' . $reminder_date . '</small></td>
-                    <td><small>' . $qty_batch . ' ' . $satuan_barang . '</small></td>
-                    <td><small>' . $status . '</small></td>
+                    <td><small class="text-muted">' . $nama_barang . '</small></td>
+                    <td><small class="text-muted">' . $no_batch . '</small></td>
+                    <td><small class="text-muted">' . $expired_date . '</small></td>
+                    <td><small class="text-muted">' . $qty_batch . ' ' . $satuan_barang . '</small></td>
+                    <td><small class="text-muted">' . $status . '</small></td>
                     <td>
-                        <button type="button" class="btn btn-sm btn-floating btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-three-dots"></i>
+                        <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                             <li class="dropdown-header text-start">
                                 <h6>Option</h6>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="' . $id_barang_bacth . '">
+                                    <i class="bi bi-info-circle"></i> Detail
+                                </a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalEdit" data-id="' . $id_barang_bacth . '">
@@ -154,7 +156,6 @@ if (empty($SessionIdAkses)) {
         }
         $JmlHalaman = ceil($jml_data / $batas);
     }
-}
 ?>
 
 <script>

@@ -1116,16 +1116,18 @@ h6 {
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: #9193f5;
-  transition: 0.3;
+  color: #dbe7f5;
+  transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
   padding: 10px 15px;
-  border-radius: 4px;
+  border-radius: 8px;
+  border-left: 3px solid transparent;
 }
 
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
-  color: #9193f5;
+  color: #9fb3c8;
+  transition: color 0.2s ease;
 }
 
 .sidebar-nav .nav-link.collapsed {
@@ -1137,12 +1139,23 @@ h6 {
 }
 
 .sidebar-nav .nav-link:hover {
-  color: #949ef7;
-  background: #e7efff;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.09);
 }
 
 .sidebar-nav .nav-link:hover i {
-  color: #949ef7;
+  color: #5eead4;
+}
+
+.sidebar-nav .nav-link.active {
+  color: #ffffff;
+  background: rgba(45, 212, 191, 0.18);
+  border-left-color: #5eead4;
+  box-shadow: inset 0 0 18px rgba(45, 212, 191, 0.06);
+}
+
+.sidebar-nav .nav-link.active i {
+  color: #5eead4;
 }
 
 .sidebar-nav .nav-link .bi-chevron-down {
@@ -1180,11 +1193,12 @@ h6 {
 
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
-  color: #868df1;
+  color: #5eead4;
+  background: rgba(45, 212, 191, 0.1);
 }
 
 .sidebar-nav .nav-content a.active i {
-  background-color: #929dff;
+  background-color: #5eead4;
 }
 
 /*--------------------------------------------------------------
@@ -1926,6 +1940,13 @@ body.dark-mode .sidebar-nav .nav-link {
   background-color: transparent !important;
 }
 
+html.dark-mode .sidebar-nav .nav-link.active,
+body.dark-mode .sidebar-nav .nav-link.active {
+  color: #f8fafc !important;
+  background-color: rgba(45, 212, 191, 0.18) !important;
+  border-left-color: #5eead4 !important;
+}
+
 html.dark-mode .sidebar-nav .nav-link i,
 body.dark-mode .sidebar-nav .nav-link i {
   color: #818cf8 !important;
@@ -1959,6 +1980,7 @@ html.dark-mode .sidebar-nav .nav-content a.active,
 body.dark-mode .sidebar-nav .nav-content a:hover,
 body.dark-mode .sidebar-nav .nav-content a.active {
   color: #818cf8 !important;
+  background-color: rgba(129, 140, 248, 0.12) !important;
 }
 
 /* Cards & Containers Dark Mode */

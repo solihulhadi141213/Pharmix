@@ -8,9 +8,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mt-3">
-                            <label for="FilterBatas">Data</label>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="FilterBatas">Batas/Limit</label>
                             <select name="FilterBatas" id="FilterBatas" class="form-control">
                                 <option value="5">5</option>
                                 <option selected value="10">10</option>
@@ -21,10 +21,13 @@
                                 <option value="500">500</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mt-3">
-                            <label for="OrderBy">Mode Urutan</label>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="OrderBy">Order By</label>
                             <select name="OrderBy" id="OrderBy" class="form-control">
-                                <option value="">Pilih..</option>
+                                <option value="">Pilih</option>
+                                <option value="kode_barang">Kode Barang</option>
                                 <option value="nama_barang">Nama Barang</option>
                                 <option value="no_batch">No Batch</option>
                                 <option value="expired_date">Tanggal Expired</option>
@@ -33,18 +36,21 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mt-3">
-                            <label for="ShortBy">Tipe Urutan</label>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="ShortBy">Short By</label>
                             <select name="ShortBy" id="ShortBy" class="form-control">
                                 <option value="DESC">Z To A</option>
                                 <option value="ASC">A To Z</option>
                             </select>
                         </div>
-                        <div class="col-md-6 mt-3">
-                            <label for="keyword_by">Pencarian</label>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="keyword_by">Keyword By</label>
                             <select name="keyword_by" id="keyword_by" class="form-control">
                                 <option value="">Pilih</option>
+                                <option value="kode_barang">Kode Barang</option>
                                 <option value="nama_barang">Nama Barang</option>
                                 <option value="no_batch">No Batch</option>
                                 <option value="expired_date">Tanggal Expired</option>
@@ -55,16 +61,16 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 mt-3" id="FormFilterKeyword">
-                            <label for="keyword">Kata Kunci</label>
+                            <label for="keyword">Keyword</label>
                             <input type="text" name="keyword" id="keyword" class="form-control">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
-                        <i class="bi bi-save"></i> Filter
+                    <button type="submit" class="btn btn-primary btn-rounded">
+                        <i class="bi bi-search"></i> Filter
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -88,7 +94,7 @@
                         <div class="col-md-12 mb-3">
                             <div class="input-group">
                                 <input type="text" name="keyword" id="keyword_pilih_barang" class="form-control" placeholder="Nama/Kode Barang">
-                                <button type="submit" class="btn btn-md btn-dark">
+                                <button type="submit" class="btn btn-md btn-secondary">
                                     <i class="bi bi-search"></i> Cari
                                 </button>
                             </div>
@@ -135,7 +141,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle"></i> Tutup
                 </button>
             </div>
@@ -168,7 +174,7 @@
                     <button type="submit" class="btn btn-primary btn-rounded" id="ButtonTambahBarangExpired">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-toggle="modal" data-bs-target="#ModalPilihBarang">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-toggle="modal" data-bs-target="#ModalPilihBarang">
                         <i class="bi bi-chevron-left"></i> Kembali
                     </button>
                 </div>
@@ -193,7 +199,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle"></i> Tutup
                 </button>
             </div>
@@ -224,7 +230,7 @@
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>
@@ -253,10 +259,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tidak
                     </button>
                 </div>
@@ -317,7 +323,7 @@
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-upload"></i> Upload
                     </button>
-                    <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>
                 </div>

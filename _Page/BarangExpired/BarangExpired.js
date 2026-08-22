@@ -11,6 +11,7 @@ function ShowData() {
         }
     });
 }
+
 //Fungsi Menampilkan Data Barang
 function ShowDataBarang() {
     var ProsesCariBarang = $('#ProsesCariBarang').serialize();
@@ -23,6 +24,7 @@ function ShowDataBarang() {
         }
     });
 }
+
 $(document).ready(function() {
     //Menampilkan Data Pertama Kali
     ShowData();

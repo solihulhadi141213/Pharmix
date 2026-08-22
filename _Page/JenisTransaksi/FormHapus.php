@@ -1,105 +1,115 @@
 <?php
-    //Koneksi
-    date_default_timezone_set('Asia/Jakarta');
-    include "../../_Config/Connection.php";
-    include "../../_Config/GlobalFunction.php";
-    include "../../_Config/SettingGeneral.php";
-    include "../../_Config/Session.php";
-    if(empty($SessionIdAkses)){
-        echo '<div class="row">';
-        echo '  <div class="col-md-12 mb-3 text-center">';
-        echo '      <small class="text-danger">Sesi Akses Sudah Berakhir, Silahkan Login Ulang</small>';
-        echo '  </div>';
-        echo '</div>';
-    }else{
-        //Tangkap id_transaksi_jenis
-        if(empty($_POST['id_transaksi_jenis'])){
-            echo '<div class="row">';
-            echo '  <div class="col-md-12 mb-3 text-center">';
-            echo '      <small class="text-danger">ID Jenis Transaksi Tidak Boleh Kosong!</small>';
-            echo '  </div>';
-            echo '</div>';
-        }else{
-            $id_transaksi_jenis=$_POST['id_transaksi_jenis'];
-            //Bersihkan Variabel
-            $id_transaksi_jenis=validateAndSanitizeInput($id_transaksi_jenis);
-            //Buka Informasi
-            $nama=GetDetailData($Conn,'transaksi_jenis','id_transaksi_jenis',$id_transaksi_jenis,'nama');
-            $kategori=GetDetailData($Conn,'transaksi_jenis','id_transaksi_jenis',$id_transaksi_jenis,'kategori');
-            $deskripsi=GetDetailData($Conn,'transaksi_jenis','id_transaksi_jenis',$id_transaksi_jenis,'deskripsi');
-            $id_akun_debet=GetDetailData($Conn,'transaksi_jenis','id_transaksi_jenis',$id_transaksi_jenis,'id_akun_debet');
-            $id_akun_kredit=GetDetailData($Conn,'transaksi_jenis','id_transaksi_jenis',$id_transaksi_jenis,'id_akun_kredit');
-            //Buka Data Perkiraan
-            $nama_perkiraan_debet=GetDetailData($Conn,'akun_perkiraan','id_perkiraan',$id_akun_debet,'nama');
-            $nama_perkiraan_kredit=GetDetailData($Conn,'akun_perkiraan','id_perkiraan',$id_akun_kredit,'nama');
-            //Menghitung Jumlah Record
-            $JumlahTransaksi = mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM transaksi WHERE id_transaksi_jenis='$id_transaksi_jenis'"));
-            //Menghitung Jumlah Total (SUM) Transaksi
-            $Sum = mysqli_fetch_array(mysqli_query($Conn, "SELECT SUM(jumlah) AS total FROM transaksi WHERE id_transaksi_jenis='$id_transaksi_jenis'"));
-            $TotalTransaksi = $Sum['total'];
-            //Format Angka
-            $JumlahTransaksiFormat = "" . number_format($JumlahTransaksi,0,',','.');
-            $TotalTransaksiFormat = "Rp " . number_format($TotalTransaksi,0,',','.');
+date_default_timezone_set('Asia/Jakarta');
+include "../../_Config/Connection.php";
+include "../../_Config/GlobalFunction.php";
+include "../../_Config/SettingGeneral.php";
+include "../../_Config/Session.php";
+
+function showError($msg) {
+    echo '<div class="row"><div class="col-md-12 mb-3 text-center"><small class="text-danger">' . $msg . '</small></div></div>';
+    exit;
+}
+
+if (empty($SessionIdAkses)) showError('Sesi Akses Sudah Berakhir, Silahkan Login Ulang');
+if (empty($_POST['id_transaksi_jenis'])) showError('ID Jenis Transaksi Tidak Boleh Kosong!');
+
+$id_transaksi_jenis = (int)validateAndSanitizeInput($_POST['id_transaksi_jenis']);
+if ($id_transaksi_jenis <= 0) showError('ID Jenis Transaksi Tidak Valid!');
+
+$sql = "SELECT tj.id_transaksi_jenis, tj.nama, tj.kategori, tj.deskripsi, tj.id_akun_debet, tj.id_akun_kredit,
+               ad.kode AS kode_akun_debet, ad.nama AS nama_akun_debet,
+               ak.kode AS kode_akun_kredit, ak.nama AS nama_akun_kredit,
+               COUNT(t.id_transaksi) AS jumlah_transaksi, COALESCE(SUM(t.jumlah), 0) AS total_transaksi
+        FROM transaksi_jenis AS tj
+        LEFT JOIN akun_perkiraan AS ad ON ad.id_perkiraan = tj.id_akun_debet
+        LEFT JOIN akun_perkiraan AS ak ON ak.id_perkiraan = tj.id_akun_kredit
+        LEFT JOIN transaksi AS t ON t.id_transaksi_jenis = tj.id_transaksi_jenis
+        WHERE tj.id_transaksi_jenis = ?
+        GROUP BY tj.id_transaksi_jenis, tj.nama, tj.kategori, tj.deskripsi, tj.id_akun_debet, tj.id_akun_kredit, ad.kode, ad.nama, ak.kode, ak.nama";
+
+$stmt = $Conn->prepare($sql);
+if (!$stmt) showError('<b>Opsss!</b> Terjadi kesalahan pada saat mempersiapkan query.<br>' . htmlspecialchars($Conn->error, ENT_QUOTES, 'UTF-8'));
+
+$stmt->bind_param("i", $id_transaksi_jenis);
+if (!$stmt->execute()) {
+    $err = $stmt->error;
+    $stmt->close();
+    showError('<b>Opsss!</b> Terjadi kesalahan pada saat mengambil data.<br>' . htmlspecialchars($err, ENT_QUOTES, 'UTF-8'));
+}
+
+$Data = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
+if (!$Data) showError('Data jenis transaksi tidak ditemukan.');
+
+$nama = $Data['nama'] ?? '';
+$kategori = $Data['kategori'] ?? '';
+$deskripsi = $Data['deskripsi'] ?? '';
+
+$debet_kode = $Data['kode_akun_debet'] ?? '';
+$debet_nama = !empty($Data['nama_akun_debet']) ? $Data['nama_akun_debet'] : '-';
+$text_debet = (!empty($debet_kode) ? $debet_kode . ' - ' : '') . $debet_nama;
+
+$kredit_kode = $Data['kode_akun_kredit'] ?? '';
+$kredit_nama = !empty($Data['nama_akun_kredit']) ? $Data['nama_akun_kredit'] : '-';
+$text_kredit = (!empty($kredit_kode) ? $kredit_kode . ' - ' : '') . $kredit_nama;
+
+$jml_transaksi = number_format((int)($Data['jumlah_transaksi'] ?? 0), 0, ',', '.');
+$total_transaksi = "Rp " . number_format((float)($Data['total_transaksi'] ?? 0), 0, ',', '.');
 ?>
-    <input type="hidden" name="id_transaksi_jenis" value="<?php echo "$id_transaksi_jenis"; ?>">
-    <div class="col-md-12 mb-4">
-        <div class="row mb-3">
-            <div class="col col-md-4">ID Jenis Transaksi</div>
-            <div class="col col-md-8">
-                <code class="text text-grayish"><?php echo $id_transaksi_jenis; ?></code>
-            </div>
+
+<input type="hidden" name="id_transaksi_jenis" value="<?= $id_transaksi_jenis; ?>">
+<div class="col-md-12 mb-4">
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <small>Nama Transaksi</small>
         </div>
-        <div class="row mb-3">
-            <div class="col col-md-4">Nama Transaksi</div>
-            <div class="col col-md-8">
-                <code class="text text-grayish"><?php echo $nama; ?></code>
-            </div>
+        <div class="col-md-7"><small class="text text-grayish"><?= htmlspecialchars($nama, ENT_QUOTES, 'UTF-8'); ?></small></div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <small>Kategori</small>
         </div>
-        <div class="row mb-3">
-            <div class="col col-md-4">Kategori</div>
-            <div class="col col-md-8">
-                <code class="text text-grayish"><?php echo $kategori; ?></code>
-            </div>
+        <div class="col-md-7"><small class="text text-grayish"><?= htmlspecialchars($kategori, ENT_QUOTES, 'UTF-8'); ?></small></div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <small>Deskripsi / Keterangan</small>
         </div>
-        <div class="row mb-3">
-            <div class="col col-md-4">Deskripsi</div>
-            <div class="col col-md-8">
-                <code class="text text-grayish"><?php echo $deskripsi; ?></code>
-            </div>
+        <div class="col-md-7"><small class="text text-grayish"><?= htmlspecialchars($deskripsi, ENT_QUOTES, 'UTF-8'); ?></small></div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <small>Akun Debet</small>
         </div>
-        <div class="row mb-3">
-            <div class="col col-md-4">Akun Debet</div>
-            <div class="col col-md-8">
-                <code class="text text-grayish"><?php echo $nama_perkiraan_debet; ?></code>
-            </div>
+        <div class="col-md-7"><small class="text text-grayish"><?= htmlspecialchars($text_debet, ENT_QUOTES, 'UTF-8'); ?></small></div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <small>Akun Kredit</small>
         </div>
-        <div class="row mb-3">
-            <div class="col col-md-4">Akun Kredit</div>
-            <div class="col col-md-8">
-                <code class="text text-grayish"><?php echo $nama_perkiraan_kredit; ?></code>
-            </div>
+        <div class="col-md-7"><small class="text text-grayish"><?= htmlspecialchars($text_kredit, ENT_QUOTES, 'UTF-8'); ?></small></div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <small>Jumlah Record</small>
         </div>
-        <div class="row mb-3">
-            <div class="col col-md-4">Jumlah Record</div>
-            <div class="col col-md-8">
-                <code class="text text-grayish"><?php echo "$JumlahTransaksiFormat Record"; ?></code>
-            </div>
+        <div class="col-md-7"><small class="text text-grayish"><?= $jml_transaksi; ?> Record</small></div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <small>Total (Rp)</small>
         </div>
-        <div class="row mb-3">
-            <div class="col col-md-4">Total (Rp)</div>
-            <div class="col col-md-8">
-                <code class="text text-grayish"><?php echo $TotalTransaksiFormat; ?></code>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col col-md-12 text-center">
-                <code class="text text-primary">
-                    Apakah anda yakin akan menghapus data ini?
-                </code>
+        <div class="col-md-7"><small class="text text-grayish"><?= $total_transaksi; ?></small></div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-danger">
+                <small>
+                    <b>Penting!</b> Menghapus jenis transaksi akan menyebabkan uraian/rincian transaksi yang terhubung ikut terhapus. <br>
+                    <i>Apakah anda yakin akan menghapus data tersebut?</i>
+                </small>
             </div>
         </div>
     </div>
-<?php 
-        }
-    }
-?>
+</div>

@@ -25,17 +25,17 @@
                         if(empty($_POST['id_akun_kredit'])){
                             echo '<small class="text-danger">Pengaturan Akun Kredit Tidak Boleh Kosong!</small>';
                         }else{
-                            $nama=$_POST['nama'];
-                            $kategori=$_POST['kategori'];
-                            $deskripsi=$_POST['deskripsi'];
-                            $id_akun_debet=$_POST['id_akun_debet'];
-                            $id_akun_kredit=$_POST['id_akun_kredit'];
-                            //Membersihhkan Variabel
-                            $nama=validateAndSanitizeInput($nama);
-                            $kategori=validateAndSanitizeInput($kategori);
-                            $deskripsi=validateAndSanitizeInput($deskripsi);
-                            $id_akun_debet=validateAndSanitizeInput($id_akun_debet);
-                            $id_akun_kredit=validateAndSanitizeInput($id_akun_kredit);
+                            $nama           = $_POST['nama'];
+                            $kategori       = $_POST['kategori'];
+                            $deskripsi      = $_POST['deskripsi'];
+                            $id_akun_debet  = $_POST['id_akun_debet'];
+                            $id_akun_kredit = $_POST['id_akun_kredit'];
+                              //Membersihhkan Variabel
+                            $nama           = validateAndSanitizeInput($nama);
+                            $kategori       = validateAndSanitizeInput($kategori);
+                            $deskripsi      = validateAndSanitizeInput($deskripsi);
+                            $id_akun_debet  = validateAndSanitizeInput($id_akun_debet);
+                            $id_akun_kredit = validateAndSanitizeInput($id_akun_kredit);
                             //Validasi Duplikat
                             $ValidasiDuplikat=mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM transaksi_jenis WHERE nama='$nama'"));
                             if(!empty($ValidasiDuplikat)){

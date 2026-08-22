@@ -1,7 +1,11 @@
 <?php
+
+    // Connection, Helper & Session
     include "_Config/Connection.php";
     include "_Config/GlobalFunction.php";
     include "_Config/Session.php";
+
+    // Validasi Sesi Akses
     if(empty($SessionIdAkses)){
         header("Location:Login.php");
     }else{

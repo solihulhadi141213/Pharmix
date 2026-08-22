@@ -47,7 +47,7 @@
 <script src="node_modules/jspdf/dist/jspdf.umd.min.js"></script>
 
 <!-- Custome JS -->
-<script src="assets/js/main.js?v=<?php echo date('YmdHis'); ?>"></script>
+<script src="assets/js/main.js?v=<?php echo $lib_version; ?>"></script>
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -64,3 +64,6 @@
 
 <!-- Scan QR -->
 <script src="node_modules/jsqr/dist/jsQR.js"></script>
+
+<!-- select2 -->
+<script src="node_modules/select2/dist/js/select2.min.js"></script>
