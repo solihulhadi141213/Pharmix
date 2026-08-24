@@ -64,8 +64,8 @@
                                 </thead>
                                 <tbody id="TabelJenisTransaksi">
                                     <tr>
-                                        <td colspan="7" class="text-center text-danger">
-                                            Tidak Ada Data yang Ditampilkan
+                                        <td colspan="7" class="text-center text-muted">
+                                            No Data
                                         </td>
                                     </tr>
                                 </tbody>

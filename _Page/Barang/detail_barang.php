@@ -1,131 +1,307 @@
 <?php
-    // Koneksi
+
+    // =========================================================
+    // Koneksi, Function dan Session
+    // =========================================================
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
 
-    // Time Zone
+    // =========================================================
+    // Timezone
+    // =========================================================
     date_default_timezone_set('Asia/Jakarta');
 
-    // Time Now Tmp
-    $now = date('Y-m-d H:i:s');
+    // =========================================================
+    // Header Response
+    // =========================================================
+    header('Content-Type: application/json; charset=utf-8');
 
-    // Inisialisasi respons default
+    // =========================================================
+    // Response Default
+    // =========================================================
     $response = [
-        "status" => "Error",
+        "status"  => "Error",
         "message" => "Belum ada proses yang dilakukan pada sistem."
     ];
 
-    // Validasi sesi login
-    if (empty($SessionIdAkses)) {
-        $response = [
-            "status" => "Error",
-            "message" => "Sesi Akses Sudah Berakhir, Silahkan Login Ulang"
-        ];
-    } else {
-        // Validasi Data Tidak Boleh Kosong
-        $requiredFields = [
-            'id_barang' => "ID Barang Tidak Boleh Kosong!"
-        ];
+    try {
 
-        foreach ($requiredFields as $field => $errorMessage) {
-            if (empty($_POST[$field])) {
-                $response = [
-                    "status" => "Error",
-                    "message" => $errorMessage
-                ];
-                echo json_encode($response);
-                exit;
-            }
+        // =====================================================
+        // Validasi Session
+        // =====================================================
+        if (empty($SessionIdAkses)) {
+            $response = [
+                "status"  => "Error",
+                "message" => "Sesi Akses Sudah Berakhir, Silahkan Login Ulang."
+            ];
+
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+            exit;
         }
-        // Buat Variabel
+
+        // =====================================================
+        // Validasi ID Barang
+        // =====================================================
+        if (empty($_POST['id_barang'])) {
+            $response = [
+                "status"  => "Error",
+                "message" => "ID Barang Tidak Boleh Kosong!"
+            ];
+
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        // =====================================================
+        // Sanitasi Input
+        // =====================================================
         $id_barang = validateAndSanitizeInput($_POST['id_barang']);
-        //Buka Data
-        $Qry = $Conn->prepare("SELECT * FROM barang WHERE id_barang = ?");
-        $Qry->bind_param("s", $id_barang);
-        if (!$Qry->execute()) {
-            $error=$Conn->error;
+
+        // =====================================================
+        // Ambil Data Barang
+        // =====================================================
+        $sqlBarang = "
+            SELECT
+                id_barang,
+                kode_barang,
+                nama_barang,
+                kategori_barang,
+                satuan_barang,
+                konversi,
+                harga_beli,
+                stok_barang,
+                stok_minimum
+            FROM barang
+            WHERE id_barang = ?
+            LIMIT 1
+        ";
+
+        $stmtBarang = $Conn->prepare($sqlBarang);
+
+        if (!$stmtBarang) {
+            throw new Exception("Gagal menyiapkan query barang: " . $Conn->error);
+        }
+
+        /*
+        * Jika id_barang pada database bertipe INTEGER,
+        * gunakan "i".
+        *
+        * Jika VARCHAR/CHAR, ubah menjadi "s".
+        */
+        $stmtBarang->bind_param("s", $id_barang);
+
+        if (!$stmtBarang->execute()) {
+            throw new Exception("Gagal mengambil data barang: " . $stmtBarang->error);
+        }
+
+        $resultBarang = $stmtBarang->get_result();
+        $Data = $resultBarang->fetch_assoc();
+
+        $stmtBarang->close();
+
+        // =====================================================
+        // Validasi Data Barang
+        // =====================================================
+        if (!$Data) {
             $response = [
-                "status" => "Error",
-                "message" => $error
-            ];
-        }else{
-            $Result = $Qry->get_result();
-            $Data = $Result->fetch_assoc();
-            $Qry->close();
-            //Buat Variabel
-            $kode_barang=$Data['kode_barang'];
-            $nama_barang=$Data['nama_barang'];
-            $kategori_barang=$Data['kategori_barang'];
-            $satuan_barang=$Data['satuan_barang'];
-            $konversi=$Data['konversi'];
-            $harga_beli=$Data['harga_beli'];
-            $stok_barang=$Data['stok_barang'];
-            $stok_minimum=$Data['stok_minimum'];
-            //Lakukan pembulatan
-            $harga_beli = (float) $harga_beli; // Konversi ke float
-            $harga_beli = ($harga_beli == floor($harga_beli)) ? (int)$harga_beli : $harga_beli;
-            //Format Harga RP
-            $harga_beli_format = "Rp " . number_format($harga_beli,0,',','.');
-            //Hitung Jumlah Item
-            $jumlah_multi_harga = mysqli_num_rows(mysqli_query($Conn, "SELECT id_barang_harga FROM barang_harga WHERE id_barang='$id_barang'"));
-            $dataset = [
-                "id_barang" => $id_barang,
-                "kode_barang" => $kode_barang,
-                "nama_barang" => $nama_barang,
-                "kategori_barang" => $kategori_barang,
-                "satuan_barang" => $satuan_barang,
-                "konversi" => $konversi,
-                "harga_beli" => $harga_beli,
-                "harga_beli_format" => $harga_beli_format,
-                "stok_barang" => $stok_barang,
-                "stok_minimum" => $stok_minimum,
+                "status"  => "Error",
+                "message" => "Data Barang Tidak Ditemukan."
             ];
 
-            //Buat List Multi harga
-            $multi_harga = [];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+            exit;
+        }
 
-            // Query dengan LEFT JOIN untuk memastikan semua kategori harga tetap muncul
-            $sql = "SELECT bkh.kategori_harga, COALESCE(bh.harga, 0) AS harga 
-                    FROM barang_kategori_harga bkh
-                    LEFT JOIN barang_harga bh 
-                    ON bkh.id_barang_kategori_harga = bh.id_barang_kategori_harga
-                    AND bh.id_barang = ?";  // Filter id_barang dipindah ke dalam ON agar kategori tetap muncul
+        // =====================================================
+        // Variabel Barang
+        // =====================================================
+        $kode_barang     = $Data['kode_barang'];
+        $nama_barang     = $Data['nama_barang'];
+        $kategori_barang = $Data['kategori_barang'];
+        $satuan_barang   = $Data['satuan_barang'];
+        $konversi        = $Data['konversi'];
+        $harga_beli      = (float) $Data['harga_beli'];
+        $stok_barang     = $Data['stok_barang'];
+        $stok_minimum    = $Data['stok_minimum'];
 
-            $stmt = $Conn->prepare($sql);
-            $stmt->bind_param("i", $id_barang); // Bind parameter dengan tipe integer
-            $stmt->execute();
-            $result = $stmt->get_result();
+        // =====================================================
+        // Format Harga Beli
+        // =====================================================
+        $harga_beli_format = "Rp " . number_format(
+            $harga_beli,
+            0,
+            ',',
+            '.'
+        );
 
-            // Looping hasil query
-            while ($row = $result->fetch_assoc()) {
-                // Format harga agar lebih rapi
-                $harga_multi = $row['harga'];
-                $selisih = $harga_multi-$harga_beli;
-                $persen_laba = ($selisih/$harga_beli)*100;
+        // =====================================================
+        // Hitung Jumlah Multi Harga
+        // =====================================================
+        $sqlJumlahHarga = "
+            SELECT COUNT(id_barang_harga) AS jumlah
+            FROM barang_harga
+            WHERE id_barang = ?
+        ";
+
+        $stmtJumlahHarga = $Conn->prepare($sqlJumlahHarga);
+
+        if (!$stmtJumlahHarga) {
+            throw new Exception(
+                "Gagal menyiapkan query jumlah harga: " . $Conn->error
+            );
+        }
+
+        $stmtJumlahHarga->bind_param("s", $id_barang);
+
+        if (!$stmtJumlahHarga->execute()) {
+            throw new Exception(
+                "Gagal menghitung jumlah harga: " . $stmtJumlahHarga->error
+            );
+        }
+
+        $resultJumlahHarga = $stmtJumlahHarga->get_result();
+        $dataJumlahHarga = $resultJumlahHarga->fetch_assoc();
+
+        $jumlah_multi_harga = (int) ($dataJumlahHarga['jumlah'] ?? 0);
+
+        $stmtJumlahHarga->close();
+
+        // =====================================================
+        // Dataset Barang
+        // =====================================================
+        $dataset = [
+            "id_barang"          => $id_barang,
+            "kode_barang"        => $kode_barang,
+            "nama_barang"        => $nama_barang,
+            "kategori_barang"    => $kategori_barang,
+            "satuan_barang"      => $satuan_barang,
+            "konversi"           => $konversi,
+            "harga_beli"         => $harga_beli,
+            "harga_beli_format"  => $harga_beli_format,
+            "stok_barang"        => $stok_barang,
+            "stok_minimum"       => $stok_minimum,
+            "jumlah_multi_harga" => $jumlah_multi_harga
+        ];
+
+        // =====================================================
+        // Ambil Kategori Multi Harga
+        // =====================================================
+        $multi_harga = [];
+
+        $sqlMultiHarga = "
+            SELECT
+                bkh.id_barang_kategori_harga,
+                bkh.kategori_harga,
+                COALESCE(bh.harga, 0) AS harga
+            FROM barang_kategori_harga AS bkh
+
+            LEFT JOIN barang_harga AS bh
+                ON bkh.id_barang_kategori_harga = bh.id_barang_kategori_harga
+                AND bh.id_barang = ?
+
+            ORDER BY bkh.id_barang_kategori_harga ASC
+        ";
+
+        $stmtMultiHarga = $Conn->prepare($sqlMultiHarga);
+
+        if (!$stmtMultiHarga) {
+            throw new Exception(
+                "Gagal menyiapkan query multi harga: " . $Conn->error
+            );
+        }
+
+        $stmtMultiHarga->bind_param("s", $id_barang);
+
+        if (!$stmtMultiHarga->execute()) {
+            throw new Exception(
+                "Gagal mengambil multi harga: " . $stmtMultiHarga->error
+            );
+        }
+
+        $resultMultiHarga = $stmtMultiHarga->get_result();
+
+        // =====================================================
+        // Loop Multi Harga
+        // =====================================================
+        while ($row = $resultMultiHarga->fetch_assoc()) {
+
+            $harga_multi = (float) $row['harga'];
+
+            // ---------------------------------------------
+            // Hitung Persentase Laba
+            // ---------------------------------------------
+            if ($harga_beli > 0) {
+
+                $selisih = $harga_multi - $harga_beli;
+
+                $persen_laba = ($selisih / $harga_beli) * 100;
+
                 $persen_laba = round($persen_laba);
-                $harga_multi_format = number_format($row['harga'], 0, ',', '.');
 
-                // Masukkan ke dalam array multi_harga
-                $multi_harga[] = [
-                    "kategori_harga" => $row['kategori_harga'],
-                    "harga" => $harga_multi,
-                    "persen_laba" => $persen_laba,
-                    "harga_format" => $harga_multi_format,
-                ];
+            } else {
+
+                /*
+                * Harga beli = 0 tidak boleh digunakan
+                * sebagai pembagi.
+                *
+                * Kita gunakan 0 sebagai default.
+                */
+                $persen_laba = 0;
             }
-            $stmt->close();
 
-            //Buat Arry Response
-            $response = [
-                "status" => "Success",
-                "message" => "Data Ditemukan",
-                "dataset" => $dataset,
-                "multi_harga" => $multi_harga,
+            // ---------------------------------------------
+            // Format Harga
+            // ---------------------------------------------
+            $harga_multi_format = "Rp " . number_format(
+                $harga_multi,
+                0,
+                ',',
+                '.'
+            );
+
+            // ---------------------------------------------
+            // Masukkan ke Array
+            // ---------------------------------------------
+            $multi_harga[] = [
+                "id_barang_kategori_harga" => $row['id_barang_kategori_harga'],
+                "kategori_harga"           => $row['kategori_harga'],
+                "harga"                    => $harga_multi,
+                "persen_laba"              => $persen_laba,
+                "harga_format"             => $harga_multi_format
             ];
         }
+
+        $stmtMultiHarga->close();
+
+        // =====================================================
+        // Response Success
+        // =====================================================
+        $response = [
+            "status"      => "Success",
+            "message"     => "Data Ditemukan",
+            "dataset"     => $dataset,
+            "multi_harga" => $multi_harga
+        ];
+
+    } catch (Throwable $e) {
+
+        // =====================================================
+        // Error Handling
+        // =====================================================
+        $response = [
+            "status"  => "Error",
+            "message" => $e->getMessage()
+        ];
     }
 
-    // Output response
-    echo json_encode($response);
+    // =========================================================
+    // Output JSON
+    // =========================================================
+    echo json_encode(
+        $response,
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+    );
+
+    exit;
 ?>

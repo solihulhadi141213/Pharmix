@@ -71,6 +71,13 @@
 
     $jml_transaksi = number_format((int)($Data['jumlah_transaksi'] ?? 0), 0, ',', '.');
     $total_transaksi = "Rp " . number_format((float)($Data['total_transaksi'] ?? 0), 0, ',', '.');
+
+    // Routing Kategori Transaksi
+    if($kategori=="Pengeluaran"){
+        $label_kategori = '<span class="badge badge-danger">'.$kategori.'</span>';
+    }else{
+        $label_kategori = '<span class="badge badge-success">'.$kategori.'</span>';
+    }
 ?>
 
 <div class="col-md-12 mb-4">
@@ -80,7 +87,11 @@
     </div>
     <div class="row mb-3">
         <div class="col-md-5"><small>Kategori Transaksi</small></div>
-        <div class="col-md-7"><small class="text-grayish"><?= htmlspecialchars($kategori, ENT_QUOTES, 'UTF-8'); ?></small></div>
+        <div class="col-md-7">
+            <?php
+                echo $label_kategori;
+            ?>
+        </div>
     </div>
     <div class="row mb-3">
         <div class="col-md-5"><small>Deskripsi/Keterangan</small></div>
@@ -99,7 +110,7 @@
         <div class="col-md-7"><small class="text-grayish"><?= $jml_transaksi; ?> Record</small></div>
     </div>
     <div class="row mb-3">
-        <div class="col-md-5"><small>Total (Rp)</small></div>
+        <div class="col-md-5"><small>Total / Volume (Rp)</small></div>
         <div class="col-md-7"><small class="text-grayish"><?= $total_transaksi; ?></small></div>
     </div>
 </div>

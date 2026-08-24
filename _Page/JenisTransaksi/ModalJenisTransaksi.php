@@ -100,18 +100,17 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col col-md-4">
-                            <label for="kategori">
+                            <label for="kategori_transaksi">
                                 <small>Kategori Transaksi</small>
                             </label>
                         </div>
 
                         <div class="col-md-8">
-                            <select name="kategori" id="kategori" class="form-select" style="width: 100%;">
-                                <option value=""></option>
+                            <select name="kategori" id="kategori_transaksi" class="form-control">
+                                <option value="">Pilih</option>
+                                <option value="Pengeluaran">Pengeluaran</option>
+                                <option value="Pemasukan">Pemasukan</option>
                             </select>
-                            <small class="text-muted">
-                               Pilih kategori yang tersedia atau ketik kategori baru.
-                            </small>
                         </div>
                     </div>
                     <div class="row mb-3">

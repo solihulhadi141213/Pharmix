@@ -1,5 +1,13 @@
 <!-- ======= Footer ======= -->
-
+<?php
+    // Menentukan Env
+    $environment = "Development"; // Bernilai Production OR Development
+    if($environment=="Production"){
+        $lib_version = "";
+    }else{
+        $lib_version = date('YmdHis');
+    }
+?>
 <!-- Back to top -->
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
@@ -15,14 +23,41 @@
 </div>
 
 <!-- Vendor JS Files -->
-<script src="node_modules/signature_pad/dist/signature_pad.umd.min.js"></script>
+<?php
+
+    if(empty($_GET['Page'])){
+        echo '
+            <script src="node_modules/signature_pad/dist/signature_pad.umd.min.js"></script>
+        ';
+    }else{
+        $Page = $_GET['Page'];
+    }
+?>
 
 <!-- apexcharts -->
 <?php
+
     if(empty($_GET['Page'])){
         echo '
             <script src="node_modules/apexcharts/dist/apexcharts.min.js"></script>
         ';
+    }else{
+        $Page = $_GET['Page'];
+        if($Page=="RekapTransaksi"){
+            echo '
+                <script src="node_modules/apexcharts/dist/apexcharts.min.js"></script>
+            ';
+        }
+        if($Page=="RekapJualBeli"){
+            echo '
+                <script src="node_modules/apexcharts/dist/apexcharts.min.js"></script>
+            ';
+        }
+        if($Page=="Aktivitas"){
+            echo '
+                <script src="node_modules/apexcharts/dist/apexcharts.min.js"></script>
+            ';
+        }
     }
 ?>
 

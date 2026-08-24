@@ -434,7 +434,7 @@ if ($query->num_rows === 0) {
         if ($nama_akun_debet !== '') {
 
             $akun_debet_html = $kode_akun_debet !== ''
-                ? $kode_akun_debet . ' - ' . $nama_akun_debet
+                ? $nama_akun_debet
                 : $nama_akun_debet;
 
         } else {
@@ -445,12 +445,19 @@ if ($query->num_rows === 0) {
         if ($nama_akun_kredit !== '') {
 
             $akun_kredit_html = $kode_akun_kredit !== ''
-                ? $kode_akun_kredit . ' - ' . $nama_akun_kredit
+                ? $nama_akun_kredit
                 : $nama_akun_kredit;
 
         } else {
 
             $akun_kredit_html = '<span class="text-muted">-</span>';
+        }
+
+        // Routing Kategori
+        if($kategori=="Pengeluaran"){
+            $label_kategori = '<span class="badge badge-danger">'.$kategori.'</span>';
+        }else{
+            $label_kategori = '<span class="badge badge-success">'.$kategori.'</span>';
         }
 
         // ----------------------------------------------------
@@ -478,9 +485,7 @@ if ($query->num_rows === 0) {
                 </td>
 
                 <td>
-                    <small class="text-muted">
-                        ' . $kategori . '
-                    </small>
+                    ' . $label_kategori . '
                 </td>
 
                 <td>

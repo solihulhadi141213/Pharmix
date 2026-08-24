@@ -1,7 +1,7 @@
 <?php
     // Menentukan Env
-    $environment = "Development"; // Bernilai Production OR Development
-    if($environment=="Production"){
+    $environment = "Production"; // Bernilai Production OR Development
+    if($environment=="Development"){
         $lib_version = "";
     }else{
         $lib_version = date('YmdHis');

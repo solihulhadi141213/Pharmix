@@ -1,98 +1,327 @@
 <?php
-    //Koneksi
-    date_default_timezone_set('Asia/Jakarta');
-    include "../../_Config/Connection.php";
-    include "../../_Config/GlobalFunction.php";
-    include "../../_Config/SettingGeneral.php";
-    include "../../_Config/Session.php";
-    if(empty($SessionIdAkses)){
-        echo '<div class="row">';
-        echo '  <div class="col-md-12 mb-3 text-center">';
-        echo '      <small class="text-danger">Sesi Akses Sudah Berakhir, Silahkan Login Ulang</small>';
-        echo '  </div>';
-        echo '</div>';
-    }else{
-        //Tangkap id_jurnal
-        if(empty($_POST['id_jurnal'])){
-            echo '<div class="row">';
-            echo '  <div class="col-md-12 mb-3 text-center">';
-            echo '      <small class="text-danger">ID Jurnal Tidak Boleh Kosong!</small>';
-            echo '  </div>';
-            echo '</div>';
-        }else{
-            $id_jurnal=$_POST['id_jurnal'];
-            //Bersihkan Variabel
-            $id_jurnal=validateAndSanitizeInput($id_jurnal);
-            //Buka Informasi Jurnal
-            $kode_perkiraan=GetDetailData($Conn,'jurnal','id_jurnal',$id_jurnal,'kode_perkiraan');
-            $nama_perkiraan=GetDetailData($Conn,'jurnal','id_jurnal',$id_jurnal,'nama_perkiraan');
-            $d_k=GetDetailData($Conn,'jurnal','id_jurnal',$id_jurnal,'d_k');
-            $nilai=GetDetailData($Conn,'jurnal','id_jurnal',$id_jurnal,'nilai');
-?>
-    <input type="hidden" name="id_jurnal" value="<?php echo "$id_jurnal"; ?>">
+
+date_default_timezone_set('Asia/Jakarta');
+
+include "../../_Config/Connection.php";
+include "../../_Config/GlobalFunction.php";
+include "../../_Config/SettingGeneral.php";
+include "../../_Config/Session.php";
+
+header('Content-Type: application/json; charset=utf-8');
+
+
+// =====================================================
+// RESPONSE ERROR
+// =====================================================
+function responseError($message)
+{
+    echo json_encode([
+        'status'  => 'error',
+        'message' => $message,
+        'html'    => '
+            <div class="alert alert-danger mb-0">
+                <small>' .
+                htmlspecialchars(
+                    $message,
+                    ENT_QUOTES,
+                    'UTF-8'
+                ) .
+                '</small>
+            </div>
+        '
+    ], JSON_UNESCAPED_UNICODE);
+
+    exit;
+}
+
+
+// =====================================================
+// VALIDASI SESI
+// =====================================================
+if (empty($SessionIdAkses)) {
+
+    responseError(
+        'Sesi akses sudah berakhir. Silakan login kembali.'
+    );
+}
+
+
+// =====================================================
+// VALIDASI METHOD
+// =====================================================
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
+    responseError(
+        'Metode request tidak valid.'
+    );
+}
+
+
+// =====================================================
+// VALIDASI ID JURNAL
+// =====================================================
+$id_jurnal = trim(
+    $_POST['id_jurnal'] ?? ''
+);
+
+if (
+    $id_jurnal === '' ||
+    !ctype_digit($id_jurnal)
+) {
+
+    responseError(
+        'ID jurnal tidak valid.'
+    );
+}
+
+$id_jurnal = (int)$id_jurnal;
+
+if ($id_jurnal <= 0) {
+
+    responseError(
+        'ID jurnal tidak valid.'
+    );
+}
+
+
+// =====================================================
+// AMBIL DATA JURNAL
+// =====================================================
+$sql = "
+    SELECT
+        id_jurnal,
+        kategori,
+        uuid,
+        id_transaksi,
+        tanggal,
+        kode_perkiraan,
+        nama_perkiraan,
+        d_k,
+        nilai
+    FROM jurnal
+    WHERE id_jurnal = ?
+    LIMIT 1
+";
+
+$stmt = mysqli_prepare(
+    $Conn,
+    $sql
+);
+
+if (!$stmt) {
+
+    responseError(
+        'Gagal mempersiapkan query jurnal.'
+    );
+}
+
+mysqli_stmt_bind_param(
+    $stmt,
+    'i',
+    $id_jurnal
+);
+
+if (!mysqli_stmt_execute($stmt)) {
+
+    mysqli_stmt_close($stmt);
+
+    responseError(
+        'Gagal mengambil data jurnal.'
+    );
+}
+
+$result = mysqli_stmt_get_result($stmt);
+
+if (
+    !$result ||
+    mysqli_num_rows($result) === 0
+) {
+
+    mysqli_stmt_close($stmt);
+
+    responseError(
+        'Data jurnal tidak ditemukan.'
+    );
+}
+
+$data = mysqli_fetch_assoc($result);
+
+mysqli_stmt_close($stmt);
+
+
+// =====================================================
+// DATA JURNAL
+// =====================================================
+$kode_perkiraan = $data['kode_perkiraan'] ?? '';
+$nama_perkiraan = $data['nama_perkiraan'] ?? '';
+$d_k            = $data['d_k'] ?? '';
+$nilai          = (int)($data['nilai'] ?? 0);
+
+
+// =====================================================
+// FORMAT NILAI
+// =====================================================
+$nilai_format = number_format(
+    $nilai,
+    0,
+    ',',
+    '.'
+);
+
+
+// =====================================================
+// ESCAPE HTML
+// =====================================================
+$kode_perkiraan_html = htmlspecialchars(
+    $kode_perkiraan,
+    ENT_QUOTES,
+    'UTF-8'
+);
+
+$nama_perkiraan_html = htmlspecialchars(
+    $nama_perkiraan,
+    ENT_QUOTES,
+    'UTF-8'
+);
+
+$d_k_html = htmlspecialchars(
+    $d_k,
+    ENT_QUOTES,
+    'UTF-8'
+);
+
+
+// =====================================================
+// FORM EDIT
+// =====================================================
+$html = '
+
+    <input
+        type="hidden"
+        name="id_jurnal"
+        value="' . $id_jurnal . '"
+    >
+
     <div class="row mb-3">
-        <div class="col col-md-4">
-            <label for="kode_perkiraan_edit">Akun Perkiraan</label>
-        </div>
-        <div class="col-md-8">
-            <select name="kode_perkiraan" id="kode_perkiraan_edit" class="form-control">
-                <option value="">Pilih</option>
-                <?php
-                    $QryAkun= mysqli_query($Conn, "SELECT*FROM akun_perkiraan ORDER BY nama");
-                    while ($DataAkun=mysqli_fetch_array($QryAkun)) {
-                        $id_perkiraan = $DataAkun['id_perkiraan'];
-                        $kode= $DataAkun['kode'];
-                        $nama_perkiraan = $DataAkun['nama'];
-                        $level= $DataAkun['level'];
-                        $saldo_normal= $DataAkun['saldo_normal'];
-                        //Cek apakah di levelnya ada lagi?
-                        $LevelTerbawah = mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM akun_perkiraan WHERE kd$level='$kode'"));
-                        if($LevelTerbawah=="1"){
-                            if($kode_perkiraan==$kode){
-                                echo '<option selected value="'.$kode.'">'.$nama_perkiraan.' ('.$saldo_normal.')</option>';
-                            }else{
-                                echo '<option value="'.$kode.'">'.$nama_perkiraan.' ('.$saldo_normal.')</option>';
-                            }
-                        }
-                    }
-                ?>
+
+        <div class="col-md-12">
+
+            <label for="kode_perkiraan_edit">
+                Akun Perkiraan
+            </label>
+
+            <select
+                name="kode_perkiraan"
+                id="kode_perkiraan_edit"
+                class="form-select"
+                style="width:100%;"
+                required
+            >
+
+                <option
+                    value="' . $kode_perkiraan_html . '"
+                    selected
+                >
+                    ' . $nama_perkiraan_html . '
+                </option>
+
             </select>
+
         </div>
+
     </div>
+
+
     <div class="row mb-3">
-        <div class="col col-md-4">
-            <label for="d_k_edit">Posisi (D/K)</label>
-        </div>
-        <div class="col-md-8">
-            <select name="d_k" id="d_k_edit" class="form-control">
-                <option <?php if($d_k==""){echo "selected";} ?> value="">Pilih</option>
-                <option <?php if($d_k=="D"){echo "selected";} ?> value="D">Debet</option>
-                <option <?php if($d_k=="K"){echo "selected";} ?> value="K">Kredit</option>
+
+        <div class="col-md-12">
+
+            <label for="d_k_edit">
+                Posisi (D/K)
+            </label>
+
+            <select
+                name="d_k"
+                id="d_k_edit"
+                class="form-select"
+                required
+            >
+
+                <option value="">
+                    Pilih
+                </option>
+
+                <option
+                    value="D"
+                    ' . ($d_k === 'D' ? 'selected' : '') . '
+                >
+                    Debet
+                </option>
+
+                <option
+                    value="K"
+                    ' . ($d_k === 'K' ? 'selected' : '') . '
+                >
+                    Kredit
+                </option>
+
             </select>
+
         </div>
+
     </div>
+
+
     <div class="row mb-3">
-        <div class="col col-md-4">
-            <label for="nilai_edit">Nilai</label>
+
+        <div class="col-md-12">
+
+            <label for="nilai_edit">
+                Nilai
+            </label>
+
+            <input
+                type="text"
+                name="nilai"
+                id="nilai_edit"
+                class="form-control"
+                inputmode="numeric"
+                autocomplete="off"
+                value="' . $nilai_format . '"
+                required
+            >
+
         </div>
-        <div class="col-md-8">
-            <input type="text" class="form-control" id="nilai_edit" name="nilai" value="<?php echo $nilai; ?>">
-        </div>
+
     </div>
-    <div class="row mb-3">
+
+
+    <div class="row mb-2">
+
         <div class="col-md-12 text-center">
-            <code class="text-primary">Pastikan data yang anda input sudah benar</code>
+
+            <small class="text-muted">
+                Pastikan data jurnal yang Anda input sudah benar.
+            </small>
+
         </div>
+
     </div>
-    <script>
-        $('#nilai_edit').on('keypress', function(e) {
-            // Hanya mengizinkan angka (0-9)
-            if (e.which < 48 || e.which > 57) {
-                e.preventDefault();
-            }
-        });
-    </script>
-<?php 
-        }
-    }
-?>
+';
+
+
+// =====================================================
+// RESPONSE
+// =====================================================
+echo json_encode([
+
+    'status'  => 'success',
+
+    'message' =>
+        'Form edit jurnal berhasil dimuat.',
+
+    'html'    => $html
+
+], JSON_UNESCAPED_UNICODE);
+
+exit;

@@ -9,6 +9,11 @@
     include "../../_Config/Session.php";
 
     // ============================================================
+    // HEADER JSON
+    // ============================================================
+    header('Content-Type: application/json; charset=utf-8');
+
+    // ============================================================
     // RESPONSE DEFAULT
     // ============================================================
     $response = [
@@ -18,100 +23,63 @@
     ];
 
     // ============================================================
-    // HEADER JSON
+    // FUNGSI RESPONSE ERROR
     // ============================================================
-    header('Content-Type: application/json; charset=utf-8');
+    function responseError($message) {
+        global $response;
+        $response['status']  = 'error';
+        $response['message'] = $message;
+        $response['html'] = '
+            <div class="row">
+                <div class="col-md-12 mb-3 text-center">
+                    <small class="text-danger">
+                        ' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '
+                    </small>
+                </div>
+            </div>
+        ';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
 
     // ============================================================
     // VALIDASI SESSION
     // ============================================================
     if (empty($SessionIdAkses)) {
-        $response['message'] = 'Sesi akses sudah berakhir.';
-        $response['html'] = '
-            <div class="row">
-                <div class="col-md-12 mb-2 text-center">
-                    <small class="text-danger">
-                        Sesi akses sudah berakhir.
-                        Silakan login ulang.
-                    </small>
-                </div>
-            </div>
-        ';
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
+        responseError('Sesi akses sudah berakhir, silakan login ulang.');
     }
 
     // ============================================================
-    // VALIDASI METHOD
+    // VALIDASI REQUEST
     // ============================================================
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        $response['message'] = 'Metode request tidak valid.';
-        $response['html'] = '
-            <div class="alert alert-danger">
-                <small>
-                    Metode request tidak valid.
-                </small>
-            </div>
-        ';
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
+        responseError('Metode request tidak valid.');
     }
 
     // ============================================================
-    // VALIDASI ID TRANSAKSI
+    // AMBIL ID TRANSAKSI
     // ============================================================
     $id_transaksi = $_POST['id_transaksi'] ?? '';
     $id_transaksi = trim($id_transaksi);
 
+    // ============================================================
+    // VALIDASI ID TRANSAKSI
+    // ============================================================
     if ($id_transaksi === '') {
-        $response['message'] = 'ID transaksi tidak boleh kosong.';
-        $response['html'] = '
-            <div class="row">
-                <div class="col-md-12 mb-2 text-center">
-                    <small class="text-danger">
-                        ID transaksi tidak boleh kosong.
-                    </small>
-                </div>
-            </div>
-        ';
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
+        responseError('ID transaksi tidak boleh kosong.');
     }
-
+    // ID transaksi harus angka
     if (!ctype_digit($id_transaksi)) {
-        $response['message'] = 'ID transaksi tidak valid.';
-        $response['html'] = '
-            <div class="row">
-                <div class="col-md-12 mb-2 text-center">
-                    <small class="text-danger">
-                        ID transaksi tidak valid.
-                    </small>
-                </div>
-            </div>
-        ';
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
+        responseError('ID transaksi tidak valid.');
     }
-
     $id_transaksi = (int) $id_transaksi;
-
+    // Pastikan lebih dari 0
     if ($id_transaksi <= 0) {
-        $response['message'] = 'ID transaksi tidak valid.';
-        $response['html'] = '
-            <div class="row">
-                <div class="col-md-12 mb-2 text-center">
-                    <small class="text-danger">
-                        ID transaksi tidak valid.
-                    </small>
-                </div>
-            </div>
-        ';
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
+        responseError('ID transaksi tidak valid.');
     }
 
     // ============================================================
-    // QUERY DATA TRANSAKSI
+    // QUERY TRANSAKSI
     // ============================================================
     $sql = "
         SELECT
@@ -131,68 +99,42 @@
         LIMIT 1
     ";
 
+    // ============================================================
+    // PREPARE
+    // ============================================================
     $stmt = mysqli_prepare($Conn, $sql);
-
-    // ============================================================
-    // VALIDASI PREPARE
-    // ============================================================
     if (!$stmt) {
-        $response['message'] = 'Gagal menyiapkan query transaksi.';
-        $response['html'] = '
-            <div class="alert alert-danger">
-                <small>
-                    Gagal mengambil data transaksi.
-                </small>
-            </div>
-        ';
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
+        responseError('Gagal menyiapkan query transaksi.');
     }
 
     // ============================================================
     // BIND PARAMETER
     // ============================================================
-    mysqli_stmt_bind_param($stmt, "i", $id_transaksi);
+    mysqli_stmt_bind_param($stmt, 'i', $id_transaksi);
 
     // ============================================================
     // EXECUTE
     // ============================================================
     if (!mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
-        $response['message'] = 'Gagal menjalankan query transaksi.';
-        $response['html'] = '
-            <div class="alert alert-danger">
-                <small>
-                    Gagal mengambil data transaksi.
-                </small>
-            </div>
-        ';
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
+        responseError('Gagal menjalankan query transaksi.');
     }
 
     // ============================================================
-    // AMBIL HASIL
+    // GET RESULT
     // ============================================================
     $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        mysqli_stmt_close($stmt);
+        responseError('Gagal memperoleh hasil query transaksi.');
+    }
 
     // ============================================================
     // CEK DATA
     // ============================================================
-    if (!$result || mysqli_num_rows($result) === 0) {
+    if (mysqli_num_rows($result) === 0) {
         mysqli_stmt_close($stmt);
-        $response['message'] = 'Data transaksi tidak ditemukan.';
-        $response['html'] = '
-            <div class="row">
-                <div class="col-md-12 mb-2 text-center">
-                    <small class="text-danger">
-                        Data transaksi tidak ditemukan.
-                    </small>
-                </div>
-            </div>
-        ';
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
+        responseError('Data transaksi tidak ditemukan.');
     }
 
     // ============================================================
@@ -202,7 +144,7 @@
     mysqli_stmt_close($stmt);
 
     // ============================================================
-    // VARIABEL DATA
+    // VARIABEL TRANSAKSI
     // ============================================================
     $id_transaksi_jenis = (int) ($data['id_transaksi_jenis'] ?? 0);
     $nama_transaksi     = $data['nama_transaksi'] ?? '';
@@ -212,6 +154,12 @@
     $pembayaran         = (int) ($data['pembayaran'] ?? 0);
     $keterangan         = $data['keterangan'] ?? '';
     $status             = $data['status'] ?? '';
+
+    // ============================================================
+    // NORMALISASI NILAI
+    // ============================================================
+    if ($jumlah < 0) { $jumlah = 0; }
+    if ($pembayaran < 0) { $pembayaran = 0; }
 
     // ============================================================
     // HITUNG JUMLAH RINCIAN
@@ -224,7 +172,7 @@
     $stmt_rincian = mysqli_prepare($Conn, $sql_rincian);
     $JumlahRincian = 0;
     if ($stmt_rincian) {
-        mysqli_stmt_bind_param($stmt_rincian, "i", $id_transaksi);
+        mysqli_stmt_bind_param($stmt_rincian, 'i', $id_transaksi);
         if (mysqli_stmt_execute($stmt_rincian)) {
             $result_rincian = mysqli_stmt_get_result($stmt_rincian);
             if ($result_rincian) {
@@ -236,12 +184,12 @@
     }
 
     // ============================================================
-    // HITUNG JUMLAH JURNAL
+    // JUMLAH JURNAL
     // ============================================================
     $JumlahJurnal = 0;
 
     // ============================================================
-    // FORMAT DATA
+    // FORMAT RUPIAH
     // ============================================================
     $JumlahFormat     = 'Rp ' . number_format($jumlah, 0, ',', '.');
     $PembayaranFormat = 'Rp ' . number_format($pembayaran, 0, ',', '.');
@@ -258,22 +206,22 @@
     }
 
     // ============================================================
-    // ESCAPE OUTPUT
+    // ESCAPE DATA
     // ============================================================
-    $id_transaksi_html       = htmlspecialchars((string) $id_transaksi, ENT_QUOTES, 'UTF-8');
-    $id_transaksi_jenis_html = htmlspecialchars((string) $id_transaksi_jenis, ENT_QUOTES, 'UTF-8');
     $nama_transaksi_html     = htmlspecialchars($nama_transaksi, ENT_QUOTES, 'UTF-8');
     $kategori_html           = htmlspecialchars($kategori, ENT_QUOTES, 'UTF-8');
     $status_html             = htmlspecialchars($status, ENT_QUOTES, 'UTF-8');
-    $keterangan_html         = nl2br(htmlspecialchars($keterangan, ENT_QUOTES, 'UTF-8'));
+    $keterangan_html         = htmlspecialchars($keterangan, ENT_QUOTES, 'UTF-8');
+    $id_transaksi_html       = htmlspecialchars((string) $id_transaksi, ENT_QUOTES, 'UTF-8');
+    $id_transaksi_jenis_html = htmlspecialchars((string) $id_transaksi_jenis, ENT_QUOTES, 'UTF-8');
 
     // ============================================================
     // BADGE KATEGORI
     // ============================================================
     if ($kategori === 'Pengeluaran') {
-        $kategori_label = '<small class="text-danger"><i class="bi bi-arrow-down-circle me-1"></i> Pengeluaran</small>';
+        $kategori_label = '<small class="text-danger"><i class="bi bi-arrow-down-circle me-1"></i>Pengeluaran</small>';
     } elseif ($kategori === 'Pemasukan') {
-        $kategori_label = '<small class="text-success"><i class="bi bi-arrow-up-circle me-1"></i> Pemasukan</small>';
+        $kategori_label = '<small class="text-success"><i class="bi bi-arrow-up-circle me-1"></i>Pemasukan</small>';
     } else {
         $kategori_label = '<small class="text-secondary">' . $kategori_html . '</small>';
     }
@@ -283,13 +231,13 @@
     // ============================================================
     switch ($status) {
         case 'Lunas':
-            $status_label = '<span class="badge bg-success">Lunas</span>';
+            $status_label = '<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Lunas</span>';
             break;
         case 'Utang':
-            $status_label = '<span class="badge bg-danger">Utang</span>';
+            $status_label = '<span class="badge bg-danger"><i class="bi bi-exclamation-circle me-1"></i>Utang</span>';
             break;
         case 'Piutang':
-            $status_label = '<span class="badge bg-warning text-dark">Piutang</span>';
+            $status_label = '<span class="badge bg-warning text-dark"><i class="bi bi-clock me-1"></i>Piutang</span>';
             break;
         default:
             $status_label = '<span class="badge bg-secondary">' . $status_html . '</span>';
@@ -300,53 +248,60 @@
     // HTML DETAIL
     // ============================================================
     $html = '
-        <input type="hidden" name="id_transaksi" id="put_id_transaksi" value="' . $id_transaksi_html . '">
-        <input type="hidden" name="id_transaksi_jenis" value="' . $id_transaksi_jenis_html . '">
-        <div class="col-md-12 mb-4">
-            <!-- Tanggal -->
-            <div class="row mb-2">
-                <div class="col-6"><small>Tanggal Transaksi</small></div>
-                <div class="col-6"><small class="text-muted">' . $TanggalFormat . '</small></div>
+        <!-- Hidden ID -->
+        <input type="hidden" id="DetailIdTransaksi" value="' . $id_transaksi_html . '">
+        <input type="hidden" id="DetailIdTransaksiJenis" value="' . $id_transaksi_jenis_html . '">
+        <div class="row mt-3 mb-3">
+            <!-- KOLOM KIRI -->
+            <div class="col-md-6">
+                <!-- Tanggal -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Tanggal Transaksi</small></div>
+                    <div class="col-6"><small class="text-grayish">' . $TanggalFormat . '</small></div>
+                </div>
+                <!-- Nama Transaksi -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Nama Transaksi</small></div>
+                    <div class="col-6"><small class="text-grayish">' . $nama_transaksi_html . '</small></div>
+                </div>
+                <!-- Kategori -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Kategori</small></div>
+                    <div class="col-6">' . $kategori_label . '</div>
+                </div>
+                <!-- Jumlah -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Jumlah</small></div>
+                    <div class="col-6"><small class="text-grayish">' . $JumlahFormat . '</small></div>
+                </div>
+                <!-- Pembayaran -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Pembayaran</small></div>
+                    <div class="col-6"><small class="text-grayish">' . $PembayaranFormat . '</small></div>
+                </div>
             </div>
-            <!-- Nama Transaksi -->
-            <div class="row mb-2">
-                <div class="col-6"><small>Jenis Transaksi</small></div>
-                <div class="col-6"><small class="text-muted">' . $nama_transaksi_html . '</small></div>
-            </div>
-            <!-- Kategori -->
-            <div class="row mb-2">
-                <div class="col-6"><small>Kategori</small></div>
-                <div class="col-6">' . $kategori_label . '</div>
-            </div>
-            <!-- Jumlah -->
-            <div class="row mb-2">
-                <div class="col-6"><small>Jumlah</small></div>
-                <div class="col-6"><small class="text-muted">' . $JumlahFormat . '</small></div>
-            </div>
-            <!-- Pembayaran -->
-            <div class="row mb-2">
-                <div class="col-6"><small>Pembayaran</small></div>
-                <div class="col-6"><small class="text-muted">' . $PembayaranFormat . '</small></div>
-            </div>
-            <!-- Status -->
-            <div class="row mb-2">
-                <div class="col-6"><small>Status</small></div>
-                <div class="col-6">' . $status_label . '</div>
-            </div>
-            <!-- Rincian -->
-            <div class="row mb-2">
-                <div class="col-6"><small>Rincian</small></div>
-                <div class="col-6"><small class="text-muted">' . $JumlahRincian . ' Record</small></div>
-            </div>
-            <!-- Jurnal -->
-            <div class="row mb-2">
-                <div class="col-6"><small>Jurnal</small></div>
-                <div class="col-6"><small class="text-muted">' . $JumlahJurnal . ' Record</small></div>
-            </div>
-            <!-- Keterangan -->
-            <div class="row mb-2">
-                <div class="col-6"><small>Keterangan</small></div>
-                <div class="col-6"><small class="text-muted">' . ($keterangan !== '' ? $keterangan_html : '-') . '</small></div>
+            <!-- KOLOM KANAN -->
+            <div class="col-md-6">
+                <!-- Status -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Status</small></div>
+                    <div class="col-6">' . $status_label . '</div>
+                </div>
+                <!-- Rincian -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Rincian</small></div>
+                    <div class="col-6"><small class="text-grayish">' . $JumlahRincian . ' Record</small></div>
+                </div>
+                <!-- Jurnal -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Jurnal</small></div>
+                    <div class="col-6"><small class="text-grayish">' . $JumlahJurnal . ' Record</small></div>
+                </div>
+                <!-- Keterangan -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Keterangan</small></div>
+                    <div class="col-6"><small class="text-grayish">' . ($keterangan !== '' ? nl2br($keterangan_html) : '-') . '</small></div>
+                </div>
             </div>
         </div>
     ';
@@ -360,6 +315,9 @@
         'html'    => $html
     ];
 
+    // ============================================================
+    // OUTPUT JSON
+    // ============================================================
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
     exit;
 ?>

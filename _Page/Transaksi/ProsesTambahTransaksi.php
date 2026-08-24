@@ -1,234 +1,974 @@
 <?php
-    //Koneksi
+
+    // ============================================================
+    // KONFIGURASI
+    // ============================================================
+    date_default_timezone_set('Asia/Jakarta');
+
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
-    date_default_timezone_set('Asia/Jakarta');
-    //Time Now Tmp
-    $now=date('Y-m-d H:i:s');
-    if(empty($SessionIdAkses)){
-        echo '<small class="text-danger">Sessi Akses Sudah Berakhir, Silahkan Login Ulang!</small>';
-    }else{
-        if(empty($_POST['tanggal'])){
-            echo '<small class="text-danger">Tanggal Tidak Boleh Kosong</small>';
-        }else{
-            if(empty($_POST['jam'])){
-                echo '<small class="text-danger">Jam Transaksi Tidak Boleh Kosong</small>';
-            }else{
-                if(empty($_POST['id_transaksi_jenis'])){
-                    echo '<small class="text-danger">Jenis Transaksi Tidak Boleh Kosong</small>';
-                }else{
-                    if(empty($_POST['status'])){
-                        echo '<small class="text-danger">Status Transaksi Tidak Boleh Kosong</small>';
-                    }else{
-                        if(empty($_POST['JumlahTotal'])){
-                            echo '<small class="text-danger">Jumlah Transaksi Tidak Boleh Kosong</small>';
-                        }else{
-                            //Buat Variabel
-                            $tanggal=$_POST['tanggal'];
-                            $jam=$_POST['jam'];
-                            $tanggal_format="$tanggal $jam";
-                            $id_transaksi_jenis=$_POST['id_transaksi_jenis'];
-                            $status=$_POST['status'];
-                            $jumlah=$_POST['JumlahTotal'];
-                            if(empty($_POST['JumlahPembayaran'])){
-                                $pembayaran="0";
-                            }else{
-                                $pembayaran=$_POST['JumlahPembayaran'];
-                            }
-                            //Bersihkan Variabel
-                            $tanggal_format=validateAndSanitizeInput($tanggal_format);
-                            $id_transaksi_jenis=validateAndSanitizeInput($id_transaksi_jenis);
-                            $status=validateAndSanitizeInput($status);
-                            $jumlah=validateAndSanitizeInput($jumlah);
-                            $pembayaran=validateAndSanitizeInput($pembayaran);
-                            //Validasi Karakter
-                            if(!preg_match("/^[0-9]*$/", $jumlah)){
-                                echo '<small class="text-danger">Jumlah Tagihan Hanya Boleh Angka</small>';
-                            }else{
-                                if(!preg_match("/^[0-9]*$/", $pembayaran)){
-                                    echo '<small class="text-danger">Jumlah Pembayaran Hanya Boleh Angka</small>';
-                                }else{
-                                    //Bukka Data Jenis Transaksi
-                                    $nama=GetDetailData($Conn,'transaksi_jenis','id_transaksi_jenis',$id_transaksi_jenis,'nama');
-                                    $kategori=GetDetailData($Conn,'transaksi_jenis','id_transaksi_jenis',$id_transaksi_jenis,'kategori');
-                                    $id_akun_debet=GetDetailData($Conn,'transaksi_jenis','id_transaksi_jenis',$id_transaksi_jenis,'id_akun_debet');
-                                    $id_akun_kredit=GetDetailData($Conn,'transaksi_jenis','id_transaksi_jenis',$id_transaksi_jenis,'id_akun_kredit');
-                                    //Buka Nama-Nama Akun
-                                    $AkunDebet=GetDetailData($Conn,'akun_perkiraan','id_perkiraan',$id_akun_debet,'nama');
-                                    $AkunKredit=GetDetailData($Conn,'akun_perkiraan','id_perkiraan',$id_akun_kredit,'nama');
-                                    //Buka Kode Akun
-                                    $KodeAkunDebet=GetDetailData($Conn,'akun_perkiraan','id_perkiraan',$id_akun_debet,'kode');
-                                    $KodeAkunKredit=GetDetailData($Conn,'akun_perkiraan','id_perkiraan',$id_akun_kredit,'kode');
-                                    if(empty($AkunDebet)){
-                                        echo '<small class="text-danger">Akun Debet Pada Pengaturan Jenis Transaksi Tidak Valid</small>';
-                                    }else{
-                                        if(empty($AkunKredit)){
-                                            echo '<small class="text-danger">Akun Debet Pada Pengaturan Jenis Transaksi Tidak Valid</small>';
-                                        }else{
-                                            //Ciptakan uuid
-                                            $uuid_transaksi=generateRandomNumber(32);
-                                            //Simpan data
-                                            $EntryData="INSERT INTO transaksi (
-                                                uuid_transaksi,
-                                                id_transaksi_jenis,
-                                                nama_transaksi,
-                                                kategori,
-                                                tanggal,
-                                                jumlah,
-                                                pembayaran,
-                                                status
-                                            ) VALUES (
-                                                '$uuid_transaksi',
-                                                '$id_transaksi_jenis',
-                                                '$nama',
-                                                '$kategori',
-                                                '$tanggal_format',
-                                                '$jumlah',
-                                                '$pembayaran',
-                                                '$status'
-                                            )";
-                                            $InputData=mysqli_query($Conn, $EntryData);
-                                            if($InputData){
-                                                //Apabila Berhasil Di Inser, Cari id_transaksi
-                                                $id_transaksi=GetDetailData($Conn,'transaksi','uuid_transaksi',$uuid_transaksi,'id_transaksi');
-                                                if(empty($id_transaksi)){
-                                                    $HapusTransaksi = mysqli_query($Conn, "DELETE FROM transaksi WHERE uuid_transaksi='$uuid_transaksi'") or die(mysqli_error($Conn));
-                                                    echo '<small class="text-danger">ID transaksi tidak ditemukan pada saat menambahkan data</small>';
-                                                }else{
-                                                    //Apabila ada rincian maka tambahkan
-                                                    if(!empty($_POST['uraian'])){
-                                                        $CoutnUraian=count($_POST['uraian']);
-                                                        $JumlahBerhasil=0;
-                                                        for ($i = 0; $i < $CoutnUraian; $i++) {
-                                                            if(!empty($_POST['uraian'][$i])){
-                                                                $uraian = $_POST['uraian'][$i];
-                                                            }else{
-                                                                $uraian ="";
-                                                            }
-                                                            if(!empty($_POST['harga'][$i])){
-                                                                $harga = $_POST['harga'][$i];
-                                                            }else{
-                                                                $harga =0;
-                                                            }
-                                                            if(!empty($_POST['qty'][$i])){
-                                                                $qty = $_POST['qty'][$i];
-                                                            }else{
-                                                                $qty =0;
-                                                            }
-                                                            if(!empty($_POST['satuan'][$i])){
-                                                                $satuan = $_POST['satuan'][$i];
-                                                            }else{
-                                                                $satuan ="";
-                                                            }
-                                                            if(!empty($_POST['jumlah'][$i])){
-                                                                $jumlah_list = $_POST['jumlah'][$i];
-                                                            }else{
-                                                                $jumlah_list=0;
-                                                            }
-                                                            //Insert Ke Uraian
-                                                            $EntryDataRincian="INSERT INTO transaksi_rincian (
-                                                                id_transaksi,
-                                                                uuid_transaksi,
-                                                                rincian_transaksi,
-                                                                harga,
-                                                                qty,
-                                                                satuan,
-                                                                jumlah
-                                                            ) VALUES (
-                                                                '$id_transaksi',
-                                                                '$uuid_transaksi',
-                                                                '$uraian',
-                                                                '$harga',
-                                                                '$qty',
-                                                                '$satuan',
-                                                                '$jumlah_list'
-                                                            )";
-                                                            $InputDataRincian=mysqli_query($Conn, $EntryDataRincian);
-                                                            if($InputDataRincian){
-                                                                $JumlahBerhasil=$JumlahBerhasil+1;
-                                                            }else{
-                                                                $JumlahBerhasil=$JumlahBerhasil+0;
-                                                                echo "$id_transaksi-$uuid_transaksi-$uraian-$harga<br>";
-                                                            }
-                                                        }
-                                                    }else{
-                                                        $CoutnUraian=0;
-                                                        $JumlahBerhasil=0;
-                                                    }
-                                                    //Apabila Terdapat Kesalahan Dalam Penginputan Rincian
-                                                    if($CoutnUraian!==$JumlahBerhasil){
-                                                        $HapusTransaksi = mysqli_query($Conn, "DELETE FROM transaksi WHERE id_transaksi='$id_transaksi'") or die(mysqli_error($Conn));
-                                                        $HapusRincianTransaksi = mysqli_query($Conn, "DELETE FROM transaksi_rincian WHERE id_transaksi='$id_transaksi'") or die(mysqli_error($Conn));
-                                                        echo '<small class="text-danger">Terjadi kesalahan pada saat melakukan penginputan rincian transaksi Record : '.$CoutnUraian.'/'.$JumlahBerhasil.'</small>';
-                                                    }else{
-                                                        //Simpan Jurnal Transaksi Debet
-                                                        $EntryJurnalDebet="INSERT INTO jurnal (
-                                                            kategori,
-                                                            uuid,
-                                                            id_transaksi,
-                                                            tanggal,
-                                                            kode_perkiraan,
-                                                            nama_perkiraan,
-                                                            d_k,
-                                                            nilai
-                                                        ) VALUES (
-                                                            'Transaksi',
-                                                            '$uuid_transaksi',
-                                                            '$id_transaksi',
-                                                            '$tanggal',
-                                                            '$KodeAkunDebet',
-                                                            '$AkunDebet',
-                                                            'D',
-                                                            '$jumlah'
-                                                        )";
-                                                        $InputJurnalDebet=mysqli_query($Conn, $EntryJurnalDebet);
-                                                        if($InputJurnalDebet){
-                                                            //Simpan Jurnal Transaksi Debet
-                                                            $EntryJurnalKredit="INSERT INTO jurnal (
-                                                                kategori,
-                                                                uuid,
-                                                                id_transaksi,
-                                                                tanggal,
-                                                                kode_perkiraan,
-                                                                nama_perkiraan,
-                                                                d_k,
-                                                                nilai
-                                                            ) VALUES (
-                                                                'Transaksi',
-                                                                '$uuid_transaksi',
-                                                                '$id_transaksi',
-                                                                '$tanggal',
-                                                                '$KodeAkunKredit',
-                                                                '$AkunKredit',
-                                                                'K',
-                                                                '$jumlah'
-                                                            )";
-                                                            $InputJurnalKredit=mysqli_query($Conn, $EntryJurnalKredit);
-                                                            if($InputJurnalKredit){
-                                                                $_SESSION ["NotifikasiSwal"]="Tambah Transaksi Berhasil";
-                                                                echo '<small class="text-success" id="NotifikasiTambahTransaksiBerhasil">Success</small>';
-                                                            }else{
-                                                                $HapusTransaksi = mysqli_query($Conn, "DELETE FROM transaksi WHERE id_transaksi='$id_transaksi'") or die(mysqli_error($Conn));
-                                                                $HapusRincianTransaksi = mysqli_query($Conn, "DELETE FROM transaksi_rincian WHERE id_transaksi='$id_transaksi'") or die(mysqli_error($Conn));
-                                                                echo '<small class="text-danger">Terjadi kesalahan pada saat menyimpan jurnal kredit</small>';
-                                                            }
-                                                        }else{
-                                                            $HapusTransaksi = mysqli_query($Conn, "DELETE FROM transaksi WHERE id_transaksi='$id_transaksi'") or die(mysqli_error($Conn));
-                                                            $HapusRincianTransaksi = mysqli_query($Conn, "DELETE FROM transaksi_rincian WHERE id_transaksi='$id_transaksi'") or die(mysqli_error($Conn));
-                                                            echo '<small class="text-danger">Terjadi kesalahan pada saat menyimpan jurnal debet</small>';
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+
+
+    // ============================================================
+    // HEADER JSON
+    // ============================================================
+    header('Content-Type: application/json; charset=utf-8');
+
+
+    // ============================================================
+    // RESPONSE DEFAULT
+    // ============================================================
+    $response = [
+        'status'  => 'error',
+        'message' => 'Terjadi kesalahan.',
+        'html'    => ''
+    ];
+
+
+    // ============================================================
+    // FUNGSI RESPONSE
+    // ============================================================
+    function responseError($message){
+        global $response;
+
+        $response = [
+            'status'  => 'error',
+            'message' => $message,
+            'html'    => '
+                <div class="alert alert-danger">
+                    <small>
+                        <b>Oops!</b> ' .
+                        htmlspecialchars(
+                            $message,
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) . '
+                    </small>
+                </div>
+            '
+        ];
+
+        echo json_encode(
+            $response,
+            JSON_UNESCAPED_UNICODE
+        );
+
+        exit;
     }
+
+
+    // ============================================================
+    // VALIDASI SESSION
+    // ============================================================
+    if (empty($SessionIdAkses)) {
+
+        responseError(
+            'Sesi akses sudah berakhir. Silakan login ulang.'
+        );
+    }
+
+
+    // ============================================================
+    // VALIDASI METHOD
+    // ============================================================
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
+        responseError(
+            'Metode request tidak valid.'
+        );
+    }
+
+
+    // ============================================================
+    // AMBIL DATA UTAMA
+    // ============================================================
+    $tanggal =
+        trim($_POST['tanggal'] ?? '');
+
+    $jam =
+        trim($_POST['jam'] ?? '');
+
+    $id_transaksi_jenis =
+        trim($_POST['id_transaksi_jenis'] ?? '');
+
+    $status =
+        trim($_POST['status'] ?? 'Lunas');
+
+    $JumlahTotal =
+        trim($_POST['JumlahTotal'] ?? '0');
+
+    $JumlahPembayaran =
+        trim($_POST['JumlahPembayaran'] ?? '0');
+
+    $keterangan =
+        trim($_POST['keterangan'] ?? '');
+
+
+    // ============================================================
+    // VALIDASI DATA UTAMA
+    // ============================================================
+    if ($tanggal === '') {
+
+        responseError(
+            'Tanggal transaksi tidak boleh kosong.'
+        );
+    }
+
+
+    if ($jam === '') {
+
+        responseError(
+            'Jam transaksi tidak boleh kosong.'
+        );
+    }
+
+
+    if ($id_transaksi_jenis === '') {
+
+        responseError(
+            'Jenis transaksi tidak boleh kosong.'
+        );
+    }
+
+
+    // ============================================================
+    // VALIDASI ID TRANSAKSI JENIS
+    // ============================================================
+    if (!ctype_digit($id_transaksi_jenis)) {
+
+        responseError(
+            'ID jenis transaksi tidak valid.'
+        );
+    }
+
+    $id_transaksi_jenis =
+        (int) $id_transaksi_jenis;
+
+
+    if ($id_transaksi_jenis <= 0) {
+
+        responseError(
+            'Jenis transaksi tidak valid.'
+        );
+    }
+
+
+    // ============================================================
+    // VALIDASI STATUS
+    // ============================================================
+    $allowedStatus = [
+        'Lunas',
+        'Utang',
+        'Piutang'
+    ];
+
+
+    if (!in_array($status, $allowedStatus, true)) {
+
+        responseError(
+            'Status transaksi tidak valid.'
+        );
+    }
+
+
+    // ============================================================
+    // BERSIHKAN FORMAT UANG
+    //
+    // Contoh:
+    // 1.500.000 -> 1500000
+    // 018.000   -> 18000
+    // Rp 1.500.000 -> 1500000
+    // ============================================================
+    function cleanMoney($value)
+    {
+        if ($value === null || $value === '') {
+            return 0;
+        }
+
+        // Hilangkan semua karakter selain angka
+        $value = preg_replace(
+            '/[^0-9]/',
+            '',
+            (string) $value
+        );
+
+        if ($value === '' || $value === null) {
+            return 0;
+        }
+
+        return (int) $value;
+    }
+
+
+    $jumlah =
+        cleanMoney($JumlahTotal);
+
+
+    $pembayaran =
+        cleanMoney($JumlahPembayaran);
+
+
+    // ============================================================
+    // VALIDASI NILAI
+    // ============================================================
+    if ($jumlah < 0) {
+
+        responseError(
+            'Jumlah transaksi tidak valid.'
+        );
+    }
+
+
+    if ($pembayaran < 0) {
+
+        responseError(
+            'Jumlah pembayaran tidak valid.'
+        );
+    }
+
+
+    // ============================================================
+    // TANGGAL TRANSAKSI
+    // ============================================================
+    $tanggal_transaksi =
+        $tanggal . ' ' . $jam;
+
+
+    // Validasi tanggal
+    $timestamp =
+        strtotime($tanggal_transaksi);
+
+
+    if ($timestamp === false) {
+
+        responseError(
+            'Format tanggal atau jam transaksi tidak valid.'
+        );
+    }
+
+
+    // Normalisasi tanggal
+    $tanggal_transaksi =
+        date(
+            'Y-m-d H:i:s',
+            $timestamp
+        );
+
+
+    // Tanggal untuk jurnal
+    $tanggal_jurnal =
+        date(
+            'Y-m-d',
+            $timestamp
+        );
+
+
+    // ============================================================
+    // AMBIL DATA JENIS TRANSAKSI + AKUN
+    // ============================================================
+    $sqlJenis = "
+
+        SELECT
+
+            tj.id_transaksi_jenis,
+            tj.nama,
+            tj.kategori,
+            tj.id_akun_debet,
+            tj.id_akun_kredit,
+
+            ad.kode AS kode_akun_debet,
+            ad.nama AS nama_akun_debet,
+
+            ak.kode AS kode_akun_kredit,
+            ak.nama AS nama_akun_kredit
+
+        FROM transaksi_jenis AS tj
+
+        LEFT JOIN akun_perkiraan AS ad
+            ON ad.id_perkiraan = tj.id_akun_debet
+
+        LEFT JOIN akun_perkiraan AS ak
+            ON ak.id_perkiraan = tj.id_akun_kredit
+
+        WHERE tj.id_transaksi_jenis = ?
+
+        LIMIT 1
+
+    ";
+
+
+    $stmtJenis =
+        mysqli_prepare(
+            $Conn,
+            $sqlJenis
+        );
+
+
+    if (!$stmtJenis) {
+
+        responseError(
+            'Gagal menyiapkan query jenis transaksi.'
+        );
+    }
+
+
+    mysqli_stmt_bind_param(
+        $stmtJenis,
+        'i',
+        $id_transaksi_jenis
+    );
+
+
+    if (!mysqli_stmt_execute($stmtJenis)) {
+
+        mysqli_stmt_close($stmtJenis);
+
+        responseError(
+            'Gagal mengambil data jenis transaksi.'
+        );
+    }
+
+
+    $resultJenis =
+        mysqli_stmt_get_result(
+            $stmtJenis
+        );
+
+
+    if (
+        !$resultJenis ||
+        mysqli_num_rows($resultJenis) === 0
+    ) {
+
+        mysqli_stmt_close($stmtJenis);
+
+        responseError(
+            'Jenis transaksi tidak ditemukan.'
+        );
+    }
+
+
+    $dataJenis =
+        mysqli_fetch_assoc(
+            $resultJenis
+        );
+
+
+    mysqli_stmt_close($stmtJenis);
+
+
+    // ============================================================
+    // DATA JENIS TRANSAKSI
+    // ============================================================
+    $nama =
+        $dataJenis['nama'] ?? '';
+
+    $kategori =
+        $dataJenis['kategori'] ?? '';
+
+    $id_akun_debet =
+        $dataJenis['id_akun_debet'] ?? null;
+
+    $id_akun_kredit =
+        $dataJenis['id_akun_kredit'] ?? null;
+
+    $KodeAkunDebet =
+        $dataJenis['kode_akun_debet'] ?? '';
+
+    $AkunDebet =
+        $dataJenis['nama_akun_debet'] ?? '';
+
+    $KodeAkunKredit =
+        $dataJenis['kode_akun_kredit'] ?? '';
+
+    $AkunKredit =
+        $dataJenis['nama_akun_kredit'] ?? '';
+
+
+    // ============================================================
+    // VALIDASI KATEGORI
+    // ============================================================
+    if (
+        $kategori !== 'Pengeluaran' &&
+        $kategori !== 'Pemasukan'
+    ) {
+
+        responseError(
+            'Kategori transaksi tidak valid.'
+        );
+    }
+
+
+    // ============================================================
+    // VALIDASI AKUN DEBET
+    // ============================================================
+    if (
+        empty($id_akun_debet) ||
+        empty($KodeAkunDebet) ||
+        empty($AkunDebet)
+    ) {
+
+        responseError(
+            'Akun Debet pada pengaturan jenis transaksi belum valid.'
+        );
+    }
+
+
+    // ============================================================
+    // VALIDASI AKUN KREDIT
+    // ============================================================
+    if (
+        empty($id_akun_kredit) ||
+        empty($KodeAkunKredit) ||
+        empty($AkunKredit)
+    ) {
+
+        responseError(
+            'Akun Kredit pada pengaturan jenis transaksi belum valid.'
+        );
+    }
+
+
+    // ============================================================
+    // MULAI DATABASE TRANSACTION
+    // ============================================================
+    mysqli_begin_transaction($Conn);
+
+
+    try {
+
+        // ========================================================
+        // INSERT TRANSAKSI
+        // ========================================================
+        $sqlTransaksi = "
+
+            INSERT INTO transaksi (
+                id_transaksi_jenis,
+                tanggal,
+                jumlah,
+                pembayaran,
+                keterangan,
+                status
+            )
+
+            VALUES (
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?
+            )
+
+        ";
+
+
+        $stmtTransaksi =
+            mysqli_prepare(
+                $Conn,
+                $sqlTransaksi
+            );
+
+
+        if (!$stmtTransaksi) {
+
+            throw new Exception(
+                'Gagal menyiapkan penyimpanan transaksi.'
+            );
+        }
+
+
+        mysqli_stmt_bind_param(
+            $stmtTransaksi,
+            'isiiss',
+            $id_transaksi_jenis,
+            $tanggal_transaksi,
+            $jumlah,
+            $pembayaran,
+            $keterangan,
+            $status
+        );
+
+
+        if (!mysqli_stmt_execute($stmtTransaksi)) {
+
+            $error =
+                mysqli_stmt_error($stmtTransaksi);
+
+            mysqli_stmt_close($stmtTransaksi);
+
+            throw new Exception(
+                'Gagal menyimpan transaksi: ' . $error
+            );
+        }
+
+
+        // ========================================================
+        // AMBIL ID TRANSAKSI
+        // ========================================================
+        $id_transaksi =
+            mysqli_insert_id($Conn);
+
+
+        mysqli_stmt_close($stmtTransaksi);
+
+
+        if ($id_transaksi <= 0) {
+
+            throw new Exception(
+                'ID transaksi gagal diperoleh.'
+            );
+        }
+
+
+        // ========================================================
+        // INSERT RINCIAN
+        // ========================================================
+        $jumlahUraian =
+            isset($_POST['uraian']) &&
+            is_array($_POST['uraian'])
+                ? count($_POST['uraian'])
+                : 0;
+
+
+        $jumlahRincianBerhasil = 0;
+
+
+        if ($jumlahUraian > 0) {
+
+            // ----------------------------------------------------
+            // Siapkan query rincian
+            // ----------------------------------------------------
+            $sqlRincian = "
+
+                INSERT INTO transaksi_rincian (
+                    id_transaksi,
+                    rincian_transaksi,
+                    harga,
+                    qty,
+                    satuan,
+                    jumlah
+                )
+
+                VALUES (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?
+                )
+
+            ";
+
+
+            $stmtRincian =
+                mysqli_prepare(
+                    $Conn,
+                    $sqlRincian
+                );
+
+
+            if (!$stmtRincian) {
+
+                throw new Exception(
+                    'Gagal menyiapkan penyimpanan rincian transaksi.'
+                );
+            }
+
+
+            for (
+                $i = 0;
+                $i < $jumlahUraian;
+                $i++
+            ) {
+
+                // ------------------------------------------------
+                // Uraian
+                // ------------------------------------------------
+                $uraian =
+                    trim(
+                        $_POST['uraian'][$i] ?? ''
+                    );
+
+
+                // ------------------------------------------------
+                // Harga
+                // ------------------------------------------------
+                $harga =
+                    cleanMoney(
+                        $_POST['harga'][$i] ?? 0
+                    );
+
+
+                // ------------------------------------------------
+                // Qty
+                // ------------------------------------------------
+                $qty =
+                    cleanMoney(
+                        $_POST['qty'][$i] ?? 0
+                    );
+
+
+                // ------------------------------------------------
+                // Satuan
+                // ------------------------------------------------
+                $satuan =
+                    trim(
+                        $_POST['satuan'][$i] ?? ''
+                    );
+
+
+                // ------------------------------------------------
+                // Jumlah
+                // ------------------------------------------------
+                $jumlah_rincian =
+                    cleanMoney(
+                        $_POST['jumlah'][$i] ?? 0
+                    );
+
+
+                // ------------------------------------------------
+                // Abaikan baris yang benar-benar kosong
+                // ------------------------------------------------
+                if (
+                    $uraian === '' &&
+                    $harga === 0 &&
+                    $qty === 0 &&
+                    $satuan === '' &&
+                    $jumlah_rincian === 0
+                ) {
+
+                    continue;
+                }
+
+
+                // ------------------------------------------------
+                // Hitung ulang jumlah di SERVER
+                //
+                // Jangan mempercayai nilai jumlah[] dari browser.
+                // ------------------------------------------------
+                $jumlah_rincian =
+                    $harga * $qty;
+
+
+                // ------------------------------------------------
+                // Bind
+                // ------------------------------------------------
+                mysqli_stmt_bind_param(
+                    $stmtRincian,
+                    'isiisi',
+                    $id_transaksi,
+                    $uraian,
+                    $harga,
+                    $qty,
+                    $satuan,
+                    $jumlah_rincian
+                );
+
+
+                // ------------------------------------------------
+                // Execute
+                // ------------------------------------------------
+                if (
+                    !mysqli_stmt_execute(
+                        $stmtRincian
+                    )
+                ) {
+
+                    $error =
+                        mysqli_stmt_error(
+                            $stmtRincian
+                        );
+
+                    mysqli_stmt_close(
+                        $stmtRincian
+                    );
+
+                    throw new Exception(
+                        'Gagal menyimpan rincian transaksi: ' .
+                        $error
+                    );
+                }
+
+
+                $jumlahRincianBerhasil++;
+            }
+
+
+            mysqli_stmt_close(
+                $stmtRincian
+            );
+        }
+
+
+        // ========================================================
+        // VALIDASI TOTAL RINCIAN
+        //
+        // Jika ada baris yang dikirim tetapi gagal diproses,
+        // transaksi dibatalkan.
+        // ========================================================
+        if (
+            $jumlahUraian > 0 &&
+            $jumlahRincianBerhasil === 0
+        ) {
+
+            throw new Exception(
+                'Tidak ada rincian transaksi yang valid.'
+            );
+        }
+
+
+        // ========================================================
+        // UUID UNTUK GROUP JURNAL
+        //
+        // Tabel transaksi tidak membutuhkan UUID.
+        // UUID ini hanya digunakan sebagai identifier kelompok
+        // jurnal Debet + Kredit.
+        // ========================================================
+        $uuid_jurnal =
+            sprintf(
+                '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+                mt_rand(0, 0xffff),
+                mt_rand(0, 0xffff),
+                mt_rand(0, 0xffff),
+                mt_rand(0, 0x0fff) | 0x4000,
+                mt_rand(0, 0x3fff) | 0x8000,
+                mt_rand(0, 0xffff),
+                mt_rand(0, 0xffff),
+                mt_rand(0, 0xffff)
+            );
+
+
+        // ========================================================
+        // INSERT JURNAL DEBET
+        // ========================================================
+        $sqlJurnalDebet = "
+
+            INSERT INTO jurnal (
+                kategori,
+                uuid,
+                id_transaksi,
+                tanggal,
+                kode_perkiraan,
+                nama_perkiraan,
+                d_k,
+                nilai
+            )
+
+            VALUES (
+                'Transaksi',
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                'D',
+                ?
+            )
+
+        ";
+
+
+        $stmtJurnalDebet =
+            mysqli_prepare(
+                $Conn,
+                $sqlJurnalDebet
+            );
+
+
+        if (!$stmtJurnalDebet) {
+
+            throw new Exception(
+                'Gagal menyiapkan jurnal Debet.'
+            );
+        }
+
+
+        mysqli_stmt_bind_param(
+            $stmtJurnalDebet,
+            'sisssi',
+            $uuid_jurnal,
+            $id_transaksi,
+            $tanggal_jurnal,
+            $KodeAkunDebet,
+            $AkunDebet,
+            $jumlah
+        );
+
+
+        if (
+            !mysqli_stmt_execute(
+                $stmtJurnalDebet
+            )
+        ) {
+
+            $error =
+                mysqli_stmt_error(
+                    $stmtJurnalDebet
+                );
+
+            mysqli_stmt_close(
+                $stmtJurnalDebet
+            );
+
+            throw new Exception(
+                'Gagal menyimpan jurnal Debet: ' .
+                $error
+            );
+        }
+
+
+        mysqli_stmt_close(
+            $stmtJurnalDebet
+        );
+
+
+        // ========================================================
+        // INSERT JURNAL KREDIT
+        // ========================================================
+        $sqlJurnalKredit = "
+
+            INSERT INTO jurnal (
+                kategori,
+                uuid,
+                id_transaksi,
+                tanggal,
+                kode_perkiraan,
+                nama_perkiraan,
+                d_k,
+                nilai
+            )
+
+            VALUES (
+                'Transaksi',
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                'K',
+                ?
+            )
+
+        ";
+
+
+        $stmtJurnalKredit =
+            mysqli_prepare(
+                $Conn,
+                $sqlJurnalKredit
+            );
+
+
+        if (!$stmtJurnalKredit) {
+
+            throw new Exception(
+                'Gagal menyiapkan jurnal Kredit.'
+            );
+        }
+
+
+        mysqli_stmt_bind_param(
+            $stmtJurnalKredit,
+            'sisssi',
+            $uuid_jurnal,
+            $id_transaksi,
+            $tanggal_jurnal,
+            $KodeAkunKredit,
+            $AkunKredit,
+            $jumlah
+        );
+
+
+        if (
+            !mysqli_stmt_execute(
+                $stmtJurnalKredit
+            )
+        ) {
+
+            $error =
+                mysqli_stmt_error(
+                    $stmtJurnalKredit
+                );
+
+            mysqli_stmt_close(
+                $stmtJurnalKredit
+            );
+
+            throw new Exception(
+                'Gagal menyimpan jurnal Kredit: ' .
+                $error
+            );
+        }
+
+
+        mysqli_stmt_close(
+            $stmtJurnalKredit
+        );
+
+
+        // ========================================================
+        // COMMIT
+        // ========================================================
+        mysqli_commit($Conn);
+
+
+        // ========================================================
+        // NOTIFIKASI
+        // ========================================================
+        $_SESSION['NotifikasiSwal'] =
+            'Tambah Transaksi Berhasil';
+
+
+        // ========================================================
+        // RESPONSE SUCCESS
+        // ========================================================
+        $response = [
+
+            'status'  => 'success',
+
+            'message' =>
+                'Transaksi berhasil disimpan.',
+
+            'html' => '
+                <small
+                    class="text-success"
+                    id="NotifikasiTambahTransaksiBerhasil"
+                >
+                    Success
+                </small>
+            ',
+
+            'id_transaksi' =>
+                $id_transaksi
+
+        ];
+
+
+        echo json_encode(
+            $response,
+            JSON_UNESCAPED_UNICODE
+        );
+
+        exit;
+
+
+    } catch (Throwable $e) {
+
+        // ========================================================
+        // ROLLBACK
+        // ========================================================
+        mysqli_rollback($Conn);
+
+
+        // ========================================================
+        // RESPONSE ERROR
+        // ========================================================
+        responseError(
+            $e->getMessage()
+        );
+    }
+
 ?>

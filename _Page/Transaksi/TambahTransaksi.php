@@ -82,7 +82,7 @@
                                         <label for="JumlahTotal">Jumlah (Rp)</label>
                                     </div>
                                     <div class="col col-md-9">
-                                        <input type="text" name="JumlahTotal" id="JumlahTotal" class="form-control nominal_angka">
+                                        <input type="text" name="JumlahTotal" id="JumlahTotal" class="form-control format_uang">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -90,7 +90,7 @@
                                         <label for="JumlahPembayaran">Pembayaran (Rp)</label>
                                     </div>
                                     <div class="col col-md-9">
-                                        <input type="text" name="JumlahPembayaran" id="JumlahPembayaran" class="form-control nominal_angka">
+                                        <input type="text" name="JumlahPembayaran" id="JumlahPembayaran" class="form-control format_uang">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
