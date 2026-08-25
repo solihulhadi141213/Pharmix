@@ -203,8 +203,8 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link <?php if($PageMenu=="Help"){echo "active";}else{echo "collapsed";} ?>" href="index.php?Page=Help&Sub=HelpData">
-                <i class="bi bi-question"></i>
+            <a class="nav-link <?php if($PageMenu=="Dokumentasi"){echo "active";}else{echo "collapsed";} ?>" href="index.php?Page=Dokumentasi">
+                <i class="bi bi-bookmark-check"></i>
                 <span>Dokumentasi</span>
             </a>
         </li>
@@ -215,4 +215,5 @@
             </a>
         </li>
     </ul>
-</aside> 
+</aside>
+<div class="sidebar-backdrop" aria-hidden="true"></div>

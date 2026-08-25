@@ -11,33 +11,30 @@
             <span><?php echo $SessionLevelAkses;?></span>
         </li>
         <?php
-             echo '<li>';
-            echo '  <hr class="dropdown-divider">';
-            echo '</li>';
-            echo '<li>';
-            echo '  <a class="dropdown-item d-flex align-items-center" href="index.php?Page=MyProfile">';
-            echo '      <i class="bi bi-person"></i>';
-            echo '      <span>Profil Saya</span>';
-            echo '  </a>';
-            echo '</li>';
-            echo '<li>';
-            echo '  <hr class="dropdown-divider">';
-            echo '</li>';
-            echo '<li>';
-            echo '  <a class="dropdown-item d-flex align-items-center" href="index.php?Page=Help&Sub=HelpHome">';
-            echo '      <i class="bi bi-question-circle"></i>';
-            echo '      <span>Bantuan</span>';
-            echo '  </a>';
-            echo '</li>';
-            echo '<li>';
-            echo '  <hr class="dropdown-divider">';
-            echo '</li>';
-            echo '<li>';
-            echo '  <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalLogout">';
-            echo '      <i class="bi bi-box-arrow-right"></i>';
-            echo '      <span>Keluar</span>';
-            echo '  </a>';
-            echo '</li>';
+            echo '
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center" href="index.php?Page=MyProfile">
+                        <i class="bi bi-person"></i>
+                        <span>Profil Saya</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center" href="index.php?Page=Bantuan">
+                        <i class="bi bi-question-circle"></i>
+                        <span>Bantuan</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalLogout">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Keluar</span>
+                    </a>
+                </li>
+            ';
+
         ?>
     </ul>
 </li>

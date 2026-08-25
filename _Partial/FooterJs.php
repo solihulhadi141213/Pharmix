@@ -67,14 +67,14 @@
 <!-- quill -->
 <?php
     if(!empty($_GET['Page'])){
-        if($_GET['Page']=="Bantuan"){
-            echo '<script src="node_modules/quill/quill.js"></script>';
+        if($_GET['Page']=="Dokumentasi"){
+            echo '<script src="node_modules/quill/dist/quill.js"></script>';
         }
     }
 ?>
 
 <!-- Jquery -->
-<script src="node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script>
+<!-- <script src="node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script> -->
 <script src="node_modules/jQuery-Mask-Plugin/dist/jquery.mask.min.js"></script>
 <script src="node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
 <script src="assets/js/jquery.session.js" type="text/javascript"></script>

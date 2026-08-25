@@ -138,17 +138,19 @@
                                 $uuid= $data['uuid'];
                                 
                                 //Buka Detail
-                                $kategori=GetDetailData($Conn,'jurnal','uuid',$uuid,'kategori');
-                                $tanggal_jurnal=GetDetailData($Conn,'jurnal','uuid',$uuid,'tanggal');
+                                $kategori       = GetDetailData($Conn,'jurnal','uuid',$uuid,'kategori');
+                                $tanggal_jurnal = GetDetailData($Conn,'jurnal','uuid',$uuid,'tanggal');
+                                $id_transaksi = GetDetailData($Conn,'jurnal','uuid',$uuid,'id_transaksi');
                                 
                                 //Banyaknya Data Jurnal
                                 $JumlahRow = mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM jurnal WHERE uuid='$uuid' AND kategori='$kategori'"));
                                 
                                 //Mencari Referensi
                                 if($kategori=="Transaksi"){
-                                    $Tanggal=GetDetailData($Conn,'transaksi','uuid_transaksi',$uuid,'tanggal');
-                                    $nama_transaksi = mb_strtoupper(GetDetailData($Conn, 'transaksi', 'uuid_transaksi', $uuid, 'nama_transaksi'), 'UTF-8');
-                                    $Tanggal=date('d/m/Y H:i',strtotime($Tanggal));
+                                    $Tanggal            = GetDetailData($Conn,'transaksi','id_transaksi',$id_transaksi,'tanggal');
+                                    $id_transaksi_jenis = mb_strtoupper(GetDetailData($Conn, 'transaksi', 'id_transaksi', $id_transaksi, 'id_transaksi_jenis'), 'UTF-8');
+                                    $nama_transaksi     = mb_strtoupper(GetDetailData($Conn, 'transaksi_jenis', 'id_transaksi_jenis', $id_transaksi_jenis, 'nama'), 'UTF-8');
+                                    $Tanggal            = date('d/m/Y H:i',strtotime($Tanggal));
                                     $Referensi='
                                         <a href="javascript:void(0);">
                                             <small>

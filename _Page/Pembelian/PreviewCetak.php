@@ -58,11 +58,11 @@
                 $status = $Data['status'];
 
                 // Format Rupiah
-                $subtotal_rp = "" . number_format($subtotal, 0, ',', '.');
-                $ppn_rp = "" . number_format($ppn, 0, ',', '.');
-                $diskon_rp = "" . number_format($diskon, 0, ',', '.');
-                $total_rp = "" . number_format($total, 0, ',', '.');
-                $cash_rp = "" . number_format($cash, 0, ',', '.');
+                $subtotal_rp  = "" . number_format($subtotal, 0, ',', '.');
+                $ppn_rp       = "" . number_format($ppn, 0, ',', '.');
+                $diskon_rp    = "" . number_format($diskon, 0, ',', '.');
+                $total_rp     = "" . number_format($total, 0, ',', '.');
+                $cash_rp      = "" . number_format($cash, 0, ',', '.');
                 $kembalian_rp = "" . number_format($kembalian, 0, ',', '.');
 
                 // Ambil Nama Supplier
@@ -78,8 +78,8 @@
                 
                 //Tampilkan Data
                 echo '
-                    <div class="row mb-3 dashed-underline">
-                        <div class="col-12 mb-3 text-center">
+                    <div class="row mb-3">
+                        <div class="col-12 mb-3 text-center dashed-underline">
                             <b>'.$title_page.'</b><br>
                             <small>'.$alamat_bisnis.'</small><br>
                             <small>Telp : '.$telepon_bisnis.'</small>
@@ -101,7 +101,7 @@
                             <small class="text text-grayish">'.$nama_supplier.'</small>
                         </div>
                     </div>
-                    <div class="row mb-3 dashed-underline">
+                    <div class="row mb-3">
                         <div class="col-4">
                             <small>Transaksi</small>
                         </div>
@@ -110,8 +110,8 @@
                         </div>
                     </div>
                 ';
-                echo '<div class="row mb-3 dashed-underline">';
-                echo '   <div class="col-12">';
+                echo '<div class="row mb-3">';
+                echo '   <div class="col-12 dashed-underline">';
                 echo '      <table width="100%">';
                 echo '
                     <tr>
@@ -147,10 +147,10 @@
                     $sum_ppn=$sum_ppn+$ppn_rincian;
                     echo '
                         <tr>
-                            <td><small><code class="text-grayish">'.$nama_barang.'</code></small></td>
-                            <td><small><code class="text-grayish">'.$harga_format.' * '.$qty.'</code></small></td>
-                            <td><small><code class="text-grayish">'.$diskon_rincian_format.'</code></small></td>
-                            <td align="right"><small><code class="text-grayish">'.$subtotal_format.'</code></small></td>
+                            <td><small><small class="text-dark">'.$nama_barang.'</small></small></td>
+                            <td><small><small class="text-dark">'.$harga_format.' * '.$qty.'</small></small></td>
+                            <td><small><small class="text-dark">'.$diskon_rincian_format.'</small></small></td>
+                            <td align="right"><small><small class="text-dark">'.$subtotal_format.'</small></small></td>
                         </tr>
                     ';
                     $no++;
@@ -199,9 +199,9 @@
                 echo '  </div>';
                 echo '</div>';
                 echo '
-                    <div class="row mb-3 dashed-underline">
-                        <div class="col-12 mb-3 text-center">
-                            <i>Terima Kasih Atas Kunjungan Anda</i>
+                    <div class="row mb-3 ">
+                        <div class="col-12 mb-3 text-center dashed-underline">
+                           
                         </div>
                     </div>
                 ';

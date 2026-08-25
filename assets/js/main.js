@@ -40,9 +40,24 @@
   /**
    * Sidebar toggle
    */
+  const setSidebarState = (isOpen) => {
+    select('body').classList.toggle('toggle-sidebar', isOpen)
+    const sidebarButton = select('.toggle-sidebar-btn')
+    if (sidebarButton) {
+      sidebarButton.classList.toggle('bi-card-list', !isOpen)
+      sidebarButton.classList.toggle('bi-x', isOpen)
+    }
+  }
+
   if (select('.toggle-sidebar-btn')) {
     on('click', '.toggle-sidebar-btn', function(e) {
-      select('body').classList.toggle('toggle-sidebar')
+      setSidebarState(!select('body').classList.contains('toggle-sidebar'))
+    })
+  }
+
+  if (select('.sidebar-backdrop')) {
+    on('click', '.sidebar-backdrop', function(e) {
+      setSidebarState(false)
     })
   }
 

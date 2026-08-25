@@ -609,7 +609,7 @@
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-12" id="FormDetailCetak">
-                            
+                            <!-- Form Detail Cetak -->
                         </div>
                     </div>
                     <div class="row mb-3">

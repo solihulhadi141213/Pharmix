@@ -756,6 +756,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="ModalHapusBarang" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">

@@ -21,7 +21,7 @@
                 include "_Partial/Head.php";
             ?>
         </head>
-        <body>
+        <body class="">
             <header id="header" class="header fixed-top d-flex align-items-center nav_background">
                 <?php
                     include "_Partial/DashboardLogo.php";

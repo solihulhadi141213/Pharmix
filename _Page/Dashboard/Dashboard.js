@@ -208,4 +208,8 @@ $(document).ready(function () {
     tampilkanTanggal(); // Tampilkan tanggal saat halaman dimuat
     tampilkanJam();     // Tampilkan jam pertama kali
     setInterval(tampilkanJam, 1000); // Perbarui jam setiap detik
+
+    CountOfPenjualan();
+    CountOfPembelian();
+    CountOfTransaksiOperasional();
 });
