@@ -20,12 +20,12 @@
     }
     //Format Judul Grapik
     if(empty($jenis_transaksi)){
-        echo '<b>GRAFIK TRANSAKSI PERIODE</b><br>';
+        echo '<b>GRAFIK TRANSAKSI OPERASIONAL PERIODE</b><br>';
         echo '<b> TAHUN '.$tahun.'</b><br>';
     }else{
         $jenis_transaksi=GetDetailData($Conn,'transaksi_jenis','id_transaksi_jenis',$jenis_transaksi,'nama');
         $jenis_transaksi = strtoupper($jenis_transaksi);
-        echo '<b>GRAFIK TRANSAKSI '.$jenis_transaksi.'</b><br>';
+        echo '<b>GRAFIK TRANSAKSI OPERASIONAL '.$jenis_transaksi.'</b><br>';
         echo '<b> PERIODE TAHUN '.$tahun.'</b><br>';
     }
 ?>
