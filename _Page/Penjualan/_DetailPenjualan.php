@@ -24,7 +24,7 @@
                     </ol>
                 </nav>
             </div>
-            <div class="row mb-3">
+            <!-- <div class="row mb-3">
                 <div class="col-md-12">
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <small>
@@ -35,16 +35,16 @@
                         </small>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="row mb-3">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-8 mb-2 mt-2">
+                                <div class="col-8">
                                     <b class="card-title"># Detail Transaksi</b>
                                 </div>
-                                <div class="col-4 mb-2 mt-2 text-end">
+                                <div class="col-4 text-end">
                                     <button type="button" class="btn btn-md btn-floating btn-dark button_kembali" title="Kembali">
                                         <i class="bi bi-chevron-left"></i>
                                     </button>
@@ -58,7 +58,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="row mb-3">
+                            <div class="row mt-3">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-4">
@@ -77,10 +77,10 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <div class="row mb-2 mt-2">
-                                <div class="col-md-12 mb-2 mt-2 text-center">
-                                    <button type="button" class="btn btn-md btn-rounded btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ModalCetak" data-id="<?php echo  "$id_transaksi_jual_beli"; ?>">
-                                        <i class="bi bi-printer"></i> Cetak Nota/Faktur (CTRL + P)
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="button" class="btn btn-md btn-rounded btn-primary" data-bs-toggle="modal" data-bs-target="#ModalCetak" data-id="<?php echo  "$id_transaksi_jual_beli"; ?>">
+                                        <i class="bi bi-printer"></i> Cetak Nota/Faktur
                                     </button>
                                 </div>
                             </div>

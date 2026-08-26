@@ -84,13 +84,14 @@
                                         <th><b>Barang</b></th>
                                         <th><b>Kategori</b></th>
                                         <th><b>QTY</b></th>
-                                        <th><b>Harga Beli</b></th>
+                                        <th><b>Satuan</b></th>
+                                        <th><b>Harga Pokok</b></th>
                                         <th><b>Opsi</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="TabelBarang">
                                     <tr>
-                                        <td colspan="7" class="text-center text-danger">
+                                        <td colspan="8" class="text-center text-danger">
                                             Tidak Ada Data yang Ditampilkan
                                         </td>
                                     </tr>
@@ -107,10 +108,10 @@
                                 </small>
                             </div>
                             <div class="col-6 text-end">
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="prev_button">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button">
                                     <i class="bi bi-chevron-left"></i>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="next_button">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button">
                                     <i class="bi bi-chevron-right"></i>
                                 </button>
                             </div>

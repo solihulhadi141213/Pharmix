@@ -60,7 +60,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 mt-3" id="FormFilterKeyword">
+                        <div class="col-md-12" id="FormFilterKeyword">
                             <label for="keyword">Keyword</label>
                             <input type="text" name="keyword" id="keyword" class="form-control">
                         </div>
@@ -89,9 +89,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-12 text-end">
-                        <button type="submit" class="btn btn-md btn-outline-primary" title="Tambah Kategori Multi Harga" data-bs-toggle="modal" data-bs-target="#ModalTambahKategoriHarga">
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-md btn-primary btn-block" title="Tambah Kategori Multi Harga" data-bs-toggle="modal" data-bs-target="#ModalTambahKategoriHarga">
                             <i class="bi bi-plus"></i> Tambah Kategori Harga
                         </button>
                     </div>
@@ -104,7 +104,7 @@
                                     <tr>
                                         <th><b>No</b></th>
                                         <th><b>Kategori Harga</b></th>
-                                        <th><b>Item Barang</b></th>
+                                        <th><b>Jumlah Barang</b></th>
                                         <th><b>Opsi</b></th>
                                     </tr>
                                 </thead>
@@ -126,6 +126,8 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Tambah Kategori Harga -->
 <div class="modal fade" id="ModalTambahKategoriHarga" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
@@ -606,8 +608,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-info btn-rounded">
-                        <i class="bi bi-three-dots"></i> Selengkapnya
+                    <button type="submit" class="btn btn-primary btn-rounded">
+                        Selengkapnya <i class="bi bi-chevron-right"></i> 
                     </button>
                     <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup

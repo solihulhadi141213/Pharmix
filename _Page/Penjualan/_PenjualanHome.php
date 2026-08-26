@@ -21,17 +21,13 @@
     <section class="section dashboard">
         <div class="row">
             <div class="col-md-12">
-                <?php
-                    echo '
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <small>
-                                Berikut ini adalah halaman untuk mengelola transaksi penjualan. Setiap aktivitas penjualan dicatat pada halaman ini. 
-                                Untuk penjualan terhadap anggota harus dicatat informasi anggotanya sehingga data penjualan terhubung dengan riwayat belanja anggota.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </small>
-                        </div>
-                    ';
-                ?>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <small>
+                        Berikut ini adalah halaman untuk mengelola transaksi penjualan. Setiap aktivitas penjualan dicatat pada halaman ini. 
+                        Untuk penjualan terhadap anggota harus dicatat informasi anggotanya sehingga data penjualan terhubung dengan riwayat belanja anggota.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </small>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -106,10 +102,10 @@
                                 </small>
                             </div>
                             <div class="col-6 text-end">
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="prev_button">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button">
                                     <i class="bi bi-chevron-left"></i>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="next_button">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button">
                                     <i class="bi bi-chevron-right"></i>
                                 </button>
                             </div>
@@ -124,30 +120,18 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-md-10 mb-2">
+                            <div class="col-8">
                                 <b class="card-title"> 
                                     <i class="bi bi-table"></i> Estimasi Laba Penjualan
                                 </b>
                             </div>
-                            <div class="col-12 col-sm-12 col-md-2 mb-2">
-                                <a class="btn btn-md btn-outline-dark btn-rounded btn-block" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i> Opsi Lanjutan
+                            <div class="col-4 text-end">
+                                <a class="btn btn-md btn-secondary btn-floating" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalFilterLaba">
+                                    <i class="bi bi-funnel"></i>
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Option</h6>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalFilterLaba">
-                                            <i class="bi bi-funnel"></i> Filter
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalExportLaba">
-                                            <i class="bi bi-cloud-arrow-down"></i> Export
-                                        </a>
-                                    </li>
-                                </ul>
+                                <a class="btn btn-md btn-secondary btn-floating" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalExportLaba">
+                                    <i class="bi bi-download"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -189,10 +173,10 @@
                                 </small>
                             </div>
                             <div class="col-6 text-end">
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="prev_button_laba">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button_laba">
                                     <i class="bi bi-chevron-left"></i>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="next_button_laba">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button_laba">
                                     <i class="bi bi-chevron-right"></i>
                                 </button>
                             </div>

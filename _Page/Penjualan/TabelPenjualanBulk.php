@@ -10,8 +10,16 @@
         echo '
             <tr>
                 <td colspan="9" class="text-center text-danger">
+                    <h1><i class="bi bi-exclamation-triangle"></i></h1>
                     Sesi Akses Sudah Berakhir! Silahkan Login Ulang
                 </td>
+            </tr>
+            <tr>
+                <td colspan="5" class="text-end"><b>Jumlah</b></td>
+                <td class="text-start"><b id="sub_total_ppn">Rp 0</b></td>
+                <td class="text-start"><b id="sub_total_diskon">Rp 0</b></td>
+                <td class="text-start"><b id="sub_total_jumlah">Rp 0</b></td>
+                <td></td>
             </tr>
         ';
     }else{
@@ -20,8 +28,16 @@
             echo '
                 <tr>
                     <td colspan="9" class="text-center text-danger">
+                        <h1><i class="bi bi-exclamation-triangle"></i></h1>
                         Kategori Transaksi Tidak Boleh Kosong
                     </td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="text-end"><b>Jumlah</b></td>
+                    <td class="text-start"><b id="sub_total_ppn">Rp 0</b></td>
+                    <td class="text-start"><b id="sub_total_diskon">Rp 0</b></td>
+                    <td class="text-start"><b id="sub_total_jumlah">Rp 0</b></td>
+                    <td></td>
                 </tr>
             ';
         }else{
@@ -31,9 +47,17 @@
             if(empty($jml_data)){
                 echo '
                     <tr>
-                        <td colspan="9" class="text-center text-danger">
+                        <td colspan="9" class="text-center text-muted">
+                            <h1><i class="bi bi-inboxes"></i></h1>
                             Tidak Ada Data Rincian Yang Ditampilkan.
                         </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-end"><b>Jumlah</b></td>
+                        <td class="text-start"><b id="sub_total_ppn">Rp 0</b></td>
+                        <td class="text-start"><b id="sub_total_diskon">Rp 0</b></td>
+                        <td class="text-start"><b id="sub_total_jumlah">Rp 0</b></td>
+                        <td></td>
                     </tr>
                 ';
             }else{
@@ -73,17 +97,17 @@
                     $jumlah_diskon=$jumlah_diskon+$diskon;
                     echo '
                         <tr>
-                            <td><small>'.$no.'</small></td>
-                            <td><small>'.$kode_barang.'</small></td>
-                            <td><small>'.$nama_barang.'</small></td>
-                            <td><small>'.$qty.' '.$satuan.'</small></td>
-                            <td><small>'.$harga_rp.'</small></td>
-                            <td><small>'.$ppn_rp.'</small></td>
-                            <td><small>'.$diskon_rp.'</small></td>
-                            <td><small>'.$subtotal_rp.'</small></td>
+                            <td><small class="text-muted">'.$no.'</small></td>
+                            <td><small class="text-muted">'.$kode_barang.'</small></td>
+                            <td><small class="text-muted">'.$nama_barang.'</small></td>
+                            <td><small class="text-muted">'.$qty.' '.$satuan.'</small></td>
+                            <td><small class="text-muted">'.$harga_rp.'</small></td>
+                            <td><small class="text-muted">'.$ppn_rp.'</small></td>
+                            <td><small class="text-muted">'.$diskon_rp.'</small></td>
+                            <td><small class="text-muted">'.$subtotal_rp.'</small></td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-floating btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i>
+                                <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                                     <li class="dropdown-header text-start">
@@ -123,6 +147,8 @@
 ?>
 
 <script>
+
+    // Put Form
     var put_cash_penjualan=$("#put_cash_penjualan").val();
     var put_total_penjualan="<?php echo $jumlah_total; ?>";
 

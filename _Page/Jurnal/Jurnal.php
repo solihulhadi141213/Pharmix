@@ -39,7 +39,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-8"></div>
-                            <div class="col-md-2 text-center mt-3">
+                            <div class="col-md-4 text-center mt-3">
                                 <a class="btn btn-md btn-outline-dark btn-rounded btn-block" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-three-dots"></i> Opsi Lanjutan
                                 </a>
@@ -59,11 +59,11 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="col-md-2 text-center mt-3">
+                            <!-- <div class="col-md-2 text-center mt-3">
                                 <button type="button" class="btn btn-md btn-primary btn-block btn-rounded" data-bs-toggle="modal" data-bs-target="#ModalTambahJurnalKeuangan" title="Buat Jurnal Baru">
                                     <i class="bi bi-plus"></i> Buat Jurnal
                                 </button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="card-body" id="MenampilkanTabelJurnal">

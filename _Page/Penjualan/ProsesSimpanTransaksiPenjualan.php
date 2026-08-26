@@ -43,10 +43,10 @@
         }
         // Buat Variabel
         $kategori_transaksi = validateAndSanitizeInput($_POST['kategori_transaksi']);
-        $tanggal = validateAndSanitizeInput($_POST['tanggal']);
-        $jam = validateAndSanitizeInput($_POST['jam']);
-        $tanggal="$tanggal $jam";
-        $status = validateAndSanitizeInput($_POST['status']);
+        $tanggal            = validateAndSanitizeInput($_POST['tanggal']);
+        $jam                = validateAndSanitizeInput($_POST['jam']);
+        $tanggal            = "$tanggal $jam";
+        $status             = validateAndSanitizeInput($_POST['status']);
 
         //Variabel Lain Yang Tidak Wajib
         if(empty($_POST['put_id_anggota_for_add_penjualan'])){
@@ -123,7 +123,11 @@
                 $total_diskon = $row_sum['total_diskon'] ?? 0;
 
                 //Buat ID Transaksi
-                $id_transaksi_jual_beli=generateRandomString(36);
+                $kode_trans    = "PNJ";
+                $time_sekarang = date('ymdHis');
+                $randome_code  = GenerateKodeBarang(6);
+                $milliseconds  = round(microtime(true) * 1000);
+                $id_transaksi_jual_beli = "$kode_trans-$milliseconds-$randome_code";
 
                 //Karena ini transaksi penjualan maka
                 $id_supplier=null;

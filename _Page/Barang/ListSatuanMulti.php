@@ -38,12 +38,12 @@
                         <div class="col-4"><small>'.$satuan_multi.'</small></div>
                         <div class="col-3">
                             <small>
-                                <code class="text text-grayish">'.$konversi_multi.' '.$satuan_barang.'</code>
+                                <span class="text text-grayish">'.$konversi_multi.' '.$satuan_barang.'</span>
                             </small>
                         </div>
                         <div class="col-3">
                             <small>
-                                <code class="text text-grayish">'.$stok_multi.' '.$satuan_barang.'</code>
+                                <span class="text text-grayish">'.$stok_multi.' '.$satuan_barang.'</span>
                             </small>
                         </div>
                         <div class="col-2 text-center">

@@ -21,12 +21,12 @@
             $jumlah_barang = mysqli_num_rows(mysqli_query($Conn, "SELECT id_barang_harga FROM barang_harga WHERE id_barang_kategori_harga='$id_barang_kategori_harga'"));
             echo '
                 <tr>
-                    <td>'.$no.'</td>
-                    <td>'.$kategori_harga.'</td>
-                    <td>'.$jumlah_barang.' Item</td>
+                    <td><span class="text-muted">'.$no.'</span></td>
+                    <td><span class="text-muted">'.$kategori_harga.'</span></td>
+                    <td><span class="text-muted">'.$jumlah_barang.' Item</span></td>
                     <td>
-                        <button type="button" class="btn btn-sm btn-floating btn-outline-grayish" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-three-dots"></i>
+                        <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                             <li class="dropdown-header text-start">

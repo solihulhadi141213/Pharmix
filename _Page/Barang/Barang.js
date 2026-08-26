@@ -1,7 +1,6 @@
 //Fungsi Menampilkan Data Akses
 function ShowData() {
     var ProsesFilter = $('#ProsesFilter').serialize();
-    $('#TabelBarang').html('<tr><td class="text-center">Loading...</td></tr>');
     $.ajax({
         type    : 'POST',
         url     : '_Page/Barang/TabelBarang.php',
@@ -11,6 +10,7 @@ function ShowData() {
         }
     });
 }
+
 function formatRupiah(angka) {
     return 'Rp ' + parseFloat(angka).toLocaleString('id-ID', { minimumFractionDigits: 0 });
 }
@@ -78,13 +78,13 @@ function DetailBarangOnModal(id_barang) {
                 var multi_harga = response.multi_harga || [];
 
                 // Tempelkan Data ke Elemen yang Sesuai
-                $('.kode_barang').html(`<code class="text-grayish">${data.kode_barang}</code>`);
-                $('.nama_barang').html(`<code class="text-grayish">${data.nama_barang}</code>`);
-                $('.kategori_barang').html(`<code class="text-grayish">${data.kategori_barang}</code>`);
-                $('.satuan_barang').html(`<code class="text-grayish">${data.konversi} / ${data.satuan_barang}</code>`);
-                $('.stok_barang').html(`<code class="text-grayish">${parseFloat(data.stok_barang).toLocaleString('id-ID')} ${data.satuan_barang}</code>`);
-                $('.stok_minimum').html(`<code class="text-grayish">${parseFloat(data.stok_minimum).toLocaleString('id-ID')} ${data.satuan_barang} </code>`);
-                $('.harga_beli').html(`<code class="text-grayish">${data.harga_beli_format}</code>`);
+                $('.kode_barang').html(`<span class="text-grayish">${data.kode_barang}</span>`);
+                $('.nama_barang').html(`<span class="text-grayish">${data.nama_barang}</span>`);
+                $('.kategori_barang').html(`<span class="text-grayish">${data.kategori_barang}</span>`);
+                $('.satuan_barang').html(`<span class="text-grayish">${data.konversi} / ${data.satuan_barang}</span>`);
+                $('.stok_barang').html(`<span class="text-grayish">${parseFloat(data.stok_barang).toLocaleString('id-ID')} ${data.satuan_barang}</span>`);
+                $('.stok_minimum').html(`<span class="text-grayish">${parseFloat(data.stok_minimum).toLocaleString('id-ID')} ${data.satuan_barang} </span>`);
+                $('.harga_beli').html(`<span class="text-grayish">${data.harga_beli_format}</span>`);
                 $('#put_id_barang_detail').val(id_barang);
 
                 // Pastikan informasi_multi_harga kosong sebelum menambahkan data baru
@@ -94,7 +94,7 @@ function DetailBarangOnModal(id_barang) {
                 $.each(multi_harga, function (index, item) {
                     var row = `<div class="row mb-2">
                                 <div class="col-4"><small>${item.kategori_harga}</small></div>
-                                <div class="col-8"><small><code class="text-grayish">Rp ${item.harga_format} (${item.persen_laba} %)</code></small></div>
+                                <div class="col-8"><small><span class="text-grayish">Rp ${item.harga_format} (${item.persen_laba} %)</span></small></div>
                             </div>`;
                     $("#informasi_multi_harga").append(row);
                 });
@@ -128,6 +128,7 @@ function DetailBarangOnModal(id_barang) {
         },
     });
 }
+
 function DetailBarangOnPage(id_barang) {
     $.ajax({
         type 	    : 'POST',
@@ -305,22 +306,16 @@ function startQRScanner() {
 // STOP SCANNER
 // =====================================================
 function stopQRScanner() {
-
     scanning = false;
-
     if (videoStream) {
-
         videoStream.getTracks().forEach(function (track) {
             track.stop();
         });
-
         videoStream = null;
     }
-
     if (video) {
         video.srcObject = null;
     }
-
     console.log('Scanner dihentikan');
 }
 
@@ -329,86 +324,124 @@ function stopQRScanner() {
 // SCAN QR CODE
 // =====================================================
 function scanQRCode() {
-
     if (!scanning) {
         return;
     }
 
-    // Video belum siap
+    //------ Video belum siap
     if (
         video.readyState !== video.HAVE_ENOUGH_DATA ||
         video.videoWidth === 0 ||
         video.videoHeight === 0
     ) {
-
         requestAnimationFrame(scanQRCode);
         return;
     }
 
-
-    // Tentukan ukuran canvas
-    canvas.width = video.videoWidth;
+    //------ Tentukan ukuran & ambil gambar dari video
+    canvas.width  = video.videoWidth;
     canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-
-    // Ambil gambar dari video
-    context.drawImage(
-        video,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    // Ambil pixel gambar
-    const imageData = context.getImageData(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    // Scan QR
-    const code = jsQR(
-        imageData.data,
-        imageData.width,
-        imageData.height,
-        {
-            inversionAttempts: 'dontInvert'
-        }
-    );
-
+    //------ Ambil pixel gambar & scan QR
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: 'dontInvert'
+    });
 
     if (code) {
-
         console.log('QR TERDETEKSI:', code.data);
 
-        // Masukkan hasil ke input
+        //------ Masukkan hasil ke input & trigger event
         $('#get_resume_kode_barang')
             .val(code.data)
             .trigger('input')
-            .trigger('change');
+            .trigger('change')
+            .trigger('focus');
 
-        // Hentikan kamera
+        //------ Hentikan kamera
         stopQRScanner();
-
-        // Fokus ke hasil
-        $('#get_resume_kode_barang').trigger('focus');
         return;
     }
 
-    // Lanjut scan
+    //------ Lanjut scan frame berikutnya
     requestAnimationFrame(scanQRCode);
 }
 
 
 $(document).ready(function() {
+    
     //Menampilkan Data Pertama Kali
     ShowData();
 
+    //-----------------------------------------
+    // FILTER
+    //-----------------------------------------
+    
+    // Event ketika 'ModalFilter' ditampilkan
+    $('#ModalFilter').on('shown.bs.modal', function () {
+        $('#keyword').trigger('focus');
+    });
+
+    //Ketika keyword By Diubah
+    $('#keyword_by').change(function(){
+        var keyword_by = $('#keyword_by').val();
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Barang/FormFilterKeyword.php',
+            data 	    :  {keyword_by: keyword_by},
+            success     : function(data){
+                $('#FormFilterKeyword').html(data);
+            }
+        });
+    });
+
+    //Ketika Submit Filter
+    $('#ProsesFilter').submit(function(){
+        
+        //Kembalikan ke halaman 1
+        $('#page').val(1);
+
+        // Reload Data
+        ShowData();
+
+        //Tutup Modal
+        $('#ModalFilter').modal('hide');
+    });
+
+    //Pagging
+    $(document).on('click', '#next_button', function() {
+        var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
+        var next_page = page_now + 1;
+        $('#page').val(next_page);
+        ShowData(0);
+    });
+    $(document).on('click', '#prev_button', function() {
+        var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
+        var next_page = page_now - 1;
+        $('#page').val(next_page);
+        ShowData(0);
+    });
+
+
+    //Ketika class modal_scan_barang si click
+    $('.modal_scan_barang').click(function(){
+        $('#ModalScanBarang').modal('show');
+    });
+    
+    // Event ketika modal ditampilkan
+    $('#ModalScanBarang').on('shown.bs.modal', function () {
+        startQRScanner();
+    });
+
+    // Event ketika modal ditutup
+    $('#ModalScanBarang').on('hidden.bs.modal', function () {
+        stopQRScanner();
+    });
+
+    // ===============================================================
     //Ketika Membuka Halaman Mandiri Detail Barang
+    // ===============================================================
     if ($("#DetailBarangOnPage").length) {
         var id_barang_in_line=$('#put_id_barang_in_line_page').val();
         DetailBarangOnPage(id_barang_in_line);
@@ -482,63 +515,11 @@ $(document).ready(function() {
 
 
     }
-    //Ketika Batas Diubah
-    $('#batas').change(function(){
-        ShowData();
-    });
     
-    //Ketika keyword By Diubah
-    $('#keyword_by').change(function(){
-        var keyword_by = $('#keyword_by').val();
-        $.ajax({
-            type 	    : 'POST',
-            url 	    : '_Page/Barang/FormFilterKeyword.php',
-            data 	    :  {keyword_by: keyword_by},
-            success     : function(data){
-                $('#FormFilterKeyword').html(data);
-            }
-        });
-    });
-
-    //Ketika Submit Filter
-    $('#ProsesFilter').submit(function(){
-        //Kembalikan ke halaman 1
-        $('#page').val(1);
-        ShowData();
-        //Tutup Modal
-        $('#ModalFilter').modal('hide');
-    });
-
-    //Pagging
-    $(document).on('click', '#next_button', function() {
-        var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
-        var next_page = page_now + 1;
-        $('#page').val(next_page);
-        ShowData(0);
-    });
-    $(document).on('click', '#prev_button', function() {
-        var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
-        var next_page = page_now - 1;
-        $('#page').val(next_page);
-        ShowData(0);
-    });
-
-
-    //Ketika class modal_scan_barang si click
-    $('.modal_scan_barang').click(function(){
-        $('#ModalScanBarang').modal('show');
-    });
+    //-----------------------------------------
+    // KATEGORI HARGA
+    //-----------------------------------------
     
-    // Event ketika modal ditampilkan
-    $('#ModalScanBarang').on('shown.bs.modal', function () {
-        startQRScanner();
-    });
-
-    // Event ketika modal ditutup
-    $('#ModalScanBarang').on('hidden.bs.modal', function () {
-        stopQRScanner();
-    });
-
     //Modal Kategori Harga
     $('#ModalKategoriHarga').on('show.bs.modal', function (e) {
         $('#TabelKategoriHarga').html("Loading...");
@@ -549,6 +530,11 @@ $(document).ready(function() {
                 $('#TabelKategoriHarga').html(data);
             }
         });
+    });
+
+    // Modal Tambah Kategori harga
+    $('#ModalTambahKategoriHarga').on('shown.bs.modal', function () {
+        $('#nama_kategori_harga').trigger('focus');
     });
 
     //Proses Tambah Kategori Harga
@@ -1288,29 +1274,36 @@ $(document).ready(function() {
                         <div class="row mb-2">
                             <div class="col-4"><small>Kode Barang</small></div>
                             <div class="col-8">
-                                <small><code class="text text-grayish">${kode_barang}</code></small>
+                                <small class="text text-grayish">${kode_barang}</small>
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-4"><small>Nama/Merek</small></div>
                             <div class="col-8">
-                                <small><code class="text text-grayish">${nama_barang}</code></small>
+                                <small class="text text-grayish">${nama_barang}</small>
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-4"><small>Kategori</small></div>
                             <div class="col-8">
-                                <small><code class="text text-grayish">${kategori_barang}</code></small>
+                                <small class="text text-grayish">${kategori_barang}</small>
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-4"><small>Satuan</small></div>
                             <div class="col-8">
-                                <small><code class="text text-grayish">${satuan_barang}</code></small>
+                                <small class="text text-grayish">${satuan_barang}</small>
                             </div>
                         </div>
                         <div class="row mb-2 mt-3">
-                            <div class="col-12">Apakah anda yakin akan menghapus data barang tersebut?</div>
+                            <div class="col-12">
+                                <div class="alert alert-danger">
+                                    <small>
+                                        <b>Penting!</b> Data yang sudah dihapus tidak bisa dikembalikan lagi.<br>
+                                        <i>Apakah anda yakin akan menghapus data barang tersebut?</i>
+                                    </small>
+                                </div>
+                            </div>
                         </div>
                     `);
                     //Enable tombol

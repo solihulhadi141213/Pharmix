@@ -1778,7 +1778,8 @@ $(document).ready(function() {
             } else if (formatCetak === "Direct") {
                 var printWindow = window.open("", "", "width=800,height=600");
                 printWindow.document.write('<html><head><title>Cetak Nota</title>');
-                printWindow.document.write('<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">');
+                printWindow.document.write('<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">');
+                printWindow.document.write('<link rel="stylesheet" href="assets/css/style.css">');
                 printWindow.document.write('</head><body>');
                 printWindow.document.write(content.innerHTML);
                 printWindow.document.write('</body></html>');

@@ -57,27 +57,27 @@
                                             <i class="bi bi-qr-code-scan"></i>
                                         </button>
                                         <button type="button" class="btn btn-md btn-floating btn-primary" data-bs-toggle="modal" data-bs-target="#ModalCariBarang" title="Cari Barang">
-                                            <i class="bi bi-search"></i>
+                                            <i class="bi bi-plus-lg"></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="row mb-3">
+                                <div class="row mb-3 mt-3">
                                     <div class="col-md-12">
                                         <div class="table table-responsive mt-3">
                                             <table class="table table-hover table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th><b>No</b></th>
-                                                        <th><b>Kode</b></th>
-                                                        <th><b>Nama Barang</b></th>
-                                                        <th><b>QTY</b></th>
-                                                        <th><b>Harga</b></th>
-                                                        <th><b>PPN</b></th>
-                                                        <th><b>Diskon</b></th>
-                                                        <th><b>Subtotal</b></th>
-                                                        <th><b>Opsi</b></th>
+                                                <thead class="bg bg-success">
+                                                    <tr class="bg bg-success">
+                                                        <th class="bg-primary text-white"><b>No</b></th>
+                                                        <th class="bg-primary text-white"><b>Kode</b></th>
+                                                        <th class="bg-primary text-white"><b>Nama Barang</b></th>
+                                                        <th class="bg-primary text-white"><b>QTY</b></th>
+                                                        <th class="bg-primary text-white"><b>Harga</b></th>
+                                                        <th class="bg-primary text-white"><b>PPN</b></th>
+                                                        <th class="bg-primary text-white"><b>Diskon</b></th>
+                                                        <th class="bg-primary text-white"><b>Subtotal</b></th>
+                                                        <th class="bg-primary text-white"><b>Opsi</b></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="TabelPenjualanBulk">
@@ -162,12 +162,18 @@
                                 </div>
                             </div>
                             <div class="card-footer text-center">
-                                <button type="submit" class="btn btn-md btn-primary m-2" id="ButtonSimpanTransaksiPenjualan">
-                                    <i class="bi bi-save"></i> Simpan Transaksi
-                                </button>
-                                <button type="button" class="btn btn-md btn-warning m-2" data-bs-toggle="modal" data-bs-target="#ModalResetTransaksi">
-                                    <i class="bi bi-repeat"></i> Reset Transaksi
-                                </button>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <button type="submit" class="btn btn-lg btn-primary m-2 btn-block" id="ButtonSimpanTransaksiPenjualan">
+                                            <i class="bi bi-save"></i> Simpan Transaksi
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <button type="button" class="btn btn-lg btn-warning m-2 btn-block" data-bs-toggle="modal" data-bs-target="#ModalResetTransaksi">
+                                            <i class="bi bi-repeat"></i> Reset Transaksi
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>

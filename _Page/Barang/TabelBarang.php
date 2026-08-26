@@ -9,7 +9,7 @@
     if(empty($SessionIdAkses)){
         echo '
             <tr>
-                <td colspan="7" class="text-center text-danger">
+                <td colspan="9" class="text-center text-danger">
                     Sesi Akses Sudah Berakhir! Silahkan Login Ulang
                 </td>
             </tr>
@@ -69,7 +69,7 @@
         if(empty($jml_data)){
             echo '
                 <tr>
-                    <td colspan="7" class="text-center text-danger">
+                    <td colspan="9" class="text-center text-danger">
                         Tidak Ada Data Yang Ditampilkan.
                     </td>
                 </tr>
@@ -91,22 +91,22 @@
                 }
             }
             while ($data = mysqli_fetch_array($query)) {
-                $id_barang= $data['id_barang'];
-                $kode_barang= $data['kode_barang'];
-                $nama_barang= $data['nama_barang'];
-                $kategori_barang= $data['kategori_barang'];
-                $satuan_barang= $data['satuan_barang'];
-                $konversi= $data['konversi'];
-                $harga_beli= $data['harga_beli'];
-                $harga_beli_rp = "Rp " . number_format($harga_beli,0,',','.');
-                $stok_barang= $data['stok_barang'];
-                $stok_barang_rp = "" . number_format($stok_barang,0,',','.');
+                $id_barang       = $data['id_barang'];
+                $kode_barang     = $data['kode_barang'];
+                $nama_barang     = $data['nama_barang'];
+                $kategori_barang = $data['kategori_barang'];
+                $satuan_barang   = $data['satuan_barang'];
+                $konversi        = $data['konversi'];
+                $harga_beli      = $data['harga_beli'];
+                $harga_beli_rp   = "Rp " . number_format($harga_beli,0,',','.');
+                $stok_barang     = $data['stok_barang'];
+                $stok_barang_rp  = "" . number_format($stok_barang,0,',','.');
                 echo '
                     <tr>
                         <td><small>'.$no.'</small></td>
                         <td>
                             <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailKode" data-id="'.$id_barang.'">
-                                <small class="text-info"><i class="bi bi-upc-scan"></i> '.$kode_barang.'</small>
+                                <small class="text-info">'.$kode_barang.'</small>
                             </a>
                         </td>
                         <td>
@@ -115,7 +115,8 @@
                             </a>
                         </td>
                         <td><small class="text text-muted">'.$kategori_barang.'</small></td>
-                        <td><small class="text text-muted">'.$stok_barang_rp.' '.$satuan_barang.'</small></td>
+                        <td><small class="text text-muted">'.$stok_barang_rp.'</small></td>
+                        <td><small class="text text-muted">'.$satuan_barang.'</small></td>
                         <td><small class="text text-muted">'.$harga_beli_rp.'</small></td>
                         <td>
                             <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">

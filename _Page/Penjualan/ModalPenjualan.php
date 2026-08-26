@@ -795,7 +795,7 @@
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="tipe_cetak" id="tipe_cetak_3" value="Direct">
+                                <input class="form-check-input" type="radio" name="tipe_cetak" id="tipe_cetak_3" value="Direct" checked>
                                 <label class="form-check-label" for="tipe_cetak_3">
                                     <small>Direct Print</small>
                                 </label>
