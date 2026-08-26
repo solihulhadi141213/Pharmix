@@ -58,15 +58,10 @@
                 $nama_supplier= $data['nama_supplier'];
                 $kontak_supplier= $data['kontak_supplier'];
                 echo '
-                    <tr>
+                    <tr class="pilih_supplier_ke_form_pembelian" data-id="'.$id_supplier.'" data-nama="'.$nama_supplier.'" style="cursor: pointer;">
                         <td><small>'.$no.'</small></td>
                         <td><small>'.$nama_supplier.'</small></td>
                         <td><small>'.$kontak_supplier.'</small></td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-floating btn-primary pilih_supplier_ke_form_pembelian" data-id="'.$id_supplier.'" data-nama="'.$nama_supplier.'">
-                                <i class="bi bi-check"></i>
-                            </button>
-                        </td>
                     </tr>
                 ';
                 $no++;

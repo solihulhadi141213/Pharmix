@@ -34,6 +34,7 @@
                 ';
             }else{
                 $id_transaksi_jual_beli=$_POST['id_transaksi_jual_beli'];
+                $id_transaksi_jual_beli = trim($_POST['id_transaksi_jual_beli']);
                 $mode=$_POST['mode'];
                 //keyword
                 if(!empty($_POST['keyword'])){

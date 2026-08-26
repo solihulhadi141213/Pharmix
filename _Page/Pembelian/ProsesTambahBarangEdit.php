@@ -3,6 +3,7 @@
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
+    include "../../_Config/FungsiAkses.php";
 
     // Time Zone
     date_default_timezone_set('Asia/Jakarta');
@@ -275,7 +276,10 @@
                                 diskon='$jumlah_diskon',
                                 ppn='$jumlah_ppn',
                                 total='$jumlah_subtotal',
-                                status='$status'
+                                status='$status',
+                                update_by_id='$SessionIdAkses',
+                                update_by_name='$SessionNama',
+                                update_at='$now'
                             WHERE id_transaksi_jual_beli='$id_transaksi_jual_beli'") or die(mysqli_error($Conn)); 
                             if($UpdateTransaksi){
                                 echo '

@@ -3,6 +3,7 @@
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
+    include "../../_Config/FungsiAkses.php";
 
     // Time Zone
     date_default_timezone_set('Asia/Jakarta');
@@ -65,21 +66,10 @@
                 }
             }
         }
-        if(empty($_POST['total'])){
-            $total=0;
-        }else{
-            $total=validateAndSanitizeInput($_POST['total']);
-        }
-        if(empty($_POST['cash'])){
-            $cash=0;
-        }else{
-            $cash=validateAndSanitizeInput($_POST['cash']);
-        }
-        if(empty($_POST['kembalian'])){
-            $kembalian=0;
-        }else{
-            $kembalian=validateAndSanitizeInput($_POST['kembalian']);
-        }
+        $total     = empty($_POST['total']) ? 0 : validateAndSanitizeInput($_POST['total']);
+        $cash      = empty($_POST['cash']) ? 0 : validateAndSanitizeInput($_POST['cash']);
+        $kembalian = empty($_POST['kembalian']) ? 0 : validateAndSanitizeInput($_POST['kembalian']);
+        
         //Hapus Titik Pada Nilai Angka Rupiah
         $total = str_replace('.', '', $total);
         $cash = str_replace('.', '', $cash);
@@ -103,6 +93,13 @@
                 ];
             }else{
 
+                // ==========================================
+                // MULAI TRANSAKSI DATABASE (START TRANSACTION)
+                // ==========================================
+                mysqli_begin_transaction($Conn);
+                $transaction_success = true;
+                $error_message = "";
+
                 // Query untuk menghitung total transaksi, total PPN, dan total diskon
                 $query_sum = "
                 SELECT 
@@ -119,238 +116,186 @@
                 $row_sum = $result_sum->fetch_assoc();
 
                 $total_transaksi = $row_sum['total_transaksi'] ?? 0;
-                $total_ppn = $row_sum['total_ppn'] ?? 0;
-                $total_diskon = $row_sum['total_diskon'] ?? 0;
+                $total_ppn       = $row_sum['total_ppn'] ?? 0;
+                $total_diskon    = $row_sum['total_diskon'] ?? 0;
+                $stmt_sum->close();
 
                 //Buat ID Transaksi
-                $kode_trans    = "PNJ";
-                $time_sekarang = date('ymdHis');
-                $randome_code  = GenerateKodeBarang(6);
-                $milliseconds  = round(microtime(true) * 1000);
+                $kode_trans             = "PNJ";
+                $time_sekarang          = date('ymdHis');
+                $randome_code           = GenerateKodeBarang(6);
+                $milliseconds           = round(microtime(true) * 1000);
                 $id_transaksi_jual_beli = "$kode_trans-$milliseconds-$randome_code";
-
-                //Karena ini transaksi penjualan maka
-                $id_supplier=null;
+                $id_supplier            = null;
 
                 //Insert Ke Database transaksi_jual_beli
                 $query = "INSERT INTO transaksi_jual_beli (
-                    id_transaksi_jual_beli, 
-                    id_anggota, 
-                    id_supplier, 
-                    kategori, 
-                    tanggal, 
-                    subtotal, 
-                    diskon, 
-                    ppn, 
-                    total, 
-                    cash, 
-                    kembalian, 
-                    status
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    id_transaksi_jual_beli, id_anggota, id_supplier, kategori, tanggal, 
+                    subtotal, diskon, ppn, total, cash, kembalian, status,
+                    creat_by_id, creat_by_name, creat_at, update_by_id, update_by_name, update_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                
                 $stmt = $Conn->prepare($query);
                 if ($stmt) {
                     $stmt->bind_param(
-                        "ssssssssssss",
-                        $id_transaksi_jual_beli,
-                        $id_anggota,
-                        $id_supplier,
-                        $kategori_transaksi,
-                        $tanggal,
-                        $total_transaksi,
-                        $total_diskon,
-                        $total_ppn,
-                        $total,
-                        $cash,
-                        $kembalian,
-                        $status
+                        "ssssssssssssississ",
+                        $id_transaksi_jual_beli, $id_anggota, $id_supplier, $kategori_transaksi, $tanggal,
+                        $total_transaksi, $total_diskon, $total_ppn, $total, $cash, $kembalian, $status,
+                        $SessionIdAkses, $SessionNama, $now, $SessionIdAkses, $SessionNama, $now
                     );
+                    
                     if ($stmt->execute()) {
+                        $stmt->close();
 
-                        //Jika Berhasil Input transaksi bulk ke transaksi rincian
-                        $jumlah_error=0;
+                        // Jika Berhasil Input transaksi bulk ke transaksi rincian
                         $error_item = [];
-                        $item_no=1;
-                        $query = mysqli_query($Conn, "SELECT*FROM transaksi_bulk WHERE id_akses='$SessionIdAkses' AND kategori='$kategori_transaksi' ORDER BY id_transaksi_bulk DESC");
-                        while ($data = mysqli_fetch_array($query)) {
-                            $id_transaksi_bulk= $data['id_transaksi_bulk'];
-                            $id_akses= $data['id_akses'];
-                            $kategori= $data['kategori'];
-                            $id_barang= $data['id_barang'];
-                            $nama_barang= $data['nama_barang'];
-                            $satuan= $data['satuan'];
-                            $qty= $data['qty'];
-                            $harga= $data['harga'];
-                            $ppn= $data['ppn'];
-                            $diskon= $data['diskon'];
-                            $subtotal= $data['subtotal'];
+                        $item_no = 1;
+                        $query_bulk = mysqli_query($Conn, "SELECT * FROM transaksi_bulk WHERE id_akses='$SessionIdAkses' AND kategori='$kategori_transaksi' ORDER BY id_transaksi_bulk DESC");
+                        
+                        while ($data = mysqli_fetch_array($query_bulk)) {
+                            $id_transaksi_bulk = $data['id_transaksi_bulk'];
+                            $id_barang         = $data['id_barang'];
+                            $nama_barang       = $data['nama_barang'];
+                            $satuan            = $data['satuan'];
+                            $qty               = $data['qty'];
+                            $harga             = $data['harga'];
+                            $ppn               = $data['ppn'];
+                            $diskon            = $data['diskon'];
+                            $subtotal          = $data['subtotal'];
 
                             //Buka Harga Beli Barang
-                            $harga_beli=GetDetailData($Conn, 'barang', 'id_barang', $id_barang, 'harga_beli');
+                            $harga_beli = GetDetailData($Conn, 'barang', 'id_barang', $id_barang, 'harga_beli');
                             if(empty($harga_beli)){
-                                $harga_beli=0;
+                                $harga_beli = 0;
                             }
+
                             //Simpan Data ke tabel transaksi_jual_beli_rincian
                             $query2 = "INSERT INTO transaksi_jual_beli_rincian (
-                                id_transaksi_jual_beli,
-                                id_barang,
-                                nama_barang,
-                                satuan,
-                                qty,
-                                hpp,
-                                harga,
-                                ppn,
-                                diskon,
-                                subtotal
+                                id_transaksi_jual_beli, id_barang, nama_barang, satuan, qty, hpp, harga, ppn, diskon, subtotal
                             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                            // Persiapkan statement ke 2
+                            
                             $stmt2 = mysqli_prepare($Conn, $query2);
                             if (!$stmt2) {
-                                $jumlah_error=$jumlah_error+1;
-                                $error_item[]="Error Statment in item $item_no";
-                            }else{
-                                // Bind parameter ke statement
+                                $transaction_success = false;
+                                $error_item[] = "Error Statment in item $item_no";
+                                break;
+                            } else {
                                 mysqli_stmt_bind_param($stmt2, "sissssssss", 
-                                    $id_transaksi_jual_beli, 
-                                    $id_barang, 
-                                    $nama_barang, 
-                                    $satuan, 
-                                    $qty, 
-                                    $harga_beli, 
-                                    $harga, 
-                                    $ppn,
-                                    $diskon,
-                                    $subtotal
+                                    $id_transaksi_jual_beli, $id_barang, $nama_barang, $satuan, $qty, $harga_beli, $harga, $ppn, $diskon, $subtotal
                                 );
                             
-                                // Eksekusi statement
                                 $Input2 = mysqli_stmt_execute($stmt2);
+                                mysqli_stmt_close($stmt2);
 
-                                // Cek apakah query berhasil dijalankan
                                 if ($Input2) {
-                                    
                                     //Jika Berhasil Hapus Bulk
-                                    $HapusBulk = mysqli_query($Conn, "DELETE FROM transaksi_bulk WHERE id_transaksi_bulk='$id_transaksi_bulk'") or die(mysqli_error($Conn));
+                                    $HapusBulk = mysqli_query($Conn, "DELETE FROM transaksi_bulk WHERE id_transaksi_bulk='$id_transaksi_bulk'");
                                     if ($HapusBulk) {
                                         //Jika Hapus Berhasil Lakukan Update Data Stok Barang
-
-                                        //Buka Stok lama
-                                        $stok_barang_lama=GetDetailData($Conn, 'barang', 'id_barang', $id_barang, 'stok_barang');
-
-                                        //Buka nilai konversi
-                                        $konversi=GetDetailData($Conn, 'barang', 'id_barang', $id_barang, 'konversi');
-
-                                        //Jika Satuan Yang Digunakan Adalah Multi
-                                        $konversi_multi=GetDetailData($Conn, 'barang_satuan', 'satuan_multi', $satuan, 'konversi_multi');
+                                        $stok_barang_lama = GetDetailData($Conn, 'barang', 'id_barang', $id_barang, 'stok_barang');
+                                        $konversi         = GetDetailData($Conn, 'barang', 'id_barang', $id_barang, 'konversi');
+                                        $konversi_multi   = GetDetailData($Conn, 'barang_satuan', 'satuan_multi', $satuan, 'konversi_multi');
+                                        
                                         if(!empty($konversi_multi)){
-                                            $qty=$qty*($konversi_multi/$konversi);
-
-                                            //Update Stok Untuk kategori Penjualan
-                                            if($kategori_transaksi=="Penjualan"){
-                                                $stok_barang=$stok_barang_lama-$qty;
-                                            }else{
-                                                $stok_barang=$stok_barang_lama+$qty;
+                                            $qty_converted = $qty * ($konversi_multi / $konversi);
+                                            if($kategori_transaksi == "Penjualan"){
+                                                $stok_barang = $stok_barang_lama - $qty_converted;
+                                            } else {
+                                                $stok_barang = $stok_barang_lama + $qty_converted;
                                             }
-                                            
-                                        }else{
-                                            //Jika satuan yang digunakan adalah utama
-                                            if($kategori_transaksi=="Penjualan"){
-                                                $stok_barang=$stok_barang_lama-$qty;
-                                            }else{
-                                                $stok_barang=$stok_barang_lama+$qty;
+                                        } else {
+                                            if($kategori_transaksi == "Penjualan"){
+                                                $stok_barang = $stok_barang_lama - $qty;
+                                            } else {
+                                                $stok_barang = $stok_barang_lama + $qty;
                                             }
                                         }
 
-                                        //Proses Update
-                                        $update_barang = mysqli_query($Conn,"UPDATE barang SET 
-                                            stok_barang='$stok_barang'
-                                        WHERE id_barang='$id_barang'") or die(mysqli_error($Conn)); 
-                                        if($update_barang){
-                                            $jumlah_error=$jumlah_error+0;
-                                        }else{
-                                            $jumlah_error=$jumlah_error+1;
-                                            $error_item[]="Error Update in item $item_no";
+                                        //Proses Update Stok
+                                        $update_barang = mysqli_query($Conn, "UPDATE barang SET stok_barang='$stok_barang' WHERE id_barang='$id_barang'"); 
+                                        if(!$update_barang){
+                                            $transaction_success = false;
+                                            $error_item[] = "Error Update in item $item_no";
+                                            break;
                                         }
-                                    }else{
-                                        $jumlah_error=$jumlah_error+1;
-                                        $error_item[]="Error Delete in item $item_no";
+                                    } else {
+                                        $transaction_success = false;
+                                        $error_item[] = "Error Delete in item $item_no";
+                                        break;
                                     }
-                                }else{
-                                    $jumlah_error=$jumlah_error+1;
-                                    $error_item[]="Error Input in item $item_no";
+                                } else {
+                                    $transaction_success = false;
+                                    $error_item[] = "Error Input in item $item_no";
+                                    break;
                                 }
                             }
                             $item_no++;
                         }
-                        $error_item_list=implode(',', $error_item);
-                        //Jika Ada Error
-                        if(!empty($jumlah_error)){
-                            $response = [
-                                "status" => "Error",
-                                "message" => "Ada Beberapa Item Barang Yang Gagal Ditangani.Data :  $error_item_list"
-                            ];
-                        }else{
 
-                            //Format tanggal
-                            $tanggal_jurnal=date('Y-m-d',strtotime($tanggal));
-
-                            //Hitung HPP Penjualan
-                            $query_hpp = "SELECT SUM(hpp * qty) AS total_hpp 
-                                    FROM transaksi_jual_beli_rincian 
-                                    WHERE id_transaksi_jual_beli = ?";
-
-                            // Siapkan statement
+                        // Jika rincian & stok sukses, lanjut hitung HPP dan Auto Jurnal
+                        if ($transaction_success) {
+                            $tanggal_jurnal = date('Y-m-d', strtotime($tanggal));
+                            
+                            // Hitung HPP Penjualan
+                            $query_hpp = "SELECT SUM(hpp * qty) AS total_hpp FROM transaksi_jual_beli_rincian WHERE id_transaksi_jual_beli = ?";
                             $stmt_hpp = $Conn->prepare($query_hpp);
-                            $stmt_hpp->bind_param("s", $id_transaksi_jual_beli); // "s" untuk tipe string
-
-                            // stmt_hpp statement
+                            $stmt_hpp->bind_param("s", $id_transaksi_jual_beli);
                             $stmt_hpp->execute();
-
-                            // Ambil hasil
                             $result_hpp = $stmt_hpp->get_result();
                             $row_hpp = $result_hpp->fetch_assoc();
                             $total_hpp = $row_hpp['total_hpp'] ?? 0;
+                            $stmt_hpp->close();
                             
-                            //Simpan Auto Jurnal Berdasarkan Kategori Transaksi
-                            if($kategori_transaksi=="Penjualan"){
-                                $auto_jurnal=AutoJurnalPenjualan($Conn, $kategori_transaksi, $tanggal_jurnal, $id_transaksi_jual_beli, $total, $cash, $total_hpp, $status);
-                            }else{
-                                $auto_jurnal=AutoJurnalReturPenjualan($Conn, $kategori_transaksi, $tanggal_jurnal, $id_transaksi_jual_beli, $total, $cash, $total_hpp, $status);
+                            // Simpan Auto Jurnal Berdasarkan Kategori Transaksi
+                            if($kategori_transaksi == "Penjualan"){
+                                $auto_jurnal = AutoJurnalPenjualan($Conn, $kategori_transaksi, $tanggal_jurnal, $id_transaksi_jual_beli, $total, $cash, $total_hpp, $status);
+                            } else {
+                                $auto_jurnal = AutoJurnalReturPenjualan($Conn, $kategori_transaksi, $tanggal_jurnal, $id_transaksi_jual_beli, $total, $cash, $total_hpp, $status);
                             }
                             
-                            if($auto_jurnal!=="Success"){
-                                $response = [
-                                    "status" => "Error",
-                                    "message" => $auto_jurnal
-                                ];
-                            }else{
-                                $kategori_log="Transaksi Penjualan";
-                                $deskripsi_log="Tambah Transaksi Penjualan";
-                                $InputLog=addLog($Conn,$SessionIdAkses,$now,$kategori_log,$deskripsi_log);
-                                if($InputLog=="Success"){
-                                    $response = [
-                                        "status" => "Success",
-                                        "message" => "Tambah Transaksi Penjualan Berhasil!",
-                                        "id_transaksi_jual_beli" => $id_transaksi_jual_beli,
-                                    ];
-                                }else{
-                                    $response = [
-                                        "status" => "Error",
-                                        "message" => "Terjadi kesalahan pada saat menyimpan log aktivitas"
-                                    ];
+                            if($auto_jurnal !== "Success"){
+                                $transaction_success = false;
+                                $error_message = $auto_jurnal;
+                            } else {
+                                $kategori_log  = "Transaksi Penjualan";
+                                $deskripsi_log = "Tambah Transaksi Penjualan";
+                                $InputLog      = addLog($Conn, $SessionIdAkses, $now, $kategori_log, $deskripsi_log);
+                                
+                                if($InputLog !== "Success"){
+                                    $transaction_success = false;
+                                    $error_message = "Terjadi kesalahan pada saat menyimpan log aktivitas";
                                 }
                             }
+                        } else {
+                            $error_item_list = implode(',', $error_item);
+                            $error_message = "Ada Beberapa Item Barang Yang Gagal Ditangani. Data: $error_item_list";
                         }
+
                     } else {
-                        $response = [
-                            "status" => "Error",
-                            "message" => "Terjadi kesalahan pada saat input ke database <br>$stmt->error"
-                        ];
+                        $transaction_success = false;
+                        $error_message = "Terjadi kesalahan pada saat input ke database <br>" . $stmt->error;
+                        $stmt->close();
                     }
-                    $stmt_sum->close();
                 } else {
+                    $transaction_success = false;
+                    $error_message = "Terjadi kesalahan pada saat mempersiapkan statement database";
+                }
+
+                // ==========================================
+                // KEPUTUSAN COMMIT / ROLLBACK TRANSAKSI
+                // ==========================================
+                if ($transaction_success) {
+                    mysqli_commit($Conn);
+                    $response = [
+                        "status" => "Success",
+                        "message" => "Tambah Transaksi Penjualan Berhasil!",
+                        "id_transaksi_jual_beli" => $id_transaksi_jual_beli,
+                    ];
+                } else {
+                    mysqli_rollback($Conn);
                     $response = [
                         "status" => "Error",
-                        "message" => "Terjadi kesalahan pada saat mempersiapkan statement database"
+                        "message" => $error_message
                     ];
                 }
             }

@@ -3,6 +3,7 @@
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
+    include "../../_Config/FungsiAkses.php";
 
     // Time Zone
     date_default_timezone_set('Asia/Jakarta');
@@ -52,7 +53,12 @@
         }
 
         // Proses Update Transaksi
-        $query = "UPDATE transaksi_jual_beli SET id_supplier = $id_supplier WHERE id_transaksi_jual_beli = '$id_transaksi_jual_beli'";
+        $query = "UPDATE transaksi_jual_beli SET 
+        id_supplier = $id_supplier, 
+        update_by_id='$SessionIdAkses', 
+        update_by_name='$SessionNama', 
+        update_at='$now' 
+        WHERE id_transaksi_jual_beli = '$id_transaksi_jual_beli'";
         $UpdateTransaksi = mysqli_query($Conn, $query) or die(mysqli_error($Conn)); 
 
         if ($UpdateTransaksi) {

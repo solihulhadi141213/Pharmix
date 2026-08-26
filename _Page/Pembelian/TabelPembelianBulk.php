@@ -10,8 +10,16 @@
         echo '
             <tr>
                 <td colspan="9" class="text-center text-danger">
+                    <h1 class="bi bi-exclamation-triangle"></h1>
                     Sesi Akses Sudah Berakhir! Silahkan Login Ulang
                 </td>
+            </tr>
+            <tr>
+                <td colspan="5" class="text-end"><b>Jumlah</b></td>
+                <td class="text-start"><b id="sub_total_ppn">Rp 0</b></td>
+                <td class="text-start"><b id="sub_total_diskon">Rp 0</b></td>
+                <td class="text-start"><b id="sub_total_jumlah">Rp 0</b></td>
+                <td></td>
             </tr>
         ';
     }else{
@@ -20,8 +28,16 @@
             echo '
                 <tr>
                     <td colspan="9" class="text-center text-danger">
+                        <h1 class="bi bi-exclamation-triangle"></h1>
                         Kategori Transaksi Tidak Boleh Kosong
                     </td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="text-end"><b>Jumlah</b></td>
+                    <td class="text-start"><b id="sub_total_ppn">Rp 0</b></td>
+                    <td class="text-start"><b id="sub_total_diskon">Rp 0</b></td>
+                    <td class="text-start"><b id="sub_total_jumlah">Rp 0</b></td>
+                    <td></td>
                 </tr>
             ';
         }else{
@@ -31,9 +47,17 @@
             if(empty($jml_data)){
                 echo '
                     <tr>
-                        <td colspan="9" class="text-center text-danger">
+                        <td colspan="9" class="text-center text-muted">
+                            <h1 class="bi bi-inboxes"></h1>
                             Tidak Ada Data Rincian Yang Ditampilkan.
                         </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-end"><b>Jumlah</b></td>
+                        <td class="text-start"><b id="sub_total_ppn">Rp 0</b></td>
+                        <td class="text-start"><b id="sub_total_diskon">Rp 0</b></td>
+                        <td class="text-start"><b id="sub_total_jumlah">Rp 0</b></td>
+                        <td></td>
                     </tr>
                 ';
             }else{
@@ -82,8 +106,8 @@
                             <td><small>'.$diskon_rp.'</small></td>
                             <td><small>'.$subtotal_rp.'</small></td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-floating btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i>
+                                <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                                     <li class="dropdown-header text-start">

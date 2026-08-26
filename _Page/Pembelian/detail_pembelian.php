@@ -50,23 +50,33 @@
                 ];
             } else {
                 // Ambil Data Transaksi
-                $id_supplier = $Data['id_supplier'];
-                $kategori = $Data['kategori'];
-                $tanggal = $Data['tanggal'];
-                $subtotal = pembulatan_nilai($Data['subtotal']);
-                $ppn = pembulatan_nilai($Data['ppn']);
-                $diskon = pembulatan_nilai($Data['diskon']);
-                $total = pembulatan_nilai($Data['total']);
-                $cash = pembulatan_nilai($Data['cash']);
-                $kembalian = pembulatan_nilai($Data['kembalian']);
-                $status = $Data['status'];
+                $id_supplier    = $Data['id_supplier'];
+                $kategori       = $Data['kategori'];
+                $tanggal        = $Data['tanggal'];
+                $subtotal       = pembulatan_nilai($Data['subtotal']);
+                $ppn            = pembulatan_nilai($Data['ppn']);
+                $diskon         = pembulatan_nilai($Data['diskon']);
+                $total          = pembulatan_nilai($Data['total']);
+                $cash           = pembulatan_nilai($Data['cash']);
+                $kembalian      = pembulatan_nilai($Data['kembalian']);
+                $status         = $Data['status'];
+                $creat_by_id    = $Data['creat_by_id'];
+                $creat_by_name  = $Data['creat_by_name'];
+                $creat_at       = $Data['creat_at'];
+                $update_by_id   = $Data['update_by_id'];
+                $update_by_name = $Data['update_by_name'];
+                $update_at      = $Data['update_at'];
+
+                // Routing Creator & Updater
+                $Creator = (!empty($creat_by_id)) ? GetDetailData($Conn, 'akses', 'id_akses', $creat_by_id, 'nama_akses') : "$creat_by_name";
+                $Updater = (!empty($update_by_id)) ? GetDetailData($Conn, 'akses', 'id_akses', $update_by_id, 'nama_akses') : "$update_by_name";
 
                 // Format Rupiah
-                $subtotal_rp = "Rp " . number_format($subtotal, 0, ',', '.');
-                $ppn_rp = "Rp " . number_format($ppn, 0, ',', '.');
-                $diskon_rp = "Rp " . number_format($diskon, 0, ',', '.');
-                $total_rp = "Rp " . number_format($total, 0, ',', '.');
-                $cash_rp = "Rp " . number_format($cash, 0, ',', '.');
+                $subtotal_rp  = "Rp " . number_format($subtotal, 0, ',', '.');
+                $ppn_rp       = "Rp " . number_format($ppn, 0, ',', '.');
+                $diskon_rp    = "Rp " . number_format($diskon, 0, ',', '.');
+                $total_rp     = "Rp " . number_format($total, 0, ',', '.');
+                $cash_rp      = "Rp " . number_format($cash, 0, ',', '.');
                 $kembalian_rp = "Rp " . number_format($kembalian, 0, ',', '.');
 
                 // Ambil Nama Supplier
@@ -119,23 +129,28 @@
 
                 // Data Response
                 $dataset = [
-                    "id_supplier" => $id_supplier,
-                    "nama_supplier" => $nama_supplier,
-                    "kategori" => $kategori,
-                    "tanggal" => $tanggal,
-                    "subtotal" => $subtotal,
-                    "subtotal_rp" => $subtotal_rp,
-                    "ppn" => $ppn,
-                    "ppn_rp" => $ppn_rp,
-                    "diskon" => $diskon,
-                    "diskon_rp" => $diskon_rp,
-                    "total" => $total,
-                    "total_rp" => $total_rp,
-                    "cash" => $cash,
-                    "cash_rp" => $cash_rp,
-                    "kembalian" => $kembalian,
-                    "kembalian_rp" => $kembalian_rp,
-                    "status" => $status,
+                    "id_transaksi_jual_beli" => $id_transaksi_jual_beli,
+                    "id_supplier"            => $id_supplier,
+                    "nama_supplier"          => $nama_supplier,
+                    "kategori"               => $kategori,
+                    "tanggal"                => $tanggal,
+                    "subtotal"               => $subtotal,
+                    "subtotal_rp"            => $subtotal_rp,
+                    "ppn"                    => $ppn,
+                    "ppn_rp"                 => $ppn_rp,
+                    "diskon"                 => $diskon,
+                    "diskon_rp"              => $diskon_rp,
+                    "total"                  => $total,
+                    "total_rp"               => $total_rp,
+                    "cash"                   => $cash,
+                    "cash_rp"                => $cash_rp,
+                    "kembalian"              => $kembalian,
+                    "kembalian_rp"           => $kembalian_rp,
+                    "status"                 => $status,
+                    "creat_at"               => $creat_at,
+                    "Creator"                => $Creator,
+                    "update_at"              => $update_at,
+                    "Updater"                => $Updater,
                 ];
 
                 // Response JSON

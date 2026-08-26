@@ -77,6 +77,7 @@
                         <input type="hidden" name="id_supplier_lama" value="<?php echo "$id_supplier_lama"; ?>">
                         <input type="hidden" name="id_supplier_baru" value="<?php echo "$id_supplier"; ?>">
                         <input type="hidden" name="mode" value="<?php echo "$mode"; ?>">
+
                         <div class="row mb-3">
                             <div class="col-4">
                                 <small>Supplier Sebelumnya</small>

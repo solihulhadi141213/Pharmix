@@ -47,15 +47,15 @@
             } else {
                 // Ambil Data Transaksi
                 $id_supplier = $Data['id_supplier'];
-                $kategori = $Data['kategori'];
-                $tanggal = $Data['tanggal'];
-                $subtotal = pembulatan_nilai($Data['subtotal']);
-                $ppn = pembulatan_nilai($Data['ppn']);
-                $diskon = pembulatan_nilai($Data['diskon']);
-                $total = pembulatan_nilai($Data['total']);
-                $cash = pembulatan_nilai($Data['cash']);
-                $kembalian = pembulatan_nilai($Data['kembalian']);
-                $status = $Data['status'];
+                $kategori    = $Data['kategori'];
+                $tanggal     = $Data['tanggal'];
+                $subtotal    = pembulatan_nilai($Data['subtotal']);
+                $ppn         = pembulatan_nilai($Data['ppn']);
+                $diskon      = pembulatan_nilai($Data['diskon']);
+                $total       = pembulatan_nilai($Data['total']);
+                $cash        = pembulatan_nilai($Data['cash']);
+                $kembalian   = pembulatan_nilai($Data['kembalian']);
+                $status      = $Data['status'];
 
                 // Format Rupiah
                 $subtotal_rp  = "" . number_format($subtotal, 0, ',', '.');
@@ -78,35 +78,36 @@
                 
                 //Tampilkan Data
                 echo '
-                    <div class="row mb-3">
-                        <div class="col-12 mb-3 text-center dashed-underline">
+                    <div class="row">
+                        <div class="col-12 mb-3 text-center">
                             <b>'.$title_page.'</b><br>
-                            <small>'.$alamat_bisnis.'</small><br>
-                            <small>Telp : '.$telepon_bisnis.'</small>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-4">
-                            <small>Tanggal/Jam</small>
-                        </div>
-                        <div class="col-8">
-                            <small class="text text-grayish">'.$tanggal.'</small>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-4">
-                            <small>Supplier</small>
-                        </div>
-                        <div class="col-8">
-                            <small class="text text-grayish">'.$nama_supplier.'</small>
+                            '.$alamat_bisnis.'<br>
+                            Telp : '.$telepon_bisnis.'
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-4">
-                            <small>Transaksi</small>
+                        <div class="col-12 text-center dashed-underline">
                         </div>
-                        <div class="col-8">
-                            <small class="text text-grayish">'.$kategori.'</small>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 mb-3 text-center">
+                            '.$id_transaksi_jual_beli.'
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4">Tgl/Jam</div>
+                        <div class="col-8 text-end">'.$tanggal.'</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4">Supplier/PBF</div>
+                        <div class="col-8 text-end">'.$nama_supplier.'</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-4">Transaksi</div>
+                        <div class="col-8  text-end">'.$kategori.'</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 text-center dashed-underline">
                         </div>
                     </div>
                 ';
@@ -115,42 +116,59 @@
                 echo '      <table width="100%">';
                 echo '
                     <tr>
-                        <td><small>Uraian</small></td>
-                        <td><small>Harga*Qty</small></td>
-                        <td><small>DSC</small></td>
-                        <td align="right"><small>Jumlah</small></td>
+                        <td><b>Uraian</b></td>
+                        <td><b>HRG*QTY</b></td>
+                        <td align="right"><b>JML</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <div class="row">
+                                <div class="col-12 mb-3 dashed-underline"></div>
+                            </div>
+                        </td>
                     </tr>
                 ';
                 $no=1;
                 $sum_subtotal=0;
                 $sum_ppn=0;
                 while ($data_rincian = $result_rincian->fetch_assoc()) {
-                    $nama_barang=$data_rincian['nama_barang'];
-                    $qty=$data_rincian['qty'];
-                    $harga=$data_rincian['harga'];
-                    $ppn_rincian=$data_rincian['ppn'];
-                    $diskon_rincian=$data_rincian['diskon'];
+                    $nama_barang    = $data_rincian['nama_barang'];
+                    $qty            = $data_rincian['qty'];
+                    $harga          = $data_rincian['harga'];
+                    $ppn_rincian    = $data_rincian['ppn'];
+
+                    // Menentukan Diskon
+                    $diskon_rincian =0;
+                    $diskon_rincian_format ="";
+                    if(!empty($data_rincian['diskon'])){
+                        $diskon_rincian = $data_rincian['diskon'];
+                        if($diskon_rincian>0){
+                            $diskon_rincian = pembulatan_nilai($diskon_rincian);
+                            $diskon_rincian_format = "" . number_format($data_rincian['diskon'], 0, ',', '.');
+                            $diskon_rincian_format ="<br>$diskon_rincian_format";
+                        }
+                    }
+                    
                     //Bulatkan Nilai
-                    $qty=pembulatan_nilai($qty);
-                    $harga=pembulatan_nilai($harga);
-                    $ppn_rincian=pembulatan_nilai($ppn_rincian);
-                    $diskon_rincian=pembulatan_nilai($diskon_rincian);
+                    $qty            = pembulatan_nilai($qty);
+                    $harga          = pembulatan_nilai($harga);
+                    $ppn_rincian    = pembulatan_nilai($ppn_rincian);
+                    
                     //Format RP
-                    $harga_format="" . number_format($data_rincian['harga'], 0, ',', '.');
-                    $diskon_rincian_format="" . number_format($data_rincian['diskon'], 0, ',', '.');
-                    $jumlah=$qty*$harga;
-                    $subtotal=$jumlah-$diskon_rincian;
-                    $subtotal_format="" . number_format($subtotal, 0, ',', '.');
+                    $harga_format          = "" . number_format($data_rincian['harga'], 0, ',', '.');
+                    $jumlah                = $qty*$harga;
+                    $subtotal              = $jumlah-$diskon_rincian;
+                    $subtotal_format       = "" . number_format($subtotal, 0, ',', '.');
+
 
                     //Arry
                     $sum_subtotal=$sum_subtotal+$subtotal;
                     $sum_ppn=$sum_ppn+$ppn_rincian;
                     echo '
                         <tr>
-                            <td><small><small class="text-dark">'.$nama_barang.'</small></small></td>
-                            <td><small><small class="text-dark">'.$harga_format.' * '.$qty.'</small></small></td>
-                            <td><small><small class="text-dark">'.$diskon_rincian_format.'</small></small></td>
-                            <td align="right"><small><small class="text-dark">'.$subtotal_format.'</small></small></td>
+                            <td>'.$nama_barang.' '.$diskon_rincian_format.'</td>
+                            <td>'.$harga_format.' * '.$qty.'</td>
+                            <td align="right">'.$subtotal_format.'</td>
                         </tr>
                     ';
                     $no++;
@@ -162,49 +180,40 @@
                 $total_penjualan_format= "" . number_format($total_penjualan, 0, ',', '.');
                 echo '
                     <tr>
-                        <td colspan="4"><br></td>
+                        <td colspan="3"><br></td>
                     </tr>
                     <tr>
-                        <td colspan="3">
-                            <small>SUBTOTAL</small>
-                        </td>
-                        <td align="right"><small class="text-dark">'.$sum_subtotal_format.'</small></td>
+                        <td colspan="2">SUBTOTAL</td>
+                        <td align="right">'.$sum_subtotal_format.'</td>
                     </tr>
                     <tr>
-                        <td colspan="3">
-                            <small>PPN</small>
+                        <td colspan="2">
+                            PPN
                         </td>
-                        <td align="right"><small class="text-dark">'.$sum_ppn_format.'</small></td>
+                        <td align="right">'.$sum_ppn_format.'</td>
                     </tr>
                     <tr>
-                        <td colspan="3">
-                            <small>TOTAL</small>
+                        <td colspan="2">
+                            TOTAL
                         </td>
-                        <td align="right"><small class="text-dark">'.$total_penjualan_format.'</small></td>
+                        <td align="right">'.$total_penjualan_format.'</td>
                     </tr>
                     <tr>
-                        <td colspan="3">
-                            <small>CASH/UANG</small>
+                        <td colspan="2">
+                            CASH/UANG
                         </td>
-                        <td align="right"><small class="text-dark">'.$cash_rp.'</small></td>
+                        <td align="right">'.$cash_rp.'</td>
                     </tr>
                     <tr>
-                        <td colspan="3">
-                            <small>KEMBALIAN</small>
+                        <td colspan="2">
+                            KEMBALIAN
                         </td>
-                        <td align="right"><small class="text-dark">'.$kembalian_rp.'</small></td>
+                        <td align="right">'.$kembalian_rp.'</td>
                     </tr>
                 ';
                 echo '      </table>';
                 echo '  </div>';
                 echo '</div>';
-                echo '
-                    <div class="row mb-3 ">
-                        <div class="col-12 mb-3 text-center dashed-underline">
-                           
-                        </div>
-                    </div>
-                ';
             }
         }
     }

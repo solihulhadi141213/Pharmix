@@ -19,8 +19,8 @@
                 </div>
             ';
         }else{
-            $id_barang=$_POST['id_barang'];
-            $id_transaksi_jual_beli=$_POST['id_transaksi_jual_beli'];
+            $id_barang              = $_POST['id_barang'];
+            $id_transaksi_jual_beli = trim($_POST['id_transaksi_jual_beli']);
             //Buka data Barang
             $QryBarang = mysqli_query($Conn,"SELECT * FROM barang WHERE id_barang='$id_barang'")or die(mysqli_error($Conn));
             $DataBarang= mysqli_fetch_array($QryBarang);
@@ -43,7 +43,14 @@
                 $konversi = ($konversi == floor($konversi)) ? (int)$konversi : $konversi;
 ?>
                 <input type="hidden" name="id_barang" value="<?php echo $id_barang;?>">
-                <input type="hidden" name="id_transaksi_jual_beli" value="<?php echo $id_transaksi_jual_beli;?>">
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <label for="id_transaksi_jual_beli_edit">ID Transaksi</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" name="id_transaksi_jual_beli" id="id_transaksi_jual_beli_edit" class="form-control" value="<?php echo "$id_transaksi_jual_beli"; ?>">
+                    </div>
+                </div>
                 <div class="row mb-3">
                     <div class="col-4">
                         <label for="nama_barang_edit">Nama Barang</label>

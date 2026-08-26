@@ -41,31 +41,33 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-8 mb-2 mt-2">
+                                <div class="col-8">
                                     <b class="card-title"># Detail Transaksi</b>
                                 </div>
-                                <div class="col-4 mb-2 mt-2 text-end">
-                                    <button type="button" class="btn btn-md btn-floating btn-dark button_kembali" title="Kembali">
+                                <div class="col-4 text-end">
+                                    <button type="button" class="btn btn-md btn-floating btn-primary button_kembali" title="Kembali">
                                         <i class="bi bi-chevron-left"></i>
                                     </button>
-                                    <button type="button" class="btn btn-md btn-floating btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#ModalEdit" data-id="<?php echo $id_transaksi_jual_beli; ?>" data-mode="Detail" title="Edit Transaksi Pembelian">
+                                    <button type="button" class="btn btn-md btn-floating btn-secondary" data-bs-toggle="modal" data-bs-target="#ModalEdit" data-id="<?php echo $id_transaksi_jual_beli; ?>" data-mode="Detail" title="Edit Transaksi Pembelian">
                                         <i class="bi bi-pencil"></i>
                                     </button>
-                                    <button type="button" class="btn btn-md btn-floating btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#ModalHapus" data-id="<?php echo $id_transaksi_jual_beli; ?>" data-mode="Detail" title="Hapus Transaksi">
+                                    <button type="button" class="btn btn-md btn-floating btn-secondary" data-bs-toggle="modal" data-bs-target="#ModalHapus" data-id="<?php echo $id_transaksi_jual_beli; ?>" data-mode="Detail" title="Hapus Transaksi">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="row mb-3">
+                            <div class="row mb-2 mt-3">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-4">
                                             <small>ID Transaksi</small>
                                         </div>
                                         <div class="col-8">
-                                            <small class="text text-dark text-decoration-underline" id="get_id_transaksi_jual_beli_detail"><?php echo "$id_transaksi_jual_beli"; ?></small>
+                                            <small class="text text-dark text-decoration-underline" id="get_id_transaksi_jual_beli_detail">
+                                                <?php echo "$id_transaksi_jual_beli"; ?>
+                                            </small>
                                         </div>
                                     </div>
                                 </div>
@@ -79,8 +81,8 @@
                         <div class="card-footer">
                             <div class="row mb-2 mt-2">
                                 <div class="col-md-12 mb-2 mt-2 text-center">
-                                    <button type="button" class="btn btn-md btn-rounded btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ModalCetak" data-id="<?php echo  "$id_transaksi_jual_beli"; ?>">
-                                        <i class="bi bi-printer"></i> Cetak Nota/Faktur (CTRL + P)
+                                    <button type="button" class="btn btn-lg btn-rounded btn-primary" data-bs-toggle="modal" data-bs-target="#ModalCetak" data-id="<?php echo  "$id_transaksi_jual_beli"; ?>">
+                                        <i class="bi bi-printer"></i> Cetak Nota/Faktur
                                     </button>
                                 </div>
                             </div>
@@ -97,8 +99,8 @@
                                     <b class="card-title"># Rincian Transaksi</b>
                                 </div>
                                 <div class="col-4 mb-2 mt-2 text-end">
-                                    <button type="button" class="btn btn-md btn-floating btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ModalListBarangEdit" title="Tambah Rincian Transaksi">
-                                        <i class="bi bi-plus"></i>
+                                    <button type="button" class="btn btn-md btn-floating btn-primary" data-bs-toggle="modal" data-bs-target="#ModalListBarangEdit" title="Tambah Rincian Transaksi">
+                                        <i class="bi bi-plus-lg"></i>
                                     </button>
                                 </div>
                             </div>
@@ -136,8 +138,8 @@
                                     <b class="card-title"># Jurnal Transaksi</b>
                                 </div>
                                 <div class="col-4 mb-2 mt-2 text-end">
-                                    <button type="button" class="btn btn-md btn-floating btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ModalTambahJurnal" data-id="<?php echo $id_transaksi_jual_beli; ?>" title="Tambah Uraian Jurnal Transaksi">
-                                        <i class="bi bi-plus"></i>
+                                    <button type="button" class="btn btn-md btn-floating btn-primary" data-bs-toggle="modal" data-bs-target="#ModalTambahJurnal" data-id="<?php echo $id_transaksi_jual_beli; ?>" title="Tambah Uraian Jurnal Transaksi">
+                                        <i class="bi bi-plus-lg"></i>
                                     </button>
                                 </div>
                             </div>
