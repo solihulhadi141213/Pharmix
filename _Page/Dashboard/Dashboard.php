@@ -23,6 +23,16 @@
                 <div class="card-body">
                     <div id="tanggal_menarik">Hari, 01 Januari 1900</div>
                     <div id="jam_menarik">00:00:00</div>
+                    <div class="dashboard-quick-actions">
+                        <a class="dashboard-quick-action" href="index.php?Page=Penjualan">
+                            <i class="bi bi-cart-dash" aria-hidden="true"></i>
+                            <span>Penjualan</span>
+                        </a>
+                        <a class="dashboard-quick-action" href="index.php?Page=Pembelian">
+                            <i class="bi bi-cart-plus" aria-hidden="true"></i>
+                            <span>Pembelian</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -36,7 +46,7 @@
                         <div class="col-xxl-3 col-md-12 col-12">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Master Obat</h5>
+                                    <h5 class="card-title">Inventaris</h5>
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-box"></i>
@@ -115,7 +125,7 @@
                         <div class="col-xxl-3 col-md-12 col-12">
                             <div class="card info-card transsaction-card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Beban Operasional</h5>
+                                    <h5 class="card-title">Operasional</h5>
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-arrow-left-right"></i>
@@ -148,18 +158,43 @@
                 
             </div>
             
-            <div class="row">
+            <div class="row dashboard-report-row">
                 <!-- Reports -->
-                <div class="col-md-12">
-                    <div class="card">
+                <div class="col-md-9 dashboard-report-column">
+                    <div class="card dashboard-report-card">
                         <div class="card-header">
                             <b class="card-title">
-                                Transaksi Penjualan & Pembelian Thn <?php echo date ('Y'); ?>
+                                Penjualan & Pembelian
                             </b>
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title" id="NamaTitleData"></h5>
-                            <div id="chart"></div>
+                            <div class="row mt-4 mb-4">
+                                <div class="col-12">
+                                    <h5 class="card-title" id="NamaTitleData"></h5>
+                                    <div id="chart"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 dashboard-report-column">
+                    <div class="card dashboard-report-card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <b class="card-title">Transaksi</b>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <small class="text text-grayish">Terbaru</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4 mt-4">
+                                <div class="col-12" id="transaksi_terbaru">
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

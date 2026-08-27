@@ -1193,8 +1193,55 @@ h6 {
   background: rgba(45, 212, 191, 0.1);
 }
 
-.sidebar-nav .nav-content a.active i {
+.sidebar-nav .nav-content-nested > li > a.active i {
   background-color: #5eead4;
+}
+
+.sidebar-nav .nav-content .nav-content-toggle {
+  padding: 10px 15px 10px 40px;
+  color: #edf0f5;
+}
+
+.sidebar-nav .nav-content .nav-content-toggle i {
+  font-size: 16px;
+  margin-right: 10px;
+  line-height: normal;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+.sidebar-nav .nav-content .nav-content-toggle > .bi-circle {
+  font-size: 6px;
+  margin-right: 8px;
+  line-height: 0;
+  border-radius: 50%;
+}
+
+.sidebar-nav .nav-content .nav-content-toggle.collapsed {
+  color: #edf0f5;
+}
+
+.sidebar-nav .nav-content .nav-content-toggle:hover,
+.sidebar-nav .nav-content .nav-content-toggle.active {
+  color: #5eead4;
+  background: rgba(45, 212, 191, 0.1);
+}
+
+.sidebar-nav .nav-content .nav-content-toggle .bi-chevron-down {
+  margin-right: 0;
+  transition: transform 0.2s ease-in-out;
+}
+
+.sidebar-nav .nav-content .nav-content-toggle:not(.collapsed) .bi-chevron-down {
+  transform: rotate(180deg);
+}
+
+.sidebar-nav .nav-content .nav-content-nested {
+  padding-top: 0;
+}
+
+.sidebar-nav .nav-content .nav-content-nested a {
+  padding-left: 65px;
 }
 
 /*--------------------------------------------------------------
@@ -1766,35 +1813,47 @@ body .title_page_app {
   border-radius: 8px; /* Opsional, untuk sudut membulat */
 }
 
-/* Card dengan Gambar Background */
+/* Card tanggal dan jam */
 #card_jam_menarik {
   padding: 15px;
   border-radius: 12px;
-  background: url('../../assets/img/calendar/calendar.jpg') no-repeat center center;
-  background-size: cover;
+  background: linear-gradient(120deg, #087f8c 0%, #19a974 52%, #7ac943 100%);
   position: relative;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border: 2px solid #fff;
   overflow: hidden;
 }
 
-/* Overlay Gelap di Atas Background */
 #card_jam_menarik::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Overlay hitam transparan */
+  width: 230px;
+  height: 230px;
+  top: -115px;
+  right: 8%;
+  border: 28px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
   z-index: 1;
-  border-radius: 12px;
 }
 
-/* Tampilan Tanggal */
-#tanggal_menarik {
+#card_jam_menarik::after {
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  right: -35px;
+  bottom: -80px;
+  border: 18px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+#card_jam_menarik .card-body {
   position: relative;
   z-index: 2;
+}
+
+#tanggal_menarik {
   font-size: 1.2rem;
   color: #fff;
   margin-bottom: 10px;
@@ -1803,10 +1862,7 @@ body .title_page_app {
   display: inline-block;
 }
 
-/* Tampilan Jam */
 #jam_menarik {
-  position: relative;
-  z-index: 2;
   font-size: 2rem;
   font-weight: bold;
   color: #fff;
@@ -1814,6 +1870,60 @@ body .title_page_app {
   padding: 10px 20px;
   border-radius: 6px;
   display: inline-block;
+}
+
+@media (min-width: 768px) {
+  .dashboard-report-row {
+    align-items: stretch;
+  }
+
+  .dashboard-report-column {
+    display: flex;
+  }
+
+  .dashboard-report-card {
+    flex: 1 1 auto;
+  }
+}
+
+.dashboard-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.dashboard-quick-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dashboard-quick-action:hover,
+.dashboard-quick-action:focus {
+  background: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.dashboard-quick-action i {
+  font-size: 1rem;
+}
+
+@media (max-width: 575px) {
+  .dashboard-quick-action {
+    flex: 1 1 130px;
+    justify-content: center;
+  }
 }
 
 

@@ -200,10 +200,25 @@ function tampilkanTanggal() {
     $('#tanggal_menarik').text(tanggal);
 }
 
+// Fungsi Untuk Menampilkan Transaksi Terbaru
+function TransaksiTerbaru() {
+
+    // Loading Data
+    $('#transaksi_terbaru').html('Loading...');
+    $.ajax({
+        type: 'POST',
+        url: '_Page/Dashboard/TransaksiTerbaru.php',
+        success: function(response) {
+            $('#transaksi_terbaru').html(response);
+        }
+    });
+}
+
 $(document).ready(function () {
     //Menampilkan Data Pertama Kali
     CountOfBarang();
     ShowGrafikSiimpanPinjam();
+    TransaksiTerbaru();
     //Jam Menarik
     tampilkanTanggal(); // Tampilkan tanggal saat halaman dimuat
     tampilkanJam();     // Tampilkan jam pertama kali
