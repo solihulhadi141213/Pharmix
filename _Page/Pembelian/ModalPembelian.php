@@ -691,12 +691,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="FormHapus">
                             
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="NotifikasiHapus">
                             <!-- Notifikasi Reset Transaksi Disini -->
                         </div>
@@ -988,7 +988,7 @@
                                 </div>
                                 <div class="col-8">
                                     <div class="input-group">
-                                        <span class="input-group-text">Rp</span>
+                                        <span class="input-group-text">%</span>
                                         <input type="text" name="ppn" id="ppn_edit_rincian" class="form-control form-money" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                     </div>
                                 </div>
@@ -999,7 +999,7 @@
                                 </div>
                                 <div class="col-8">
                                     <div class="input-group">
-                                        <span class="input-group-text">Rp</span>
+                                        <span class="input-group-text">%</span>
                                         <input type="text" name="diskon" id="diskon_edit_rincian" class="form-control form-money" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                     </div>
                                 </div>
@@ -1045,12 +1045,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="FormHapusRincian">
                             <!-- Form Tambah Bulk -->
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="NotifikasiHapusRincian">
                             <!-- Notifikasi Tambah Bulk Disini -->
                         </div>
@@ -1109,12 +1109,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="FormEditJurnal">
                             <!-- Form Tambah Jurnal Pembelian -->
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="NotifikasiEditJurnal">
                             <!-- Notifikasi Jurnal Pembelian Disini -->
                         </div>

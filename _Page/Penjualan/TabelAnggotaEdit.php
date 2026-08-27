@@ -55,22 +55,22 @@
                 if(empty($keyword)){
                     $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_anggota FROM anggota"));
                 }else{
-                    $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_anggota FROM anggota WHERE nama like '%$keyword%' OR nip like '%$keyword%'"));
+                    $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_anggota FROM anggota WHERE nama like '%$keyword%' OR nik like '%$keyword%'"));
                 }
                 if(empty($jml_data)){
                     echo '
                         <tr>
                             <td colspan="4" class="text-center text-danger">
-                                Tidak Ada Data Anggota Yang Ditampilkan.
+                                Tidak Ada Data Pasien Yang Ditampilkan.
                             </td>
                         </tr>
                     ';
                 }else{
                     echo '
                         <tr>
-                            <td class="text-end" colspan="4">
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalEditAnggota" data-id="0" data-transaksi="'.$id_transaksi_jual_beli.'" data-mode="'.$mode.'">
-                                    Kosongkan Anggota
+                            <td class="text-center" colspan="4">
+                                <a href="javascript:void(0);" class="text-danger" data-bs-toggle="modal" data-bs-target="#ModalEditAnggota" data-id="0" data-transaksi="'.$id_transaksi_jual_beli.'" data-mode="'.$mode.'">
+                                    <i class="bi bi-x-circle"></i> Kosongkan Pasien
                                 </a>
                             </td>
                         </tr>
@@ -80,22 +80,19 @@
                     if(empty($keyword)){
                         $query = mysqli_query($Conn, "SELECT*FROM anggota ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
                     }else{
-                        $query = mysqli_query($Conn, "SELECT*FROM anggota WHERE nama like '%$keyword%' OR nip like '%$keyword%' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
+                        $query = mysqli_query($Conn, "SELECT*FROM anggota WHERE nama like '%$keyword%' OR nik like '%$keyword%' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
                     }
                     while ($data = mysqli_fetch_array($query)) {
-                        $id_anggota= $data['id_anggota'];
-                        $nip= $data['nip'];
-                        $nama= $data['nama'];
+                        $id_anggota = $data['id_anggota'];
+                        $nik        = $data['nik'];
+                        $gender     = $data['gender'];
+                        $nama       = $data['nama'];
                         echo '
-                            <tr>
+                            <tr style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#ModalEditAnggota" data-id="'.$id_anggota.'" data-transaksi="'.$id_transaksi_jual_beli.'" data-mode="'.$mode.'">
                                 <td><small>'.$no.'</small></td>
                                 <td><small>'.$nama.'</small></td>
-                                <td><small>'.$nip.'</small></td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-floating btn-primary" data-bs-toggle="modal" data-bs-target="#ModalEditAnggota" data-id="'.$id_anggota.'" data-transaksi="'.$id_transaksi_jual_beli.'" data-mode="'.$mode.'">
-                                        <i class="bi bi-check"></i>
-                                    </button>
-                                </td>
+                                <td><small>'.$gender.'</small></td>
+                                <td><small>'.$nik.'</small></td>
                             </tr>
                         ';
                         $no++;

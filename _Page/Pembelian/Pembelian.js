@@ -446,8 +446,8 @@ function ShowDetailTransaksiInline(id_transaksi_jual_beli) {
                                 <td>${kolom_debet.toLocaleString('id-ID')}</td>
                                 <td class="text-right">${kolom_kredit.toLocaleString('id-ID')}</td>
                                 <td class="text-left">
-                                    <button type="button" class="btn btn-sm btn-floating btn-outline-dark" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-three-dots"></i>
+                                    <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                                         <li class="dropdown-header text-start">
@@ -1925,21 +1925,24 @@ $(document).ready(function() {
             dataType    : "json",
             success: function (response) {
                 if(response.status=="Success"){
-                    let dataset=response.dataset;
-                    let nama_barang=dataset.nama_barang;
-                    let satuan=dataset.satuan;
-                    let qty=dataset.qty;
-                    let harga=dataset.harga;
-                    let ppn=dataset.ppn;
-                    let diskon=dataset.diskon;
-                    let subtotal=dataset.subtotal;
+                    let dataset       = response.dataset;
+                    let nama_barang   = dataset.nama_barang;
+                    let satuan        = dataset.satuan;
+                    let qty           = dataset.qty;
+                    let harga         = dataset.harga;
+                    let ppn           = dataset.ppn;
+                    let ppn_persen    = dataset.ppn_persen;
+                    let diskon        = dataset.diskon;
+                    let diskon_persen = dataset.diskon_persen;
+                    let subtotal      = dataset.subtotal;
+                    
                     //Tempelkan Ke form
                     $("#put_nama_barang_edit_rincian").html(nama_barang);
                     $("#put_satuan_edit_rincian").html(satuan);
                     $("#qty_edit_rincian").val(qty);
                     $("#harga_edit_rincian").val(harga);
-                    $("#ppn_edit_rincian").val(ppn);
-                    $("#diskon_edit_rincian").val(diskon);
+                    $("#ppn_edit_rincian").val(ppn_persen);
+                    $("#diskon_edit_rincian").val(diskon_persen);
                     $("#jumlah_edit_rincian").val(subtotal);
 
                     // Event listener untuk input perubahan
@@ -2037,43 +2040,51 @@ $(document).ready(function() {
             dataType    : "json",
             success: function (response) {
                 if(response.status=="Success"){
-                    let dataset=response.dataset;
-                    let nama_barang=dataset.nama_barang;
-                    let satuan=dataset.satuan;
-                    let qty=dataset.qty;
-                    let harga_rp=dataset.harga_rp;
-                    let ppn_rp=dataset.ppn_rp;
-                    let diskon_rp=dataset.diskon_rp;
-                    let subtotal_rp=dataset.subtotal_rp;
+                    let dataset     = response.dataset;
+                    let nama_barang = dataset.nama_barang;
+                    let satuan      = dataset.satuan;
+                    let qty         = dataset.qty;
+                    let harga_rp    = dataset.harga_rp;
+                    let ppn_rp      = dataset.ppn_rp;
+                    let diskon_rp   = dataset.diskon_rp;
+                    let subtotal_rp = dataset.subtotal_rp;
 
                     //Tempelkan Pada Form
                     $("#FormHapusRincian").html(`
                         <diiv class="row mb-2">
                             <div class="col-4"><small>Nama Barang</small></div>
-                            <div class="col-8"><small class="text text-muted">${nama_barang}</small></div>
+                            <div class="col-8 text-end"><small class="text text-muted">${nama_barang}</small></div>
                         </diiv>
                         <diiv class="row mb-2">
                             <div class="col-4"><small>QTY/Satuan</small></div>
-                            <div class="col-8"><small class="text text-muted">${qty} ${satuan}</small></div>
+                            <div class="col-8 text-end"><small class="text text-muted">${qty} ${satuan}</small></div>
                         </diiv>
                         <diiv class="row mb-2">
                             <div class="col-4"><small>Harga (Rp)</small></div>
-                            <div class="col-8"><small class="text text-muted">${harga_rp}</small></div>
+                            <div class="col-8 text-end"><small class="text text-muted">${harga_rp}</small></div>
                         </diiv>
                         <diiv class="row mb-2">
                             <div class="col-4"><small>PPN (Rp)</small></div>
-                            <div class="col-8"><small class="text text-muted">${ppn_rp}</small></div>
+                            <div class="col-8 text-end"><small class="text text-muted">${ppn_rp}</small></div>
                         </diiv>
                         <diiv class="row mb-2">
                             <div class="col-4"><small>Diskon (Rp)</small></div>
-                            <div class="col-8"><small class="text text-muted">${diskon_rp}</small></div>
+                            <div class="col-8 text-end"><small class="text text-muted">${diskon_rp}</small></div>
                         </diiv>
                         <diiv class="row mb-2">
                             <div class="col-4"><small>Subtotal (Rp)</small></div>
-                            <div class="col-8"><small class="text text-muted">${subtotal_rp}</small></div>
+                            <div class="col-8 text-end"><small class="text text-muted">${subtotal_rp}</small></div>
                         </diiv>
                         <diiv class="row mb-2 mt-2">
-                            <div class="col-12">Apakah Anda Yakin Akan Menghapus Riincian Ini?</div>
+                            <div class="col-12">
+                                <div class="alert alert-danger text-center">
+                                    <small>
+                                        <b>Penting!</b><br>
+                                        Data Yang Sudah Dihapus Tidak Akan Bisa Dikembalikan Lagi.<br>
+                                        <i>Apakah Anda Yakin Akan Menghapus Riincian Ini?</i>
+                                    </small>
+                                </div>
+                            </div>
                         </diiv>
                     `);
 

@@ -91,27 +91,22 @@
                 }
             }
             while ($data = mysqli_fetch_array($query)) {
-                $id_barang= $data['id_barang'];
-                $kode_barang= $data['kode_barang'];
-                $nama_barang= $data['nama_barang'];
-                $kategori_barang= $data['kategori_barang'];
-                $satuan_barang= $data['satuan_barang'];
-                $konversi= $data['konversi'];
-                $harga_beli= $data['harga_beli'];
-                $harga_beli_rp = "Rp " . number_format($harga_beli,0,',','.');
-                $stok_barang= $data['stok_barang'];
-                $stok_barang_rp = "" . number_format($stok_barang,0,',','.');
+                $id_barang       = $data['id_barang'];
+                $kode_barang     = $data['kode_barang'];
+                $nama_barang     = $data['nama_barang'];
+                $kategori_barang = $data['kategori_barang'];
+                $satuan_barang   = $data['satuan_barang'];
+                $konversi        = $data['konversi'];
+                $harga_beli      = $data['harga_beli'];
+                $harga_beli_rp   = "Rp " . number_format($harga_beli,0,',','.');
+                $stok_barang     = $data['stok_barang'];
+                $stok_barang_rp  = "" . number_format($stok_barang,0,',','.');
                 echo '
-                    <tr>
+                    <tr style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#ModalTambahBarangEdit" data-id="'.$id_barang.'">
                         <td><small>'.$no.'</small></td>
                         <td><small>'.$kode_barang.'</small></td>
                         <td><small>'.$nama_barang.'</small></td>
                         <td><small>'.$stok_barang_rp.' '.$satuan_barang.'</small></td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-floating btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ModalTambahBarangEdit" data-id="'.$id_barang.'">
-                                <i class="bi bi-plus"></i>
-                            </button>
-                        </td>
                     </tr>
                 ';
                 $no++;

@@ -35,7 +35,7 @@
         if(empty($keyword)){
             $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_anggota FROM anggota"));
         }else{
-            $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_anggota FROM anggota WHERE nama like '%$keyword%' OR nip like '%$keyword%'"));
+            $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT id_anggota FROM anggota WHERE nama like '%$keyword%' OR nik like '%$keyword%'"));
         }
         if(empty($jml_data)){
             echo '
@@ -51,22 +51,19 @@
             if(empty($keyword)){
                 $query = mysqli_query($Conn, "SELECT*FROM anggota ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
             }else{
-                $query = mysqli_query($Conn, "SELECT*FROM anggota WHERE nama like '%$keyword%' OR nip like '%$keyword%' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
+                $query = mysqli_query($Conn, "SELECT*FROM anggota WHERE nama like '%$keyword%' OR nik like '%$keyword%' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
             }
             while ($data = mysqli_fetch_array($query)) {
                 $id_anggota= $data['id_anggota'];
-                $nip= $data['nik'];
+                $nik= $data['nik'];
                 $nama= $data['nama'];
+                $gender= $data['gender'];
                 echo '
-                    <tr>
+                    <tr style="cursor: pointer;" class="pilih_anggota_ke_form_penjualan" data-id="'.$id_anggota.'" data-nama="'.$nama.'">
                         <td><small>'.$no.'</small></td>
                         <td><small>'.$nama.'</small></td>
-                        <td><small>'.$nip.'</small></td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-floating btn-primary pilih_anggota_ke_form_penjualan" data-id="'.$id_anggota.'" data-nama="'.$nama.'">
-                                <i class="bi bi-check"></i>
-                            </button>
-                        </td>
+                        <td><small>'.$gender.'</small></td>
+                        <td><small>'.$nik.'</small></td>
                     </tr>
                 ';
                 $no++;

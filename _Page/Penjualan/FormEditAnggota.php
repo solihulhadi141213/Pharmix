@@ -79,7 +79,7 @@
                         <input type="hidden" name="mode" value="<?php echo "$mode"; ?>">
                         <div class="row mb-3">
                             <div class="col-4">
-                                <small>Anggota Sebelumnya</small>
+                                <small>Pasien Sebelumnya</small>
                             </div>
                             <div class="col-8">
                                 <small class="text text-grayish"><?php echo "$nama_anggota_lama"; ?></small>
@@ -87,15 +87,19 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-4">
-                                <small>Anggota Baru</small>
+                                <small>Pasien Baru</small>
                             </div>
                             <div class="col-8">
                                 <small class="text text-grayish"><?php echo "$nama_anggota_baru"; ?></small>
                             </div>
                         </div>
-                        <div class="row mb-3">
+                        <div class="row">
                             <div class="col-12">
-                                <small>Apakah Anda Yakin Akan Mengubah Informasi Anggota Pada Transaksi Ini?</small>
+                               <div class="alert alert-danger text-center">
+                                    <small>
+                                        Apakah Anda Yakin Akan Mengubah Informasi Pasien Pada Transaksi Ini?
+                                    </small>
+                               </div>
                             </div>
                         </div>
 <?php

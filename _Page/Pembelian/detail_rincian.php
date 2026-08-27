@@ -51,42 +51,61 @@
             } else {
                 // Ambil Data Transaksi
                 $id_transaksi_jual_beli_rincian = $Data['id_transaksi_jual_beli_rincian'];
-                $id_barang = $Data['id_barang'];
-                $nama_barang = $Data['nama_barang'];
-                $satuan = $Data['satuan'];
-                $qty = $Data['qty'];
-                $harga = $Data['harga'];
-                $ppn = $Data['ppn'];
-                $diskon = $Data['diskon'];
-                $subtotal = $Data['subtotal'];
-                //Pembulatan
-                $qty = pembulatan_nilai($Data['qty']);
-                $harga = pembulatan_nilai($Data['harga']);
-                $ppn = pembulatan_nilai($Data['ppn']);
-                $diskon = pembulatan_nilai($Data['diskon']);
+                $id_barang                      = $Data['id_barang'];
+                $nama_barang                    = $Data['nama_barang'];
+                $satuan                         = $Data['satuan'];
+                $qty                            = $Data['qty'];
+                $harga                          = $Data['harga'];
+                $ppn                            = $Data['ppn'];
+                $diskon                         = $Data['diskon'];
+                $subtotal                       = $Data['subtotal'];
+                
+                // Pembulatan
+                $qty      = pembulatan_nilai($Data['qty']);
+                $harga    = pembulatan_nilai($Data['harga']);
+                $ppn      = pembulatan_nilai($Data['ppn']);
+                $diskon   = pembulatan_nilai($Data['diskon']);
                 $subtotal = pembulatan_nilai($Data['subtotal']);
 
+                // Nilai dasar sebelum PPN dan Diskon
+                $total_harga = $qty * $harga;
+
+                // Hitung Persentase PPN dan Diskon
+                if ($total_harga > 0) {
+                    $ppn_persen    = ($ppn / $total_harga) * 100;
+                    $diskon_persen = ($diskon / $total_harga) * 100;
+                } else {
+                    $ppn_persen    = 0;
+                    $diskon_persen = 0;
+                }
+
+                // Pembulatan persentase, misalnya 2 angka di belakang koma
+                $ppn_persen    = round($ppn_persen, 2);
+                $diskon_persen = round($diskon_persen, 2);
+
                 // Format Rupiah
-                $harga_rp = "Rp " . number_format($harga, 0, ',', '.');
+                $harga_rp    = "Rp " . number_format($harga, 0, ',', '.');
                 $subtotal_rp = "Rp " . number_format($subtotal, 0, ',', '.');
-                $ppn_rp = "Rp " . number_format($ppn, 0, ',', '.');
-                $diskon_rp = "Rp " . number_format($diskon, 0, ',', '.');
+                $ppn_rp      = "Rp " . number_format($ppn, 0, ',', '.');
+                $diskon_rp   = "Rp " . number_format($diskon, 0, ',', '.');
 
                 // Data Response
                 $dataset = [
                     "id_transaksi_jual_beli_rincian" => $id_transaksi_jual_beli_rincian,
-                    "id_barang" => $id_barang,
-                    "nama_barang" => $nama_barang,
-                    "satuan" => $satuan,
-                    "qty" => $qty,
-                    "harga" => $harga,
-                    "ppn" => $ppn,
-                    "diskon" => $diskon,
-                    "subtotal" => $subtotal,
-                    "subtotal_rp" => $subtotal_rp,
-                    "ppn_rp" => $ppn_rp,
-                    "diskon_rp" => $diskon_rp,
-                    "harga_rp" => $harga_rp,
+                    "id_barang"                      => $id_barang,
+                    "nama_barang"                    => $nama_barang,
+                    "satuan"                         => $satuan,
+                    "qty"                            => $qty,
+                    "harga"                          => $harga,
+                    "ppn"                            => $ppn,
+                    "ppn_persen"                     => $ppn_persen,
+                    "diskon"                         => $diskon,
+                    "diskon_persen"                  => $diskon_persen,
+                    "subtotal"                       => $subtotal,
+                    "subtotal_rp"                    => $subtotal_rp,
+                    "ppn_rp"                         => $ppn_rp,
+                    "diskon_rp"                      => $diskon_rp,
+                    "harga_rp"                       => $harga_rp,
                 ];
 
                 // Response JSON

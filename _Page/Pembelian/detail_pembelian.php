@@ -92,18 +92,18 @@
                 while ($data_rincian = $result_rincian->fetch_assoc()) {
                     $list_rincian[] = [
                         "id_transaksi_jual_beli_rincian" => $data_rincian['id_transaksi_jual_beli_rincian'],
-                        "id_barang" => $data_rincian['id_barang'],
-                        "nama_barang" => $data_rincian['nama_barang'],
-                        "satuan" => $data_rincian['satuan'],
-                        "qty" => $data_rincian['qty'],
-                        "harga" => $data_rincian['harga'],
-                        "ppn" => $data_rincian['ppn'],
-                        "diskon" => $data_rincian['diskon'],
-                        "subtotal" => $data_rincian['subtotal'],
-                        "harga_rp" => "" . number_format($data_rincian['harga'], 0, ',', '.'),
-                        "ppn_rp" => "" . number_format($data_rincian['ppn'], 0, ',', '.'),
-                        "diskon_rp" => "" . number_format($data_rincian['diskon'], 0, ',', '.'),
-                        "subtotal_rp" => "" . number_format($data_rincian['subtotal'], 0, ',', '.'),
+                        "id_barang"                      => $data_rincian['id_barang'],
+                        "nama_barang"                    => $data_rincian['nama_barang'],
+                        "satuan"                         => $data_rincian['satuan'],
+                        "qty"                            => $data_rincian['qty'],
+                        "harga"                          => $data_rincian['harga'],
+                        "ppn"                            => $data_rincian['ppn'],
+                        "diskon"                         => $data_rincian['diskon'],
+                        "subtotal"                       => $data_rincian['subtotal'],
+                        "harga_rp"                       => "" . number_format($data_rincian['harga'], 0, ',', '.'),
+                        "ppn_rp"                         => "" . number_format($data_rincian['ppn'], 0, ',', '.'),
+                        "diskon_rp"                      => "" . number_format($data_rincian['diskon'], 0, ',', '.'),
+                        "subtotal_rp"                    => "" . number_format($data_rincian['subtotal'], 0, ',', '.'),
                     ];
                 }
 

@@ -294,7 +294,7 @@ function ShowDetailTransaksiInline(id_transaksi_jual_beli) {
                                 <div class="col-4"><small>Anggota</small></div>
                                 <div class="col-8">
                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalListAnggotaEdit" data-id="${id_transaksi_jual_beli}" data-mode="Detail">
-                                        <small class="text text-primary">${data.nama_anggota}</small>
+                                        <small class="text text-primary">${data.nama_anggota} <i class="bi bi-pencil"></i></small>
                                     </a>
                                 </div>
                             </div>
@@ -310,44 +310,33 @@ function ShowDetailTransaksiInline(id_transaksi_jual_beli) {
                                     <small class="text text-grayish">${LabelStatus}</small>
                                 </div>
                             </div>
-                            <div class="row mb-2">
-                                <div class="col-4"><small>Subtotal</small></div>
-                                <div class="col-8">
-                                    <small class="text text-grayish">${data.subtotal_rp}</small>
-                                </div>
-                            </div>
                         </div>
                         <div class="col-md-6">
                             <div class="row mb-2">
-                                <div class="col-4"><small>PPN</small></div>
+                                <div class="col-4"><small>Creat At</small></div>
                                 <div class="col-8">
-                                    <small class="text text-grayish">${data.ppn_rp}</small>
+                                    <small class="text text-grayish">${data.creat_at}</small>
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-4"><small>Diskon</small></div>
+                                <div class="col-4"><small>Update At</small></div>
                                 <div class="col-8">
-                                    <small class="text text-grayish">${data.diskon_rp}</small>
+                                    <small class="text text-grayish">${data.update_at}</small>
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-4"><small>Total</small></div>
+                                <div class="col-4"><small>Creat By</small></div>
                                 <div class="col-8">
-                                    <small class="text text-grayish">${data.total_rp}</small>
+                                    <small class="text text-grayish">${data.Creator}</small>
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-4"><small>Cash</small></div>
+                                <div class="col-4"><small>Update By</small></div>
                                 <div class="col-8">
-                                    <small class="text text-grayish">${data.cash_rp}</small>
+                                    <small class="text text-grayish">${data.Updater}</small>
                                 </div>
                             </div>
-                            <div class="row mb-2">
-                                <div class="col-4"><small>Kembalian</small></div>
-                                <div class="col-8">
-                                    <small class="text text-grayish">${data.kembalian_rp}</small>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 `);
@@ -373,8 +362,8 @@ function ShowDetailTransaksiInline(id_transaksi_jual_beli) {
                                 <td class="text-left">${item.diskon_rp}</td>
                                 <td class="text-left">${item.subtotal_rp}</td>
                                 <td class="text-left">
-                                    <button type="button" class="btn btn-sm btn-floating btn-outline-dark" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-three-dots"></i>
+                                    <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                                         <li class="dropdown-header text-start">
@@ -404,10 +393,28 @@ function ShowDetailTransaksiInline(id_transaksi_jual_beli) {
                     // Tambahkan baris total di akhir tabel
                     html += `
                         <tr class="fw-bold bg-light">
-                            <td colspan="4" class="text-left">Total</td>
+                            <td colspan="4" class="text-left">JUMLAH/TOTAL</td>
                             <td class="text-left">Rp ${totalPpn.toLocaleString("id-ID")}</td>
                             <td class="text-left">Rp ${totalDiskon.toLocaleString("id-ID")}</td>
                             <td class="text-left">Rp ${totalSubtotal.toLocaleString("id-ID")}</td>
+                            <td class="text-left"></td>
+                        </tr>
+                    `;
+                    html += `
+                        <tr class="fw-bold bg-light">
+                            <td colspan="4" class="text-left">CASH/UANG</td>
+                            <td class="text-left"></td>
+                            <td class="text-left"></td>
+                            <td class="text-left">${data.cash_rp.toLocaleString("id-ID")}</td>
+                            <td class="text-left"></td>
+                        </tr>
+                    `;
+                    html += `
+                        <tr class="fw-bold bg-light">
+                            <td colspan="4" class="text-left">KEMBALIAN</td>
+                            <td class="text-left"></td>
+                            <td class="text-left"></td>
+                            <td class="text-left">${data.kembalian_rp.toLocaleString("id-ID")}</td>
                             <td class="text-left"></td>
                         </tr>
                     `;
@@ -447,8 +454,8 @@ function ShowDetailTransaksiInline(id_transaksi_jual_beli) {
                                 <td>${kolom_debet.toLocaleString('id-ID')}</td>
                                 <td class="text-right">${kolom_kredit.toLocaleString('id-ID')}</td>
                                 <td class="text-left">
-                                    <button type="button" class="btn btn-sm btn-floating btn-outline-dark" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-three-dots"></i>
+                                    <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                                         <li class="dropdown-header text-start">
@@ -674,6 +681,10 @@ $(document).ready(function() {
         //Tampilkan Data
         ShowDataBarang();
     });
+    // Fokus ke input setelah modal selesai ditampilkan
+    $('#ModalCariBarang').on('shown.bs.modal', function (e) {
+        $('#keyword_barang').focus();
+    });
 
     //Proses Cari Barang
     $("#ProsesCariBarang").on("submit", function (e) {
@@ -832,12 +843,13 @@ $(document).ready(function() {
                     var kategori_transaksi=$('#get_kategori_transaksi').html();
                     ShowDataBulk(kategori_transaksi);
 
-                    // Tampilkan swal notifikasi
-                    Swal.fire(
-                        'Success!',
-                        'Rincian Transaksi Berhasil Diperbaharui!',
-                        'success'
+                    // Tampilkan Toast notifikasi
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Rincian Transaksi Berhasil Diperbaharui!.'
                     );
+
                     //Tutup Modal
                     $('#ModalEditBulk').modal('hide');
                 }
@@ -892,8 +904,16 @@ $(document).ready(function() {
                             <div class="col-4"><small>Jumlah</small></div>
                             <div class="col-8"><small class="text text-grayish">${response.dataset.subtotal_rp}</small></div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-12">Apakah Anda Yakin Akan Menghapus Data Tersebut</div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="alert alert-danger text-center">
+                                    <small>
+                                        <b>Penting!</b><br>
+                                        Data yang sudah dihapus tidak bisa dikembalikan lagi.<br>
+                                        <i> Apakah Anda Yakin Akan Menghapus Data Tersebut?</i>
+                                    </small>
+                                </div>
+                            </div>
                         </div>
                     `);
                     
@@ -951,11 +971,11 @@ $(document).ready(function() {
                     ShowDataBulk(kategori_transaksi);
                     
                     // Tampilkan swal notifikasi
-                    Swal.fire(
-                        'Success!',
-                        'Hapus Rincian Barang Berhasil!',
-                        'success'
-                    )
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Hapus Rincian Barang Berhasil!'
+                    );
 
                     // Reset tombol
                     $ButtonProses.html(ButtonElement);
@@ -991,6 +1011,11 @@ $(document).ready(function() {
 
         //Tampilkan Data
         ShowDataBarangEdit();
+    });
+
+    // Fokus ke input setelah modal selesai ditampilkan
+    $('#ModalListBarangEdit').on('shown.bs.modal', function (e) {
+        $('#keyword_barang_edit').focus();
     });
 
     //Proses Cari Barang
@@ -1067,6 +1092,11 @@ $(document).ready(function() {
     //Modal Tampilkan Anggota
     $('#ModalPilihAnggota').on('show.bs.modal', function (e) {
         ShowDataAnggota();
+    });
+
+    // Fokus ke input setelah modal selesai ditampilkan
+    $('#ModalPilihAnggota').on('shown.bs.modal', function (e) {
+        $('#keyword_anggota').focus();
     });
 
     //Pagging Anggota
@@ -1152,11 +1182,14 @@ $(document).ready(function() {
                     ShowDataBulk(kategori_transaksi);
                     
                     // Tampilkan swal notifikasi
-                    Swal.fire(
-                        'Success!',
-                        'Reset Transaksi Berhasil!',
-                        'success'
-                    )
+
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Reset Transaksi Berhasil'
+                    );
+
+                    $('html, body').animate({ scrollTop: 0 }, 'slow');
 
                     // Reset tombol
                     $ButtonProses.html(ButtonElement);
@@ -1252,65 +1285,63 @@ $(document).ready(function() {
                     $('#FormDetail').html(`
                         <input type="hidden" name="id" value="${id_transaksi_jual_beli}">
                         <div class="row mb-2">
-                            <div class="col-4"><small>Tanggal</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.tanggal}</small>
+                            <div class="col-md-6">
+                                <div class="row mb-2">
+                                    <div class="col-4"><small>ID/Kode</small></div>
+                                    <div class="col-8">
+                                        <small class="text text-muted">${id_transaksi_jual_beli}</small>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4"><small>Tanggal & Jam</small></div>
+                                    <div class="col-8">
+                                        <small class="text text-muted">${data.tanggal}</small>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4"><small>Pasien</small></div>
+                                    <div class="col-8">
+                                        <small class="text text-muted">${data.nama_anggota}</small>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4"><small>Kategori</small></div>
+                                    <div class="col-8">
+                                        <small class="text text-muted">${data.kategori}</small>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4"><small>Status</small></div>
+                                    <div class="col-8">
+                                        <small class="text text-muted">${data.status}</small>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Anggota</small></div>
-                            <div class="col-8">
-                                <a href="javascriipt:void(0);" data-bs-toggle="modal" data-bs-target="#ModalListAnggotaEdit" data-id="${id_transaksi_jual_beli}" data-mode="List">
-                                    <small class="text text-grayish">${data.nama_anggota}</small>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Kategori</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.kategori}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Subtotal</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.subtotal_rp}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>PPN</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.ppn_rp}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Diskon</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.diskon_rp}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Total</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.total_rp}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Cash</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.cash_rp}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Kembalian</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.kembalian_rp}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Status</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.status}</small>
+                            <div class="col-md-6">
+                                <div class="row mb-2">
+                                    <div class="col-4"><small>Creat At</small></div>
+                                    <div class="col-8">
+                                        <small class="text text-muted">${data.creat_at}</small>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4"><small>Update At</small></div>
+                                    <div class="col-8">
+                                        <small class="text text-muted">${data.update_at}</small>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4"><small>Creat By</small></div>
+                                    <div class="col-8">
+                                        <small class="text text-muted">${data.Creator}</small>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4"><small>Update By</small></div>
+                                    <div class="col-8">
+                                        <small class="text text-muted">${data.Updater}</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     `);
@@ -1345,10 +1376,26 @@ $(document).ready(function() {
                         // Tambahkan baris total di akhir tabel
                         html += `
                             <tr class="fw-bold bg-light">
-                                <td colspan="4" class="text-center">Total</td>
+                                <td colspan="4" class="text-left">TOTAL/TAGIHAN</td>
                                 <td class="text-end">Rp ${totalPpn.toLocaleString("id-ID")}</td>
                                 <td class="text-end">Rp ${totalDiskon.toLocaleString("id-ID")}</td>
                                 <td class="text-end">Rp ${totalSubtotal.toLocaleString("id-ID")}</td>
+                            </tr>
+                        `;
+                        html += `
+                            <tr class="fw-bold bg-light">
+                                <td colspan="4" class="text-left">UANG/CASH</td>
+                                <td class="text-end"></td>
+                                <td class="text-end"></td>
+                                <td class="text-end">${data.cash_rp.toLocaleString("id-ID")}</td>
+                            </tr>
+                        `;
+                        html += `
+                            <tr class="fw-bold bg-light">
+                                <td colspan="4" class="text-left">KEMBALIAN</td>
+                                <td class="text-end"></td>
+                                <td class="text-end"></td>
+                                <td class="text-end">${data.kembalian_rp.toLocaleString("id-ID")}</td>
                             </tr>
                         `;
                     } else {
@@ -1529,11 +1576,11 @@ $(document).ready(function() {
                     }
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Edit Transaksi Berhasil!',
-                        'success'
-                    )
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data berhasil disimpan.'
+                    );
                 } else {
                     // Tampilkan pesan error
                     $("#NotifikasiEdit").html(
@@ -1577,7 +1624,7 @@ $(document).ready(function() {
                             </div>
                         </div>
                         <div class="row mb-2">
-                            <div class="col-4"><small>Anggota</small></div>
+                            <div class="col-4"><small>Pasien</small></div>
                             <div class="col-8">
                                 <small class="text text-grayish">${data.nama_anggota}</small>
                             </div>
@@ -1624,14 +1671,28 @@ $(document).ready(function() {
                                 <small class="text text-grayish">${data.kembalian_rp}</small>
                             </div>
                         </div>
-                        <div class="row mb-2">
+                        <div class="row">
                             <div class="col-4"><small>Status</small></div>
                             <div class="col-8">
                                 <small class="text text-grayish">${data.status}</small>
                             </div>
                         </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="alert alert-danger text-center">
+                                    <small>
+                                        <b>Penting!</b><br>
+                                        Data Yang Sudah Dihapus Tidak Bisa Dikembalikan Lagi!<br>
+                                        <i>Apakah Anda Yakin Akan Menghapus Data Tersebut?</i>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
                     `);
-                    $('#NotifikasiHapus').html('Apakah Anda Yakin Akan Menghapus Data Tersebut?');
+
+                    // Kosongkan Notifikasi
+                    $('#NotifikasiHapus').html('');
+
                     //Disable tombol
                     $('#ButtonHapus').prop("disabled", false);
                 }else{
@@ -1802,9 +1863,14 @@ $(document).ready(function() {
 
     //Modal List Anggota Edit
     $('#ModalListAnggotaEdit').on('show.bs.modal', function (e) {
-        var id_transaksi_jual_beli= $(e.relatedTarget).data('id');
-        var mode= $(e.relatedTarget).data('mode');
-        ShowDataAnggotaEdit(id_transaksi_jual_beli,mode);
+        var id_transaksi_jual_beli = $(e.relatedTarget).data('id');
+        var mode = $(e.relatedTarget).data('mode');
+        ShowDataAnggotaEdit(id_transaksi_jual_beli, mode);
+    });
+
+    // Fokus ke input setelah modal selesai ditampilkan
+    $('#ModalListAnggotaEdit').on('shown.bs.modal', function (e) {
+        $('#keyword_anggota_edit').focus();
     });
 
     //Pagging Anggota
@@ -1887,10 +1953,10 @@ $(document).ready(function() {
                     $('#ModalEditAnggota').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Edit Anggota Berhasil!',
-                        'success'
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data berhasil disimpan.'
                     );
 
                     //Reload Data
@@ -1919,8 +1985,12 @@ $(document).ready(function() {
     //Modal Edit Rincian Transaksi
     $('#ModalEditRincian').on('show.bs.modal', function (e) {
         var id_transaksi_jual_beli_rincian= $(e.relatedTarget).data('id');
+        
         //Tempelkan Ke form
         $("#put_id_transaksi_jual_beli_rincian_edit").val(id_transaksi_jual_beli_rincian);
+        
+        // Bersihkan Notifikasi
+        $("#NotifikasiEditRincian").html('');
         
         // Kirim data ke server
         $.ajax({
@@ -1930,21 +2000,24 @@ $(document).ready(function() {
             dataType    : "json",
             success: function (response) {
                 if(response.status=="Success"){
-                    let dataset=response.dataset;
-                    let nama_barang=dataset.nama_barang;
-                    let satuan=dataset.satuan;
-                    let qty=dataset.qty;
-                    let harga=dataset.harga;
-                    let ppn=dataset.ppn;
-                    let diskon=dataset.diskon;
-                    let subtotal=dataset.subtotal;
+                    let dataset       = response.dataset;
+                    let nama_barang   = dataset.nama_barang;
+                    let satuan        = dataset.satuan;
+                    let qty           = dataset.qty;
+                    let harga         = dataset.harga;
+                    let ppn           = dataset.ppn;
+                    let ppn_persen    = dataset.ppn_persen;
+                    let diskon        = dataset.diskon;
+                    let diskon_persen = dataset.diskon_persen;
+                    let subtotal      = dataset.subtotal;
+                    
                     //Tempelkan Ke form
                     $("#put_nama_barang_edit_rincian").html(nama_barang);
                     $("#put_satuan_edit_rincian").html(satuan);
                     $("#qty_edit_rincian").val(qty);
                     $("#harga_edit_rincian").val(harga);
-                    $("#ppn_edit_rincian").val(ppn);
-                    $("#diskon_edit_rincian").val(diskon);
+                    $("#ppn_edit_rincian").val(ppn_persen);
+                    $("#diskon_edit_rincian").val(diskon_persen);
                     $("#jumlah_edit_rincian").val(subtotal);
 
                     // Event listener untuk input perubahan
@@ -2003,10 +2076,10 @@ $(document).ready(function() {
                     $('#ModalEditRincian').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Edit Rincian Transaksi Berhasil!',
-                        'success'
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data berhasil disimpan.'
                     );
                     var id_transaksi_jual_beli=$("#get_id_transaksi_jual_beli_detail").html();
                     //Reload Data
@@ -2077,8 +2150,16 @@ $(document).ready(function() {
                             <div class="col-4"><small>Subtotal (Rp)</small></div>
                             <div class="col-8"><small class="text text-muted">${subtotal_rp}</small></div>
                         </diiv>
-                        <diiv class="row mb-2 mt-2">
-                            <div class="col-12">Apakah Anda Yakin Akan Menghapus Riincian ini?</div>
+                        <diiv class="row">
+                            <div class="col-12">
+                                <div class="alert alert-danger text-center">
+                                    <small>
+                                        <b>Penting!</b><br>
+                                        Data yang sudah dihapus tidak akan bisa dikembalikan lagi.<br>
+                                        <i>Apakah Anda Yakin Akan Menghapus Data Ini?</i>
+                                    </small>
+                                </div>
+                            </div>
                         </diiv>
                     `);
 
@@ -2134,10 +2215,10 @@ $(document).ready(function() {
                     $('#ModalHapusRincian').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Hapus Rincian Transaksi Berhasil!',
-                        'success'
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Hapus Rincian Tranaskasi Berhasil'
                     );
                     var id_transaksi_jual_beli=$("#get_id_transaksi_jual_beli_detail").html();
                     //Reload Data
@@ -2205,10 +2286,10 @@ $(document).ready(function() {
                     $('#ModalTambahJurnal').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Tambah Jurnal Penjualan Berhasil!',
-                        'success'
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Jurnal Berhasil Ditambahkan'
                     );
                     var id_transaksi_jual_beli=$("#get_id_transaksi_jual_beli_detail").html();
                     //Reload Data
@@ -2275,11 +2356,12 @@ $(document).ready(function() {
                     $('#ModalHapusJurnal').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Hapus Jurnal Penjualan Berhasil!',
-                        'success'
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Hapus Jurnal Berhasil'
                     );
+
                     var id_transaksi_jual_beli=$("#get_id_transaksi_jual_beli_detail").html();
                     //Reload Data
                     ShowDetailTransaksiInline(id_transaksi_jual_beli);
@@ -2346,10 +2428,10 @@ $(document).ready(function() {
                     $('#ModalEditJurnal').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Edit Jurnal Penjualan Berhasil!',
-                        'success'
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Edit Jurnal Berhasil'
                     );
                     var id_transaksi_jual_beli=$("#get_id_transaksi_jual_beli_detail").html();
                     //Reload Data

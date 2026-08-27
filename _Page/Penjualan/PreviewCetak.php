@@ -204,7 +204,7 @@
                         <td align="right">'.$sum_subtotal_format.'</td>
                     </tr>
                     <tr>
-                        <td colspan="2">ONGKIR</td>
+                        <td colspan="2">PPN</td>
                         <td align="right">'.$sum_ppn_format.'</td>
                     </tr>
                     <tr>

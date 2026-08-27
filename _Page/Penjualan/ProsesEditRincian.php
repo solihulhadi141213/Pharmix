@@ -3,6 +3,7 @@
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
+    include "../../_Config/FungsiAkses.php";
 
     // Time Zone
     date_default_timezone_set('Asia/Jakarta');
@@ -42,23 +43,38 @@
 
                 //Buat Variabel Agar Lebih Mudah
                 $id_transaksi_jual_beli_rincian = $_POST['id_transaksi_jual_beli_rincian'];
-                $qty = isset($_POST['qty']) ? $_POST['qty'] : "0";
-                $harga = isset($_POST['harga']) ? $_POST['harga'] : "0";
+                $qty                            = isset($_POST['qty']) ? $_POST['qty'] : "0";
+                $harga                          = isset($_POST['harga']) ? $_POST['harga'] : "0";
                 if(empty($_POST['ppn'])){
-                    $ppn=0;
+                    $ppn = 0;
                 }else{
-                    $ppn=$_POST['ppn'];
+                    $ppn = $_POST['ppn'];
                 }
                 if(empty($_POST['diskon'])){
-                    $diskon=0;
+                    $diskon = 0;
                 }else{
-                    $diskon=$_POST['diskon'];
+                    $diskon = $_POST['diskon'];
                 }
-                $ppn = (int) str_replace(".", "", $ppn);
-                $diskon = (int) str_replace(".", "", $diskon);
-                $harga = (int) str_replace(".", "", $harga);
-                $jumlah=$qty*$harga;
-                $subtotal=$jumlah+$ppn-$diskon;
+                $ppn      = (int) str_replace(".", "", $ppn);
+                $diskon   = (int) str_replace(".", "", $diskon);
+                $harga    = (int) str_replace(".", "", $harga);
+                
+                // Menghitung subtotal
+                $subtotal = $qty * $harga;
+
+                // Pastikan subtotal tidak negatif
+                if ($subtotal < 0) {
+                    $subtotal = 0;
+                }
+
+                // Menghitung nilai PPN (jika subtotal bukan nol)
+                $rp_ppn = $subtotal > 0 ? ($ppn / 100) * $subtotal : 0;
+
+                // Menghitung nilai diskon (jika subtotal bukan nol)
+                $rp_diskon = $subtotal > 0 ? ($diskon / 100) * $subtotal : 0;
+
+                // Menghitung total
+                $total = ($subtotal + $rp_ppn) - $rp_diskon;
                 
                 //Buka QTY lama
                 $qty_lama=GetDetailData($Conn, 'transaksi_jual_beli_rincian', 'id_transaksi_jual_beli_rincian', $id_transaksi_jual_beli_rincian, 'qty');
@@ -68,13 +84,14 @@
 
                 //Update Rincian Transaksi
                 $UpdateRincian = mysqli_query($Conn,"UPDATE transaksi_jual_beli_rincian SET 
-                    harga='$harga',
-                    qty='$qty',
-                    ppn='$ppn',
-                    diskon='$diskon',
-                    subtotal='$subtotal'
+                    harga    = '$harga',
+                    qty      = '$qty',
+                    ppn      = '$rp_ppn',
+                    diskon   = '$rp_diskon',
+                    subtotal = '$total'
                 WHERE id_transaksi_jual_beli_rincian='$id_transaksi_jual_beli_rincian'") or die(mysqli_error($Conn)); 
                 if($UpdateRincian){
+                    
                     //Apabila Berhasil Buka ID transaksi
                     $id_transaksi_jual_beli=GetDetailData($Conn, 'transaksi_jual_beli_rincian', 'id_transaksi_jual_beli_rincian', $id_transaksi_jual_beli_rincian, 'id_transaksi_jual_beli');
 
@@ -118,7 +135,10 @@
                         diskon='$jumlah_diskon',
                         ppn='$jumlah_ppn',
                         total='$total',
-                        status='$status'
+                        status='$status',
+                        update_by_id='$SessionIdAkses', 
+                        update_by_name='$SessionNama', 
+                        update_at='$now' 
                     WHERE id_transaksi_jual_beli='$id_transaksi_jual_beli'") or die(mysqli_error($Conn)); 
                     if($UpdateTransaksi){
 

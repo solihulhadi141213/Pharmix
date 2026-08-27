@@ -50,23 +50,32 @@
                 ];
             } else {
                 // Ambil Data Transaksi
-                $id_anggota = $Data['id_anggota'];
-                $kategori = $Data['kategori'];
-                $tanggal = $Data['tanggal'];
-                $subtotal = pembulatan_nilai($Data['subtotal']);
-                $ppn = pembulatan_nilai($Data['ppn']);
-                $diskon = pembulatan_nilai($Data['diskon']);
-                $total = pembulatan_nilai($Data['total']);
-                $cash = pembulatan_nilai($Data['cash']);
-                $kembalian = pembulatan_nilai($Data['kembalian']);
-                $status = $Data['status'];
+                $id_anggota     = $Data['id_anggota'];
+                $kategori       = $Data['kategori'];
+                $tanggal        = $Data['tanggal'];
+                $subtotal       = pembulatan_nilai($Data['subtotal']);
+                $ppn            = pembulatan_nilai($Data['ppn']);
+                $diskon         = pembulatan_nilai($Data['diskon']);
+                $total          = pembulatan_nilai($Data['total']);
+                $cash           = pembulatan_nilai($Data['cash']);
+                $kembalian      = pembulatan_nilai($Data['kembalian']);
+                $status         = $Data['status'];
+                $creat_by_id    = $Data['creat_by_id'];
+                $creat_by_name  = $Data['creat_by_name'];
+                $creat_at       = $Data['creat_at'];
+                $update_by_id   = $Data['update_by_id'];
+                $update_by_name = $Data['update_by_name'];
+                $update_at      = $Data['update_at'];
+                // Routing Creator & Updater
+                $Creator = (!empty($creat_by_id)) ? GetDetailData($Conn, 'akses', 'id_akses', $creat_by_id, 'nama_akses') : "$creat_by_name";
+                $Updater = (!empty($update_by_id)) ? GetDetailData($Conn, 'akses', 'id_akses', $update_by_id, 'nama_akses') : "$update_by_name";
 
                 // Format Rupiah
-                $subtotal_rp = "Rp " . number_format($subtotal, 0, ',', '.');
-                $ppn_rp = "Rp " . number_format($ppn, 0, ',', '.');
-                $diskon_rp = "Rp " . number_format($diskon, 0, ',', '.');
-                $total_rp = "Rp " . number_format($total, 0, ',', '.');
-                $cash_rp = "Rp " . number_format($cash, 0, ',', '.');
+                $subtotal_rp  = "Rp " . number_format($subtotal, 0, ',', '.');
+                $ppn_rp       = "Rp " . number_format($ppn, 0, ',', '.');
+                $diskon_rp    = "Rp " . number_format($diskon, 0, ',', '.');
+                $total_rp     = "Rp " . number_format($total, 0, ',', '.');
+                $cash_rp      = "Rp " . number_format($cash, 0, ',', '.');
                 $kembalian_rp = "Rp " . number_format($kembalian, 0, ',', '.');
 
                 // Ambil Nama Anggota
@@ -88,18 +97,18 @@
                 while ($data_rincian = $result_rincian->fetch_assoc()) {
                     $list_rincian[] = [
                         "id_transaksi_jual_beli_rincian" => $data_rincian['id_transaksi_jual_beli_rincian'],
-                        "id_barang" => $data_rincian['id_barang'],
-                        "nama_barang" => $data_rincian['nama_barang'],
-                        "satuan" => $data_rincian['satuan'],
-                        "qty" => $data_rincian['qty'],
-                        "harga" => $data_rincian['harga'],
-                        "ppn" => $data_rincian['ppn'],
-                        "diskon" => $data_rincian['diskon'],
-                        "subtotal" => $data_rincian['subtotal'],
-                        "harga_rp" => "" . number_format($data_rincian['harga'], 0, ',', '.'),
-                        "ppn_rp" => "" . number_format($data_rincian['ppn'], 0, ',', '.'),
-                        "diskon_rp" => "" . number_format($data_rincian['diskon'], 0, ',', '.'),
-                        "subtotal_rp" => "" . number_format($data_rincian['subtotal'], 0, ',', '.'),
+                        "id_barang"                      => $data_rincian['id_barang'],
+                        "nama_barang"                    => $data_rincian['nama_barang'],
+                        "satuan"                         => $data_rincian['satuan'],
+                        "qty"                            => $data_rincian['qty'],
+                        "harga"                          => $data_rincian['harga'],
+                        "ppn"                            => $data_rincian['ppn'],
+                        "diskon"                         => $data_rincian['diskon'],
+                        "subtotal"                       => $data_rincian['subtotal'],
+                        "harga_rp"                       => "" . number_format($data_rincian['harga'], 0, ',', '.'),
+                        "ppn_rp"                         => "" . number_format($data_rincian['ppn'], 0, ',', '.'),
+                        "diskon_rp"                      => "" . number_format($data_rincian['diskon'], 0, ',', '.'),
+                        "subtotal_rp"                    => "" . number_format($data_rincian['subtotal'], 0, ',', '.'),
                     ];
                 }
 
@@ -112,37 +121,42 @@
 
                 while ($data_jurnal = $result_jurnal->fetch_assoc()) {
                     $list_jurnal[] = [
-                        "id_jurnal" => $data_jurnal['id_jurnal'],
+                        "id_jurnal"              => $data_jurnal['id_jurnal'],
                         "id_transaksi_jual_beli" => $data_jurnal['id_transaksi_jual_beli'],
-                        "tanggal" => $data_jurnal['tanggal'],
-                        "kode_perkiraan" => $data_jurnal['kode_perkiraan'],
-                        "nama_perkiraan" => $data_jurnal['nama_perkiraan'],
-                        "d_k" => $data_jurnal['d_k'],
-                        "nilai" => $data_jurnal['nilai'],
-                        "nilai_rp" => "" . number_format($data_jurnal['nilai'], 0, ',', '.')
+                        "tanggal"                => $data_jurnal['tanggal'],
+                        "kode_perkiraan"         => $data_jurnal['kode_perkiraan'],
+                        "nama_perkiraan"         => $data_jurnal['nama_perkiraan'],
+                        "d_k"                    => $data_jurnal['d_k'],
+                        "nilai"                  => $data_jurnal['nilai'],
+                        "nilai_rp"               => "" . number_format($data_jurnal['nilai'], 0, ',', '.')
                     ];
                 }
 
                 // Data Response
                 $dataset = [
-                    "id_anggota" => $id_anggota,
-                    "nama_anggota" => $nama_anggota,
-                    "kategori" => $kategori,
-                    "tanggal" => $tanggal,
-                    "subtotal" => $subtotal,
-                    "subtotal_rp" => $subtotal_rp,
-                    "ppn" => $ppn,
-                    "ppn_rp" => $ppn_rp,
-                    "diskon" => $diskon,
-                    "diskon_rp" => $diskon_rp,
-                    "total" => $total,
+                    "id_transaksi_jual_beli" => $id_transaksi_jual_beli,
+                    "id_anggota"     => $id_anggota,
+                    "nama_anggota"   => $nama_anggota,
+                    "kategori"       => $kategori,
+                    "tanggal"        => $tanggal,
+                    "subtotal"       => $subtotal,
+                    "subtotal_rp"    => $subtotal_rp,
+                    "ppn"            => $ppn,
+                    "ppn_rp"         => $ppn_rp,
+                    "diskon"         => $diskon,
+                    "diskon_rp"      => $diskon_rp,
+                    "total"          => $total,
                     "sisa_tunggakan" => $sisa_tunggakan,
-                    "total_rp" => $total_rp,
-                    "cash" => $cash,
-                    "cash_rp" => $cash_rp,
-                    "kembalian" => $kembalian,
-                    "kembalian_rp" => $kembalian_rp,
-                    "status" => $status,
+                    "total_rp"       => $total_rp,
+                    "cash"           => $cash,
+                    "cash_rp"        => $cash_rp,
+                    "kembalian"      => $kembalian,
+                    "kembalian_rp"   => $kembalian_rp,
+                    "status"         => $status,
+                    "creat_at"       => $creat_at,
+                    "Creator"        => $Creator,
+                    "update_at"      => $update_at,
+                    "Updater"        => $Updater,
                 ];
 
                 // Response JSON

@@ -53,7 +53,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="5" class="text-end"><b>Jumlah</b></td>
+                        <td colspan="5" class="text-start"><b>JUMLAH/TOTAL</b></td>
                         <td class="text-start"><b id="sub_total_ppn">Rp 0</b></td>
                         <td class="text-start"><b id="sub_total_diskon">Rp 0</b></td>
                         <td class="text-start"><b id="sub_total_jumlah">Rp 0</b></td>
@@ -134,7 +134,7 @@
                 $jumlah_diskon_rp = "Rp " . number_format($jumlah_diskon,0,',','.');
                 echo '
                     <tr>
-                        <td colspan="5" class="text-end"><b>Jumlah</b></td>
+                         <td colspan="5" class="text-start"><b>JUMLAH/TOTAL</b></td>
                         <td class="text-start"><b>'.$jumlah_ppn_rp.'</b></td>
                         <td class="text-start"><b>'.$jumlah_diskon_rp.'</b></td>
                         <td class="text-start"><b>'.$jumlah_total_rp.'</b></td>

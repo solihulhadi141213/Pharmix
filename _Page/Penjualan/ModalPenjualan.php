@@ -395,7 +395,6 @@
                                         <th><b>Kode</b></th>
                                         <th><b>Nama Barang</b></th>
                                         <th><b>Stok</b></th>
-                                        <th><b>Opsi</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="TabelBarang">
@@ -578,7 +577,7 @@
                             <!-- Form Hapus Rincian Bulk -->
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="NotifikasiHapusBulk">
                             <!-- Notifikasi Hapus Bulk Disini -->
                         </div>
@@ -606,25 +605,20 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row mb-3">
-                    <div class="col col-12 col-md-4 text-end">
-                        <label for="keyword_anggota">
-                            <small>Nama / No.Induk</small>
-                        </label>
-                    </div>
-                    <div class="col col-12 col-md-8">
-                        <form action="javascript:void(0);" id="ProsesCariAnggota">
+                <form action="javascript:void(0);" id="ProsesCariAnggota">
+                    <div class="row mb-3">
+                        <div class="co-12">
                             <input type="hidden" name="page" id="page_anggota" value="1">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="keyword" id="keyword_anggota">
+                                <input type="text" class="form-control" name="keyword" id="keyword_anggota" placeholder="Cari Pasien">
                                 <button type="submit" class="btn btn-md btn-primary">
                                     <i class="bi bi-search"></i> Cari
                                 </button>
                             </div>
-                        </form>
+                        </div>
                     </div>
-                </div>
-                <div class="row mb-3 border-1 border-top border-bottom">
+                </form>
+                <div class="row mb-3">
                     <div class="col-12 mt-3 mb-3">
                         <div class="table table-responsive">
                             <table class="table table-hover table-striped">
@@ -632,8 +626,8 @@
                                     <tr>
                                         <th><b>No</b></th>
                                         <th><b>Nama</b></th>
-                                        <th><b>NIK/KTP</b></th>
-                                        <th><b>Opsi</b></th>
+                                        <th><b>Gender</b></th>
+                                        <th><b>NIK</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="TabelAnggota">
@@ -654,10 +648,10 @@
                         </small>
                     </div>
                     <div class="col-6 text-end">
-                        <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="prev_button_anggota">
+                        <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button_anggota">
                             <i class="bi bi-chevron-left"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="next_button_anggota">
+                        <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button_anggota">
                             <i class="bi bi-chevron-right"></i>
                         </button>
                     </div>
@@ -712,7 +706,7 @@
     </div>
 </div>
 <div class="modal fade" id="ModalDetail" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <form action="index.php" method="GET">
                 <input type="hidden" name="Page" value="Penjualan">
@@ -733,13 +727,13 @@
                                 <table class="table table-hover table-striped">
                                     <thead>
                                         <tr>
-                                            <th><b>No</b></th>
-                                            <th><b>Barang</b></th>
-                                            <th><b>QTY</b></th>
-                                            <th><b>Harga</b></th>
-                                            <th><b>PPN</b></th>
-                                            <th><b>Diskon</b></th>
-                                            <th><b>Subtotal</b></th>
+                                            <th class="bg-dark text-white"><b>No</b></th>
+                                            <th class="bg-dark text-white"><b>Uraian</b></th>
+                                            <th class="bg-dark text-white"><b>QTY</b></th>
+                                            <th class="bg-dark text-white"><b>Harga</b></th>
+                                            <th class="bg-dark text-white"><b>PPN</b></th>
+                                            <th class="bg-dark text-white"><b>Diskon</b></th>
+                                            <th class="bg-dark text-white"><b>Subtotal</b></th>
                                         </tr>
                                     </thead>
                                     <tbody id="ListDetail">
@@ -752,8 +746,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-md btn-outline-info btn-rounded" id="ButtonSelengkapnya">
-                        <i class="bi bi-three-dots"></i> Selengkapnya
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonSelengkapnya">
+                        Selengkapnya <i class="bi bi-chevron-right"></i>
                     </button>
                     <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
@@ -896,18 +890,13 @@
             </div>
             <div class="modal-body">
                 <div class="row mb-3">
-                    <div class="col col-12 col-md-4 text-end">
-                        <label for="keyword_anggota">
-                            <small>Nama / No.Induk</small>
-                        </label>
-                    </div>
-                    <div class="col col-12 col-md-8">
+                    <div class="col-12">
                         <form action="javascript:void(0);" id="ProsesCariAnggotaEdit">
                             <input type="hidden" name="page" id="page_anggota_edit" value="1">
                             <input type="hidden" name="id_transaksi_jual_beli" id="put_id_transaksi_jual_beli_anggota_edit">
                             <input type="hidden" name="mode" id="put_mode_edit_anggota">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="keyword" id="keyword_anggota_edit">
+                                <input type="text" class="form-control" name="keyword" id="keyword_anggota_edit" placeholder="Cari Pasien">
                                 <button type="submit" class="btn btn-md btn-primary">
                                     <i class="bi bi-search"></i> Cari
                                 </button>
@@ -915,16 +904,16 @@
                         </form>
                     </div>
                 </div>
-                <div class="row mb-3 border-1 border-top border-bottom">
+                <div class="row mb-3">
                     <div class="col-12 mt-3 mb-3">
                         <div class="table table-responsive">
                             <table class="table table-hover table-striped">
                                 <thead>
                                     <tr>
                                         <th><b>No</b></th>
-                                        <th><b>Anggota</b></th>
-                                        <th><b>No.Induk</b></th>
-                                        <th><b>Opsi</b></th>
+                                        <th><b>Nama</b></th>
+                                        <th><b>Gender</b></th>
+                                        <th><b>NIK</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="TabelAnggotaEdit">
@@ -945,10 +934,10 @@
                         </small>
                     </div>
                     <div class="col-6 text-end">
-                        <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="prev_button_anggota_edit">
+                        <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button_anggota_edit">
                             <i class="bi bi-chevron-left"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="next_button_anggota_edit">
+                        <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button_anggota_edit">
                             <i class="bi bi-chevron-right"></i>
                         </button>
                     </div>
@@ -967,16 +956,16 @@
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesEditAnggota">
                 <div class="modal-header">
-                    <h5 class="modal-title text-dark"><i class="bi bi-person"></i> Ganti Informasi Anggota</h5>
+                    <h5 class="modal-title text-dark"><i class="bi bi-person"></i> Ganti Informasi Pasien</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="FormEditAnggota">
                             <!-- Form Edit Transaksi Disini -->
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="NotifikasiEditAnggota">
                             <!-- Notifikasi Edit Transaksi Disini -->
                         </div>
@@ -1025,13 +1014,12 @@
                                         <th><b>Kode</b></th>
                                         <th><b>Nama Barang</b></th>
                                         <th><b>Stok</b></th>
-                                        <th><b>Opsi</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="TabelBarangEdit">
                                     <tr>
-                                        <td colspan="5" class="text-center">
-                                            <small class="text-danger">Tidak Ada Data Yang Ditampilkan</small>
+                                        <td colspan="4" class="text-center">
+                                            <small class="text-muted">No Data</small>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -1104,7 +1092,7 @@
 <div class="modal fade" id="ModalEditRincian" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
-            <form action="javascript:void(0);" id="ProsesEditRincian">
+            <form action="javascript:void(0);" id="ProsesEditRincian" autocomplete="off">
                 <div class="modal-header">
                     <h5 class="modal-title text-dark"><i class="bi bi-plus"></i> Edit Rincian Transaksi</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -1158,7 +1146,7 @@
                                 </div>
                                 <div class="col-8">
                                     <div class="input-group">
-                                        <span class="input-group-text">Rp</span>
+                                        <span class="input-group-text">%</span>
                                         <input type="text" name="ppn" id="ppn_edit_rincian" class="form-control form-money" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                     </div>
                                 </div>
@@ -1169,7 +1157,7 @@
                                 </div>
                                 <div class="col-8">
                                     <div class="input-group">
-                                        <span class="input-group-text">Rp</span>
+                                        <span class="input-group-text">%</span>
                                         <input type="text" name="diskon" id="diskon_edit_rincian" class="form-control form-money" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                     </div>
                                 </div>
@@ -1215,14 +1203,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="FormHapusRincian">
-                            <!-- Form Tambah Bulk -->
+                            <!-- Form Hapus Rincian -->
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="NotifikasiHapusRincian">
-                            <!-- Notifikasi Tambah Bulk Disini -->
+                            <!-- Notifikasi Hapus Rincian -->
                         </div>
                     </div>
                 </div>

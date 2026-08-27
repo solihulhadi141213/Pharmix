@@ -43,8 +43,8 @@
 
                 //Buat Variabel Agar Lebih Mudah
                 $id_transaksi_jual_beli_rincian = $_POST['id_transaksi_jual_beli_rincian'];
-                $qty = isset($_POST['qty']) ? $_POST['qty'] : "0";
-                $harga = isset($_POST['harga']) ? $_POST['harga'] : "0";
+                $qty                            = isset($_POST['qty']) ? $_POST['qty'] : "0";
+                $harga                          = isset($_POST['harga']) ? $_POST['harga'] : "0";
                 if(empty($_POST['ppn'])){
                     $ppn=0;
                 }else{
@@ -55,11 +55,36 @@
                 }else{
                     $diskon=$_POST['diskon'];
                 }
-                $ppn = (int) str_replace(".", "", $ppn);
-                $diskon = (int) str_replace(".", "", $diskon);
-                $harga = (int) str_replace(".", "", $harga);
-                $jumlah=$qty*$harga;
-                $subtotal=$jumlah+$ppn-$diskon;
+               if(empty($_POST['ppn'])){
+                    $ppn = 0;
+                }else{
+                    $ppn = $_POST['ppn'];
+                }
+                if(empty($_POST['diskon'])){
+                    $diskon = 0;
+                }else{
+                    $diskon = $_POST['diskon'];
+                }
+                $ppn      = (int) str_replace(".", "", $ppn);
+                $diskon   = (int) str_replace(".", "", $diskon);
+                $harga    = (int) str_replace(".", "", $harga);
+                
+                // Menghitung subtotal
+                $subtotal = $qty * $harga;
+
+                // Pastikan subtotal tidak negatif
+                if ($subtotal < 0) {
+                    $subtotal = 0;
+                }
+
+                // Menghitung nilai PPN (jika subtotal bukan nol)
+                $rp_ppn = $subtotal > 0 ? ($ppn / 100) * $subtotal : 0;
+
+                // Menghitung nilai diskon (jika subtotal bukan nol)
+                $rp_diskon = $subtotal > 0 ? ($diskon / 100) * $subtotal : 0;
+
+                // Menghitung total
+                $total = ($subtotal + $rp_ppn) - $rp_diskon;
                 
                 //Buka QTY lama
                 $qty_lama=GetDetailData($Conn, 'transaksi_jual_beli_rincian', 'id_transaksi_jual_beli_rincian', $id_transaksi_jual_beli_rincian, 'qty');
@@ -69,11 +94,11 @@
 
                 //Update Rincian Transaksi
                 $UpdateRincian = mysqli_query($Conn,"UPDATE transaksi_jual_beli_rincian SET 
-                    harga='$harga',
-                    qty='$qty',
-                    ppn='$ppn',
-                    diskon='$diskon',
-                    subtotal='$subtotal'
+                    harga    = '$harga',
+                    qty      = '$qty',
+                    ppn      = '$rp_ppn',
+                    diskon   = '$rp_diskon',
+                    subtotal = '$total'
                 WHERE id_transaksi_jual_beli_rincian='$id_transaksi_jual_beli_rincian'") or die(mysqli_error($Conn)); 
                 if($UpdateRincian){
                     //Apabila Berhasil Buka ID transaksi
