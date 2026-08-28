@@ -22,6 +22,7 @@
             "Penjualan"             => "_Page/Penjualan/Penjualan.js",
             "Pembelian"             => "_Page/Pembelian/Pembelian.js",
             "RekapJualBeli"         => "_Page/RekapJualBeli/RekapJualBeli.js",
+            "Pembayaran"          => "_Page/Pembayaran/Pembayaran.js",
             "UtangPiutang"          => "_Page/UtangPiutang/UtangPiutang.js",
             "TransaksiJualBeli"     => "_Page/TransaksiJualBeli/Transaksi.js",
             "AkunPerkiraan"         => "_Page/AkunPerkiraan/AkunPerkiraan.js",

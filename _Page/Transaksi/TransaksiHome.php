@@ -61,7 +61,7 @@
                                         <th><small><b>Nama Transaksi</b></small></th>
                                         <th><small><b>Kategori</b></small></th>
                                         <th><small><b>Jumlah</b></small></th>
-                                        <th><small><b>Pembyaran</b></small></th>
+                                        <th><small><b>Cash/Tunai</b></small></th>
                                         <th class="text-center"><small><b>Status</b></small></th>
                                         <th class="text-center"><small><b>Opsi</b></small></th>
                                     </tr>
@@ -226,8 +226,10 @@
         <form action="javascript:void(0);" id="ProsesTambahTransaksi" autocomplete="off">
             <div class="row" id="tambah_transaksi_view">
                 
-                <div class="col-md-4">
-                    <div class="card">
+                <div class="col-md-12">
+
+                    <!-- Informasi Umum -->
+                     <div class="card">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-8">
@@ -243,10 +245,11 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <!-- Informasi Transaksi -->
                             <div class="row mt-3 mb-3">
-                                <div class="col-md-12">
+                                <div class="col-md-4">
                                     <label for="id_transaksi_jenis">* Kategori Operasional</label>
+                                </div>
+                                <div class="col-md-8">
                                     <select name="id_transaksi_jenis" id="id_transaksi_jenis" class="form-select" style="width: 100%;">
                                         <option value="">Pilih</option>
                                     </select>
@@ -254,46 +257,29 @@
                             </div>
 
                             <div class="row mb-3">
-                                <div class="col-md-12">
+                                <div class="col-md-4">
                                     <label for="tanggal">* Tanggal Transaksi</label>
+                                </div>
+                                <div class="col-md-8">
                                     <input type="date" name="tanggal" id="tanggal" class="form-control" value="<?php echo date('Y-m-d'); ?>">
                                 </div>
                             </div>
+
                             <div class="row mb-3">
-                                <div class="col-md-12">
+                                <div class="col-md-4">
                                     <label for="jam">* Jam Transaksi</label>
+                                </div>
+                                <div class="col-md-8">
                                     <input type="time" name="jam" id="jam" class="form-control" value="<?php echo date('H:i'); ?>">
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <label for="JumlahTotal">Jumlah (Rp)</label>
-                                    <input type="text" name="JumlahTotal" id="JumlahTotal" class="form-control" readonly value="0">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <label for="JumlahPembayaran">Pembayaran (Rp)</label>
-                                    <input type="text" name="JumlahPembayaran" id="JumlahPembayaran" class="form-control" inputmode="numeric" value="0">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <label for="status">Status</label>
-                                    <input type="text" name="status" id="status" class="form-control" readonly value="Lunas">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <label for="keterangan">Keterangan</label>
-                                    <textarea name="keterangan" id="keterangan" class="form-control"></textarea>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <br>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-md-8">
+                    <!-- Rincian Transaksi -->
                     <div class="card">
                         <div class="card-header">
                             <div class="row">
@@ -316,28 +302,80 @@
                                         <table class="table table-striped table-hover">
                                             <thead>
                                                 <tr>
-                                                    <td align="center"><b>Uraian/Keterangan</b></td>
-                                                    <td align="center"><b>Harga</b></td>
-                                                    <td align="center"><b>QTY</b></td>
-                                                    <td align="center"><b>Satuan</b></td>
-                                                    <td align="center"><b>Jumlah</b></td>
-                                                    <td align="center"><b>Opsi</b></td>
+                                                    <td><b>Uraian/Keterangan</b></td>
+                                                    <td><b>Harga</b></td>
+                                                    <td><b>QTY</b></td>
+                                                    <td><b>Satuan</b></td>
+                                                    <td><b>Jumlah</b></td>
+                                                    <td><b>Opsi</b></td>
                                                 </tr>
                                             </thead>
                                             <tbody id="UraianTransaksi">
                                                 <tr>
-                                                    <td align="right" colspan="4">
-                                                        <b>SUBTOTAL</b>
-                                                    </td>
-                                                    <td align="right" id="JumlahTotal2">0</td>
-                                                    <td></td>
+                                                    <td align="right" colspan="6"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="card-footer">
                             <div class="row">
+                                <div class="col-md-12 mt-3 mb-3">
+                                    <h3>SUBTOTAL : <b id="JumlahTotal2">0</b></h3>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pembayaran Dan Keterangan -->
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-12">
+                                    <b class="card-title">
+                                        # Informasi Pembayaran
+                                    </b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3 mt-3">
+                                <div class="col-md-4">
+                                    <label for="JumlahTotal">Jumlah (Rp)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" name="JumlahTotal" id="JumlahTotal" class="form-control" readonly value="0">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="JumlahPembayaran">Pembayaran (Rp)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" name="JumlahPembayaran" id="JumlahPembayaran" class="form-control" inputmode="numeric" value="0">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="status">Status</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" name="status" id="status" class="form-control" readonly value="Lunas">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="keterangan">Keterangan</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <textarea name="keterangan" id="keterangan" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
                                 <div class="col-md-12 mb-3" id="NotifikasiTambahTransaksi">
                                     <!-- Notifikasi Tambah Transaksi Akan Muncul Disini -->
                                 </div>

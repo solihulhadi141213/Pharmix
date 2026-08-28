@@ -8,12 +8,19 @@
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
+    include "../../_Config/FungsiAkses.php";
 
 
     // ============================================================
     // HEADER JSON
     // ============================================================
     header('Content-Type: application/json; charset=utf-8');
+
+    // Time Zone
+    date_default_timezone_set('Asia/Jakarta');
+
+    // Time Now Tmp
+    $now = date('Y-m-d H:i:s');
 
 
     // ============================================================
@@ -449,10 +456,22 @@
                 jumlah,
                 pembayaran,
                 keterangan,
-                status
+                status,
+                creat_at,
+                creat_by_id,
+                creat_by_name,
+                update_at,
+                update_by_id,
+                update_by_name
             )
 
             VALUES (
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
                 ?,
                 ?,
                 ?,
@@ -481,13 +500,19 @@
 
         mysqli_stmt_bind_param(
             $stmtTransaksi,
-            'isiiss',
+            'isiisssissis',
             $id_transaksi_jenis,
             $tanggal_transaksi,
             $jumlah,
             $pembayaran,
             $keterangan,
-            $status
+            $status,
+            $now,
+            $SessionIdAkses,
+            $SessionNama,
+            $now,
+            $SessionIdAkses,
+            $SessionNama
         );
 
 

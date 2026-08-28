@@ -7,7 +7,16 @@
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/SettingGeneral.php";
     include "../../_Config/Session.php";
+    include "../../_Config/FungsiAkses.php";
+
+    // Default Json
     header('Content-Type: application/json; charset=utf-8');
+
+    // Time Zone
+    date_default_timezone_set('Asia/Jakarta');
+
+    // Time Now Tmp
+    $now = date('Y-m-d H:i:s');
 
     // =========================================================
     // RESPONSE ERROR
@@ -162,12 +171,12 @@
         // =====================================================
         // 6. UPDATE TRANSAKSI
         // =====================================================
-        $sqlUpdate = "UPDATE transaksi SET jumlah = ?, status = ? WHERE id_transaksi = ? LIMIT 1";
+        $sqlUpdate = "UPDATE transaksi SET jumlah = ?, status = ?, update_at = ?, update_by_id = ?, update_by_name = ? WHERE id_transaksi = ? LIMIT 1";
         $stmtUpdate = mysqli_prepare($Conn, $sqlUpdate);
         if (!$stmtUpdate) {
             throw new Exception('Gagal menyiapkan update transaksi.');
         }
-        mysqli_stmt_bind_param($stmtUpdate, 'isi', $jumlah, $status, $id_transaksi);
+        mysqli_stmt_bind_param($stmtUpdate, 'issisi', $jumlah, $status, $now, $SessionIdAkses, $SessionNama, $id_transaksi);
         if (!mysqli_stmt_execute($stmtUpdate)) {
             mysqli_stmt_close($stmtUpdate);
             throw new Exception('Gagal memperbarui transaksi.');

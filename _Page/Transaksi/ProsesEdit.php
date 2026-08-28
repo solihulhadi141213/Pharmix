@@ -7,6 +7,7 @@
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/SettingGeneral.php";
     include "../../_Config/Session.php";
+    include "../../_Config/FungsiAkses.php";
     header('Content-Type: application/json; charset=utf-8');
 
     // ============================================================
@@ -44,6 +45,12 @@
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         responseError('Metode request tidak valid.');
     }
+
+    // Time Zone
+    date_default_timezone_set('Asia/Jakarta');
+
+    // Time Now Tmp
+    $now = date('Y-m-d H:i:s');
 
     // ============================================================
     // AMBIL INPUT
@@ -214,12 +221,12 @@
         // ========================================================
         // 5. UPDATE TRANSAKSI
         // ========================================================
-        $sql = "UPDATE transaksi SET id_transaksi_jenis = ?, tanggal = ?, jumlah = ?, pembayaran = ?, keterangan = ?, status = ? WHERE id_transaksi = ?";
+        $sql = "UPDATE transaksi SET id_transaksi_jenis = ?, tanggal = ?, jumlah = ?, pembayaran = ?, keterangan = ?, status = ?, update_at = ?, update_by_id = ?, update_by_name = ? WHERE id_transaksi = ?";
         $stmt = mysqli_prepare($Conn, $sql);
         if (!$stmt) {
             throw new Exception('Gagal mempersiapkan proses update transaksi.');
         }
-        mysqli_stmt_bind_param($stmt, 'isiissi', $id_transaksi_jenis, $tanggal_transaksi, $jumlah, $pembayaran, $keterangan, $status, $id_transaksi);
+        mysqli_stmt_bind_param($stmt, 'isiisssisi', $id_transaksi_jenis, $tanggal_transaksi, $jumlah, $pembayaran, $keterangan, $status, $now, $SessionIdAkses, $SessionNama, $id_transaksi);
         if (!mysqli_stmt_execute($stmt)) {
             mysqli_stmt_close($stmt);
             throw new Exception('Gagal memperbarui transaksi.');

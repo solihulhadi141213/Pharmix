@@ -75,7 +75,7 @@
 
 <!-- Detail Transaksi -->
 <div class="modal fade" id="ModalDetail" tabindex="-1">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesDetailTransaksi">
                 <div class="modal-header">

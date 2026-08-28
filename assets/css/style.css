@@ -1089,6 +1089,13 @@ h6 {
   list-style: none;
 }
 
+.sidebar-nav .menu-divider {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
+  margin: 14px 0;
+  opacity: 1;
+}
+
 .sidebar-nav li {
   padding: 0;
   margin: 0;

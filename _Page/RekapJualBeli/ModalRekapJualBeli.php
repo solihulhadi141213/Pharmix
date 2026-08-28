@@ -65,7 +65,6 @@
                         <div class="col col-md-4"><label for="file_type">Type File</label></div>
                         <div class="col col-md-8">
                             <select name="file_type" id="file_type" class="form-control">
-                                <option value="PDF">PDF</option>
                                 <option value="Excel">Excel</option>
                             </select>
                         </div>

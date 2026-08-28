@@ -90,6 +90,12 @@
             t.pembayaran,
             t.keterangan,
             t.status,
+            t.creat_at,
+            t.creat_by_id,
+            t.creat_by_name,
+            t.update_at,
+            t.update_by_id,
+            t.update_by_name,
             tj.nama AS nama_transaksi,
             tj.kategori AS kategori
         FROM transaksi AS t
@@ -154,6 +160,41 @@
     $pembayaran         = (int) ($data['pembayaran'] ?? 0);
     $keterangan         = $data['keterangan'] ?? '';
     $status             = $data['status'] ?? '';
+    $creat_at           = $data['creat_at'] ?? '';
+    $creat_by_id        = $data['creat_by_id'] ?? '';
+    $creat_by_name      = $data['creat_by_name'] ?? '';
+    $update_at          = $data['update_at'] ?? '';
+    $update_by_id       = $data['update_by_id'] ?? '';
+    $update_by_name     = $data['update_by_name'] ?? '';
+    
+    // Format Tanggal
+    $creat_at_format = '-';
+    if (!empty($creat_at)) {
+        $timestamp = strtotime($creat_at);
+        if ($timestamp !== false) {
+            $creat_at_format = date('d/m/Y H:i:s', $timestamp);
+        }
+    }
+
+    $update_at_format = '-';
+    if (!empty($update_at)) {
+        $timestamp = strtotime($update_at);
+        if ($timestamp !== false) {
+            $update_at_format = date('d/m/Y H:i:s', $timestamp);
+        }
+    }
+
+    // Menentukan Creator Dan Updater (Berdasarkan tabel akses: id_akses & nama_akses)
+    if (!empty($creat_by_id)) {
+        $creator = GetDetailData($Conn, 'akses', 'id_akses', $creat_by_id, 'nama_akses');
+    } else {
+        $creator = !empty($creat_by_name) ? $creat_by_name : '-';
+    }
+    if (!empty($update_by_id)) {
+        $updater = GetDetailData($Conn, 'akses', 'id_akses', $update_by_id, 'nama_akses');
+    } else {
+        $updater = !empty($update_by_name) ? $update_by_name : '-';
+    }
 
     // ============================================================
     // NORMALISASI NILAI
@@ -254,9 +295,14 @@
         <div class="row mt-3 mb-3">
             <!-- KOLOM KIRI -->
             <div class="col-md-6">
+                <!-- ID Transaksi -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>ID Transaksi</small></div>
+                    <div class="col-6"><small class="text-grayish">' . $id_transaksi_html . '</small></div>
+                </div>
                 <!-- Tanggal -->
                 <div class="row mb-3">
-                    <div class="col-6"><small>Tanggal Transaksi</small></div>
+                    <div class="col-6"><small>Tanggal & Jam</small></div>
                     <div class="col-6"><small class="text-grayish">' . $TanggalFormat . '</small></div>
                 </div>
                 <!-- Nama Transaksi -->
@@ -269,19 +315,6 @@
                     <div class="col-6"><small>Kategori</small></div>
                     <div class="col-6">' . $kategori_label . '</div>
                 </div>
-                <!-- Jumlah -->
-                <div class="row mb-3">
-                    <div class="col-6"><small>Jumlah</small></div>
-                    <div class="col-6"><small class="text-grayish">' . $JumlahFormat . '</small></div>
-                </div>
-                <!-- Pembayaran -->
-                <div class="row mb-3">
-                    <div class="col-6"><small>Pembayaran</small></div>
-                    <div class="col-6"><small class="text-grayish">' . $PembayaranFormat . '</small></div>
-                </div>
-            </div>
-            <!-- KOLOM KANAN -->
-            <div class="col-md-6">
                 <!-- Status -->
                 <div class="row mb-3">
                     <div class="col-6"><small>Status</small></div>
@@ -296,6 +329,29 @@
                 <div class="row mb-3">
                     <div class="col-6"><small>Jurnal</small></div>
                     <div class="col-6"><small class="text-grayish">' . $JumlahJurnal . ' Record</small></div>
+                </div>
+            </div>
+            <!-- KOLOM KANAN -->
+            <div class="col-md-6">
+                <!-- Creat At -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Creat At</small></div>
+                    <div class="col-6"><small class="text-grayish">' . $creat_at_format . '</small></div>
+                </div>
+                <!-- Update At -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Update At</small></div>
+                    <div class="col-6"><small class="text-grayish">' . $update_at_format . '</small></div>
+                </div>
+                <!-- Creator -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Creat By</small></div>
+                    <div class="col-6"><small class="text-grayish">' . $creator . '</small></div>
+                </div>
+                <!-- Updater -->
+                <div class="row mb-3">
+                    <div class="col-6"><small>Update By</small></div>
+                    <div class="col-6"><small class="text-grayish">' . $updater . '</small></div>
                 </div>
                 <!-- Keterangan -->
                 <div class="row mb-3">

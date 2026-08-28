@@ -1,5 +1,4 @@
 <?php
-
     // ============================================================
     // KONFIGURASI
     // ============================================================
@@ -28,7 +27,6 @@
     // VALIDASI SESSION
     // ============================================================
     if (empty($SessionIdAkses)) {
-
         $response['message'] = 'Sesi akses sudah berakhir.';
         $response['html'] = '
             <tr>
@@ -50,7 +48,6 @@
     $id_transaksi = $_POST['id_transaksi'] ?? '';
 
     if (empty($id_transaksi)) {
-
         $response['message'] = 'ID Transaksi Tidak Boleh Kosong!';
         $response['html'] = '
             <tr>
@@ -70,6 +67,28 @@
     // SANITASI INPUT
     // ============================================================
     $id_transaksi = validateAndSanitizeInput($id_transaksi);
+    $id_transaksi_int = (int) $id_transaksi;
+
+    // ============================================================
+    // AMBIL DATA UTAMA TRANSAKSI (UNTUK NOMINAL PEMBAYARAN)
+    // ============================================================
+    $sql_transaksi = "SELECT jumlah, pembayaran FROM transaksi WHERE id_transaksi = ? LIMIT 1";
+    $stmt_transaksi = $Conn->prepare($sql_transaksi);
+    
+    $jumlah_transaksi_utama = 0;
+    $pembayaran_transaksi_utama = 0;
+
+    if ($stmt_transaksi) {
+        $stmt_transaksi->bind_param("i", $id_transaksi_int);
+        if ($stmt_transaksi->execute()) {
+            $result_transaksi = $stmt_transaksi->get_result();
+            if ($row_transaksi = $result_transaksi->fetch_assoc()) {
+                $jumlah_transaksi_utama = (float) $row_transaksi['jumlah'];
+                $pembayaran_transaksi_utama = (float) $row_transaksi['pembayaran'];
+            }
+        }
+        $stmt_transaksi->close();
+    }
 
     // ============================================================
     // QUERY RINCIAN TRANSAKSI
@@ -91,9 +110,7 @@
     $stmt = $Conn->prepare($sql);
 
     if (!$stmt) {
-
         $response['message'] = 'Gagal menyiapkan query: ' . $Conn->error;
-
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
         exit;
     }
@@ -101,19 +118,14 @@
     // ============================================================
     // BIND PARAMETER
     // ============================================================
-    // Gunakan "s" jika id_transaksi bertipe VARCHAR/CHAR.
-    // Jika id_transaksi bertipe INTEGER, gunakan "i".
-    $stmt->bind_param("s", $id_transaksi);
+    $stmt->bind_param("i", $id_transaksi_int);
 
     // ============================================================
     // EXECUTE QUERY
     // ============================================================
     if (!$stmt->execute()) {
-
         $response['message'] = 'Gagal menjalankan query: ' . $stmt->error;
-
         $stmt->close();
-
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
         exit;
     }
@@ -127,16 +139,11 @@
     // TAMPILKAN RINCIAN
     // ============================================================
     $html = '';
-    $no    = 1;
-    $total = 0;
+    $no = 1;
+    $total_rincian = 0;
 
     if ($result->num_rows > 0) {
-
         while ($data = $result->fetch_assoc()) {
-
-            // ====================================================
-            // Ambil Data
-            // ====================================================
             $id_transaksi_rincian = $data['id_transaksi_rincian'];
             $rincian_transaksi    = $data['rincian_transaksi'];
             $harga                = (float) $data['harga'];
@@ -144,52 +151,19 @@
             $satuan               = $data['satuan'];
             $jumlah_list          = (float) $data['jumlah'];
 
-            // ====================================================
             // Format Harga
-            // ====================================================
-            $HargaFormat = "Rp " . number_format(
-                $harga,
-                0,
-                ',',
-                '.'
-            );
+            $HargaFormat = "Rp " . number_format($harga, 0, ',', '.');
+            $JumlahListFormat = "Rp " . number_format($jumlah_list, 0, ',', '.');
 
-            $JumlahListFormat = "Rp " . number_format(
-                $jumlah_list,
-                0,
-                ',',
-                '.'
-            );
+            // Hitung Total Rincian
+            $total_rincian += $jumlah_list;
 
-            // ====================================================
-            // Hitung Total
-            // ====================================================
-            $total += $jumlah_list;
-
-            // ====================================================
             // Escape Output HTML
-            // ====================================================
-            $rincian_transaksi = htmlspecialchars(
-                $rincian_transaksi,
-                ENT_QUOTES,
-                'UTF-8'
-            );
+            $rincian_transaksi = htmlspecialchars($rincian_transaksi, ENT_QUOTES, 'UTF-8');
+            $qty = htmlspecialchars($qty, ENT_QUOTES, 'UTF-8');
+            $satuan = htmlspecialchars($satuan, ENT_QUOTES, 'UTF-8');
 
-            $qty = htmlspecialchars(
-                $qty,
-                ENT_QUOTES,
-                'UTF-8'
-            );
-
-            $satuan = htmlspecialchars(
-                $satuan,
-                ENT_QUOTES,
-                'UTF-8'
-            );
-
-            // ====================================================
             // HTML
-            // ====================================================
             $html .= '
                 <tr>
                     <td align="left">' . $no . '</td>
@@ -225,29 +199,36 @@
         }
 
         // ========================================================
-        // Total Transaksi
+        // FORMAT RINGKASAN (JUMLAH, PEMBAYARAN, SISA TAGIHAN)
         // ========================================================
-        $total_format = "Rp " . number_format(
-            $total,
-            0,
-            ',',
-            '.'
-        );
+        $jumlah_format = "Rp " . number_format($jumlah_transaksi_utama, 0, ',', '.');
+        $pembayaran_format = "Rp " . number_format($pembayaran_transaksi_utama, 0, ',', '.');
+        
+        $sisa_tagihan = $jumlah_transaksi_utama - $pembayaran_transaksi_utama;
+        if ($sisa_tagihan < 0) {
+            $sisa_tagihan = 0;
+        }
+        $sisa_tagihan_format = "Rp " . number_format($sisa_tagihan, 0, ',', '.');
 
         $html .= '
             <tr>
-                <td align="left" colspan="5">
-                    <b>TOTAL</b>
-                </td>
-                <td align="left">
-                    <b>' . $total_format . '</b>
-                </td>
+                <td align="left" colspan="5"><b>JUMLAH</b></td>
+                <td align="left"><b>' . $jumlah_format . '</b></td>
+                <td align="left"></td>
+            </tr>
+            <tr>
+                <td align="left" colspan="5"><b>PEMBAYARAN</b></td>
+                <td align="left"><b>' . $pembayaran_format . '</b></td>
+                <td align="left"></td>
+            </tr>
+            <tr>
+                <td align="left" colspan="5"><b>SISA TAGIHAN</b></td>
+                <td align="left"><b>' . $sisa_tagihan_format . '</b></td>
                 <td align="left"></td>
             </tr>
         ';
 
     } else {
-
         // ========================================================
         // Tidak Ada Data
         // ========================================================

@@ -1,35 +1,249 @@
-//Fungsi Untuk Menampilkan Data Utang Piutang
-function ShowPenjualan() {
-    var ProsesFilterPenjualan = $('#ProsesFilterPenjualan').serialize();
+//=======================================================
+// MODAL HABIT
+//=======================================================
+$(document).on('click', '[data-modal-target]', function (e) {
+    e.preventDefault();
+
+    var target = $(this).attr('data-modal-target');
+    var modalElement = document.querySelector(target);
+
+    if (modalElement) {
+        bootstrap.Modal.getOrCreateInstance(modalElement).show(this);
+    }
+});
+
+$(document).on('show.bs.modal', '.modal', function () {
+    var zIndex = 1050 + (10 * $('.modal.show').length);
+
+    $(this).css('z-index', zIndex);
+    setTimeout(function () {
+        $('.modal-backdrop').not('.modal-stack')
+            .css('z-index', zIndex - 1)
+            .addClass('modal-stack');
+    }, 0);
+});
+
+$(document).on('hidden.bs.modal', '.modal', function () {
+    if ($('.modal.show').length) {
+        $('body').addClass('modal-open');
+    }
+});
+
+//=======================================================
+// FUNCTION
+//=======================================================
+
+//Fungsi Untuk Menampilkan dashboard Utang Piutang
+function ShowCount() {
+
+    // Kosongkan Notifikasi
+    $('#NotifikasiSistem').html(``);
+    
+    // Loading HTML
+    $('#utang_jual_beli').html('...');
+    $('#utang_pembelian').html('...');
+    $('#utang_retur_penjualan').html('...');
+    $('#piutang_jual_beli').html('...');
+    $('#piutang_penjualan').html('...');
+    $('#piutang_retur_pembelian').html('...');
+    $('#utang_operasional').html('...');
+    $('#piutang_operasional').html('...');
+    $('#total_utang').html('...');
+    $('#total_piutang').html('...');
+
+    // Ambil Data Dengan AJAX
     $.ajax({
-        type: 'POST',
-        url: '_Page/UtangPiutang/TabelUtangPiutangPenjualan.php',
-        data: ProsesFilterPenjualan,
-        success: function(data) {
-            $('#TabelUtangPiutangPenjualan').html(data);
+        type    : 'POST',
+        url     : '_Page/UtangPiutang/ProsesCountUtangPiutang.php',
+        dataType: 'JSON',
+        success : function(response) {
+
+            // Gunakan setTimeout untuk memberikan delay sebelum data dipasang
+            setTimeout(function() {
+
+                // Status & Message
+                var status = response.status;
+                var message = response.message;
+                var data = response.data;
+
+                // Jika Berhasil
+                if(status=='success'){
+                    
+                    // Tempelkan Data
+                    $('#utang_jual_beli').html(data.utang_jual_beli);
+                    $('#utang_pembelian').html(data.utang_pembelian);
+                    $('#utang_retur_penjualan').html(data.utang_retur_penjualan);
+                    $('#piutang_jual_beli').html(data.piutang_jual_beli);
+                    $('#piutang_penjualan').html(data.piutang_penjualan);
+                    $('#piutang_retur_pembelian').html(data.piutang_retur_pembelian);
+                    $('#utang_operasional').html(data.utang_operasional);
+                    $('#piutang_operasional').html(data.piutang_operasional);
+                    $('#total_utang').html(data.total_utang);
+                    $('#total_piutang').html(data.total_piutang);
+                }else{
+                    
+                    //Tempelkan Notifikasi
+                    $('#NotifikasiSistem').html(`
+                        <div class="alert alert-danger text-center" role="alert">
+                            <small>
+                                <b>Opss!</b><br>
+                                ${message}
+                            </small>
+                        </div>
+                    `);
+                }
+
+            }, 500); // Angka 500 artinya delay selama 500 milidetik (0.5 detik). Ubah sesuai kebutuhan.
+
+        },
+        error: function () {
+            
+            //Tempelkan Notifikasi
+            $('#NotifikasiSistem').html(`
+                <div class="alert alert-danger text-center" role="alert">
+                    <small>
+                        <b>Opss!</b><br>
+                        Terjadi kesalahan pada sistem. Silakan coba lagi.
+                    </small>
+                </div>
+            `);
+        },
+    });
+}
+
+//Fungsi Untuk Menampilkan Data Utang Piutang Operasional
+function ShowUtangPiutangOperasional() {
+    // Target And Filter
+    let target = $('#tabel_operasional');
+    let data   = $('#ProsesFilterOperasional').serialize();
+
+    target.addClass('blur-loading');
+
+    $.ajax({
+        type    : 'POST',
+        url     : '_Page/UtangPiutang/TabelUtangPiutangOperasional.php',
+        data    : data,
+        dataType: 'JSON',
+        success : function(res) {
+
+            if(res.status === "success"){
+
+                target.fadeOut(150, function () {
+                    target.html(res.html).fadeIn(150);
+                });
+
+                // Update info page
+                $('#page_info_operasional').html('Page ' + res.page + ' Of ' + res.total_page);
+
+                // Handle tombol
+                $('#prev_button_operasional').prop('disabled', res.page <= 1);
+                $('#next_button_operasional').prop('disabled', res.page >= res.total_page);
+
+            }else{
+                target.html(res.html);
+            }
+
+            target.removeClass('blur-loading');
         }
     });
 }
 
-// Fungsi untuk memeriksa apakah ada checkbox yang tercentang
-function checkSelectedItems() {
-    // Cek apakah ada checkbox item_penjualan yang tercentang
-    const anyChecked = $('.item_penjualan:checked').length > 0;
-    
-    // Update status tombol bayar
-    $('#ButtonTambahPembayaranPenjualan').prop('disabled', !anyChecked);
+//Fungsi Untuk Menampilkan Data Utang Piutang Jual/Beli
+function ShowUtangPiutangJualBeli() {
+    // Target And Filter
+    let target = $('#tabel_utang_piutang');
+    let data   = $('#ProsesFilter').serialize();
+
+    target.addClass('blur-loading');
+
+    $.ajax({
+        type    : 'POST',
+        url     : '_Page/UtangPiutang/TabelUtangPiutangJualBeli.php',
+        data    : data,
+        dataType: 'JSON',
+        success : function(res) {
+
+            if(res.status === "success"){
+
+                target.fadeOut(150, function () {
+                    target.html(res.html).fadeIn(150);
+                });
+
+                // Update info page
+                $('#page_info').html('Page ' + res.page + ' Of ' + res.total_page);
+
+                // Handle tombol
+                $('#prev_button').prop('disabled', res.page <= 1);
+                $('#next_button').prop('disabled', res.page >= res.total_page);
+
+            }else{
+                target.html(res.html);
+            }
+
+            target.removeClass('blur-loading');
+        }
+    });
 }
 
+
 //Fungsi Menampilkan Riwayat Pembayaran
-function ShowRiwayatPembayaran() {
-    var ProsesFilterRiwayatPembayaran = $('#ProsesFilterRiwayatPembayaran').serialize();
+function ShowRiwayatPembayaran(id, kategori) {
+   // Load Baris Tabel
+    $('#tabel_riwayat_pembayaran').html(`
+        <tr>
+            <td colspan="6" class="text-center">
+                <small>Loading...</small>
+            </td>
+        </tr>
+    `);
+
+    //Buka Tabel Riwayat Pembayaran
     $.ajax({
-        type: 'POST',
-        url: '_Page/UtangPiutang/TabelRiwayatPembayaran.php',
-        data: ProsesFilterRiwayatPembayaran,
-        success: function(data) {
-            $('#TabelRiwayatPembayaran').html(data);
-        }
+        type 	    : 'POST',
+        url 	    : '_Page/UtangPiutang/TabelRiwayatPembayaran.php',
+        data        : {id: id, kategori: kategori},
+        dataType    : "JSON",
+        success     : function(response){
+
+            // Jika Berhasil
+            if(response.status=="success"){
+
+                //Tempelkan html pada 'tabel_riwayat_pembayaran'
+                $('#tabel_riwayat_pembayaran').html(response.html);
+                
+            }else{
+                //Tempelkan Notifikasi
+                $('#tabel_riwayat_pembayaran').html(
+                    `
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <small>
+                                    <b>Opsss!</b><br>
+                                    Terjadi kesalahan pada sistem. <br>
+                                    ${response.message}
+                                </small>
+                            </td>
+                        </tr>
+                    `
+                );
+            }
+        },
+        error: function () {
+            
+            //Tempelkan Notifikasi
+            $('#tabel_riwayat_pembayaran').html(
+                `
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            <small>
+                                <b>Opsss!</b><br>
+                                Terjadi kesalahan pada sistem.
+                            </small>
+                        </td>
+                    </tr>
+                `
+            );
+        },
     });
 }
 
@@ -76,486 +290,369 @@ function initializeMoneyInputs() {
 }
 
 $(document).ready(function() {
+    
     //Menampilkan Data Pertama Kali
-    ShowPenjualan();
+    ShowCount();
+    ShowUtangPiutangOperasional();
+    ShowUtangPiutangJualBeli();
+
+    // Ketika 'ReloadCount' di click
+    $('#ReloadCount').click(function() {
+        ShowCount();
+    });
+
+    // ---------------------------------------------
+    // PENANGANAN TABEL OPERASIONAL
+    // ---------------------------------------------
+    //Ketika 'keyword_by_operasional' diubah
+    $('#keyword_by_operasional').change(function() {
+        var keyword_by_operasional= $('#keyword_by_operasional').val();
+        $.ajax({
+            type    : 'POST',
+            url     : '_Page/UtangPiutang/FormFilterOperasional.php',
+            data    : {keyword_by_operasional: keyword_by_operasional},
+            success: function(data) {
+                $('#FormFilterOperasional').html(data);
+            }
+        });
+    });
+
+    //Ketika 'ProsesFilterOperasional' Di Submit
+    $('#ProsesFilterOperasional').submit(function(e) {
+        e.preventDefault();
+
+        // Reset Halaman
+        $('#page_filter_operasional').val(1);
+
+        // Tampilkan Data
+        ShowUtangPiutangOperasional();
+
+        // Tutup Modal Bootstrap 5
+        const modalElement = document.getElementById('ModalFilterOperasional');
+        const modal = bootstrap.Modal.getInstance(modalElement);
+
+        if (modal) {modal.hide();}
+    });
+
+    //Pagging
+    $(document).on('click', '#next_button_operasional', function() {
+        var page = parseInt($('#page_filter_operasional').val(), 10); // Pastikan nilai diambil sebagai angka
+        var page = page + 1;
+        $('#page_filter_operasional').val(page);
+        ShowUtangPiutangOperasional();
+    });
+    $(document).on('click', '#prev_button_operasional', function() {
+        var page = parseInt($('#page_filter_operasional').val(), 10); // Pastikan nilai diambil sebagai angka
+        var page = page - 1;
+        $('#page_filter_operasional').val(page);
+        ShowUtangPiutangOperasional();
+    });
+
+    // ---------------------------------------------
+    // PENANGANAN TABEL JUAL BELI
+    // ---------------------------------------------
+    //Ketika 'keyword_by' diubah
+    $('#keyword_by').change(function() {
+        var keyword_by= $('#keyword_by').val();
+        $.ajax({
+            type    : 'POST',
+            url     : '_Page/UtangPiutang/FormFilter.php',
+            data    : {keyword_by: keyword_by},
+            success: function(data) {
+                $('#FormFilter').html(data);
+            }
+        });
+    });
 
     //Ketika Filter Di Submit
-    $('#ProsesFilterPenjualan').submit(function() {
-        ShowPenjualan();
+    $('#ProsesFilter').submit(function() {
+        ShowUtangPiutangJualBeli();
 
         //Tutup Modal
         $('#ModalFilterPenjualan').modal('hide');
     });
 
-    //Penanganan Form Filter Utang Piutang
-    $('#keyword_by_penjualan').change(function() {
-        var keyword_by= $('#keyword_by_penjualan').val();
-        $.ajax({
-            type    : 'POST',
-            url     : '_Page/UtangPiutang/FormFilterPenjualan.php',
-            data    : {keyword_by: keyword_by},
-            success: function(data) {
-                $('#FormFilterPenjualan').html(data);
-            }
-        });
-    });
-
     //Pagging
-    $(document).on('click', '#next_button_penjualan', function() {
-        var page_penjualan = parseInt($('#page_penjualan').val(), 10); // Pastikan nilai diambil sebagai angka
-        var page_penjualan_selanjutnya = page_penjualan + 1;
-        $('#page_penjualan').val(page_penjualan_selanjutnya);
-        ShowPenjualan();
+    $(document).on('click', '#next_button', function() {
+        var page = parseInt($('#page_filter').val(), 10); // Pastikan nilai diambil sebagai angka
+        var page = page + 1;
+        $('#page_filter').val(page);
+        ShowUtangPiutang();
     });
-    $(document).on('click', '#prev_button_penjualan', function() {
-        var page_penjualan = parseInt($('#page_penjualan').val(), 10); // Pastikan nilai diambil sebagai angka
-        var page_penjualan_selanjutnya = page_penjualan - 1;
-        $('#page_penjualan').val(page_penjualan_selanjutnya);
-        ShowPenjualan();
-    });
-    
-    // Inisialisasi: disable tombol bayar saat pertama kali load
-    $('#ButtonTambahPembayaranPenjualan').prop('disabled', true);
-
-    // Event handler untuk checkbox "check all"
-    $('#check_all_penjualan').change(function() {
-        // Centang/uncentang semua checkbox item
-        $('.item_penjualan').prop('checked', $(this).prop('checked'));
-        
-        // Periksa status checkbox
-        checkSelectedItems();
-    });
-    
-    // Event handler untuk checkbox individual
-    $(document).on('change', '.item_penjualan', function() {
-        // Periksa status checkbox
-        checkSelectedItems();
-        
-        // Update status "check all" jika perlu
-        const allChecked = $('.item_penjualan').length === $('.item_penjualan:checked').length;
-        $('#check_all_penjualan').prop('checked', allChecked);
+    $(document).on('click', '#prev_button', function() {
+        var page = parseInt($('#page_filter').val(), 10); // Pastikan nilai diambil sebagai angka
+        var page = page - 1;
+        $('#page_filter').val(page);
+        ShowUtangPiutang();
     });
 
-    //Modal Detail Penjualan
-    $('#ModalDetailPenjualan').on('show.bs.modal', function (e) {
-        //Tangkap id_transaksi_jual_beli dari modal detail
-        var id_transaksi_jual_beli = $(e.relatedTarget).data('id');
+    // ---------------------------------------------
+    // Modal Detail Transaksi Operasional
+    // ---------------------------------------------
+    $('#ModalDetailTransaksiOperasional').on('show.bs.modal', function (e) {
         
+        //Tangkap 'id_transaksi' 
+        var id_transaksi = $(e.relatedTarget).data('id');
+
+        // Load Form
+        $('#FormDetailTransaksiOperasional').html("Loading...");
+
         //Buka Detail Barang
         $.ajax({
             type 	    : 'POST',
-            url 	    : '_Page/Penjualan/detail_penjualan.php',
-            data        : {id_transaksi_jual_beli: id_transaksi_jual_beli},
-            dataType    : "json",
+            url 	    : '_Page/Transaksi/FormDetail.php',
+            data        : {id_transaksi: id_transaksi},
+            dataType    : "JSON",
             success     : function(response){
-                if(response.status=="Success"){
+                if(response.status=="success"){
+                    var html = response.html;
 
-                    var data = response.dataset;
-                    var list_rincian = response.list_rincian;
-                    
-                    //Tempelkan Ke Element
-                    $('#FormDetail').html(`
-                        <input type="hidden" name="id" value="${id_transaksi_jual_beli}">
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Tanggal</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.tanggal}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Anggota</small></div>
-                            <div class="col-8">
-                                <a href="javascriipt:void(0);" data-bs-toggle="modal" data-bs-target="#ModalListAnggotaEdit" data-id="${id_transaksi_jual_beli}" data-mode="List">
-                                    <small class="text text-grayish">${data.nama_anggota}</small>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Kategori</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.kategori}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Subtotal</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.subtotal_rp}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>PPN</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.ppn_rp}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Diskon</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.diskon_rp}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Total</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.total_rp}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Cash</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.cash_rp}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Kembalian</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.kembalian_rp}</small>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-4"><small>Status</small></div>
-                            <div class="col-8">
-                                <small class="text text-grayish">${data.status}</small>
-                            </div>
-                        </div>
-                    `);
-                    var rincianList = response.list_rincian;
-                    var html = "";
+                    //Tempelkan Detail
+                    $('#FormDetailTransaksiOperasional').html(html);
 
-                    // Inisialisasi total
-                    var totalPpn = 0;
-                    var totalDiskon = 0;
-                    var totalSubtotal = 0;
-
-                    if (rincianList.length > 0) {
-                        $.each(rincianList, function(index, item) {
-                            html += `
-                                <tr>
-                                    <td>${index + 1}</td>
-                                    <td>${item.nama_barang}</td>
-                                    <td>${item.qty}</td>
-                                    <td class="text-end">${item.harga_rp}</td>
-                                    <td class="text-end">${item.ppn_rp}</td>
-                                    <td class="text-end">${item.diskon_rp}</td>
-                                    <td class="text-end">${item.subtotal_rp}</td>
-                                </tr>
-                            `;
-
-                            // Hitung total
-                            totalPpn += parseFloat(item.ppn);
-                            totalDiskon += parseFloat(item.diskon);
-                            totalSubtotal += parseFloat(item.subtotal);
-                        });
-
-                        // Tambahkan baris total di akhir tabel
-                        html += `
-                            <tr class="fw-bold bg-light">
-                                <td colspan="4" class="text-center">Total</td>
-                                <td class="text-end">Rp ${totalPpn.toLocaleString("id-ID")}</td>
-                                <td class="text-end">Rp ${totalDiskon.toLocaleString("id-ID")}</td>
-                                <td class="text-end">Rp ${totalSubtotal.toLocaleString("id-ID")}</td>
-                            </tr>
-                        `;
-                    } else {
-                        html = '<tr><td colspan="7" class="text-center">Tidak ada rincian transaksi</td></tr>';
-                    }
-
-                    // Masukkan ke dalam tabel
-                    $("#ListDetail").html(html);
-
-                    //Enable tombol
-                    $('#ButtonSelengkapnya').prop("disabled", false);
                 }else{
-                    //Tempelkan Notifikasi
-                    $('#FormDetail').html(
-                        `<div class="alert alert-danger" role="alert">${response.message}</div>`
+                    //Tempelkan ke 'FormDetailTransaksiJualBeli'
+                    $('#FormDetailTransaksiOperasional').html(
+                        `
+                            <div class="alert alert-danger text-center" role="alert">
+                                <small>
+                                    <b>Opsss!</b><br>
+                                    Terjadi kesalahan pada sistem. <br>
+                                    ${response.message}
+                                </small>
+                            </div>
+                        `
                     );
-                    //Disable tombol
-                    $('#ButtonSelengkapnya').prop("disabled", true);
+
                 }
             },
             error: function () {
-                //Tempelkan Notifikasi
-                $('#FormDetail').html(
-                    '<div class="alert alert-danger" role="alert">Terjadi kesalahan pada sistem. Silakan coba lagi.</div>'
+                //Tempelkan ke 'FormDetailTransaksiOperasional'
+                $('#FormDetailTransaksiOperasional').html(
+                    `
+                        <div class="alert alert-danger text-center" role="alert">
+                            <small>
+                                <b>Opsss!</b><br>
+                                Terjadi kesalahan pada sistem. Silahkan Coba Lagi<br>
+                            </small>
+                        </div>
+                    `
                 );
-                //Disable tombol
-                $('#ButtonSelengkapnya').prop("disabled", true);
+
             },
         });
     });
 
-    //Modal Pembayaran Penjualan
-    $('#ModalPembayaranPiutangPenjualan').on('show.bs.modal', function (e) {
-        //Tangkap id_transaksi_jual_beli dari modal detail
+    // ---------------------------------------------
+    // Modal Detail Transaksi Jual Beli
+    // ---------------------------------------------
+    $('#ModalDetailTransaksiJualBeli').on('show.bs.modal', function (e) {
+        
+        //Tangkap id_transaksi_jual_beli 
         var id_transaksi_jual_beli = $(e.relatedTarget).data('id');
 
-        //Kosongkan Notifikasi
-        $("#NotifikasiPembayaranPiutangPenjualan").html("");
-        //Disabled Tombol
-        $('#ButtonPembayaranPiutangPenjualan').prop("disabled", false);
+        // Load Form
+        $('#FormDetailTransaksiJualBeli').html("Loading...");
+
+        //Disable tombol
+        $('#ButtonTransaksiJualBeliSelengkapnya').prop("disabled", true);
+
+        //Buka Detail Barang
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/UtangPiutang/FormDetailTransaksiJualBeli.php',
+            data        : {id_transaksi_jual_beli: id_transaksi_jual_beli},
+            dataType    : "JSON",
+            success     : function(response){
+                if(response.status=="success"){
+                    var html = response.html;
+
+                    //Tempelkan Detail
+                    $('#FormDetailTransaksiJualBeli').html(html);
+
+                    // Enable Tombol
+                    $('#ButtonTransaksiJualBeliSelengkapnya').prop("disabled", false);
+                }else{
+                    //Tempelkan ke 'FormDetailTransaksiJualBeli'
+                    $('#FormDetailTransaksiJualBeli').html(
+                        `
+                            <div class="alert alert-danger text-center" role="alert">
+                                <small>
+                                    <b>Opsss!</b><br>
+                                    Terjadi kesalahan pada sistem. <br>
+                                    ${response.message}
+                                </small>
+                            </div>
+                        `
+                    );
+                    
+                    //Disable tombol
+                    $('#ButtonTransaksiJualBeliSelengkapnya').prop("disabled", true);
+                }
+            },
+            error: function () {
+                //Tempelkan ke 'FormDetailTransaksiJualBeli'
+                $('#FormDetailTransaksiJualBeli').html(
+                    `
+                        <div class="alert alert-danger text-center" role="alert">
+                            <small>
+                                <b>Opsss!</b><br>
+                                Terjadi kesalahan pada sistem. Silahkan Coba Lagi<br>
+                            </small>
+                        </div>
+                    `
+                );
+
+                //Disable tombol
+                $('#ButtonTransaksiSelengkapnya').prop("disabled", true);
+            },
+        });
+    });
+
+    // -----------------------------------------------------------
+    // Modal Riwayat Pembayaran
+    // -----------------------------------------------------------
+    $('#ModalRiwayatPembayaran').on('show.bs.modal', function (e) {
+        
+        //Tangkap id dan Kategori transaksi
+        var id       = $(e.relatedTarget).data('id');
+        var kategori = $(e.relatedTarget).data('kategori');
+
+        // Show Riwayat Transaksi
+        ShowRiwayatPembayaran(id, kategori);
+    });
+   
+    //Modal Pembayaran
+    $('#ModalPembayaran').on('show.bs.modal', function (e) {
+
+        //Tangkap id_transaksi_jual_beli dari modal detail
+        var id       = $(e.relatedTarget).data('id');
+        var kategori = $(e.relatedTarget).data('kategori');
+
+        //Kosongkan 'NotifikasiPembayaran'
+        $("#NotifikasiPembayaran").html("");
+
+        // Loading Form
+        $("#FormPembayaran").html("Loading...");
 
         //Buka Detail Transaksi
         $.ajax({
-            type 	    : 'POST',
-            url 	    : '_Page/Penjualan/detail_penjualan.php',
-            data        : {id_transaksi_jual_beli: id_transaksi_jual_beli},
-            dataType    : "json",
+            type        : 'POST',
+            url         : '_Page/UtangPiutang/FormPembayaran.php',
+            data        : {
+                id: id,
+                kategori: kategori
+            },
             success     : function(response){
-                if(response.status=="Success"){
-                    //Buat Variabel
-                    var id_anggota = response.dataset.id_anggota;
-                    var nama_anggota = response.dataset.nama_anggota;
-                    var kategori = response.dataset.kategori;
-                    var total = response.dataset.total;
-                    var sisa_tunggakan = response.dataset.sisa_tunggakan;
-                    
-                    //Tempelkan ID Transaksi Ke Form
-                    $('#id_transaksi_penjualan').val(id_transaksi_jual_beli);
-                    
-                    //Tempelkan nama anggota Ke Form
-                    $('#anggota_pembayaran_piutang_penjualan').html('<option value="'+id_anggota+'">'+nama_anggota+'</option>');
 
-                    //Tempelkan Kategori Ke Form
-                    $('#kategori_transaksi_pembayaran_piutang_penjualan').val(kategori);
-                    
-                    //Tempelkan Nominal Total Ke Form
-                    $('#nominal_pembayaran_piutang_penjualan').val(sisa_tunggakan);
-                    
-                    //Enable tombol
-                    $('#ButtonPembayaranPiutangPenjualan').prop("disabled", false);
+                //Tampilkan Form
+                $("#FormPembayaran").html(response);
 
-                    //Inisiasi Function Form uang Rupiah
-                    initializeMoneyInputs();
+                //Inisialisasi Format Money
+                initializeMoneyInputs();
 
-                    //Tempelkan Notifikasi
-                    $('#NotifikasiPembayaranPiutangPenjualan').html(
-                        `<div class="alert alert-warning" role="alert">
-                            <small>Setelah melakukan pembayaran sesuai jumlah tagihan maka status transaksi akan Lunas dan tidak akan ditampilkan lagi pada tabel ini.</small>
-                        </div>`
-                    );
-                }else{
-                    //Tempelkan Notifikasi
-                    $('#NotifikasiPembayaranPiutangPenjualan').html(
-                        `<div class="alert alert-danger" role="alert">${response.message}</div>`
-                    );
-                    //Disable tombol
-                    $('#ButtonPembayaranPiutangPenjualan').prop("disabled", true);
+                //Tandai Form Sudah Siap 
+                $('#ModalPembayaran').data('form-ready', true); 
+                
+                //Jika Modal Sudah Terbuka 
+                if($('#ModalPembayaran').hasClass('show')){ 
+                    //Fokus Ke Input 
+                    $('#ModalPembayaran #nominal_pembayaran').focus();
                 }
+
             },
-            error: function () {
-                //Tempelkan Notifikasi
-                $('#NotifikasiPembayaranPiutangPenjualan').html(
-                    '<div class="alert alert-danger" role="alert">Terjadi kesalahan pada sistem. Silakan coba lagi.</div>'
+            error       : function(){
+                $("#FormPembayaran").html(
+                    '<div class="alert alert-danger">' +
+                        'Terjadi kesalahan saat memuat form.' +
+                    '</div>'
                 );
-                //Disable tombol
-                $('#ButtonPembayaranPiutangPenjualan').prop("disabled", true);
-            },
+            }
         });
+    });
+
+    //Ketika Modal Sudah Benar-Benar Ditampilkan
+    $('#ModalPembayaran').on('shown.bs.modal', function () {
+
+        //Periksa Apakah Form Sudah Siap
+        if($(this).data('form-ready') === true){
+
+            //Fokus Ke Input
+            $(this).find('#nominal_pembayaran').focus();
+
+        }
     });
 
     //Proses Pembayaran
-    $("#ProsesPembayaranPiutangPenjualan").on("submit", function (e) {
+    $("#ProsesPembayaran").on("submit", function (e) {
         e.preventDefault();
-        // Tombol loading
-        $("#ButtonPembayaranPiutangPenjualan").html('Loading..');
-        $("#ButtonPembayaranPiutangPenjualan").prop("disabled", true);
-        let ButtonElement = '<i class="bi bi-save"></i> Simpan';
-        // Ambil data form
-        let formData = new FormData(this);
+        
+        // Proses Pembayaran
+        var ProsesPembayaran=$("#ProsesPembayaran").serialize();
 
-        // Kirim data ke server
-        $.ajax({
-            url         : "_Page/UtangPiutang/ProsesPembayaranPiutangPenjualan.php",
-            type        : "POST",
-            data        : formData,
-            contentType : false,
-            processData : false,
-            dataType    : "json",
-            success: function (response) {
-                //Apabila Proses Berhasil
-                if (response.status === "Success") {
-                    $("#ButtonPembayaranPiutangPenjualan").html(ButtonElement).prop("disabled", false);
-                    $('#NotifikasiPembayaranPiutangPenjualan').html('');
-                    
-                    //Tutup Modal
-                    $('#ModalPembayaranPiutangPenjualan').modal('hide');
-                    
-                    //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Pembayaran Utang/Piutang Penjualan Berhasil!',
-                        'success'
-                    );
-                    
-                    //Reload Data
-                    ShowPenjualan();
-                } else {
-                    // Tampilkan pesan error
-                    $("#NotifikasiPembayaranPiutangPenjualan").html(
-                        `<div class="alert alert-danger" role="alert">${response.message}</div>`
-                    );
-                    $("#ButtonPembayaranPiutangPenjualan").html(ButtonElement).prop("disabled", false);
-                }
-            },
-            error: function () {
-                $("#NotifikasiPembayaranPiutangPenjualan").html(
-                    '<div class="alert alert-danger" role="alert">Terjadi kesalahan pada sistem. Silakan coba lagi.</div>'
-                );
-                $("#ButtonPembayaranPiutangPenjualan").html(ButtonElement).prop("disabled", false);
-            },
-        });
-    });
+        //Loading Notifikasi
+        $('#NotifikasiPembayaran').html('Loading...');
 
-    //Modal Riwayat Pembayaran
-    $('#ModalRiwayatPembayaran').on('show.bs.modal', function (e) {
-        //Tangkap id_transaksi_jual_beli dari modal detail
-        var kategori = $(e.relatedTarget).data('id');
+        // Disable Button
+        $('#ButtonPembayaran').prop("disabled", true);
 
-        //Tempelkan Nilai kategori ke id kategori_riwayat
-        $("#kategori_riwayat").val(kategori);
-    });
-
-    //PENANGANAN HALAMAN RIWAYAT PEMBAYARAN
-    if ($('#TabelRiwayatPembayaran').length) {
-        ShowRiwayatPembayaran();
-
-        //Ketika keyword_by_riwayat_pembayaran diubah
-         $('#keyword_by_riwayat_pembayaran').change(function() {
-           var keyword_by_riwayat_pembayaran=$('#keyword_by_riwayat_pembayaran').val();
-
-            //Tampilkan filter dengan AJAX
-            $.ajax({
-                type    : 'POST',
-                url     : '_Page/UtangPiutang/FormFilterRiwayatPembayaran.php',
-                data    : {keyword_by_riwayat_pembayaran: keyword_by_riwayat_pembayaran},
-                success: function(data) {
-                    $('#FormFilterRiwayatPembayaran').html(data);
-                }
-            });
-        });
-
-        //Ketika Filter Di submit
-        $('#ProsesFilterRiwayatPembayaran').submit(function() {
-            ShowRiwayatPembayaran();
-
-            //Tutup Modal
-            $('#ModalFilterRiwayatPembayaran').modal('hide');
-        });
-
-        //Pagging Tabel Riwayat Pembayaran
-        $(document).on('click', '#next_button_riwayat', function() {
-            var page_now = parseInt($('#page_riwayat_pembayaran').val(), 10); // Pastikan nilai diambil sebagai angka
-            var next_page = page_now + 1;
-            $('#page_riwayat_pembayaran').val(next_page);
-            ShowRiwayatPembayaran();
-        });
-        $(document).on('click', '#prev_button_riwayat', function() {
-            var page_now = parseInt($('#page_riwayat_pembayaran').val(), 10); // Pastikan nilai diambil sebagai angka
-            var next_page = page_now - 1;
-            $('#page_riwayat_pembayaran').val(next_page);
-            ShowRiwayatPembayaran();
-        });
-    }
-
-    //Modal ModalPembayaranPenjualanMultiple Muncul
-    $('#ModalPembayaranPenjualanMultiple').on('show.bs.modal', function (e) {
-        var ProsesDetailMulti=$("#ProsesDetailMulti").serialize();
-
-        //Kirimkan Data Dengan Ajax
-        $('#ListPembayaranPenjualanMultiple').html('<tr><td colspan="6" class="text-center">Loading...</td></tr>');
+        // Send Data
         $.ajax({
             type    : 'POST',
-            url     : '_Page/UtangPiutang/ListPembayaranPenjualanMultiple.php',
-            data    : ProsesDetailMulti,
-            success: function(data) {
-                $('#ListPembayaranPenjualanMultiple').html(data);
+            url     : '_Page/UtangPiutang/ProsesPembayaran.php',
+            data    : ProsesPembayaran,
+            dataType: 'JSON',
+            success: function(response) {
+
+                // Status & Message
+                var status  = response.status;
+                var message = response.message;
+                var id = response.id;
+                var kategori = response.kategori;
+
+                if(status=='success'){
+
+                    // Kosongkan Notifikasi
+                    $('#NotifikasiPembayaran').html('');
+
+                    // Enable Button
+                    $('#ButtonPembayaran').prop("disabled", false);
+
+                    // Close Modal
+                    $("#ModalPembayaran").modal('hide');
+
+                    // Reload Data
+                    ShowRiwayatPembayaran(id, kategori);
+                    ShowUtangPiutangOperasional();
+                    ShowUtangPiutangJualBeli();
+
+                }else{
+
+                    // Jika Gagal, Tampilkan Pada Notifikasi
+                    $('#NotifikasiPembayaran').html('<div class="alert alert-danger"><small>'+message+'</small></div>');
+                    
+                    // Enable Button
+                    $('#ButtonPembayaran').prop("disabled", false);
+                }
+            },
+            error : function(){
+                $('#NotifikasiPembayaran').html('<div class="alert alert-danger"><small><b>Opss!</b> Terjadi kesalahan pada sistem!</small></div>');
+                // Enable Button
+                $('#ButtonPembayaran').prop("disabled", false);
             }
         });
     });
 
-    //Proses Pembayaran Multiple
-    $("#ProsesPembayaranPenjualanMultiple").on("submit", function (e) {
-        e.preventDefault();
-        // Tombol loading
-        $("#ButtonPembayaranPenjualanMultiple").html('Loading..');
-        $("#ButtonPembayaranPenjualanMultiple").prop("disabled", true);
-        let ButtonElement = '<i class="bi bi-save"></i> Simpan Pembayaran';
-        // Ambil data form
-        let formData = new FormData(this);
+    
 
-        // Kirim data ke server
-        $.ajax({
-            url         : "_Page/UtangPiutang/ProsesPembayaranPenjualanMultiple.php",
-            type        : "POST",
-            data        : formData,
-            contentType : false,
-            processData : false,
-            success: function (response) {
-                //Apabila Proses Berhasil
-                $('#ListPembayaranPenjualanMultiple').html(response);
 
-                //Kembalikan Element Tombol
-                $("#ButtonPembayaranPenjualanMultiple").html(ButtonElement);
 
-                //Reload Data
-                ShowPenjualan();
-            }
-        });
-    });
 
-    //Modal Detail Anggota
-    $('#ModalDetailAnggota').on('show.bs.modal', function (e) {
-        //Tangkap id_anggota dari modal detail
-        var id_anggota = $(e.relatedTarget).data('id');
 
-        //Loading
-        $("#FormDetailAnggota").html('Loading...');
 
-        //Tampilkan Data Dengan AJAX
-        $.ajax({
-            url         : "_Page/Anggota/FormDetailAnggota.php",
-            type        : "POST",
-            data        : {id_anggota: id_anggota},
-            success: function (response) {
-                $('#FormDetailAnggota').html(response);
-            }
-        });
-    });
 
-    //Modal Detail Pembayaran
-    $('#ModalDetailPembayaran').on('show.bs.modal', function (e) {
-        //Tangkap id_anggota dari modal detail
-        var id_transaksi_pembayaran = $(e.relatedTarget).data('id');
 
-        //Loading
-        $("#FormDetailPembayaran").html('Loading...');
 
-        //Tampilkan Data Dengan AJAX
-        $.ajax({
-            url         : "_Page/UtangPiutang/FormDetailPembayaran.php",
-            type        : "POST",
-            data        : {id_transaksi_pembayaran: id_transaksi_pembayaran},
-            success: function (response) {
-                $('#FormDetailPembayaran').html(response);
-            }
-        });
-    });
-
-    //Ketika Mode Data Diubah
-    $("#mode_data").on("change", function (e) {
-       var mode_data=$('#mode_data').val();
-
-       //Routing Dengan Aja PHP
-       $.ajax({
-            url         : "_Page/UtangPiutang/FormModeData.php",
-            type        : "POST",
-            data        : {mode_data: mode_data},
-            success: function (response) {
-                $('#ShortPeriode').html(response);
-            }
-        });
-    });
 
     //Modal Edit Pembayaran
     $('#ModalEditPembayaran').on('show.bs.modal', function (e) {

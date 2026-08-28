@@ -24,11 +24,11 @@
                     <div id="tanggal_menarik">Hari, 01 Januari 1900</div>
                     <div id="jam_menarik">00:00:00</div>
                     <div class="dashboard-quick-actions">
-                        <a class="dashboard-quick-action" href="index.php?Page=Penjualan">
+                        <a class="dashboard-quick-action" href="index.php?Page=Penjualan&Sub=TambahPenjualan&retur=Tidak">
                             <i class="bi bi-cart-dash" aria-hidden="true"></i>
                             <span>Penjualan</span>
                         </a>
-                        <a class="dashboard-quick-action" href="index.php?Page=Pembelian">
+                        <a class="dashboard-quick-action" href="index.php?Page=Pembelian&Sub=TambahPembelian&retur=Tidak">
                             <i class="bi bi-cart-plus" aria-hidden="true"></i>
                             <span>Pembelian</span>
                         </a>

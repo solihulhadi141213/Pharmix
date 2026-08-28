@@ -20,6 +20,7 @@
             "Penjualan"             => "_Page/Penjualan/ModalPenjualan.php",
             "Pembelian"             => "_Page/Pembelian/ModalPembelian.php",
             "RekapJualBeli"         => "_Page/RekapJualBeli/ModalRekapJualBeli.php",
+            "Pembayaran"          => "_Page/Pembayaran/ModalPembayaran.php",
             "UtangPiutang"          => "_Page/UtangPiutang/ModalUtangPiutang.php",
             "SettingGeneral"        => "_Page/SettingGeneral/ModalSettingGeneral.php",
             "AutoJurnal"            => "_Page/AutoJurnal/ModalAutoJurnal.php",
