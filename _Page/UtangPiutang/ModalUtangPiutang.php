@@ -299,7 +299,7 @@
 </div>
 
 <div class="modal fade" id="ModalEditPembayaran" tabindex="-1">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesEditPembayaran">
                 <div class="modal-header">
@@ -309,12 +309,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="FormEditPembayaran">
                             <!-- Form Edit Pembayaran Disini -->
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="NotifikasiEditPembayaran">
                             <!-- Notifikasi Pembayaran Disini -->
                         </div>
@@ -332,8 +332,9 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="ModalHapusPembayaran" tabindex="-1">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-md modal-dialog-centered">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesHapusPembayaran">
                 <div class="modal-header">
@@ -343,12 +344,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="FormHapusPembayaran">
                             <!-- Form Hapus Pembayaran Disini -->
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12" id="NotifikasiHapusPembayaran">
                             <!-- Notifikasi Hapus Pembayaran Disini -->
                         </div>
@@ -364,5 +365,75 @@
                 </div>
             </form>
         </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalTempo" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form action="javascript:void(0);" id="ProsesTempo">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">
+                        <i class="bi bi-plus"></i> Tempo Pembayaran
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12" id="FormTempo">
+                            <!-- Form Tempo Akan Muncul Disini -->
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12" id="NotifikasiTempo">
+                            <!-- Notifikasi Tempo Disini -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonTempo">
+                        <i class="bi bi-save"></i> Simpan
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalHapusTempo" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <form action="javascript:void(0);" id="ProsesHapusTempo">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">
+                        <i class="bi bi-plus"></i> Hapus Tanggal Tempo
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12" id="FormHapusTempo">
+                            <!-- Form Tempo Akan Muncul Disini -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12" id="NotifikasiHapusTempo">
+                            <!-- Notifikasi Tempo Disini -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded" id="ButtonHapusTempo">
+                        <i class="bi bi-check-circle"></i> Ya, Hapus
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>

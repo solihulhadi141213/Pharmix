@@ -24,11 +24,31 @@
         ';
         exit;
     }
+    // Tangkap ID
+    if (empty($_POST['id'])) {
+        echo '
+            <div class="alert alert-danger text-center">
+                <small>ID Transaksi Tidak Boleh Kosong!</small>
+            </div>
+        ';
+        exit;
+    }
+    // Tangkap kategori
+    if (empty($_POST['kategori'])) {
+        echo '
+            <div class="alert alert-danger text-center">
+                <small>Kategori Transaksi Tidak Boleh Kosong!</small>
+            </div>
+        ';
+        exit;
+    }
 
     $id_transaksi_pembayaran = validateAndSanitizeInput($_POST['id_transaksi_pembayaran']);
+    $id                      = validateAndSanitizeInput($_POST['id']);
+    $kategori                = $_POST['kategori'];
 
     // Ambil data pembayaran
-    $Qry = $Conn->prepare("SELECT * FROM transaksi_pembayaran WHERE id_transaksi_pembayaran = ?");
+    $Qry = $Conn->prepare("SELECT tanggal, jumlah FROM transaksi_pembayaran WHERE id_transaksi_pembayaran = ?");
     $Qry->bind_param("s", $id_transaksi_pembayaran);
 
     if (!$Qry->execute()) {
@@ -56,14 +76,12 @@
     }
 
     // Ambil data dari hasil query
-    $id_transaksi_jual_beli = $Data['id_transaksi_jual_beli'] ?? '';
-    $kategori = $Data['kategori'] ?? '';
-    $tanggal = $Data['tanggal'] ?? '';
-    $jumlah = $Data['jumlah'] ?? 0;
+    $tanggal                = $Data['tanggal'] ?? '';
+    $jumlah                 = $Data['jumlah'] ?? 0;
 
     // Format tanggal dan jam
     $tanggal_format = $tanggal ? date('Y-m-d', strtotime($tanggal)) : '';
-    $jam_format = $tanggal ? date('H:i', strtotime($tanggal)) : '';
+    $jam_format     = $tanggal ? date('H:i', strtotime($tanggal)) : '';
 
     // Pastikan jumlah angka, lalu format
     $jumlah = is_numeric($jumlah) ? $jumlah : 0;
@@ -72,7 +90,9 @@
     $jumlah_rp = "" . number_format($jumlah,0,',','.');
 
     echo '
-        <input type="hidden" id="id_transaksi_pembayaran" name="id_transaksi_pembayaran" value="'.htmlspecialchars($id_transaksi_pembayaran).'">
+        <input type="hidden" name="id_transaksi_pembayaran" value="'.$id_transaksi_pembayaran.'">
+        <input type="hidden" name="id" value="'.$id.'">
+        <input type="hidden" name="kategori" value="'.$kategori.'">
 
         <div class="row mb-3">
             <div class="col-4">

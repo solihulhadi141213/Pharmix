@@ -1,69 +1,3 @@
-<?php
-    //---------------------------------------------------------------------------------------------
-    //Data Jual/Beli
-    $query_penjualan = "
-        SELECT
-            SUM(CASE WHEN kategori='Pembelian' AND status='Kredit' THEN total ELSE 0 END) AS utang_pembelian,
-            SUM(CASE WHEN kategori='Retur Pembelian' AND status='Kredit' THEN total ELSE 0 END) AS piutang_retur_pembelian,
-            SUM(CASE WHEN kategori='Penjualan' AND status='Kredit' THEN total ELSE 0 END) AS piutang_penjualan,
-            SUM(CASE WHEN kategori='Retur Penjualan' AND status='Kredit' THEN total ELSE 0 END) AS utang_retur_penjualan
-        FROM transaksi_jual_beli
-    ";
-    $stmt_penjualan = mysqli_prepare($Conn, $query_penjualan);
-    mysqli_stmt_execute($stmt_penjualan);
-    $result_penjualan = mysqli_stmt_get_result($stmt_penjualan);
-    $data_penjualan_ringkas = mysqli_fetch_assoc($result_penjualan);
-    mysqli_stmt_close($stmt_penjualan);
-
-    // Variabel Utang-Piutang Jual/Beli
-    $utang_pembelian         = (float) ($data_penjualan_ringkas['utang_pembelian'] ?? 0);
-    $piutang_retur_pembelian = (float) ($data_penjualan_ringkas['piutang_retur_pembelian'] ?? 0);
-    $piutang_penjualan       = (float) ($data_penjualan_ringkas['piutang_penjualan'] ?? 0);
-    $utang_retur_penjualan   = (float) ($data_penjualan_ringkas['utang_retur_penjualan'] ?? 0);
-    $utang_jual_beli         = $utang_pembelian + $utang_retur_penjualan;
-    $piutang_jual_beli       = $piutang_retur_pembelian + $piutang_penjualan;
-    
-    
-    //-------------------------------------------------------------------------------
-    //Data operasional
-    $query_operasional = "
-        SELECT
-            SUM(CASE WHEN status='Utang' THEN jumlah ELSE 0 END) AS utang_operasional,
-            SUM(CASE WHEN status='Piutang' THEN jumlah ELSE 0 END) AS piutang_operasional
-        FROM transaksi
-    ";
-    $stmt_operasional = mysqli_prepare($Conn, $query_operasional);
-    mysqli_stmt_execute($stmt_operasional);
-    $result_operasional = mysqli_stmt_get_result($stmt_operasional);
-    $data_operasional = mysqli_fetch_assoc($result_operasional);
-    mysqli_stmt_close($stmt_operasional);
-
-    // Variabel Utang-Piutang Operasional
-    $utang_operasional   = (float) ($data_operasional['utang_operasional'] ?? 0);
-    $piutang_operasional = (float) ($data_penjualan_ringkas['piutang_operasional'] ?? 0);
-
-    //-------------------------------------------------------------------------------
-    // Menghitung Utang-piutang total
-    $total_utang   = $utang_operasional + $utang_jual_beli;
-    $total_piutang = $piutang_operasional + $piutang_jual_beli;
-
-    //-------------------------------------------------------------------------------
-    //Format Jual-Beli
-    $utang_pembelian         = "Rp " . number_format($utang_pembelian,0,',','.');
-    $piutang_retur_pembelian = "Rp " . number_format($piutang_retur_pembelian,0,',','.');
-    $piutang_penjualan       = "Rp " . number_format($piutang_penjualan,0,',','.');
-    $utang_retur_penjualan   = "Rp " . number_format($utang_retur_penjualan,0,',','.');
-    $utang_jual_beli         = "Rp " . number_format($utang_jual_beli,0,',','.');
-    $piutang_jual_beli       = "Rp " . number_format($piutang_jual_beli,0,',','.');
-
-    // Operasional Format
-    $utang_operasional   = "Rp " . number_format($utang_operasional,0,',','.');
-    $piutang_operasional = "Rp " . number_format($piutang_operasional,0,',','.');
-
-    // Total Format
-    $total_utang   = "Rp " . number_format($total_utang,0,',','.');
-    $total_piutang = "Rp " . number_format($total_piutang,0,',','.');
-?>
 <div class="pagetitle">
     <h1>
         <a href="">
@@ -271,11 +205,10 @@
                                                     <th><b>Transaksi</b></th>
                                                     <th><b>Total</b></th>
                                                     <th><b>Cash</b></th>
-                                                    <th><b>Pembayaran</b></th>
+                                                    <th><b>Termin</b></th>
                                                     <th><b>U/P</b></th>
                                                     <th><b>Status</b></th>
                                                     <th><b>Tempo</b></th>
-                                                    <th><b>Opsi</b></th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tabel_operasional">
@@ -341,11 +274,10 @@
                                                     <th><b>Transaksi</b></th>
                                                     <th><b>Total</b></th>
                                                     <th><b>Cash</b></th>
-                                                    <th><b>Pembayaran</b></th>
+                                                    <th><b>Termin</b></th>
                                                     <th><b>U/P</b></th>
                                                     <th><b>Status</b></th>
                                                     <th><b>Tempo</b></th>
-                                                    <th><b>Opsi</b></th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tabel_utang_piutang">

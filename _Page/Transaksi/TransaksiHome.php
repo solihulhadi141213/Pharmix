@@ -61,14 +61,16 @@
                                         <th><small><b>Nama Transaksi</b></small></th>
                                         <th><small><b>Kategori</b></small></th>
                                         <th><small><b>Jumlah</b></small></th>
-                                        <th><small><b>Cash/Tunai</b></small></th>
+                                        <th><small><b>Tunai</b></small></th>
+                                        <th><small><b>Termin</b></small></th>
+                                        <th><small><b>U/P</b></small></th>
                                         <th class="text-center"><small><b>Status</b></small></th>
                                         <th class="text-center"><small><b>Opsi</b></small></th>
                                     </tr>
                                 </thead>
                                 <tbody id="tabel_transaksi">
                                     <tr>
-                                        <td class="text-center" colspan="8">
+                                        <td class="text-center" colspan="10">
                                             <small>No Data</small>
                                         </td>
                                     </tr>

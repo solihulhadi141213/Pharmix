@@ -88,10 +88,10 @@
     $Keyword = isset($_POST['keyword']) ? trim($_POST['keyword']) : '';
 
     // ======================================================
-    // BASE WHERE
+    // BASE WHERE (Tampilkan jika pembayaran cash belum melunasi jumlah tagihan)
     // ======================================================
     $where = [
-        "t.status IN ('Utang', 'Piutang')"
+        "t.pembayaran < t.jumlah"
     ];
 
     $params = [];
@@ -279,8 +279,31 @@
         // ==================================================
         if (!empty($tanggal_tempo)) {
             $tempo = date('d/m/Y', strtotime($tanggal_tempo));
+            $tombol_tempo = '
+                <a href="Javascript:(0);" class="text-success" data-bs-toggle="dropdown" aria-expanded="false">
+                    ' . $tempo . ' <i class="bi bi-three-dots-vertical"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
+                    <li>
+                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalTempo" data-id="'.$id_transaksi.'" data-kategori="operasional">
+                            <i class="bi bi-pencil"></i> Ubah Tanggal Tempo
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalHapusTempo" data-id="'.$id_transaksi.'" data-kategori="operasional">
+                            <i class="bi bi-trash"></i> Hapus Tanggal Tempo
+                        </a>
+                    </li>
+                </ul>
+            ';
         } else {
-            $tempo = '<span class="text-muted">-</span>';
+            $tombol_tempo = '
+                <small>
+                    <a href="Javascript:(0);" class="text-danger" data-bs-toggle="modal" data-bs-target="#ModalTempo" data-id="' . $id_transaksi . '" data-kategori="operasional" title="Tempo Pembayaran">
+                        <i class="bi bi-plus-lg"></i> Add
+                    </a>
+                </small>
+            ';
         }
 
         // ==================================================
@@ -308,15 +331,14 @@
                 <td><small>' . $nama . '</small></td>
                 <td>' . FormatRupiahOperasional($jumlah) . '</td>
                 <td>' . FormatRupiahOperasional($pembayaran_cash) . '</td>
-                <td>' . FormatRupiahOperasional($total_pembayaran) . '</td>
+                <td>
+                    <a href="Javascript:(0);" class="text-primary" data-bs-toggle="modal" data-bs-target="#ModalRiwayatPembayaran" data-id="' . $id_transaksi . '" data-kategori="operasional" title="Bayar Piutang / Utang">
+                        <i class="bi bi-pencil"></i> ' . FormatRupiahOperasional($total_pembayaran) . '
+                    </a>
+                </td>
                 <td>' . FormatRupiahOperasional($sisa) . '</td>
                 <td>' . $statusBadge . '</td>
-                <td>' . $tempo . '</td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#ModalRiwayatPembayaran" data-id="' . $id_transaksi . '" data-kategori="operasional" title="Bayar Piutang / Utang">
-                        <i class="bi bi-clock-history"></i> Bayar
-                    </button>
-                </td>
+                <td>' . $tombol_tempo . '</td>
             </tr>
         ';
 

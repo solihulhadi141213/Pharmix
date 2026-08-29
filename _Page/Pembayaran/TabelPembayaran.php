@@ -5,8 +5,10 @@
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
+
     // Zona waktu
     date_default_timezone_set("Asia/Jakarta");
+
     // Response JSON
     header('Content-Type: application/json; charset=utf-8');
 
@@ -18,7 +20,7 @@
             "status"     => "error",
             "html"       => '
                 <tr>
-                    <td colspan="10" class="text-center text-danger">
+                    <td colspan="8" class="text-center text-danger">
                         <small>' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '</small>
                     </td>
                 </tr>
@@ -42,7 +44,7 @@
     // =====================================================
     $page       = $_POST['page'] ?? 1;
     $batas      = $_POST['batas'] ?? 10;
-    $OrderBy    = $_POST['OrderBy'] ?? 'id_transaksi';
+    $OrderBy    = $_POST['OrderBy'] ?? 'id_transaksi_pembayaran';
     $ShortBy    = $_POST['ShortBy'] ?? 'DESC';
     $keyword_by = trim($_POST['keyword_by'] ?? '');
     $keyword    = trim($_POST['keyword'] ?? '');
@@ -68,32 +70,31 @@
     // Mapping Order By
     // =====================================================
     $allowedOrder = [
-        'id_transaksi'       => 't.id_transaksi',
-        'id_transaksi_jenis' => 't.id_transaksi_jenis',
-        'nama_transaksi'     => 'tj.nama',
-        'tanggal'            => 't.tanggal',
-        'kategori'           => 'tj.kategori',
-        'jumlah'             => 't.jumlah',
-        'pembayaran'         => 't.pembayaran',
-        'status'             => 't.status'
+        'tanggal'              => 'tp.tanggal',
+        'id_transaksi'         => 'tp.id_transaksi',
+        'id_transaksi_jual_beli' => 'tp.id_transaksi_jual_beli',
+        'kategori_pembayaran'  => 'tp.kategori_pembayaran',
+        'kategori_transaksi'   => 'tp.kategori_transaksi',
+        'jumlah'               => 'tp.jumlah',
+        'creat_by_name'        => 'tp.creat_by_name'
     ];
     if (!array_key_exists($OrderBy, $allowedOrder)) {
-        $OrderBy = 'id_transaksi';
+        $OrderBy = 'id_transaksi_pembayaran';
+        $OrderBySql = 'tp.id_transaksi_pembayaran';
+    } else {
+        $OrderBySql = $allowedOrder[$OrderBy];
     }
-    $OrderBySql = $allowedOrder[$OrderBy];
 
     // =====================================================
     // Validasi Keyword By
     // =====================================================
     $allowedKeywordBy = [
-        'id_transaksi'       => 't.id_transaksi',
-        'id_transaksi_jenis' => 't.id_transaksi_jenis',
-        'nama_transaksi'     => 'tj.nama',
-        'tanggal'            => 't.tanggal',
-        'kategori'           => 'tj.kategori',
-        'jumlah'             => 't.jumlah',
-        'pembayaran'         => 't.pembayaran',
-        'status'             => 't.status'
+        'tanggal'              => 'tp.tanggal',
+        'id_transaksi'         => 'tp.id_transaksi',
+        'id_transaksi_jual_beli' => 'tp.id_transaksi_jual_beli',
+        'kategori_pembayaran'  => 'tp.kategori_pembayaran',
+        'kategori_transaksi'   => 'tp.kategori_transaksi',
+        'creat_by_name'        => 'tp.creat_by_name'
     ];
     if (!empty($keyword_by) && !array_key_exists($keyword_by, $allowedKeywordBy)) {
         $keyword_by = '';
@@ -118,12 +119,12 @@
         } else {
             $where[] = "
                 (
-                    t.id_transaksi LIKE ?
-                    OR t.tanggal LIKE ?
-                    OR tj.nama LIKE ?
-                    OR tj.kategori LIKE ?
-                    OR t.status LIKE ?
-                    OR t.keterangan LIKE ?
+                    tp.tanggal LIKE ?
+                    OR tp.id_transaksi LIKE ?
+                    OR tp.id_transaksi_jual_beli LIKE ?
+                    OR tp.kategori_pembayaran LIKE ?
+                    OR tp.kategori_transaksi LIKE ?
+                    OR tp.creat_by_name LIKE ?
                 )
             ";
             $bindTypes .= 'ssssss';
@@ -148,9 +149,8 @@
     // Query Dasar
     // =====================================================
     $fromSql = "
-        FROM transaksi AS t
-        INNER JOIN transaksi_jenis AS tj
-            ON tj.id_transaksi_jenis = t.id_transaksi_jenis
+        FROM transaksi_pembayaran AS tp
+        LEFT JOIN akses AS a ON a.id_akses = tp.creat_by_id
         $whereSql
     ";
 
@@ -195,27 +195,19 @@
     $posisi = ($page - 1) * $batas;
 
     // =====================================================
-    // Query Data (Termasuk Subquery Akumulasi Pembayaran Lainnya)
+    // Query Data
     // =====================================================
     $sql = "
         SELECT
-            t.id_transaksi,
-            t.id_transaksi_jenis,
-            t.tanggal,
-            t.jumlah,
-            t.pembayaran AS pembayaran_cash,
-            t.keterangan,
-            t.status,
-            tj.nama AS nama_transaksi,
-            tj.kategori AS kategori,
-            COALESCE(
-                (
-                    SELECT SUM(tp.jumlah)
-                    FROM transaksi_pembayaran tp
-                    WHERE tp.id_transaksi = t.id_transaksi
-                ),
-                0
-            ) AS total_pembayaran_lain
+            tp.id_transaksi_pembayaran,
+            tp.id_transaksi,
+            tp.id_transaksi_jual_beli,
+            tp.kategori_pembayaran,
+            tp.kategori_transaksi,
+            tp.tanggal,
+            tp.jumlah,
+            tp.creat_by_name,
+            a.nama_akses
         $fromSql
         ORDER BY $OrderBySql $ShortBy
         LIMIT ?, ?
@@ -247,38 +239,29 @@
     if ($query->num_rows === 0) {
         $html .= '
             <tr>
-                <td colspan="10" class="text-center text-danger py-4">
-                    <small>
-                        <i class="bi bi-info-circle"></i>
-                        Tidak ada data yang ditampilkan.
+                <td colspan="8" class="text-center py-4">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i> Tidak ada data yang ditampilkan.
                     </small>
                 </td>
             </tr>
         ';
     } else {
         while ($data = $query->fetch_assoc()) {
-            $id_transaksi       = (int) $data['id_transaksi'];
-            $id_transaksi_jenis = (int) $data['id_transaksi_jenis'];
-            $nama_transaksi     = htmlspecialchars($data['nama_transaksi'] ?? '-', ENT_QUOTES, 'UTF-8');
-            $kategori           = htmlspecialchars($data['kategori'] ?? '-', ENT_QUOTES, 'UTF-8');
-            $tanggal            = $data['tanggal'] ?? '';
-            $jumlah             = (int) ($data['jumlah'] ?? 0);
-            $pembayaran_cash    = (int) ($data['pembayaran_cash'] ?? 0);
-            $total_pembayaran   = (int) ($data['total_pembayaran_lain'] ?? 0);
-            $status             = $data['status'] ?? '';
-            $keterangan         = htmlspecialchars($data['keterangan'] ?? '', ENT_QUOTES, 'UTF-8');
+            $id_pembayaran = (int) $data['id_transaksi_pembayaran'];
+            $id_transaksi  = $data['id_transaksi'];
+            $id_jual_beli  = $data['id_transaksi_jual_beli'];
+            $kat_bayar     = htmlspecialchars($data['kategori_pembayaran'] ?? '-', ENT_QUOTES, 'UTF-8');
+            $kat_trans     = htmlspecialchars($data['kategori_transaksi'] ?? '-', ENT_QUOTES, 'UTF-8');
+            $tanggal       = $data['tanggal'] ?? '';
+            $jumlah        = (int) ($data['jumlah'] ?? 0);
+            
+            // Petugas (Prioritaskan nama dari tabel akses, fallback ke creat_by_name)
+            $petugas       = !empty($data['nama_akses']) ? $data['nama_akses'] : ($data['creat_by_name'] ?? '-');
+            $petugas       = htmlspecialchars($petugas, ENT_QUOTES, 'UTF-8');
 
-            // Hitung Utang/Piutang (Sisa Tagihan)
-            $sisa_tagihan = $jumlah - $pembayaran_cash - $total_pembayaran;
-            if ($sisa_tagihan < 0) {
-                $sisa_tagihan = 0;
-            }
-
-            // Format Rupiah
-            $JumlahFormat      = 'Rp ' . number_format($jumlah, 0, ',', '.');
-            $PembayaranCashFmt = 'Rp ' . number_format($pembayaran_cash, 0, ',', '.');
-            $TotalPembayaranFmt= 'Rp ' . number_format($total_pembayaran, 0, ',', '.');
-            $SisaTagihanFmt    = 'Rp ' . number_format($sisa_tagihan, 0, ',', '.');
+            // Format Nominal
+            $NominalFormat = 'Rp ' . number_format($jumlah, 0, ',', '.');
 
             // Format Tanggal
             $TanggalFormat = '-';
@@ -289,20 +272,21 @@
                 }
             }
 
-            // Status Badge
-            switch ($status) {
-                case 'Lunas':
-                    $status_label = '<span class="badge bg-success">Lunas</span>';
-                    break;
-                case 'Utang':
-                    $status_label = '<span class="badge bg-danger">Utang</span>';
-                    break;
-                case 'Piutang':
-                    $status_label = '<span class="badge bg-warning text-dark">Piutang</span>';
-                    break;
-                default:
-                    $status_label = '<span class="badge bg-secondary">' . htmlspecialchars($status, ENT_QUOTES, 'UTF-8') . '</span>';
-                    break;
+            // Tentukan Referensi (Ref)
+            $ref_text = '-';
+            if (!empty($id_transaksi)) {
+                $ref_text = 'Ops: #' . $id_transaksi;
+            } elseif (!empty($id_jual_beli)) {
+                $ref_text = substr($id_jual_beli, 0, 8) . '...';
+            }
+
+            // Routing id_transaksi
+            if(!empty($id_transaksi)){
+                $database_transaksi = "transaksi";
+                $id_ref = $id_transaksi;
+            }else{
+                $database_transaksi = "transaksi_jual_beli";
+                $id_ref = $id_jual_beli;
             }
 
             // HTML Row
@@ -312,30 +296,26 @@
                         <small class="text-muted">' . $no . '</small>
                     </td>
                     <td>
-                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="' . $id_transaksi . '" class="text-decoration-none">
-                            <small>' . $TanggalFormat . '</small>
+                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailPembayaran" data-id="' . $id_pembayaran . '">
+                            ' . $TanggalFormat . '
                         </a>
                     </td>
                     <td>
-                        <small class="text-muted">' . $nama_transaksi . '</small>
+                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailTransaksi" data-id="' . $id_ref . '" data-database="' . $database_transaksi . '">
+                            <small>' . $ref_text . '</small>
+                        </a>
                     </td>
                     <td>
-                        <small class="text-muted">' . $kategori . '</small>
+                        <small class="text-muted">' . $kat_trans . '</small>
                     </td>
                     <td>
-                        <small class="text-muted">' . $JumlahFormat . '</small>
+                        <small class="text-muted">' . $kat_bayar . '</small>
                     </td>
                     <td>
-                        <small class="text-muted">' . $PembayaranCashFmt . '</small>
+                        <small class="text-muted fw-bold">' . $NominalFormat . '</small>
                     </td>
                     <td>
-                        <small class="text-muted">' . $TotalPembayaranFmt . '</small>
-                    </td>
-                    <td>
-                        <small class="text-muted">' . $SisaTagihanFmt . '</small>
-                    </td>
-                    <td class="text-center">
-                        ' . $status_label . '
+                        <small class="text-muted">' . $petugas . '</small>
                     </td>
                     <td class="text-center">
                         <a class="btn btn-sm btn-secondary btn-floating" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false" title="Opsi">
@@ -346,17 +326,17 @@
                                 <h6 class="mb-0">Opsi</h6>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="' . $id_transaksi . '">
+                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailPembayaran" data-id="' . $id_pembayaran . '">
                                     <i class="bi bi-info-circle me-2"></i>Detail
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalEdit" data-id="' . $id_transaksi . '">
+                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalEditPembayaran" data-id="' . $id_pembayaran . '">
                                     <i class="bi bi-pencil me-2"></i>Ubah/Edit
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalHapus" data-id="' . $id_transaksi . '">
+                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalHapusPembayaran" data-id="' . $id_pembayaran . '">
                                     <i class="bi bi-trash me-2"></i>Hapus
                                 </a>
                             </li>

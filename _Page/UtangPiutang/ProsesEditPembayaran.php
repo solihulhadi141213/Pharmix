@@ -1,179 +1,300 @@
 <?php
-    // Koneksi
+    // ==========================================
+    // KONEKSI, SESSION DAN KONFIGURASI
+    // ==========================================
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
 
-    // Time Zone
     date_default_timezone_set('Asia/Jakarta');
+    header('Content-Type: application/json; charset=utf-8');
 
-    // Time Now Tmp
-    $now = date('Y-m-d H:i:s');
-
-    // Inisialisasi respons default
+    // ==========================================
+    // DEFAULT RESPONSE
+    // ==========================================
     $response = [
-        "status" => "Error",
-        "message" => "Belum ada proses yang dilakukan pada sistem."
+        "status"  => "Error",
+        "message" => "Terjadi kesalahan yang tidak diketahui."
     ];
 
-    //Validasi Akses
-    if(empty($SessionIdAkses)){
-        $response = [
-            "status" => "Error",
-            "message" => "Sesi Akses Sudah Berakhir! Silahkan Login Ulang!"
-        ];
-    }else{
-        // Validasi Data Tidak Boleh Kosong
-        $requiredFields = [
-            'id_transaksi_pembayaran'    => "ID Transaksi Pembayaran Tidak Boleh Kosong!",
-            'tanggal'                   => "Tanggal Pembayaran Tidak Boleh Kosong!",
-            'jam'                       => "Jam Pembayaran Tidak Boleh Kosong!",
-            'jumlah'                    => "Jumlah/Nominal Pembayaran Tidak Boleh Kosong!",
-        ];
-
-        foreach ($requiredFields as $field => $errorMessage) {
-            if (empty($_POST[$field])) {
-                echo json_encode([
-                    "status" => "Error",
-                    "message" => $errorMessage
-                ]);
-                exit;
-            }
-        }
-
-        // Buat Variabel
-        $id_transaksi_pembayaran = validateAndSanitizeInput($_POST['id_transaksi_pembayaran']);
-        $tanggal = validateAndSanitizeInput($_POST['tanggal']);
-        $jam = validateAndSanitizeInput($_POST['jam']);
-        $jumlah = validateAndSanitizeInput($_POST['jumlah']);
-
-        // Hapus Tanda Titik pada variabel jumlah
-        $jumlah = str_replace('.', '', $jumlah);
-
-        //Format tanggal dan jam
-        $tanggal_jam="$tanggal $jam";
-
-        // Buka id_transaksi_jual_beli
-        $id_transaksi_jual_beli =GetDetailData($Conn, 'transaksi_pembayaran', 'id_transaksi_pembayaran', $id_transaksi_pembayaran, 'id_transaksi_jual_beli');
-
-        //Buka Tanggal Lama
-        $tanggal_lama= GetDetailData($Conn, 'transaksi_pembayaran', 'id_transaksi_pembayaran', $id_transaksi_pembayaran, 'tanggal');
-
-        //Buka Jumlah Lmaa
-        $jumlah_lama= GetDetailData($Conn, 'transaksi_pembayaran', 'id_transaksi_pembayaran', $id_transaksi_pembayaran, 'jumlah');
-
-        //Buka Kategori transaksi
-        $kategori= GetDetailData($Conn, 'transaksi_jual_beli', 'id_transaksi_jual_beli', $id_transaksi_jual_beli, 'kategori');
-
-        //Validasi ID Transaksi
-        if(empty($id_transaksi_jual_beli)){
-            $response["message"] = "ID Transaksi Tidak Ditemukan Pada Database!";
-        }else{
-            
-            //Validasi Pembayaran
-            $total_tagihan=GetDetailData($Conn, 'transaksi_jual_beli', 'id_transaksi_jual_beli', $id_transaksi_jual_beli, 'total');
-            $cash=GetDetailData($Conn, 'transaksi_jual_beli', 'id_transaksi_jual_beli', $id_transaksi_jual_beli, 'cash');
-            $sql_angsuran = "SELECT SUM(jumlah) as total_jumlah FROM transaksi_pembayaran WHERE id_transaksi_jual_beli='$id_transaksi_jual_beli'";
-            $result_angsuran = $Conn->query($sql_angsuran);
-            $total_angsuran = ($result_angsuran && $result_angsuran->num_rows > 0) ? $result_angsuran->fetch_assoc()["total_jumlah"] : 0;
-            $total_angsuran_baru=$total_angsuran-$jumlah_lama;
-            $sisa_tunggakan = $total_tagihan - ($cash + $total_angsuran_baru);
-
-            //Apabila pembayaran sekarang Lebih
-            if($sisa_tunggakan < $jumlah){
-                $response["message"] = "Nominal pembayaran tidak boleh lebih dari sisa utang/piutang : $sisa_tunggakan";
-            }else{
-                //Update Transaksi Pembayaran
-                $stmt = mysqli_prepare($Conn, "UPDATE transaksi_pembayaran SET 
-                    tanggal=?, 
-                    jumlah=?
-                WHERE id_transaksi_pembayaran=?");
-                mysqli_stmt_bind_param($stmt, "sss", 
-                    $tanggal_jam, 
-                    $jumlah, 
-                    $id_transaksi_pembayaran
-                );
-                $update_pembayaran = mysqli_stmt_execute($stmt);
-                if ($update_pembayaran) {
-                    
-                    //Update Jurnal
-                    $stmt_jurnal = mysqli_prepare($Conn, "UPDATE jurnal SET 
-                        tanggal=?, 
-                        nilai=?
-                    WHERE id_transaksi_pembayaran=?");
-                    mysqli_stmt_bind_param($stmt_jurnal, "sss", 
-                        $tanggal, 
-                        $jumlah, 
-                        $id_transaksi_pembayaran
-                    );
-                    $update_jurnal = mysqli_stmt_execute($stmt_jurnal);
-                    if ($update_jurnal) {
-
-                        //Hitung Ulang Selisih Pembayaran Dan Utang/piutang
-                        $total_tagihan=GetDetailData($Conn, 'transaksi_jual_beli', 'id_transaksi_jual_beli', $id_transaksi_jual_beli, 'total');
-                        $cash=GetDetailData($Conn, 'transaksi_jual_beli', 'id_transaksi_jual_beli', $id_transaksi_jual_beli, 'cash');
-                        $sql_angsuran = "SELECT SUM(jumlah) as total_jumlah FROM transaksi_pembayaran WHERE id_transaksi_jual_beli='$id_transaksi_jual_beli'";
-                        $result_angsuran = $Conn->query($sql_angsuran);
-                        $total_angsuran = ($result_angsuran && $result_angsuran->num_rows > 0) ? $result_angsuran->fetch_assoc()["total_jumlah"] : 0;
-                        $sisa_tunggakan = $total_tagihan - ($cash + $total_angsuran);
-                        //Apabila sisa tunggakan tidak sama dengan nol
-                        if($sisa_tunggakan!=0){
-                            $status = "Kredit";
-                        }else{
-                            $status="Lunas";
-                        }
-                        //Update Transaksi
-                        $stmt_transaksi = mysqli_prepare($Conn, "UPDATE transaksi_jual_beli  SET 
-                            status=?
-                        WHERE id_transaksi_jual_beli=?");
-                        mysqli_stmt_bind_param($stmt_transaksi, "ss", 
-                            $status,
-                            $id_transaksi_jual_beli
-                        );
-                        $update_transaksi = mysqli_stmt_execute($stmt_transaksi);
-                        if ($update_transaksi) {
-
-                            // 5. Simpan log
-                            $kategori_log = "Utang Piutang";
-                            $deskripsi_log = "Edit Pembayaran Utang Piutang";
-                            $InputLog = addLog($Conn, $SessionIdAkses, $now, $kategori_log, $deskripsi_log);
-                            if ($InputLog != "Success") {
-                                 $response = [
-                                    "status" => "Error",
-                                    "message" => "Terjadi Kesalahan Pada Saat Menyimpan Log"
-                                ];
-                            }else{
-                                $response = [
-                                    "status" => "Success",
-                                    "message" => "Pembayaran Utang Piutang Berhasil"
-                                ];
-                            }
-                           
-                        }else{
-                             echo json_encode([
-                                "status" => "Error",
-                                "message" => "Terjadi kesalahan pada saat update transaksi jual beli"
-                            ]);
-                            exit; 
-                        }
-                    }else{
-                    echo json_encode([
-                            "status" => "Error",
-                            "message" => "Terjadi kesalahan pada saat update jurnal pembayaran"
-                        ]);
-                        exit; 
-                    }
-                }else{
-                    echo json_encode([
-                        "status" => "Error",
-                        "message" => "Terjadi kesalahan pada saat update transaksi pembayaran"
-                    ]);
-                    exit;
-                }
-            }
-        }
+    // ==========================================
+    // VALIDASI SESI AKSES
+    // ==========================================
+    if (empty($SessionIdAkses)) {
+        $response["message"] = "Sesi akses sudah berakhir! Silahkan Login Ulang!";
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
-    // Output response
-    echo json_encode($response);
+    // ==========================================
+    // VALIDASI METHOD REQUEST
+    // ==========================================
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        $response["message"] = "Metode request tidak valid.";
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    // ==========================================
+    // VALIDASI MANDATORY INPUT
+    // ==========================================
+    $id_transaksi_pembayaran = $_POST['id_transaksi_pembayaran'] ?? '';
+    $id                      = $_POST['id'] ?? '';
+    $kategori                = $_POST['kategori'] ?? '';
+    $tanggal_input           = $_POST['tanggal'] ?? '';
+    $jam_input               = $_POST['jam'] ?? '';
+    $jumlah_input            = $_POST['jumlah'] ?? '';
+
+    $id_transaksi_pembayaran = trim($id_transaksi_pembayaran);
+    $id                      = trim($id);
+    $kategori                = trim($kategori);
+    $tanggal_input           = trim($tanggal_input);
+    $jam_input               = trim($jam_input);
+    $jumlah_input            = trim($jumlah_input);
+
+    if (empty($id_transaksi_pembayaran) || !ctype_digit($id_transaksi_pembayaran)) {
+        $response["message"] = "ID Pembayaran tidak valid.";
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    if (empty($id)) {
+        $response["message"] = "ID Transaksi tidak boleh kosong.";
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    if (empty($kategori)) {
+        $response["message"] = "Kategori transaksi tidak boleh kosong.";
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    if (empty($tanggal_input) || empty($jam_input)) {
+        $response["message"] = "Tanggal dan Jam pembayaran wajib diisi.";
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    if (empty($jumlah_input)) {
+        $response["message"] = "Jumlah nominal pembayaran tidak boleh kosong.";
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    // Bersihkan format rupiah (hilangkan titik)
+    $jumlah_bersih = str_replace('.', '', $jumlah_input);
+    if (!is_numeric($jumlah_bersih)) {
+        $response["message"] = "Format jumlah nominal tidak valid.";
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    $jumlah_nominal = (float) $jumlah_bersih;
+    if ($jumlah_nominal <= 0) {
+        $response["message"] = "Jumlah nominal pembayaran harus lebih besar dari 0.";
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    // Gabungkan tanggal dan jam menjadi format datetime lengkap
+    $tanggal_waktu_gabung = $tanggal_input . ' ' . $jam_input . ':00';
+
+    // ==========================================
+    // MULAI TRANSAKSI DATABASE (ACID TRANSACTION)
+    // ==========================================
+    mysqli_begin_transaction($Conn);
+
+    try {
+        // A. Ambil data pembayaran lama untuk mengetahui relasi induk transaksi & kategori jenisnya
+        $sql_cek_byr = "SELECT id_transaksi, id_transaksi_jual_beli, kategori_transaksi FROM transaksi_pembayaran WHERE id_transaksi_pembayaran = ? LIMIT 1";
+        $stmt_cek_byr = mysqli_prepare($Conn, $sql_cek_byr);
+        if (!$stmt_cek_byr) {
+            throw new Exception("Gagal mempersiapkan query cek pembayaran.");
+        }
+        mysqli_stmt_bind_param($stmt_cek_byr, "i", $id_transaksi_pembayaran);
+        mysqli_stmt_execute($stmt_cek_byr);
+        $res_cek_byr = mysqli_stmt_get_result($stmt_cek_byr);
+        $data_byr_lama = mysqli_fetch_assoc($res_cek_byr);
+        mysqli_stmt_close($stmt_cek_byr);
+
+        if (!$data_byr_lama) {
+            throw new Exception("Data riwayat pembayaran tidak ditemukan.");
+        }
+
+        // B. Validasi batas maksimal berdasarkan kategori induk
+        if ($kategori === "jual_beli") {
+            $id_induk = $data_byr_lama['id_transaksi_jual_beli'] ?? $id;
+            
+            // Ambil data total tagihan dan cash awal dari transaksi_jual_beli
+            $sql_induk = "SELECT total AS jumlah_tagihan, cash AS pembayaran_cash, kategori FROM transaksi_jual_beli WHERE id_transaksi_jual_beli = ? LIMIT 1";
+            $stmt_induk = mysqli_prepare($Conn, $sql_induk);
+            if (!$stmt_induk) {
+                throw new Exception("Gagal menyiapkan query induk jual beli.");
+            }
+            mysqli_stmt_bind_param($stmt_induk, "s", $id_induk);
+            mysqli_stmt_execute($stmt_induk);
+            $res_induk = mysqli_stmt_get_result($stmt_induk);
+            $data_induk = mysqli_fetch_assoc($res_induk);
+            mysqli_stmt_close($stmt_induk);
+
+            if (!$data_induk) {
+                throw new Exception("Data transaksi jual/beli induk tidak ditemukan.");
+            }
+
+            $jml_tagihan     = (float) $data_induk['jumlah_tagihan'];
+            $pembayaran_cash = (float) $data_induk['pembayaran_cash'];
+            $kat_transaksi   = $data_induk['kategori']; // e.g. Penjualan / Pembelian / Retur
+
+            // Hitung akumulasi pembayaran lain (kecuali pembayaran yang sedang diedit ini)
+            $sql_akum = "SELECT SUM(jumlah) AS total_lain FROM transaksi_pembayaran WHERE id_transaksi_jual_beli = ? AND id_transaksi_pembayaran != ?";
+            $stmt_akum = mysqli_prepare($Conn, $sql_akum);
+            mysqli_stmt_bind_param($stmt_akum, "si", $id_induk, $id_transaksi_pembayaran);
+            mysqli_stmt_execute($stmt_akum);
+            $res_akum = mysqli_stmt_get_result($stmt_akum);
+            $data_akum = mysqli_fetch_assoc($res_akum);
+            mysqli_stmt_close($stmt_akum);
+
+            $total_pembayaran_lain = (float) ($data_akum['total_lain'] ?? 0);
+
+            // Batas maksimal yang diperbolehkan = Total Tagihan - (Cash + Pembayaran Lain)
+            $sisa_maksimal = $jml_tagihan - $pembayaran_cash - $total_pembayaran_lain;
+            if ($jumlah_nominal > $sisa_maksimal) {
+                throw new Exception("Nominal pembayaran melebihi sisa tagihan! Maksimal pembayaran yang diizinkan adalah Rp " . number_format($sisa_maksimal, 0, ',', '.'));
+            }
+
+            // Hitung total keseluruhan setelah update
+            $total_terbayar_baru = $pembayaran_cash + $total_pembayaran_lain + $jumlah_nominal;
+            
+            // Tentukan status baru
+            if ($total_terbayar_baru >= $jml_tagihan) {
+                $status_baru = "Lunas";
+            } else {
+                if ($kat_transaksi === "Penjualan" || $kat_transaksi === "Retur Pembelian") {
+                    $status_baru = "Piutang";
+                } else {
+                    $status_baru = "Utang";
+                }
+            }
+
+            // 1. UPDATE TABEL transaksi_pembayaran
+            $sql_up_byr = "UPDATE transaksi_pembayaran SET tanggal = ?, jumlah = ? WHERE id_transaksi_pembayaran = ?";
+            $stmt_up_byr = mysqli_prepare($Conn, $sql_up_byr);
+            mysqli_stmt_bind_param($stmt_up_byr, "sdi", $tanggal_waktu_gabung, $jumlah_nominal, $id_transaksi_pembayaran);
+            if (!mysqli_stmt_execute($stmt_up_byr)) {
+                throw new Exception("Gagal memperbarui data pembayaran jual beli.");
+            }
+            mysqli_stmt_close($stmt_up_byr);
+
+            // 2. UPDATE STATUS TABEL transaksi_jual_beli
+            $sql_up_induk = "UPDATE transaksi_jual_beli SET status = ? WHERE id_transaksi_jual_beli = ?";
+            $stmt_up_induk = mysqli_prepare($Conn, $sql_up_induk);
+            mysqli_stmt_bind_param($stmt_up_induk, "ss", $status_baru, $id_induk);
+            if (!mysqli_stmt_execute($stmt_up_induk)) {
+                throw new Exception("Gagal memperbarui status transaksi jual beli.");
+            }
+            mysqli_stmt_close($stmt_up_induk);
+
+        } else {
+            // Kategori Operasional
+            $id_induk = $data_byr_lama['id_transaksi'] ?? $id;
+
+            // Ambil data total tagihan dan pembayaran cash dari tabel transaksi
+            $sql_induk = "SELECT t.jumlah AS jumlah_tagihan, t.pembayaran AS pembayaran_cash, tj.kategori FROM transaksi t INNER JOIN transaksi_jenis tj ON tj.id_transaksi_jenis = t.id_transaksi_jenis WHERE t.id_transaksi = ? LIMIT 1";
+            $stmt_induk = mysqli_prepare($Conn, $sql_induk);
+            if (!$stmt_induk) {
+                throw new Exception("Gagal menyiapkan query induk operasional.");
+            }
+            mysqli_stmt_bind_param($stmt_induk, "i", $id_induk);
+            mysqli_stmt_execute($stmt_induk);
+            $res_induk = mysqli_stmt_get_result($stmt_induk);
+            $data_induk = mysqli_fetch_assoc($res_induk);
+            mysqli_stmt_close($stmt_induk);
+
+            if (!$data_induk) {
+                throw new Exception("Data transaksi operasional induk tidak ditemukan.");
+            }
+
+            $jml_tagihan     = (float) $data_induk['jumlah_tagihan'];
+            $pembayaran_cash = (float) $data_induk['pembayaran_cash'];
+            $kat_transaksi   = $data_induk['kategori']; // Pemasukan / Pengeluaran
+
+            // Hitung akumulasi pembayaran lain
+            $sql_akum = "SELECT SUM(jumlah) AS total_lain FROM transaksi_pembayaran WHERE id_transaksi = ? AND id_transaksi_pembayaran != ?";
+            $stmt_akum = mysqli_prepare($Conn, $sql_akum);
+            mysqli_stmt_bind_param($stmt_akum, "ii", $id_induk, $id_transaksi_pembayaran);
+            mysqli_stmt_execute($stmt_akum);
+            $res_akum = mysqli_stmt_get_result($stmt_akum);
+            $data_akum = mysqli_fetch_assoc($res_akum);
+            mysqli_stmt_close($stmt_akum);
+
+            $total_pembayaran_lain = (float) ($data_akum['total_lain'] ?? 0);
+
+            $sisa_maksimal = $jml_tagihan - $pembayaran_cash - $total_pembayaran_lain;
+            if ($jumlah_nominal > $sisa_maksimal) {
+                throw new Exception("Nominal pembayaran melebihi sisa tagihan! Maksimal pembayaran yang diizinkan adalah Rp " . number_format($sisa_maksimal, 0, ',', '.'));
+            }
+
+            $total_terbayar_baru = $pembayaran_cash + $total_pembayaran_lain + $jumlah_nominal;
+
+            if ($total_terbayar_baru >= $jml_tagihan) {
+                $status_baru = "Lunas";
+            } else {
+                if ($kat_transaksi === "Pemasukan") {
+                    $status_baru = "Piutang";
+                } else {
+                    $status_baru = "Utang";
+                }
+            }
+
+            // 1. UPDATE TABEL transaksi_pembayaran
+            $sql_up_byr = "UPDATE transaksi_pembayaran SET tanggal = ?, jumlah = ? WHERE id_transaksi_pembayaran = ?";
+            $stmt_up_byr = mysqli_prepare($Conn, $sql_up_byr);
+            mysqli_stmt_bind_param($stmt_up_byr, "sdi", $tanggal_waktu_gabung, $jumlah_nominal, $id_transaksi_pembayaran);
+            if (!mysqli_stmt_execute($stmt_up_byr)) {
+                throw new Exception("Gagal memperbarui data pembayaran operasional.");
+            }
+            mysqli_stmt_close($stmt_up_byr);
+
+            // 2. UPDATE STATUS TABEL transaksi
+            $sql_up_induk = "UPDATE transaksi SET status = ? WHERE id_transaksi = ?";
+            $stmt_up_induk = mysqli_prepare($Conn, $sql_up_induk);
+            mysqli_stmt_bind_param($stmt_up_induk, "si", $status_baru, $id_induk);
+            if (!mysqli_stmt_execute($stmt_up_induk)) {
+                throw new Exception("Gagal memperbarui status transaksi operasional.");
+            }
+            mysqli_stmt_close($stmt_up_induk);
+        }
+
+        // C. UPDATE TABEL jurnal (berdasarkan relasi id_transaksi_pembayaran)
+        $sql_update_jurnal = "UPDATE jurnal SET nilai = ? WHERE id_transaksi_pembayaran = ?";
+        $stmt_jurnal = mysqli_prepare($Conn, $sql_update_jurnal);
+        if (!$stmt_jurnal) {
+            throw new Exception("Gagal mempersiapkan query update jurnal.");
+        }
+        mysqli_stmt_bind_param($stmt_jurnal, "di", $jumlah_nominal, $id_transaksi_pembayaran);
+        if (!mysqli_stmt_execute($stmt_jurnal)) {
+            throw new Exception("Gagal memperbarui data jurnal.");
+        }
+        mysqli_stmt_close($stmt_jurnal);
+
+        // Commit seluruh perubahan transaksi
+        mysqli_commit($Conn);
+
+        $response["status"]   = "Success";
+        $response["message"]  = "Data pembayaran berhasil diperbaharui.";
+        $response["id"]       = $id;
+        $response["kategori"] = $kategori;
+
+    } catch (Exception $e) {
+        // Rollback jika terjadi kendala agar data database tetap konsisten dan balance
+        mysqli_rollback($Conn);
+        $response["message"] = $e->getMessage();
+    }
+
+    // ==========================================
+    // KEMBALIKAN RESPONSE JSON
+    // ==========================================
+    echo json_encode($response, JSON_UNESCAPED_UNICODE);
+    exit;
 ?>

@@ -290,7 +290,7 @@ function initializeMoneyInputs() {
 }
 
 $(document).ready(function() {
-    
+
     //Menampilkan Data Pertama Kali
     ShowCount();
     ShowUtangPiutangOperasional();
@@ -626,6 +626,12 @@ $(document).ready(function() {
                     ShowUtangPiutangOperasional();
                     ShowUtangPiutangJualBeli();
 
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Pembayaran Berhasil Disimpan.'
+                    );
+
                 }else{
 
                     // Jika Gagal, Tampilkan Pada Notifikasi
@@ -643,21 +649,12 @@ $(document).ready(function() {
         });
     });
 
-    
-
-
-
-
-
-
-
-
-
-
     //Modal Edit Pembayaran
     $('#ModalEditPembayaran').on('show.bs.modal', function (e) {
         //Tangkap id_anggota dari modal detail
-        var id_transaksi_pembayaran = $(e.relatedTarget).data('id');
+        var id_transaksi_pembayaran = $(e.relatedTarget).data('id_transaksi_pembayaran');
+        var id                      = $(e.relatedTarget).data('id');
+        var kategori                = $(e.relatedTarget).data('kategori');
 
         //Loading
         $("#FormEditPembayaran").html('Loading...');
@@ -669,7 +666,7 @@ $(document).ready(function() {
         $.ajax({
             url         : "_Page/UtangPiutang/FormEditPembayaran.php",
             type        : "POST",
-            data        : {id_transaksi_pembayaran: id_transaksi_pembayaran},
+            data        : {id_transaksi_pembayaran: id_transaksi_pembayaran, id: id, kategori: kategori},
             success: function (response) {
                 $('#FormEditPembayaran').html(response);
             }
@@ -699,21 +696,28 @@ $(document).ready(function() {
             success: function (response) {
                 //Apabila Proses Berhasil
                 if (response.status === "Success") {
+
+                    // Buat Variabel dari response
+                    var id       = response.id;
+                    var kategori = response.kategori;
+
+                    // Enable Button
                     $("#ButtonEditPembayaran").html(ButtonElement).prop("disabled", false);
                     $('#NotifikasiEditPembayaran').html('');
                     
                     //Tutup Modal
                     $('#ModalEditPembayaran').modal('hide');
                     
-                    //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Ubah Pembayaran Utang/Piutang Penjualan Berhasil!',
-                        'success'
+                    // Reload Data
+                    ShowRiwayatPembayaran(id, kategori);
+                    ShowUtangPiutangOperasional();
+                    ShowUtangPiutangJualBeli();
+
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Pembayaran Berhasil Diperbaharui.'
                     );
-                    
-                    //Reload Data
-                    ShowRiwayatPembayaran();
                 } else {
                     // Tampilkan pesan error
                     $("#NotifikasiEditPembayaran").html(
@@ -733,9 +737,12 @@ $(document).ready(function() {
 
     //Modal Hapus Pembayaran
     $('#ModalHapusPembayaran').on('show.bs.modal', function (e) {
+        
         //Tangkap id_anggota dari modal detail
-        var id_transaksi_pembayaran = $(e.relatedTarget).data('id');
-
+        var id_transaksi_pembayaran = $(e.relatedTarget).data('id_transaksi_pembayaran');
+        var id                      = $(e.relatedTarget).data('id');
+        var kategori                = $(e.relatedTarget).data('kategori');
+        
         //Loading
         $("#FormHapusPembayaran").html('Loading...');
 
@@ -746,7 +753,7 @@ $(document).ready(function() {
         $.ajax({
             url         : "_Page/UtangPiutang/FormHapusPembayaran.php",
             type        : "POST",
-            data        : {id_transaksi_pembayaran: id_transaksi_pembayaran},
+            data        : {id_transaksi_pembayaran: id_transaksi_pembayaran, id: id, kategori: kategori},
             success: function (response) {
                 $('#FormHapusPembayaran').html(response);
             }
@@ -774,23 +781,31 @@ $(document).ready(function() {
             processData : false,
             dataType    : "json",
             success: function (response) {
+                
                 //Apabila Proses Berhasil
                 if (response.status === "Success") {
+
+                    // Buat Variabel dari response
+                    var id       = response.id;
+                    var kategori = response.kategori;
+
+                    // Penanganan Button
                     $("#ButtonHapusPembayaran").html(ButtonElement).prop("disabled", false);
                     $('#NotifikasiHapusPembayaran').html('');
                     
                     //Tutup Modal
                     $('#ModalHapusPembayaran').modal('hide');
                     
-                    //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Hapus Pembayaran Utang/Piutang Penjualan Berhasil!',
-                        'success'
+                    // Reload Data
+                    ShowRiwayatPembayaran(id, kategori);
+                    ShowUtangPiutangOperasional();
+                    ShowUtangPiutangJualBeli();
+
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Pembayaran Berhasil Dihapus.'
                     );
-                    
-                    //Reload Data
-                    ShowRiwayatPembayaran();
                 } else {
                     // Tampilkan pesan error
                     $("#NotifikasiHapusPembayaran").html(
@@ -804,6 +819,233 @@ $(document).ready(function() {
                     '<div class="alert alert-danger" role="alert">Terjadi kesalahan pada sistem. Silakan coba lagi.</div>'
                 );
                 $("#ButtonHapusPembayaran").html(ButtonElement).prop("disabled", false);
+            },
+        });
+    });
+
+    // -----------------------------------------------------------
+    // Tempo
+    // -----------------------------------------------------------
+    
+    //Modal Tempo
+    $('#ModalTempo').on('show.bs.modal', function (e) {
+
+        //Tangkap id_transaksi_jual_beli dari modal detail
+        var id       = $(e.relatedTarget).data('id');
+        var kategori = $(e.relatedTarget).data('kategori');
+
+        //Kosongkan 'NotifikasiTempo'
+        $("#NotifikasiTempo").html("");
+
+        // Loading Form
+        $("#FormTempo").html("Loading...");
+
+        //Buka Detail Transaksi
+        $.ajax({
+            type        : 'POST',
+            url         : '_Page/UtangPiutang/FormTempo.php',
+            data        : {id: id, kategori: kategori},
+            success     : function(response){
+
+                //Tampilkan Form
+                $("#FormTempo").html(response);
+            }
+        });
+    });
+
+    //Proses Tambah Tempo Pembayaran
+    $("#ProsesTempo").on("submit", function (e) {
+        e.preventDefault();
+        
+        // Tombol loading
+        $("#ButtonTempo").html('Loading..');
+        $("#ButtonTempo").prop("disabled", true);
+        let ButtonElement = '<i class="bi bi-save"></i> Simpan';
+        
+        // Ambil data form
+        let formData = new FormData(this);
+
+        // Kirim data ke server
+        $.ajax({
+            url         : "_Page/UtangPiutang/ProsesTempo.php",
+            type        : "POST",
+            data        : formData,
+            contentType : false,
+            processData : false,
+            dataType    : "json",
+            success: function (response) {
+                //Apabila Proses Berhasil
+                if (response.status === "Success") {
+                    $("#ButtonTempo").html(ButtonElement).prop("disabled", false);
+                    $('#NotifikasiTempo').html('');
+                    
+                    //Tutup Modal
+                    $('#ModalTempo').modal('hide');
+                    
+                    //Tampilkan Alert
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Tempo Pembayaran Berhasil Diperbaharui!.'
+                    );
+                    
+                    //Reload Data
+                    ShowCount();
+                    ShowUtangPiutangOperasional();
+                    ShowUtangPiutangJualBeli();
+
+                } else {
+                    // Tampilkan pesan error
+                    $("#NotifikasiTempo").html(
+                        `<div class="alert alert-danger" role="alert">${response.message}</div>`
+                    );
+                    $("#ButtonTempo").html(ButtonElement).prop("disabled", false);
+                }
+            },
+            error: function () {
+                $("#NotifikasiTempo").html(
+                    '<div class="alert alert-danger" role="alert">Terjadi kesalahan pada sistem. Silakan coba lagi.</div>'
+                );
+                $("#ButtonTempo").html(ButtonElement).prop("disabled", false);
+            },
+        });
+    });
+
+    //Modal Hapus Tempo
+    $('#ModalHapusTempo').on('show.bs.modal', function (e) {
+
+        //Tangkap id_transaksi_jual_beli dari modal detail
+        var id       = $(e.relatedTarget).data('id');
+        var kategori = $(e.relatedTarget).data('kategori');
+
+        //Kosongkan 'NotifikasiHapusTempo'
+        $("#NotifikasiHapusTempo").html("");
+
+        // Loading Form
+        $("#FormHapusTempo").html("Loading...");
+
+        // Disable Button
+        $("#ButtonHapusTempo").prop("disabled", true);
+
+        //Buka Detail Transaksi
+        $.ajax({
+            type    : 'POST',
+            url     : '_Page/UtangPiutang/FormHapusTempo.php',
+            data    : {id: id, kategori: kategori},
+            dataType: 'JSON',
+            success : function(response){
+
+                // Status & Message
+                var status  = response.status;
+                var message = response.message;
+
+                // Apabila berhasil
+                if(status=='success'){
+                    
+                    // Tangkap HTML
+                    var html = response.html;
+
+                    //Tampilkan Form
+                    $("#FormHapusTempo").html(html);
+
+                    // Kosongkan Notifikasi
+                    $("#NotifikasiHapusTempo").html(`
+                        <div class="alert alert-warning text-center mt-3" role="alert">
+                            <small>
+                                <b>Penting!</b><br>
+                                Menghapus informasi tanggal jatuh tempo akan menyebabkan anda kehilangan informasi waktu/batas akhir pembayaran Utang/Piutang.<br>
+                                <i>Apakah anda yakin akan menghapus informasi tersebut?</i>
+                            </small>
+                        </div>
+                    `);
+
+                    // Enable Button
+                    $("#ButtonHapusTempo").prop("disabled", false);
+                }else{
+                    //Kosongkan Form
+                    $("#FormHapusTempo").html('');
+
+                    // Disable Button
+                    $("#ButtonHapusTempo").prop("disabled", true);
+
+                    // Tampilkan Notifikasi
+                    $("#NotifikasiHapusTempo").html(`
+                        <div class="alert alert-danger text-center mt-3" role="alert">
+                            <small><b>Oppss!</b><br>Terjadi kesalahan pada sistem.<br> Pesan : ${message}</small>
+                        </div>
+                    `);
+                }
+                
+            },
+            error: function () {
+                //Kosongkan Form
+                $("#FormHapusTempo").html('');
+
+                // Tampilkan Notifikasi
+                $("#NotifikasiHapusTempo").html(
+                    '<div class="alert alert-danger text-center mt-3" role="alert"><small><b>Oppss!</b><br>Terjadi kesalahan pada sistem.<br> Silakan coba lagi.</small></div>'
+                );
+
+                // Disable Button
+                $("#ButtonHapusTempo").prop("disabled", true);
+            },
+        });
+    });
+
+    //Proses Hapus Tempo
+    $("#ProsesHapusTempo").on("submit", function (e) {
+        e.preventDefault();
+        
+        // Tombol loading
+        $("#ButtonHapusTempo").html('Loading..');
+        $("#ButtonHapusTempo").prop("disabled", true);
+        let ButtonElement = '<i class="bi bi-save"></i> Simpan';
+        
+        // Ambil data form
+        let formData = new FormData(this);
+
+        // Kirim data ke server
+        $.ajax({
+            url         : "_Page/UtangPiutang/ProsesHapusTempo.php",
+            type        : "POST",
+            data        : formData,
+            contentType : false,
+            processData : false,
+            dataType    : "JSON",
+            success: function (response) {
+                //Apabila Proses Berhasil
+                if (response.status === "Success") {
+                    $("#ButtonHapusTempo").html(ButtonElement).prop("disabled", false);
+                    $('#NotifikasiHapusTempo').html('');
+                    
+                    //Tutup Modal
+                    $('#ModalHapusTempo').modal('hide');
+                    
+                    //Tampilkan Alert
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Tempo Pembayaran Berhasil Dihapus!.'
+                    );
+                    
+                    //Reload Data
+                    ShowCount();
+                    ShowUtangPiutangOperasional();
+                    ShowUtangPiutangJualBeli();
+
+                } else {
+                    // Tampilkan pesan error
+                    $("#NotifikasiHapusTempo").html(
+                        `<div class="alert alert-danger" role="alert">${response.message}</div>`
+                    );
+                    $("#ButtonHapusTempo").html(ButtonElement).prop("disabled", false);
+                }
+            },
+            error: function () {
+                $("#NotifikasiHapusTempo").html(
+                    '<div class="alert alert-danger" role="alert">Terjadi kesalahan pada sistem. Silakan coba lagi.</div>'
+                );
+                $("#ButtonHapusTempo").html(ButtonElement).prop("disabled", false);
             },
         });
     });

@@ -106,7 +106,23 @@
                 <td>'.$kategori_transaksi.'</td>
                 <td>'.$kategori_pembayaran.'</td>
                 <td>'.$jumlah.'</td>
-                <td></td>
+                <td>
+                    <a href="Javascript:(0);" class="btn btn-sm btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
+                        <li>
+                            <a class="dropdown-item" href="javascript:void(0)" data-modal-target="#ModalEditPembayaran" data-id_transaksi_pembayaran="'.$id_transaksi_pembayaran.'" data-id="'.$id.'" data-kategori="'.$kategori.'">
+                                <i class="bi bi-pencil"></i> Ubah/Edit
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="javascript:void(0)" data-modal-target="#ModalHapusPembayaran" data-id_transaksi_pembayaran="'.$id_transaksi_pembayaran.'" data-id="'.$id.'" data-kategori="'.$kategori.'">
+                                <i class="bi bi-trash"></i> Hapus
+                            </a>
+                        </li>
+                    </ul>
+                </td>
             </tr>
         ';
         $no++;

@@ -113,7 +113,7 @@
         LEFT JOIN anggota a ON tjb.id_anggota = a.id_anggota
     ";
 
-    $where_clause = "WHERE tjb.status = 'Kredit'";
+    $where_clause = "WHERE tjb.total > tjb.cash";
     $types = "";
     $params = [];
 
@@ -226,6 +226,7 @@
         $total = (float) ($data['total'] ?? 0);
         $cash = (float) ($data['cash'] ?? 0);
         $total_pembayaran = (float) ($data['total_pembayaran'] ?? 0);
+        $tanggal_tempo = $data['tanggal_tempo'];
 
         // Hitung Sisa Pembayaran
         $sisa_pembayaran = $total - $cash - $total_pembayaran;
@@ -241,32 +242,56 @@
 
         // Format Tanggal
         $TanggalTransaksi = date('d/m/Y H:i', strtotime($tanggal));
-        $TanggalTempo = (!empty($data['tanggal_tempo']) && $data['tanggal_tempo'] !== '0000-00-00 00:00:00') 
-            ? date('d/m/Y', strtotime($data['tanggal_tempo'])) 
-            : '-';
+        if (!empty($tanggal_tempo)) {
+            $tempo = date('d/m/Y', strtotime($tanggal_tempo));
+            $tombol_tempo = '
+                <a href="Javascript:(0);" class="text-success" data-bs-toggle="dropdown" aria-expanded="false">
+                    ' . $tempo . ' <i class="bi bi-three-dots-vertical"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
+                    <li>
+                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalTempo" data-id="'.$id_transaksi_jual_beli.'" data-kategori="jual_beli">
+                            <i class="bi bi-pencil"></i> Ubah Tanggal Tempo
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalHapusTempo" data-id="'.$id_transaksi_jual_beli.'" data-kategori="jual_beli">
+                            <i class="bi bi-trash"></i> Hapus Tanggal Tempo
+                        </a>
+                    </li>
+                </ul>
+            ';
+        } else {
+            $tombol_tempo = '
+                <small>
+                    <a href="Javascript:(0);" class="text-danger" data-bs-toggle="modal" data-bs-target="#ModalTempo" data-id="' . $id_transaksi_jual_beli . '" data-kategori="jual_beli" title="Tempo Pembayaran">
+                        <i class="bi bi-plus-lg"></i> Add
+                    </a>
+                </small>
+            ';
+        }
 
-        // Label Kategori dan Status
-        switch ($kategori) {
-            case "Penjualan":
-                $label_kategori = '<small class="text-primary">Penjualan</small>';
-                $label_status = '<span class="badge bg-success">Piutang</span>';
-                break;
-            case "Retur Penjualan":
-                $label_kategori = '<small class="text-info">Ret. Penjualan</small>';
-                $label_status = '<span class="badge bg-danger">Utang</span>';
-                break;
-            case "Pembelian":
-                $label_kategori = '<small class="text-warning">Pembelian</small>';
-                $label_status = '<span class="badge bg-danger">Utang</span>';
-                break;
-            case "Retur Pembelian":
-                $label_kategori = '<small class="text-danger">Ret. Pembelian</small>';
-                $label_status = '<span class="badge bg-success">Piutang</span>';
-                break;
-            default:
-                $label_kategori = '<small class="text-muted">None</small>';
-                $label_status = '<span class="badge bg-secondary">None</span>';
-                break;
+        // Tentukan Status (Jika total sama dengan cash atau sisa pembayaran habis, maka Lunas)
+        if (($cash + $total_pembayaran) >= $total) {
+            $label_status = '<span class="badge bg-success">Lunas</span>';
+        } else {
+            switch ($kategori) {
+                case "Penjualan":
+                    $label_status = '<span class="badge bg-warning">Piutang</span>';
+                    break;
+                case "Retur Penjualan":
+                    $label_status = '<span class="badge bg-danger">Utang</span>';
+                    break;
+                case "Pembelian":
+                    $label_status = '<span class="badge bg-danger">Utang</span>';
+                    break;
+                case "Retur Pembelian":
+                    $label_status = '<span class="badge bg-warning">Piutang</span>';
+                    break;
+                default:
+                    $label_status = '<span class="badge bg-secondary">None</span>';
+                    break;
+            }
         }
 
         // Susun Baris HTML
@@ -281,15 +306,14 @@
                 <td>' . $kategori . '</td>
                 <td><small>' . $total_rp . '</small></td>
                 <td><small>' . $cash_rp . '</small></td>
-                <td><small>' . $total_pembayaran_rp . '</small></td>
+                <td>
+                    <a href="Javascript:(0);" class="text-primary" data-bs-toggle="modal" data-bs-target="#ModalRiwayatPembayaran" data-id="' . $id_transaksi_jual_beli . '" data-kategori="jual_beli" title="Bayar Piutang / Utang">
+                        <i class="bi bi-pencil"></i> ' . $total_pembayaran_rp . '
+                    </a>
+                </td>
                 <td><small>' . $sisa_pembayaran_rp . '</small></td>
                 <td>' . $label_status . '</td>
-                <td><small class="text-muted">' . $TanggalTempo . '</small></td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#ModalRiwayatPembayaran" data-id="' . $id_transaksi_jual_beli . '" data-kategori="jual_beli" title="Bayar Piutang / Utang">
-                        <i class="bi bi-clock-history"></i> Bayar
-                    </button>
-                </td>
+                 <td>' . $tombol_tempo . '</td>
             </tr>
         ';
         $no++;
