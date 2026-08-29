@@ -236,6 +236,12 @@
         <hr class="menu-divider">
         <li class="nav-heading">Fitur Lainnya</li>
         <li class="nav-item">
+            <a class="nav-link <?php if($PageMenu=="Bantuan"){echo "active";}else{echo "collapsed";} ?>" href="index.php?Page=Bantuan">
+                <i class="bi bi-question-circle"></i>
+                <span>Bantuan</span>
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalLogout">
                 <i class="bi bi-box-arrow-in-left"></i>
                 <span>Keluar</span>

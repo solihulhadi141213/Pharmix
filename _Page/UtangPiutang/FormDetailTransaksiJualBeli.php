@@ -272,6 +272,14 @@
                         <small class="text-muted">'.$kategori.'</small>
                     </div>
                 </div>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <small>Status</small>
+                    </div>
+                    <div class="col-8">
+                        <small class="text-muted">'.$status.'</small>
+                    </div>
+                </div>
 
                 '.$subject.'
 
@@ -329,12 +337,12 @@
                     <table class="table table-sm table-striped table-hover">
                         <thead>
                             <tr>
-                                <th><b>No</b></th>
-                                <th><b>Uraian</b></th>
-                                <th><b>Harga</b></th>
-                                <th><b>QTY</b></th>
-                                <th><b>Satuan</b></th>
-                                <th class="text-end"><b>Jumlah</b></th>
+                                <th class="bg bg-dark text-white"><b>No</b></th>
+                                <th class="bg bg-dark text-white"><b>Uraian</b></th>
+                                <th class="bg bg-dark text-white"><b>Harga</b></th>
+                                <th class="bg bg-dark text-white"><b>QTY</b></th>
+                                <th class="bg bg-dark text-white"><b>Satuan</b></th>
+                                <th class="bg bg-dark text-white text-end"><b>Jumlah</b></th>
                             </tr>
                         </thead>
                         <tbody>

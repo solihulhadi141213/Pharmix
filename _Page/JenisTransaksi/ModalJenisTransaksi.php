@@ -31,6 +31,7 @@
                                 <option value="kategori">Kategori</option>
                                 <option value="id_akun_debet">Akun Debet</option>
                                 <option value="id_akun_kredit">Akun Kredit</option>
+                                <option value="id_utang_piutang">Akun Utang/Piutang</option>
                             </select>
                         </div>
                     </div>
@@ -52,6 +53,7 @@
                                 <option value="kategori">Kategori</option>
                                 <option value="id_akun_debet">Akun Debet</option>
                                 <option value="id_akun_kredit">Akun Kredit</option>
+                                <option value="id_utang_piutang">Akun Utang/Piutang</option>
                             </select>
                         </div>
                     </div>
@@ -153,6 +155,21 @@
                             </select>
                             <small class="text-muted">
                                 Pengaturan akun perkiraan yang akan digunakan pada lajur kredit
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col col-md-4">
+                            <label for="id_utang_piutang" id="label_utang_piutang">
+                                <small>Akun Utang/Piutang</small>
+                            </label>
+                        </div>
+                        <div class="col-md-8">
+                            <select name="id_utang_piutang" id="id_utang_piutang" class="form-select" style="width: 100%;">
+                                <option value=""></option>
+                            </select>
+                            <small class="text-muted">
+                                Pengaturan akun perkiraan yang akan digunakan pada saat terjadi utang piutang
                             </small>
                         </div>
                     </div>

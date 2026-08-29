@@ -58,13 +58,14 @@
                                         <th><b>Kategori</b></th>
                                         <th><b>Akun Debet</b></th>
                                         <th><b>Akun Kredit</b></th>
+                                        <th><b>Utang/Piutang</b></th>
                                         <th><b>Volume</b></th>
                                         <th><b>Opsi</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="TabelJenisTransaksi">
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted">
+                                        <td colspan="8" class="text-center text-muted">
                                             No Data
                                         </td>
                                     </tr>

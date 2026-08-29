@@ -33,8 +33,8 @@
                                 <option value="tanggal">Tanggal</option>
                                 <option value="id_transaksi">Ref Operasional</option>
                                 <option value="id_transaksi_jual_beli">Ref Jual/Beli</option>
-                                <option value="kategori_pembayaran">Pembayaran</option>
                                 <option value="kategori_transaksi">Transaksi</option>
+                                <option value="kategori_pembayaran">Kategori</option>
                                 <option value="jumlah">Nominal</option>
                                 <option value="creat_by_name">Petugas</option>
                             </select>
@@ -61,8 +61,8 @@
                                 <option value="tanggal">Tanggal</option>
                                 <option value="id_transaksi">Ref Operasional</option>
                                 <option value="id_transaksi_jual_beli">Ref Jual/Beli</option>
-                                <option value="kategori_pembayaran">Pembayaran</option>
                                 <option value="kategori_transaksi">Transaksi</option>
+                                <option value="kategori_pembayaran">Kategori</option>
                                 <option value="creat_by_name">Petugas</option>
                             </select>
                         </div>
@@ -79,6 +79,88 @@
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-filter"></i> Filter
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 'ModalTambahPembayaran' -->
+<div class="modal fade" id="ModalTambahPembayaran" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="javascript:void(0);" id="ProsesTambahPembayaran">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark"><i class="bi bi-plus-lg"></i> Tambah Pembayaran</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col col-md-12">
+                            <label for="kategori_transaksi">
+                                <small>Kategori Transaksi</small>
+                            </label>
+                            <select name="kategori_transaksi" id="kategori_transaksi" class="form-control">
+                                <option value="">Pilih</option>
+                                <option value="Operasional">Transaksi Operasional</option>
+                                <option value="jual_beli">Jual/Beli</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col col-md-12">
+                            <label for="id">
+                                <small>ID Transaksi</small>
+                            </label>
+                            <select name="id" id="id" class="form-control">
+                                <option value="">Pilih</option>
+                            </select>
+                            <small class="text-muted">Hanya menampilkan transaksi yang belum LUNAS</small>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col col-md-12">
+                            <label for="tanggal_pembayaran">
+                                <small>Tanggal Pembayaran</small>
+                            </label>
+                            <input type="date" name="tanggal_pembayaran" id="tanggal_pembayaran" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col col-md-12">
+                            <label for="jam_pembayaran">
+                                <small>Jam Pembayaran</small>
+                            </label>
+                            <input type="time" name="jam_pembayaran" id="jam_pembayaran" class="form-control" value="<?php echo date('H:i'); ?>">
+                        </div>
+                    </div>
+                    <div id="row">
+                        <div class="col-12" id="InfoJumlahSisaTagihan">
+                            <!-- Menampilkan Jumlah sisa tagihan -->
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col col-md-12">
+                            <label for="jumlah">
+                                <small>Jumlah Nominal</small>
+                            </label>
+                            <input type="text" name="jumlah" id="jumlah" class="form-control form-money" placeholder="Rp">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12" id="NotifikasiTambahPembayaran">
+                            <!-- Notifikasi Tambah Pembayaran -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-rounded">
+                        <i class="bi bi-save"></i> Simpan
                     </button>
                     <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup

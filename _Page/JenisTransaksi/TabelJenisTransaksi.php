@@ -24,7 +24,7 @@ if (empty($SessionIdAkses)) {
         "status" => "error",
         "html"   => '
             <tr>
-                <td colspan="7" class="text-center text-danger">
+                <td colspan="8" class="text-center text-danger">
                     <small>Sesi akses sudah berakhir. Silakan login ulang.</small>
                 </td>
             </tr>
@@ -71,7 +71,8 @@ $allowedOrder = [
     'nama',
     'kategori',
     'id_akun_debet',
-    'id_akun_kredit'
+    'id_akun_kredit',
+    'id_utang_piutang'
 ];
 
 if (!in_array($OrderBy, $allowedOrder, true)) {
@@ -94,7 +95,8 @@ $allowedKeywordBy = [
     'nama',
     'kategori',
     'id_akun_debet',
-    'id_akun_kredit'
+    'id_akun_kredit',
+    'id_utang_piutang'
 ];
 
 if (!empty($keyword_by) && !in_array($keyword_by, $allowedKeywordBy, true)) {
@@ -127,13 +129,15 @@ if ($keyword !== '') {
                 OR s.kategori LIKE ?
                 OR CAST(s.id_akun_debet AS CHAR) LIKE ?
                 OR CAST(s.id_akun_kredit AS CHAR) LIKE ?
+                OR CAST(s.id_utang_piutang AS CHAR) LIKE ?
                 OR ad.nama LIKE ?
                 OR ak.nama LIKE ?
             )
         ";
 
-        $bindTypes .= "ssssss";
+        $bindTypes .= "sssssss";
 
+        $bindValues[] = $keywordLike;
         $bindValues[] = $keywordLike;
         $bindValues[] = $keywordLike;
         $bindValues[] = $keywordLike;
@@ -155,6 +159,9 @@ $sql_count = "
 
     LEFT JOIN akun_perkiraan AS ak
         ON ak.id_perkiraan = s.id_akun_kredit
+    
+    LEFT JOIN akun_perkiraan AS au
+        ON au.id_perkiraan = s.id_utang_piutang
 
     $where
 ";
@@ -167,7 +174,7 @@ if (!$stmt_count) {
         "status" => "error",
         "html"   => '
             <tr>
-                <td colspan="7" class="text-center text-danger">
+                <td colspan="8" class="text-center text-danger">
                     <small>Gagal mempersiapkan query count.</small>
                 </td>
             </tr>
@@ -201,7 +208,7 @@ if (!$stmt_count->execute()) {
         "status" => "error",
         "html"   => '
             <tr>
-                <td colspan="7" class="text-center text-danger">
+                <td colspan="8" class="text-center text-danger">
                     <small>Gagal menghitung data.</small>
                 </td>
             </tr>
@@ -252,12 +259,16 @@ $sql = "
 
         s.id_akun_debet,
         s.id_akun_kredit,
+        s.id_utang_piutang,
 
         ad.kode AS kode_akun_debet,
         ad.nama AS nama_akun_debet,
 
         ak.kode AS kode_akun_kredit,
         ak.nama AS nama_akun_kredit,
+
+        au.kode AS kode_akun_utang_piutang,
+        au.nama AS nama_akun_utang_piutang,
 
         COALESCE(sb.jumlah_transaksi, 0) AS jumlah_transaksi
 
@@ -268,6 +279,9 @@ $sql = "
 
     LEFT JOIN akun_perkiraan AS ak
         ON ak.id_perkiraan = s.id_akun_kredit
+
+    LEFT JOIN akun_perkiraan AS au
+        ON au.id_perkiraan = s.id_utang_piutang
 
     LEFT JOIN (
         SELECT
@@ -293,7 +307,7 @@ if (!$stmt) {
         "status" => "error",
         "html"   => '
             <tr>
-                <td colspan="7" class="text-center text-danger">
+                <td colspan="8" class="text-center text-danger">
                     <small>Gagal mempersiapkan query data.</small>
                 </td>
             </tr>
@@ -331,7 +345,7 @@ if (!$stmt->execute()) {
         "status" => "error",
         "html"   => '
             <tr>
-                <td colspan="7" class="text-center text-danger">
+                <td colspan="8" class="text-center text-danger">
                     <small>Terjadi kesalahan saat mengambil data.</small>
                 </td>
             </tr>
@@ -359,7 +373,7 @@ if ($query->num_rows === 0) {
 
     $html .= '
         <tr>
-            <td colspan="7" class="text-center text-danger">
+            <td colspan="8" class="text-center text-danger">
                 <small>Tidak ada data yang ditampilkan.</small>
             </td>
         </tr>
@@ -417,6 +431,21 @@ if ($query->num_rows === 0) {
         );
 
         // ----------------------------------------------------
+        // AKUN UTANG PIUTANG
+        // ----------------------------------------------------
+        $kode_akun_utang_piutang = htmlspecialchars(
+            $data['kode_akun_utang_piutang'] ?? '',
+            ENT_QUOTES,
+            'UTF-8'
+        );
+
+        $nama_akun_utang_piutang = htmlspecialchars(
+            $data['nama_akun_utang_piutang'] ?? '',
+            ENT_QUOTES,
+            'UTF-8'
+        );
+
+        // ----------------------------------------------------
         // JUMLAH TRANSAKSI
         // ----------------------------------------------------
         $jumlah_transaksi = (int)$data['jumlah_transaksi'];
@@ -451,6 +480,17 @@ if ($query->num_rows === 0) {
         } else {
 
             $akun_kredit_html = '<span class="text-muted">-</span>';
+        }
+
+        if ($nama_akun_utang_piutang !== '') {
+
+            $akun_utang_piutang_html = $kode_akun_utang_piutang !== ''
+                ? $nama_akun_utang_piutang
+                : $nama_akun_utang_piutang;
+
+        } else {
+
+            $akun_utang_piutang_html = '<span class="text-muted">-</span>';
         }
 
         // Routing Kategori
@@ -497,6 +537,12 @@ if ($query->num_rows === 0) {
                 <td>
                     <small class="text-muted">
                         ' . $akun_kredit_html . '
+                    </small>
+                </td>
+
+                <td>
+                    <small class="text-muted">
+                        ' . $akun_utang_piutang_html . '
                     </small>
                 </td>
 

@@ -188,7 +188,7 @@
 
 <!-- Modal Detail Jual/Beli -->
 <div class="modal fade" id="ModalDetailTransaksiJualBeli" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <form action="index.php" method="GET">
                 <input type="hidden" name="Page" value="Penjualan">

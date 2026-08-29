@@ -25,44 +25,52 @@
                         if(empty($_POST['id_akun_kredit'])){
                             echo '<small class="text-danger">Pengaturan Akun Kredit Tidak Boleh Kosong!</small>';
                         }else{
-                            $nama           = $_POST['nama'];
-                            $kategori       = $_POST['kategori'];
-                            $deskripsi      = $_POST['deskripsi'];
-                            $id_akun_debet  = $_POST['id_akun_debet'];
-                            $id_akun_kredit = $_POST['id_akun_kredit'];
-                              //Membersihhkan Variabel
-                            $nama           = validateAndSanitizeInput($nama);
-                            $kategori       = validateAndSanitizeInput($kategori);
-                            $deskripsi      = validateAndSanitizeInput($deskripsi);
-                            $id_akun_debet  = validateAndSanitizeInput($id_akun_debet);
-                            $id_akun_kredit = validateAndSanitizeInput($id_akun_kredit);
-                            //Validasi Duplikat
-                            $ValidasiDuplikat=mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM transaksi_jenis WHERE nama='$nama'"));
-                            if(!empty($ValidasiDuplikat)){
-                                echo '<small class="text-danger">Nama/Jenis Transaksi yang digunakan sudah terdaftar!</small>';
+                            if(empty($_POST['id_utang_piutang'])){
+                                echo '<small class="text-danger">Pengaturan Akun Utang/Piutang Tidak Boleh Kosong!</small>';
                             }else{
-                                //Simpan Ke database
-                                $EntriJenisTransaksi="INSERT INTO transaksi_jenis (
-                                    nama,
-                                    kategori,
-                                    deskripsi,
-                                    id_akun_debet,
-                                    id_akun_kredit
-                                ) VALUES (
-                                    '$nama',
-                                    '$kategori',
-                                    '$deskripsi',
-                                    '$id_akun_debet',
-                                    '$id_akun_kredit'
-                                )";
-                                $InputJenisTransaksi=mysqli_query($Conn, $EntriJenisTransaksi);
-                                if($InputJenisTransaksi){
-                                    $KategoriLog="Jenis Transaksi";
-                                    $KeteranganLog="Tambah Jenis Transaksi";
-                                    include "../../_Config/InputLog.php";
-                                    echo '<small class="text-success" id="NotifikasiTambahJenisTransaksiBerhasil">Success</small>';
+                                $nama           = $_POST['nama'];
+                                $kategori       = $_POST['kategori'];
+                                $deskripsi      = $_POST['deskripsi'];
+                                $id_akun_debet  = $_POST['id_akun_debet'];
+                                $id_akun_kredit = $_POST['id_akun_kredit'];
+                                $id_utang_piutang = $_POST['id_utang_piutang'];
+                                //Membersihhkan Variabel
+                                $nama           = validateAndSanitizeInput($nama);
+                                $kategori       = validateAndSanitizeInput($kategori);
+                                $deskripsi      = validateAndSanitizeInput($deskripsi);
+                                $id_akun_debet  = validateAndSanitizeInput($id_akun_debet);
+                                $id_akun_kredit = validateAndSanitizeInput($id_akun_kredit);
+                                $id_utang_piutang = validateAndSanitizeInput($id_utang_piutang);
+                                //Validasi Duplikat
+                                $ValidasiDuplikat=mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM transaksi_jenis WHERE nama='$nama'"));
+                                if(!empty($ValidasiDuplikat)){
+                                    echo '<small class="text-danger">Nama/Jenis Transaksi yang digunakan sudah terdaftar!</small>';
                                 }else{
-                                    echo '<small class="text-danger">Terjadi kesalahan pada saat menyimpan data.</small>';
+                                    //Simpan Ke database
+                                    $EntriJenisTransaksi="INSERT INTO transaksi_jenis (
+                                        nama,
+                                        kategori,
+                                        deskripsi,
+                                        id_akun_debet,
+                                        id_akun_kredit,
+                                        id_utang_piutang
+                                    ) VALUES (
+                                        '$nama',
+                                        '$kategori',
+                                        '$deskripsi',
+                                        '$id_akun_debet',
+                                        '$id_akun_kredit',
+                                        '$id_utang_piutang'
+                                    )";
+                                    $InputJenisTransaksi=mysqli_query($Conn, $EntriJenisTransaksi);
+                                    if($InputJenisTransaksi){
+                                        $KategoriLog="Jenis Transaksi";
+                                        $KeteranganLog="Tambah Jenis Transaksi";
+                                        include "../../_Config/InputLog.php";
+                                        echo '<small class="text-success" id="NotifikasiTambahJenisTransaksiBerhasil">Success</small>';
+                                    }else{
+                                        echo '<small class="text-danger">Terjadi kesalahan pada saat menyimpan data.</small>';
+                                    }
                                 }
                             }
                         }

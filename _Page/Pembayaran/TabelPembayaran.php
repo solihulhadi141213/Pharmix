@@ -275,9 +275,9 @@
             // Tentukan Referensi (Ref)
             $ref_text = '-';
             if (!empty($id_transaksi)) {
-                $ref_text = 'Ops: #' . $id_transaksi;
+                $ref_text = $id_transaksi;
             } elseif (!empty($id_jual_beli)) {
-                $ref_text = substr($id_jual_beli, 0, 8) . '...';
+                $ref_text = $id_jual_beli;
             }
 
             // Routing id_transaksi
@@ -292,7 +292,7 @@
             // HTML Row
             $html .= '
                 <tr>
-                    <td class="text-center">
+                    <td>
                         <small class="text-muted">' . $no . '</small>
                     </td>
                     <td>
@@ -317,7 +317,7 @@
                     <td>
                         <small class="text-muted">' . $petugas . '</small>
                     </td>
-                    <td class="text-center">
+                    <td class="">
                         <a class="btn btn-sm btn-secondary btn-floating" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false" title="Opsi">
                             <i class="bi bi-three-dots-vertical"></i>
                         </a>

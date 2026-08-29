@@ -118,6 +118,7 @@ function initSelect2Edit() {
     // AKUN DEBET & KREDIT
     initSelectAkunEdit('#id_akun_debet_edit', 'Pilih akun debet');
     initSelectAkunEdit('#id_akun_kredit_edit', 'Pilih akun kredit');
+    initSelectAkunEdit('#id_utang_piutang_edit', 'Pilih akun Utang Piutang');
 }
 
 function initSelectAkunEdit(selector, placeholder) {
@@ -199,11 +200,32 @@ $(document).ready(function() {
         $('#nama').trigger('focus');
     });
 
+    // Saat kategori_transaksi diubah
+    $(document).on('change', '#kategori_transaksi', function () {
+        var kategori = $(this).val();
+        if (kategori === 'Pengeluaran') {
+            $('#label_utang_piutang').html(
+                '<small>Akun Utang</small>'
+            );
+        } else if (kategori === 'Pemasukan') {
+            $('#label_utang_piutang').html(
+                '<small>Akun Piutang</small>'
+            );
+        } else {
+            $('#label_utang_piutang').html(
+                '<small>Akun Utang/Piutang</small>'
+            );
+        }
+    });
+
     // AKUN DEBET
     initSelectAkunPerkiraan('#id_akun_debet', 'Pilih akun debet');
 
     // AKUN KREDIT
     initSelectAkunPerkiraan('#id_akun_kredit', 'Pilih akun kredit');
+
+    // AKUN UTANG PIUTANG
+    initSelectAkunPerkiraan('#id_utang_piutang', 'Pilih akun Utang/Piutang');
 
     // Select 2 'kategori'
     $('#kategori').select2({

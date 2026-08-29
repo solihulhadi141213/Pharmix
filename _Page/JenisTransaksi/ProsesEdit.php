@@ -25,61 +25,55 @@
                         if(empty($_POST['id_akun_kredit'])){
                             echo '<small class="text-danger">Pengaturan Akun Kredit Tidak Boleh Kosong!</small>';
                         }else{
-                            if(empty($_POST['id_transaksi_jenis'])){
-                                echo '<small class="text-danger">ID Jenis Transaksi Tidak Boleh Kosong!</small>';
+                            if(empty($_POST['id_utang_piutang'])){
+                                echo '<small class="text-danger">Pengaturan Akun Kredit Tidak Boleh Kosong!</small>';
                             }else{
-                                $nama=$_POST['nama'];
-                                $kategori=$_POST['kategori'];
-                                $deskripsi=$_POST['deskripsi'];
-                                $id_akun_debet=$_POST['id_akun_debet'];
-                                $id_akun_kredit=$_POST['id_akun_kredit'];
-                                $id_transaksi_jenis=$_POST['id_transaksi_jenis'];
-                                //Membersihhkan Variabel
-                                $nama=validateAndSanitizeInput($nama);
-                                $kategori=validateAndSanitizeInput($kategori);
-                                $deskripsi=validateAndSanitizeInput($deskripsi);
-                                $id_akun_debet=validateAndSanitizeInput($id_akun_debet);
-                                $id_akun_kredit=validateAndSanitizeInput($id_akun_kredit);
-                                $id_transaksi_jenis=validateAndSanitizeInput($id_transaksi_jenis);
-                                //Buka Data Lama
-                                $NamaLama=GetDetailData($Conn,'transaksi_jenis','id_transaksi_jenis',$id_transaksi_jenis,'nama');
-                                //Validasi Duplikat
-                                if($NamaLama==$nama){
-                                    $ValidasiDuplikat=0;
+                                if(empty($_POST['id_transaksi_jenis'])){
+                                    echo '<small class="text-danger">ID Jenis Transaksi Tidak Boleh Kosong!</small>';
                                 }else{
-                                    $ValidasiDuplikat=mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM transaksi_jenis WHERE nama='$nama'"));
-                                }
-                                if(!empty($ValidasiDuplikat)){
-                                    echo '<small class="text-danger">Nama/Jenis Transaksi yang digunakan sudah terdaftar!</small>';
-                                }else{
-                                    //Simpan Ke database
-                                    $EntriJenisTransaksi="INSERT INTO transaksi_jenis (
-                                        nama,
-                                        kategori,
-                                        deskripsi,
-                                        id_akun_debet,
-                                        id_akun_kredit
-                                    ) VALUES (
-                                        '$nama',
-                                        '$kategori',
-                                        '$deskripsi',
-                                        '$id_akun_debet',
-                                        '$id_akun_kredit'
-                                    )";
-                                    $Update = mysqli_query($Conn,"UPDATE transaksi_jenis SET 
-                                        nama='$nama',
-                                        kategori='$kategori',
-                                        deskripsi='$deskripsi',
-                                        id_akun_debet='$id_akun_debet',
-                                        id_akun_kredit='$id_akun_kredit'
-                                    WHERE id_transaksi_jenis='$id_transaksi_jenis'") or die(mysqli_error($Conn)); 
-                                    if($Update){
-                                        $KategoriLog="Jenis Transaksi";
-                                        $KeteranganLog="Edit Jenis Transaksi";
-                                        include "../../_Config/InputLog.php";
-                                        echo '<small class="text-success" id="NotifiasiEditBerhasil">Success</small>';
+                                    $nama=$_POST['nama'];
+                                    $kategori=$_POST['kategori'];
+                                    $deskripsi=$_POST['deskripsi'];
+                                    $id_akun_debet=$_POST['id_akun_debet'];
+                                    $id_akun_kredit=$_POST['id_akun_kredit'];
+                                    $id_utang_piutang=$_POST['id_utang_piutang'];
+                                    $id_transaksi_jenis=$_POST['id_transaksi_jenis'];
+                                    //Membersihhkan Variabel
+                                    $nama=validateAndSanitizeInput($nama);
+                                    $kategori=validateAndSanitizeInput($kategori);
+                                    $deskripsi=validateAndSanitizeInput($deskripsi);
+                                    $id_akun_debet=validateAndSanitizeInput($id_akun_debet);
+                                    $id_akun_kredit=validateAndSanitizeInput($id_akun_kredit);
+                                    $id_utang_piutang=validateAndSanitizeInput($id_utang_piutang);
+                                    $id_transaksi_jenis=validateAndSanitizeInput($id_transaksi_jenis);
+                                    //Buka Data Lama
+                                    $NamaLama=GetDetailData($Conn,'transaksi_jenis','id_transaksi_jenis',$id_transaksi_jenis,'nama');
+                                    //Validasi Duplikat
+                                    if($NamaLama==$nama){
+                                        $ValidasiDuplikat=0;
                                     }else{
-                                        echo '<small class="text-danger">Terjadi kesalahan pada saat menyimpan data.</small>';
+                                        $ValidasiDuplikat=mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM transaksi_jenis WHERE nama='$nama'"));
+                                    }
+                                    if(!empty($ValidasiDuplikat)){
+                                        echo '<small class="text-danger">Nama/Jenis Transaksi yang digunakan sudah terdaftar!</small>';
+                                    }else{
+                                        //Simpan Ke database
+                                        $Update = mysqli_query($Conn,"UPDATE transaksi_jenis SET 
+                                            nama='$nama',
+                                            kategori='$kategori',
+                                            deskripsi='$deskripsi',
+                                            id_akun_debet='$id_akun_debet',
+                                            id_akun_kredit='$id_akun_kredit',
+                                            id_utang_piutang='$id_utang_piutang'
+                                        WHERE id_transaksi_jenis='$id_transaksi_jenis'") or die(mysqli_error($Conn)); 
+                                        if($Update){
+                                            $KategoriLog="Jenis Transaksi";
+                                            $KeteranganLog="Edit Jenis Transaksi";
+                                            include "../../_Config/InputLog.php";
+                                            echo '<small class="text-success" id="NotifiasiEditBerhasil">Success</small>';
+                                        }else{
+                                            echo '<small class="text-danger">Terjadi kesalahan pada saat menyimpan data.</small>';
+                                        }
                                     }
                                 }
                             }
