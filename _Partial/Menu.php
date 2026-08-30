@@ -229,7 +229,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="index.php?Page=SettingEmail" class="<?php if($PageMenu=="SettingEmail"){echo "active";} ?>">
+                    <a href="index.php?Page=SettingEmailGateway" class="<?php if($PageMenu=="SettingEmail"){echo "active";} ?>">
                         <i class="bi bi-circle"></i><span>Email Gateway</span>
                     </a>
                 </li> 

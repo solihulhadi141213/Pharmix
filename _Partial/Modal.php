@@ -25,7 +25,6 @@
             "SettingGeneral"        => "_Page/SettingGeneral/ModalSettingGeneral.php",
             "AutoJurnal"            => "_Page/AutoJurnal/ModalAutoJurnal.php",
             "Dokumentasi"           => "_Page/Dokumentasi/ModalDokumentasi.php",
-            "SettingEmail"          => "_Page/SettingService/ModalSettingService.php",
             "Supplier"              => "_Page/Supplier/ModalSupplier.php",
             "Pembayaran"            => "_Page/Pembayaran/ModalPembayaran.php",
             "Aktivitas"             => "_Page/Aktivitas/ModalAktivitas.php",

@@ -32,7 +32,7 @@
             "ApiDoc"                => "_Page/ApiDoc/ApiDoc.js",
             "AutoJurnal"            => "_Page/AutoJurnal/AutoJurnal.js",
             "Dokumentasi"           => "_Page/Dokumentasi/Dokumentasi.js",
-            "SettingEmail"          => "_Page/SettingService/SettingService.js",
+            "SettingEmailGateway"          => "_Page/SettingEmailGateway/SettingEmailGateway.js",
             "Pembayaran"            => "_Page/Pembayaran/Pembayaran.js",
             "Aktivitas"             => "_Page/Aktivitas/Aktivitas.js",
             "BukuBesar"             => "_Page/BukuBesar/BukuBesar.js",

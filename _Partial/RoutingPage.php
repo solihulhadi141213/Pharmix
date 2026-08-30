@@ -27,7 +27,7 @@
             "AutoJurnal"            => "_Page/AutoJurnal/AutoJurnal.php",
             "MyProfile"             => "_Page/MyProfile/MyProfile.php",
             "Dokumentasi"           => "_Page/Dokumentasi/Dokumentasi.php",
-            "SettingEmail"          => "_Page/SettingService/SettingService.php",
+            "SettingEmailGateway"          => "_Page/SettingEmailGateway/SettingEmailGateway.php",
             "Aktivitas"             => "_Page/Aktivitas/Aktivitas.php",
             "AkunPerkiraan"         => "_Page/AkunPerkiraan/AkunPerkiraan.php",
             "Jurnal"                => "_Page/Jurnal/Jurnal.php",
