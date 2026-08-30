@@ -264,11 +264,14 @@
                             //Buka Data Transaksi Sebelumnya Untuk Mengetahui Cash
                             $cash=GetDetailData($Conn, 'transaksi_jual_beli', 'id_transaksi_jual_beli', $id_transaksi_jual_beli, 'cash');
 
-                            //Apabila Jumlah Cash Kurang maka Kredit
-                            if($cash<$jumlah_subtotal){
-                                $status="Kredit";
+                            // Status mengikuti kategori dan pembayaran efektif.
+                            $cash = max(0, (int) $cash);
+                            $pembayaran = min($cash, (int) $jumlah_subtotal);
+                            $kembalian = max(0, $cash - (int) $jumlah_subtotal);
+                            if($pembayaran < $jumlah_subtotal){
+                                $status = ($kategori_transaksi === "Retur Penjualan") ? "Utang" : "Piutang";
                             }else{
-                                $status="Lunas";
+                                $status = "Lunas";
                             }
                             //Update Transaksi
                             $UpdateTransaksi = mysqli_query($Conn,"UPDATE transaksi_jual_beli SET 
@@ -276,12 +279,21 @@
                                 diskon='$jumlah_diskon',
                                 ppn='$jumlah_ppn',
                                 total='$jumlah_subtotal',
+                                cash='$pembayaran',
+                                kembalian='$kembalian',
                                 status='$status',
                                 update_by_id='$SessionIdAkses', 
                                 update_by_name='$SessionNama', 
                                 update_at='$now' 
                             WHERE id_transaksi_jual_beli='$id_transaksi_jual_beli'") or die(mysqli_error($Conn)); 
                             if($UpdateTransaksi){
+                                mysqli_query($Conn, "DELETE FROM jurnal WHERE id_transaksi_jual_beli='" . mysqli_real_escape_string($Conn, $id_transaksi_jual_beli) . "'");
+                                $tanggal_jurnal = GetDetailData($Conn, 'transaksi_jual_beli', 'id_transaksi_jual_beli', $id_transaksi_jual_beli, 'tanggal');
+                                $auto_jurnal = AutoJurnalJualBeli($Conn, $kategori_transaksi, date('Y-m-d', strtotime($tanggal_jurnal)), $id_transaksi_jual_beli, $jumlah_subtotal, $pembayaran, $status);
+                                if($auto_jurnal !== "Success"){
+                                    echo '<div class="alert alert-danger">'.$auto_jurnal.'</div>';
+                                    exit;
+                                }
                                 echo '
                                     <div id="NotifikasiTambahBarangEditBerhasil" class="alert alert-success">Success</div>
                                 ';

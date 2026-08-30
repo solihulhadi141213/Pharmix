@@ -70,7 +70,7 @@
 
     // Menentukan 'id_transaksi_pembayaran' berbasis String (UUID/Custom String 36 char)
     // Menggunakan fungsi bawaan/helper Anda untuk menghasilkan string unik
-    $randome                   = GenerateKodeBarang(6);
+    $randome                   = GenerateKodeTransaksi();
     $id_transaksi_pembayaran   = "PBY-$randome";
 
     // 3. Mulai Transaksi Database (ACID)

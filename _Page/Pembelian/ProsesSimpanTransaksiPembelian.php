@@ -29,7 +29,6 @@
             'kategori_transaksi'    => "Kategori Transaksi Tidak Boleh Kosong!",
             'tanggal'               => "Tanggal Transaksi Tidak Boleh Kosong!",
             'jam'                   => "Jam Transaksi Tidak Boleh Kosong!",
-            'status'                => "Status Transaksi Tidak Boleh Kosong!",
         ];
 
         foreach ($requiredFields as $field => $errorMessage) {
@@ -47,7 +46,16 @@
         $tanggal            = validateAndSanitizeInput($_POST['tanggal']);
         $jam                = validateAndSanitizeInput($_POST['jam']);
         $tanggal            = "$tanggal $jam";
-        $status             = validateAndSanitizeInput($_POST['status']);
+        // Status dihitung ulang di server berdasarkan kategori dan pembayaran.
+
+        if (!in_array($kategori_transaksi, ['Pembelian', 'Retur Pembelian'], true)) {
+            $response = [
+                "status" => "Error",
+                "message" => "Kategori transaksi tidak valid."
+            ];
+            echo json_encode($response);
+            exit;
+        }
 
         //Variabel Lain Yang Tidak Wajib
         if(empty($_POST['put_id_supplier_for_add_pembelian'])){
@@ -64,12 +72,11 @@
         }
         $total     = empty($_POST['total']) ? 0 : validateAndSanitizeInput($_POST['total']);
         $cash      = empty($_POST['cash']) ? 0 : validateAndSanitizeInput($_POST['cash']);
-        $kembalian = empty($_POST['kembalian']) ? 0 : validateAndSanitizeInput($_POST['kembalian']);
+        $kembalian = 0;
 
         //Hapus Titik Pada Nilai Angka Rupiah
-        $total = str_replace('.', '', $total);
-        $cash = str_replace('.', '', $cash);
-        $kembalian = str_replace('.', '', $kembalian);
+        $total = (int) preg_replace('/[^0-9]/', '', (string) $total);
+        $cash = (int) preg_replace('/[^0-9]/', '', (string) $cash);
 
         //Validasi Supplier
         if($validasi_supplier !== "Valid"){
@@ -98,10 +105,11 @@
 
                 // Query untuk menghitung total transaksi, total PPN, dan total diskon
                 $query_sum = "
-                SELECT 
+                SELECT
                     SUM(qty * harga) AS total_transaksi, 
                     SUM(ppn) AS total_ppn, 
-                    SUM(diskon) AS total_diskon 
+                    SUM(diskon) AS total_diskon,
+                    SUM(subtotal) AS total_tagihan
                 FROM transaksi_bulk 
                 WHERE kategori = ? AND id_akses = ?";
 
@@ -114,13 +122,32 @@
                 $total_transaksi = $row_sum['total_transaksi'] ?? 0;
                 $total_ppn       = $row_sum['total_ppn'] ?? 0;
                 $total_diskon    = $row_sum['total_diskon'] ?? 0;
+                $total = (int) round((float) ($row_sum['total_tagihan'] ?? 0));
+                if ($total <= 0) {
+                    mysqli_rollback($Conn);
+                    $response = [
+                        "status" => "Error",
+                        "message" => "Total transaksi tidak valid."
+                    ];
+                    echo json_encode($response);
+                    exit;
+                }
+                $cash_input = max(0, $cash);
+                $cash = min($cash_input, $total);
+                $kembalian = max(0, $cash_input - $total);
+                if ($cash === $total) {
+                    $status = "Lunas";
+                } elseif ($kategori_transaksi === "Pembelian") {
+                    $status = "Utang";
+                } else {
+                    $status = "Piutang";
+                }
                 $stmt_sum->close();
 
                 //Buat ID Transaksi (Perbaikan bug variabel $$kode_trans)
                 $kode_trans    = "PMB";
-                $randome_code  = GenerateKodeBarang(6);
-                $milliseconds  = round(microtime(true) * 1000);
-                $id_transaksi_jual_beli = "$kode_trans-$milliseconds-$randome_code";
+                $randome_code  = GenerateKodeTransaksi();
+                $id_transaksi_jual_beli = "$kode_trans-$randome_code";
                 $id_anggota    = null;
 
                 //Insert Ke Database transaksi_jual_beli

@@ -29,7 +29,6 @@
             'kategori_transaksi'    => "Kategori Transaksi Tidak Boleh Kosong!",
             'tanggal'               => "Tanggal Transaksi Tidak Boleh Kosong!",
             'jam'                   => "Jam Transaksi Tidak Boleh Kosong!",
-            'status'                => "Status Transaksi Tidak Boleh Kosong!",
         ];
 
         foreach ($requiredFields as $field => $errorMessage) {
@@ -47,7 +46,15 @@
         $tanggal            = validateAndSanitizeInput($_POST['tanggal']);
         $jam                = validateAndSanitizeInput($_POST['jam']);
         $tanggal            = "$tanggal $jam";
-        $status             = validateAndSanitizeInput($_POST['status']);
+
+        if (!in_array($kategori_transaksi, ['Penjualan', 'Retur Penjualan'], true)) {
+            $response = [
+                "status" => "Error",
+                "message" => "Kategori transaksi tidak valid."
+            ];
+            echo json_encode($response);
+            exit;
+        }
 
         //Variabel Lain Yang Tidak Wajib
         if(empty($_POST['put_id_anggota_for_add_penjualan'])){
@@ -68,12 +75,11 @@
         }
         $total     = empty($_POST['total']) ? 0 : validateAndSanitizeInput($_POST['total']);
         $cash      = empty($_POST['cash']) ? 0 : validateAndSanitizeInput($_POST['cash']);
-        $kembalian = empty($_POST['kembalian']) ? 0 : validateAndSanitizeInput($_POST['kembalian']);
+        $kembalian = 0;
         
         //Hapus Titik Pada Nilai Angka Rupiah
-        $total = str_replace('.', '', $total);
-        $cash = str_replace('.', '', $cash);
-        $kembalian = str_replace('.', '', $kembalian);
+        $total = (int) preg_replace('/[^0-9]/', '', (string) $total);
+        $cash = (int) preg_replace('/[^0-9]/', '', (string) $cash);
 
         //Validasi Anggota
         if($validasi_anggota!=="Valid"){
@@ -105,7 +111,8 @@
                 SELECT 
                     SUM(qty * harga) AS total_transaksi, 
                     SUM(ppn) AS total_ppn, 
-                    SUM(diskon) AS total_diskon 
+                    SUM(diskon) AS total_diskon,
+                    SUM(subtotal) AS total_tagihan
                 FROM transaksi_bulk 
                 WHERE kategori = ? AND id_akses = ?";
 
@@ -118,14 +125,34 @@
                 $total_transaksi = $row_sum['total_transaksi'] ?? 0;
                 $total_ppn       = $row_sum['total_ppn'] ?? 0;
                 $total_diskon    = $row_sum['total_diskon'] ?? 0;
+                $total = (int) round((float) ($row_sum['total_tagihan'] ?? 0));
+                if ($total <= 0) {
+                    mysqli_rollback($Conn);
+                    $response = [
+                        "status" => "Error",
+                        "message" => "Total transaksi tidak valid."
+                    ];
+                    echo json_encode($response);
+                    exit;
+                }
+                $cash_input = max(0, $cash);
+                $cash = min($cash_input, $total);
+                $kembalian = max(0, $cash_input - $total);
+                if ($cash === $total) {
+                    $status = "Lunas";
+                } elseif ($kategori_transaksi === "Penjualan") {
+                    $status = "Piutang";
+                } else {
+                    $status = "Utang";
+                }
                 $stmt_sum->close();
 
                 //Buat ID Transaksi
                 $kode_trans             = "PNJ";
                 $time_sekarang          = date('ymdHis');
-                $randome_code           = GenerateKodeBarang(6);
+                $randome_code           = GenerateKodeTransaksi();
                 $milliseconds           = round(microtime(true) * 1000);
-                $id_transaksi_jual_beli = "$kode_trans-$milliseconds-$randome_code";
+                $id_transaksi_jual_beli = "$kode_trans-$randome_code";
                 $id_supplier            = null;
 
                 //Insert Ke Database transaksi_jual_beli
@@ -236,22 +263,8 @@
                         if ($transaction_success) {
                             $tanggal_jurnal = date('Y-m-d', strtotime($tanggal));
                             
-                            // Hitung HPP Penjualan
-                            $query_hpp = "SELECT SUM(hpp * qty) AS total_hpp FROM transaksi_jual_beli_rincian WHERE id_transaksi_jual_beli = ?";
-                            $stmt_hpp = $Conn->prepare($query_hpp);
-                            $stmt_hpp->bind_param("s", $id_transaksi_jual_beli);
-                            $stmt_hpp->execute();
-                            $result_hpp = $stmt_hpp->get_result();
-                            $row_hpp = $result_hpp->fetch_assoc();
-                            $total_hpp = $row_hpp['total_hpp'] ?? 0;
-                            $stmt_hpp->close();
-                            
                             // Simpan Auto Jurnal Berdasarkan Kategori Transaksi
-                            if($kategori_transaksi == "Penjualan"){
-                                $auto_jurnal = AutoJurnalPenjualan($Conn, $kategori_transaksi, $tanggal_jurnal, $id_transaksi_jual_beli, $total, $cash, $total_hpp, $status);
-                            } else {
-                                $auto_jurnal = AutoJurnalReturPenjualan($Conn, $kategori_transaksi, $tanggal_jurnal, $id_transaksi_jual_beli, $total, $cash, $total_hpp, $status);
-                            }
+                            $auto_jurnal = AutoJurnalJualBeli($Conn, $kategori_transaksi, $tanggal_jurnal, $id_transaksi_jual_beli, $total, $cash, $status);
                             
                             if($auto_jurnal !== "Success"){
                                 $transaction_success = false;

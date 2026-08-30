@@ -1,105 +1,110 @@
 <?php
-    // Koneksi
-    include "../../_Config/Connection.php";
-    include "../../_Config/GlobalFunction.php";
-    include "../../_Config/Session.php";
-    include "../../_Config/FungsiAkses.php";
+include "../../_Config/Connection.php";
+include "../../_Config/GlobalFunction.php";
+include "../../_Config/Session.php";
+include "../../_Config/FungsiAkses.php";
 
-    // Time Zone
-    date_default_timezone_set('Asia/Jakarta');
+date_default_timezone_set('Asia/Jakarta');
+header('Content-Type: application/json; charset=utf-8');
 
-    // Time Now Tmp
-    $now = date('Y-m-d H:i:s');
+function penjualanEditResponse($status, $message, $id = '', $mode = '')
+{
+    echo json_encode([
+        'status' => $status,
+        'message' => $message,
+        'id_transaksi_jual_beli' => $id,
+        'mode' => $mode
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
-    // Inisialisasi respons default
-    $response = [
-        "status" => "Error",
-        "message" => "Belum ada proses yang dilakukan pada sistem."
-    ];
+if (empty($SessionIdAkses)) {
+    penjualanEditResponse('Error', 'Sesi Akses Sudah Berakhir, Silahkan Login Ulang');
+}
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    penjualanEditResponse('Error', 'Metode request tidak valid.');
+}
 
-    // Validasi sesi login
-    if (empty($SessionIdAkses)) {
-        $response = [
-            "status" => "Error",
-            "message" => "Sesi Akses Sudah Berakhir, Silahkan Login Ulang"
-        ];
+$idTransaksi = trim((string) ($_POST['id_transaksi_jual_beli'] ?? ''));
+$mode = trim((string) ($_POST['mode'] ?? ''));
+$tanggal = trim((string) ($_POST['tanggal'] ?? ''));
+$jam = trim((string) ($_POST['jam'] ?? ''));
+$cashInput = preg_replace('/[^0-9]/', '', (string) ($_POST['cash'] ?? ''));
+$cashInput = $cashInput === '' ? 0 : (int) $cashInput;
+
+if ($idTransaksi === '') penjualanEditResponse('Error', 'ID Transaksi Tidak Boleh Kosong!');
+if ($tanggal === '' || $jam === '') penjualanEditResponse('Error', 'Tanggal dan jam transaksi wajib diisi.');
+$dateObject = DateTime::createFromFormat('Y-m-d H:i', "$tanggal $jam")
+    ?: DateTime::createFromFormat('Y-m-d H:i:s', "$tanggal $jam");
+if (!$dateObject) penjualanEditResponse('Error', 'Format tanggal atau jam tidak valid.');
+$tanggalTransaksi = $dateObject->format('Y-m-d H:i:s');
+$tanggalJurnal = $dateObject->format('Y-m-d');
+
+mysqli_begin_transaction($Conn);
+try {
+    $stmt = mysqli_prepare($Conn, "SELECT kategori, total FROM transaksi_jual_beli WHERE id_transaksi_jual_beli = ? LIMIT 1");
+    if (!$stmt) throw new Exception('Gagal menyiapkan query transaksi.');
+    mysqli_stmt_bind_param($stmt, 's', $idTransaksi);
+    mysqli_stmt_execute($stmt);
+    $data = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+    mysqli_stmt_close($stmt);
+
+    if (!$data) throw new Exception('Transaksi tidak ditemukan.');
+    $kategori = $data['kategori'];
+    if (!in_array($kategori, ['Penjualan', 'Retur Penjualan'], true)) {
+        throw new Exception('Kategori transaksi tidak valid.');
+    }
+    $total = (int) round((float) $data['total']);
+    if ($total <= 0) throw new Exception('Total transaksi tidak valid.');
+
+    // Pembayaran efektif dibatasi sebesar tagihan, sisanya menjadi kembalian.
+    $pembayaran = min(max(0, $cashInput), $total);
+    $kembalian = max(0, $cashInput - $total);
+    if ($pembayaran === $total) {
+        $status = 'Lunas';
+    } elseif ($kategori === 'Penjualan') {
+        $status = 'Piutang';
     } else {
-        // Validasi Data Tidak Boleh Kosong
-        $requiredFields = [
-            'id_transaksi_jual_beli'    => "ID Transaksi Penjualan Tidak Boleh Kosong!",
-            'mode'                      => "Mode Form Tidak Boleh Kosong!",
-            'tanggal'                   => "Tanggal Transaksi Tidak Boleh Kosong!",
-            'jam'                       => "Jam Transaksi Tidak Boleh Kosong!",
-            'status'                    => "Status Transaksi Tidak Boleh Kosong!"
-        ];
-
-        foreach ($requiredFields as $field => $errorMessage) {
-            if (empty($_POST[$field])) {
-                $response = [
-                    "status" => "Error",
-                    "message" => $errorMessage
-                ];
-                echo json_encode($response);
-                exit;
-            }
-        }
-        // Buat Variabel
-        $id_transaksi_jual_beli = validateAndSanitizeInput($_POST['id_transaksi_jual_beli']);
-        $mode = validateAndSanitizeInput($_POST['mode']);
-        $tanggal = validateAndSanitizeInput($_POST['tanggal']);
-        $jam = validateAndSanitizeInput($_POST['jam']);
-        $status = validateAndSanitizeInput($_POST['status']);
-        $tanggal="$tanggal $jam";
-
-        //Buat Variabel Data Yang Tidak Wajib
-        if(empty($_POST['cash'])){
-            $cash=0;
-        }else{
-            $cash=$_POST['cash'];
-        }
-        if(empty($_POST['kembalian'])){
-            $kembalian=0;
-        }else{
-            $kembalian=$_POST['kembalian'];
-        }
-        $cash = (int) str_replace(".", "", $cash);
-        $kembalian = (int) str_replace(".", "", $kembalian);
-        //Proses Update
-        $UpdateTransaksi = mysqli_query($Conn,"UPDATE transaksi_jual_beli SET 
-            tanggal='$tanggal',
-            cash='$cash',
-            kembalian='$kembalian',
-            status='$status',
-            update_by_id='$SessionIdAkses', 
-            update_by_name='$SessionNama', 
-            update_at='$now' 
-        WHERE id_transaksi_jual_beli='$id_transaksi_jual_beli'") or die(mysqli_error($Conn)); 
-        if($UpdateTransaksi){
-            //Apabila Berhasil Simpan Log
-            $kategori_log="Transaksi Penjualan";
-            $deskripsi_log="Edit Transaksi Penjualan";
-            $InputLog=addLog($Conn,$SessionIdAkses,$now,$kategori_log,$deskripsi_log);
-            if($InputLog=="Success"){
-                $response = [
-                    "status" => "Success",
-                    "message" => "Edit Transaksi Berhasil!",
-                    "id_transaksi_jual_beli" => $id_transaksi_jual_beli,
-                    "mode" => $mode,
-                ];
-            }else{
-                $response = [
-                    "status" => "Error",
-                    "message" => "Terjadi kesalahan pada saat menyimpan log aktivitas"
-                ];
-            }
-        }else{
-            $response = [
-                "status" => "Error",
-                "message" => "Terjadi kesalahan pada saat update data ke database"
-            ];
-        }
+        $status = 'Utang';
     }
 
-    // Output response
-    echo json_encode($response);
-?>
+    $now = date('Y-m-d H:i:s');
+    $stmt = mysqli_prepare($Conn, "
+        UPDATE transaksi_jual_beli
+        SET tanggal = ?, cash = ?, kembalian = ?, status = ?,
+            update_by_id = ?, update_by_name = ?, update_at = ?
+        WHERE id_transaksi_jual_beli = ?
+        LIMIT 1
+    ");
+    if (!$stmt) throw new Exception('Gagal menyiapkan update transaksi.');
+    mysqli_stmt_bind_param($stmt, 'siisisss', $tanggalTransaksi, $pembayaran, $kembalian, $status, $SessionIdAkses, $SessionNama, $now, $idTransaksi);
+    if (!mysqli_stmt_execute($stmt)) {
+        $error = mysqli_stmt_error($stmt);
+        mysqli_stmt_close($stmt);
+        throw new Exception('Gagal memperbarui transaksi: ' . $error);
+    }
+    mysqli_stmt_close($stmt);
+
+    $stmt = mysqli_prepare($Conn, "DELETE FROM jurnal WHERE id_transaksi_jual_beli = ?");
+    if (!$stmt) throw new Exception('Gagal menyiapkan penghapusan jurnal lama.');
+    mysqli_stmt_bind_param($stmt, 's', $idTransaksi);
+    if (!mysqli_stmt_execute($stmt)) {
+        $error = mysqli_stmt_error($stmt);
+        mysqli_stmt_close($stmt);
+        throw new Exception('Gagal menghapus jurnal lama: ' . $error);
+    }
+    mysqli_stmt_close($stmt);
+
+    $autoJurnal = AutoJurnalJualBeli($Conn, $kategori, $tanggalJurnal, $idTransaksi, $total, $pembayaran, $status);
+    if ($autoJurnal !== 'Success') throw new Exception($autoJurnal);
+
+    if (addLog($Conn, $SessionIdAkses, $now, 'Transaksi Penjualan', 'Edit Transaksi Penjualan') !== 'Success') {
+        throw new Exception('Terjadi kesalahan pada saat menyimpan log aktivitas.');
+    }
+
+    mysqli_commit($Conn);
+    penjualanEditResponse('Success', 'Edit Transaksi Berhasil!', $idTransaksi, $mode);
+} catch (Throwable $e) {
+    mysqli_rollback($Conn);
+    penjualanEditResponse('Error', $e->getMessage(), $idTransaksi, $mode);
+}

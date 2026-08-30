@@ -46,7 +46,7 @@
     $id                      = trim($id);
     $kategori                = trim($kategori);
 
-    if (empty($id_transaksi_pembayaran) || !ctype_digit($id_transaksi_pembayaran)) {
+    if (empty($id_transaksi_pembayaran)) {
         $response["message"] = "ID Pembayaran tidak valid.";
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
         exit;
@@ -76,7 +76,7 @@
         if (!$stmt_cek_byr) {
             throw new Exception("Gagal mempersiapkan query cek pembayaran.");
         }
-        mysqli_stmt_bind_param($stmt_cek_byr, "i", $id_transaksi_pembayaran);
+        mysqli_stmt_bind_param($stmt_cek_byr, "s", $id_transaksi_pembayaran);
         mysqli_stmt_execute($stmt_cek_byr);
         $res_cek_byr = mysqli_stmt_get_result($stmt_cek_byr);
         $data_byr = mysqli_fetch_assoc($res_cek_byr);
@@ -113,7 +113,7 @@
             // Hitung akumulasi pembayaran lain (kecuali data pembayaran yang akan dihapus ini)
             $sql_akum = "SELECT SUM(jumlah) AS total_lain FROM transaksi_pembayaran WHERE id_transaksi_jual_beli = ? AND id_transaksi_pembayaran != ?";
             $stmt_akum = mysqli_prepare($Conn, $sql_akum);
-            mysqli_stmt_bind_param($stmt_akum, "si", $id_induk, $id_transaksi_pembayaran);
+            mysqli_stmt_bind_param($stmt_akum, "ss", $id_induk, $id_transaksi_pembayaran);
             mysqli_stmt_execute($stmt_akum);
             $res_akum = mysqli_stmt_get_result($stmt_akum);
             $data_akum = mysqli_fetch_assoc($res_akum);
@@ -154,7 +154,7 @@
             if (!$stmt_induk) {
                 throw new Exception("Gagal menyiapkan query induk operasional.");
             }
-            mysqli_stmt_bind_param($stmt_induk, "i", $id_induk);
+            mysqli_stmt_bind_param($stmt_induk, "s", $id_induk);
             mysqli_stmt_execute($stmt_induk);
             $res_induk = mysqli_stmt_get_result($stmt_induk);
             $data_induk = mysqli_fetch_assoc($res_induk);
@@ -171,7 +171,7 @@
             // Hitung akumulasi pembayaran lain
             $sql_akum = "SELECT SUM(jumlah) AS total_lain FROM transaksi_pembayaran WHERE id_transaksi = ? AND id_transaksi_pembayaran != ?";
             $stmt_akum = mysqli_prepare($Conn, $sql_akum);
-            mysqli_stmt_bind_param($stmt_akum, "ii", $id_induk, $id_transaksi_pembayaran);
+            mysqli_stmt_bind_param($stmt_akum, "ss", $id_induk, $id_transaksi_pembayaran);
             mysqli_stmt_execute($stmt_akum);
             $res_akum = mysqli_stmt_get_result($stmt_akum);
             $data_akum = mysqli_fetch_assoc($res_akum);
@@ -194,7 +194,7 @@
             // Update status tabel transaksi
             $sql_up_induk = "UPDATE transaksi SET status = ? WHERE id_transaksi = ?";
             $stmt_up_induk = mysqli_prepare($Conn, $sql_up_induk);
-            mysqli_stmt_bind_param($stmt_up_induk, "si", $status_baru, $id_induk);
+            mysqli_stmt_bind_param($stmt_up_induk, "ss", $status_baru, $id_induk);
             if (!mysqli_stmt_execute($stmt_up_induk)) {
                 throw new Exception("Gagal memperbarui status transaksi operasional.");
             }
@@ -207,7 +207,7 @@
         if (!$stmt_jurnal) {
             throw new Exception("Gagal mempersiapkan query hapus jurnal.");
         }
-        mysqli_stmt_bind_param($stmt_jurnal, "i", $id_transaksi_pembayaran);
+        mysqli_stmt_bind_param($stmt_jurnal, "s", $id_transaksi_pembayaran);
         if (!mysqli_stmt_execute($stmt_jurnal)) {
             throw new Exception("Gagal menghapus data jurnal terkait.");
         }
@@ -219,7 +219,7 @@
         if (!$stmt_del_byr) {
             throw new Exception("Gagal mempersiapkan query hapus pembayaran.");
         }
-        mysqli_stmt_bind_param($stmt_del_byr, "i", $id_transaksi_pembayaran);
+        mysqli_stmt_bind_param($stmt_del_byr, "s", $id_transaksi_pembayaran);
         if (!mysqli_stmt_execute($stmt_del_byr)) {
             throw new Exception("Gagal menghapus data pembayaran.");
         }

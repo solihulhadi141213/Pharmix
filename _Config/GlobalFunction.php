@@ -9,7 +9,18 @@
         return $captcha;
     }
 
-    
+    // Berikut ini adalah function untuk menentukan digit kode transaksi
+    function GenerateKodeTransaksi(){
+        $length = 6;
+        $kode_transaksi = "";
+        $codeAlphabet= "0123456789";
+        $max = strlen($codeAlphabet); // edited
+        
+        for ($i=0; $i < $length; $i++) {
+            $kode_transaksi .= $codeAlphabet[random_int(0, $max-1)];
+        }
+        return $kode_transaksi;
+    }
     function GenerateKodeBarang($length){
         $token = "";
         $codeAlphabet= "0123456789";
@@ -611,16 +622,10 @@
     //$Conn : Variabel Koneksi
     //$kategori : Kategori Transaksi (Penjuelan, Retur Penjualan, Pembelian dan Retur Ppembelian)
     function AutoJurnalJualBeli($Conn, $kategori, $tanggal, $id_transaksi_jual_beli, $tagihan, $pembayaran, $status){
-        //Routing Berdasarkan Kategori
-        if($kategori=="Penjualan" || $kategori=="Retur Penjualan"){
-            
-            //Tetapkan Kategori Auto Jurnal Yang Digunakan
-            $kategori_auto_jurnal="Penjualan";
-
-        }else{
-
-            //Tetapkan Kategori Auto Jurnal Yang Digunakan
-            $kategori_auto_jurnal="Pembelian";
+        // Setiap kategori memakai konfigurasi dengan kategori yang sama.
+        $kategori_auto_jurnal = $kategori;
+        if (!in_array($kategori_auto_jurnal, ['Penjualan', 'Pembelian', 'Retur Penjualan', 'Retur Pembelian'], true)) {
+            return "Kategori transaksi tidak valid untuk auto jurnal.";
         }
 
         //Buka Setting Auto Jurnal
@@ -653,8 +658,6 @@
                     $id_autojurnal_jual_beli=$Data['id_autojurnal_jual_beli'];
                     $akun_debet =$Data['debet'];
                     $akun_kredit =$Data['kredit'];
-                    $akun_hpp =$Data['hpp'];
-                    $akun_persediaan =$Data['persediaan'];
                     $akun_utang_piutang =$Data['utang_piutang'];
 
                     //Buka Akun Debet
@@ -672,65 +675,33 @@
                     $kode_akun_utang_piutang=GetDetailData($Conn, 'akun_perkiraan', 'id_perkiraan', $akun_utang_piutang, 'kode');
                     $nama_akun_utang_piutang=GetDetailData($Conn, 'akun_perkiraan', 'id_perkiraan', $akun_utang_piutang, 'nama');
 
-                    //Atur Susunan Variabel Berdasarkan kategori transaksi Retur Penjualan dan Retur Pembelian
-                    if($kategori=="Retur Penjualan" || $kategori=="Retur Pembelian"){
+                    // Pembayaran tidak boleh melebihi tagihan.
+                    $tagihan = max(0, (int) $tagihan);
+                    $pembayaran = min($tagihan, max(0, (int) $pembayaran));
+                    $sisa = $tagihan - $pembayaran;
 
-                        // Retur Penjualan dan Retur Pembelian Cash
-                        if($status=="Lunas"){
-                            $kode_perkiraan_1=$kode_akun_kredit;
-                            $nama_perkiraan_1=$nama_akun_kredit;
-                            $nilai_1=$tagihan;
-    
-                            $kode_perkiraan_2=$kode_akun_debet;
-                            $nama_perkiraan_2=$nama_akun_debet;
-                            $nilai_2=$tagihan;
-
-                            $kode_perkiraan_3="";
-                            $nama_perkiraan_3="";
-                            $nilai_3=0;
-                        }else{
-                            // Retur Penjualan dan Retur Pembelian Kredit
-                            $kode_perkiraan_1=$kode_akun_kredit;
-                            $nama_perkiraan_1=$nama_akun_kredit;
-                            $nilai_1=$tagihan;
-    
-                            $kode_perkiraan_2=$kode_akun_debet;
-                            $nama_perkiraan_2=$nama_akun_debet;
-                            $nilai_2=$tagihan;
-
-                            $kode_perkiraan_3=$kode_akun_utang_piutang;
-                            $nama_perkiraan_3=$nama_akun_utang_piutang;
-                            $nilai_3=$tagihan-$pembayaran;
-                        }
-                    }else{
-                        //Penjualan dan Pembelian Cash
-                        if($status=="Lunas"){
-                            $kode_perkiraan_1=$kode_akun_debet;
-                            $nama_perkiraan_1=$nama_akun_debet;
-                            $nilai_1=$tagihan;
-    
-                            $kode_perkiraan_2=$kode_akun_kredit;
-                            $nama_perkiraan_2=$nama_akun_kredit;
-                            $nilai_2=$tagihan;
-
-                            $kode_perkiraan_3="";
-                            $nama_perkiraan_3="";
-                            $nilai_3=0;
-                        }else{
-                            // Penjualan dan Pembelian Pembelian Kredit
-                            $kode_perkiraan_1=$kode_akun_debet;
-                            $nama_perkiraan_1=$nama_akun_debet;
-                            $nilai_1=0;
-    
-                            $kode_perkiraan_2=$kode_akun_kredit;
-                            $nama_perkiraan_2=$nama_akun_kredit;
-                            $nilai_2=$tagihan;
-
-                            $kode_perkiraan_3=$kode_akun_utang_piutang;
-                            $nama_perkiraan_3=$nama_akun_utang_piutang;
-                            $nilai_3=$tagihan-$pembayaran;
-                        }
+                    // Susunan akun mengikuti setting debet, kredit, dan utang_piutang.
+                    if ($kategori === "Pembelian") {
+                        $akun1 = [$kode_akun_debet, $nama_akun_debet, 'D', $tagihan];
+                        $akun2 = [$kode_akun_kredit, $nama_akun_kredit, 'K', $pembayaran];
+                        $akun3 = [$kode_akun_utang_piutang, $nama_akun_utang_piutang, 'K', $sisa];
+                    } elseif ($kategori === "Retur Pembelian") {
+                        $akun1 = [$kode_akun_kredit, $nama_akun_kredit, 'D', $pembayaran];
+                        $akun2 = [$kode_akun_debet, $nama_akun_debet, 'K', $tagihan];
+                        $akun3 = [$kode_akun_utang_piutang, $nama_akun_utang_piutang, 'K', $sisa];
+                    } elseif ($kategori === "Penjualan") {
+                        $akun1 = [$kode_akun_debet, $nama_akun_debet, 'D', $pembayaran];
+                        $akun2 = [$kode_akun_kredit, $nama_akun_kredit, 'K', $tagihan];
+                        $akun3 = [$kode_akun_utang_piutang, $nama_akun_utang_piutang, 'D', $sisa];
+                    } else { // Retur Penjualan
+                        $akun1 = [$kode_akun_debet, $nama_akun_debet, 'D', $tagihan];
+                        $akun2 = [$kode_akun_kredit, $nama_akun_kredit, 'K', $pembayaran];
+                        $akun3 = [$kode_akun_utang_piutang, $nama_akun_utang_piutang, 'D', $sisa];
                     }
+
+                    [$kode_perkiraan_1, $nama_perkiraan_1, $d_k_1, $nilai_1] = $akun1;
+                    [$kode_perkiraan_2, $nama_perkiraan_2, $d_k_2, $nilai_2] = $akun2;
+                    [$kode_perkiraan_3, $nama_perkiraan_3, $d_k_3, $nilai_3] = $akun3;
 
                     //Simpan Jurnal Ke 1
                     $entry1="INSERT INTO jurnal (
@@ -749,7 +720,7 @@
                         '$tanggal',
                         '$kode_perkiraan_1',
                         '$nama_perkiraan_1',
-                        'D',
+                        '$d_k_1',
                         '$nilai_1'
                     )";
                     $Input1=mysqli_query($Conn, $entry1);
@@ -771,14 +742,14 @@
                             '$tanggal',
                             '$kode_perkiraan_2',
                             '$nama_perkiraan_2',
-                            'K',
+                            '$d_k_2',
                             '$nilai_2'
                         )";
                         $Input2=mysqli_query($Conn, $entry2);
                         if($Input2){
 
                             //Jika Status Kredit Maka Input Jurnal Ke 3
-                            if($status=="Kredit"){
+                            if($nilai_3 > 0){
 
                                 //Simpan Jurnal Ke 3
                                 $entry3="INSERT INTO jurnal (
@@ -797,7 +768,7 @@
                                     '$tanggal',
                                     '$kode_perkiraan_3',
                                     '$nama_perkiraan_3',
-                                    'D',
+                                    '$d_k_3',
                                     '$nilai_3'
                                 )";
                                 $Input3=mysqli_query($Conn, $entry3);

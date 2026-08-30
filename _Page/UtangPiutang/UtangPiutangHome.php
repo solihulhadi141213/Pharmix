@@ -201,6 +201,7 @@
                                             <thead>
                                                 <tr>
                                                     <th><b>No</b></th>
+                                                    <th><b>ID/Kode</b></th>
                                                     <th><b>Tanggal</b></th>
                                                     <th><b>Transaksi</b></th>
                                                     <th><b>Total</b></th>
@@ -213,7 +214,7 @@
                                             </thead>
                                             <tbody id="tabel_operasional">
                                                 <tr>
-                                                    <td colspan="10" class="text-center">
+                                                    <td colspan="11" class="text-center">
                                                         <small class="text-muted">No Data</small>
                                                     </td>
                                                 </tr>

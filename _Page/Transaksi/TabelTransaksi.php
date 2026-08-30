@@ -42,7 +42,7 @@
     // =====================================================
     $page       = $_POST['page'] ?? 1;
     $batas      = $_POST['batas'] ?? 10;
-    $OrderBy    = $_POST['OrderBy'] ?? 'creat_at';
+    $OrderBy    = $_POST['OrderBy'] ?? 'tanggal';
     $ShortBy    = $_POST['ShortBy'] ?? 'DESC';
     $keyword_by = trim($_POST['keyword_by'] ?? '');
     $keyword    = trim($_POST['keyword'] ?? '');
@@ -79,7 +79,7 @@
         'creat_at'           => 't.creat_at'
     ];
     if (!array_key_exists($OrderBy, $allowedOrder)) {
-        $OrderBy = 'id_transaksi';
+        $OrderBy = 'tanggal';
     }
     $OrderBySql = $allowedOrder[$OrderBy];
 

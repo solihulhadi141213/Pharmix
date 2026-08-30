@@ -35,6 +35,7 @@
                         <div class="col-8">
                             <select name="OrderBy" id="OrderBy" class="form-control">
                                 <option value="">Pilih</option>
+                                <option value="id_transaksi_jual_beli">Kode/ID</option>
                                 <option value="kategori">Kategori</option>
                                 <option value="tanggal">Tanggal</option>
                                 <option value="id_supplier">Supplier</option>
@@ -64,6 +65,7 @@
                         <div class="col-8">
                             <select name="keyword_by" id="keyword_by" class="form-control">
                                 <option value="">Pilih</option>
+                                <option value="id_transaksi_jual_beli">Kode/ID</option>
                                 <option value="kategori">Kategori</option>
                                 <option value="tanggal">Tanggal</option>
                                 <option value="id_supplier">Supplier</option>

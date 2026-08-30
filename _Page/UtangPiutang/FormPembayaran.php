@@ -156,15 +156,17 @@
         // --------------------------------------
         // AMBIL DATA TRANSAKSI OPERASIONAL
         // --------------------------------------
-        $id_transaksi = (int) $id;
+        $id_transaksi = $id;
 
-        $Qry = $Conn->prepare("
+        $Qry = $Conn->prepare(" 
             SELECT
                 jumlah,
                 pembayaran,
-                status
-            FROM transaksi
-            WHERE id_transaksi = ?
+                status,
+                tj.kategori
+            FROM transaksi t
+            INNER JOIN transaksi_jenis tj ON tj.id_transaksi_jenis = t.id_transaksi_jenis
+            WHERE t.id_transaksi = ?
             LIMIT 1
         ");
 
@@ -179,7 +181,7 @@
             exit;
         }
 
-        $Qry->bind_param("i", $id_transaksi);
+        $Qry->bind_param("s", $id_transaksi);
 
         if (!$Qry->execute()) {
             echo '
@@ -211,7 +213,8 @@
         }
 
         // Ambil Data
-        $nama_transaksi = "Transaksi Operasional";
+        // Gunakan nilai enum kategori transaksi, bukan label umum.
+        $nama_transaksi = $Data['kategori'];
         $total          = (float) $Data['jumlah'];
         $cash           = (float) $Data['pembayaran'];
 
@@ -224,7 +227,7 @@
             WHERE id_transaksi = ?
         ");
 
-        $QryPembayaran->bind_param("i", $id_transaksi);
+        $QryPembayaran->bind_param("s", $id_transaksi);
         $QryPembayaran->execute();
 
         $ResultPembayaran = $QryPembayaran->get_result();
@@ -298,7 +301,8 @@
         </label>
     </div>
     <div class="col-8">
-        <input type="text" readonly class="form-control" id="kategori" name="kategori" value="<?php echo htmlspecialchars($nama_transaksi); ?>">
+        <input type="hidden" name="kategori" value="<?php echo htmlspecialchars($kategori, ENT_QUOTES, 'UTF-8'); ?>">
+        <input type="text" readonly class="form-control" id="nama_transaksi" name="nama_transaksi" value="<?php echo htmlspecialchars($nama_transaksi, ENT_QUOTES, 'UTF-8'); ?>">
     </div>
 </div>
 

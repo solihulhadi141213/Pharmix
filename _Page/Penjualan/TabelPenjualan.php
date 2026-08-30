@@ -124,10 +124,23 @@
                 //Buka nama anggota dari tabel anggota
                 if(empty($data['id_anggota'])){
                     $id_anggota= "";
-                    $nama_anggota="-";
+                    $nama_anggota='
+                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalListAnggotaEdit" data-id="'.$id_transaksi_jual_beli.'" data-mode="List">
+                            <small class="text text-danger">
+                                <i class="bi bi-plus-circle"></i> Add
+                            </small>
+                        </a>
+                    ';
                 }else{
                     $id_anggota= $data['id_anggota'];
                     $nama_anggota=GetDetailData($Conn, 'anggota', 'id_anggota', $id_anggota, 'nama');
+                    $nama_anggota='
+                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalListAnggotaEdit" data-id="'.$id_transaksi_jual_beli.'" data-mode="List">
+                            <small class="text text-info">
+                                '.$nama_anggota.' <i class="bi bi-pencil"></i>
+                            </small>
+                        </a>
+                    ';
                 }
                 
                 //Routing status
@@ -144,32 +157,20 @@
                 $strtotime=strtotime($tanggal);
                 $TanggalTransaksi=date('d/m/Y H:i', $strtotime);
 
-                //Hitung Jurnal
-                $jml_jurnal = mysqli_num_rows(mysqli_query($Conn, "SELECT id_jurnal FROM jurnal WHERE id_transaksi_jual_beli='$id_transaksi_jual_beli'"));
-                if(empty($jml_jurnal)){
-                    $label_jurnal='<span class="badge badge-light">NULL</span>';
-                }else{
-                    $label_jurnal='<span class="badge badge-info">'.$jml_jurnal.' Record</span>';
-                }
-
                 //Tampilkan Data
                 echo '
                     <tr>
                         <td><small>'.$no.'</small></td>
                         <td>
                             <a href="javascript:void(0);" class="text text-decoration-underline" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="'.$id_transaksi_jual_beli.'">
-                                <small>'.$TanggalTransaksi.'</small>
+                                <small>'.$id_transaksi_jual_beli.'</small>
                             </a>
                         </td>
+                        <td><small>'.$TanggalTransaksi.'</small></td>
                         <td><small>'.$label_kategori.'</small></td>
-                        <td>
-                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalListAnggotaEdit" data-id="'.$id_transaksi_jual_beli.'" data-mode="List">
-                                <small class="text text-muted">'.$nama_anggota.'</small>
-                            </a>
-                        </td>
+                        <td>'.$nama_anggota.'</td>
                         <td><small>'.$total_rp.'</small></td>
                         <td><small>'.$label_status.'</small></td>
-                        <td><small>'.$label_jurnal.'</small></td>
                         <td>
                             <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-three-dots-vertical"></i>

@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row mb-3">
+                        <div class="row mb-3 mt-4">
                             <div class="col-md-12" id="MenampilkanTabelAkunPerkiraan">
 
                             </div>

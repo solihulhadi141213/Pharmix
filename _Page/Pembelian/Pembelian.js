@@ -789,11 +789,12 @@ $(document).ready(function() {
                     ShowDataBulk(kategori_transaksi);
 
                     // Tampilkan swal notifikasi
-                    Swal.fire(
-                        'Success!',
-                        'Rincian Transaksi Berhasil Diperbaharui!',
-                        'success'
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Berhasil Disimpan.'
                     );
+
                     //Tutup Modal
                     $('#ModalEditBulk').modal('hide');
                 }
@@ -907,11 +908,12 @@ $(document).ready(function() {
                     ShowDataBulk(kategori_transaksi);
                     
                     // Tampilkan swal notifikasi
-                    Swal.fire(
-                        'Success!',
-                        'Hapus Rincian Barang Berhasil!',
-                        'success'
-                    )
+                     showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Berhasil Dihapus.'
+                    );
+
 
                     // Reset tombol
                     $ButtonProses.html(ButtonElement);
@@ -1512,12 +1514,13 @@ $(document).ready(function() {
                         ShowDetailTransaksiInline(id_transaksi_jual_beli);
                     }
                     
-                    //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Edit Transaksi Berhasil!',
-                        'success'
-                    )
+                    //Tampilkan Toast
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Berhasil Disimpan.'
+                    );
+
                 } else {
                     // Tampilkan pesan error
                     $("#NotifikasiEdit").html(
@@ -1680,10 +1683,10 @@ $(document).ready(function() {
                     $('#ModalHapus').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Hapus Transaksi Berhasil!',
-                        'success'
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Berhasil Dihapus.'
                     );
 
                     //Reload Data
@@ -1882,10 +1885,10 @@ $(document).ready(function() {
                     $('#ModalEditSupplier').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Edit Supplier Berhasil!',
-                        'success'
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Berhasil Disimpan.'
                     );
 
                     //Reload Data
@@ -2001,11 +2004,12 @@ $(document).ready(function() {
                     $('#ModalEditRincian').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Edit Rincian Transaksi Berhasil!',
-                        'success'
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Berhasil Disimpan.'
                     );
+
                     var id_transaksi_jual_beli=$("#get_id_transaksi_jual_beli_detail").html();
                     //Reload Data
                     ShowDetailTransaksiInline(id_transaksi_jual_beli);
@@ -2140,11 +2144,12 @@ $(document).ready(function() {
                     $('#ModalHapusRincian').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Hapus Rincian Transaksi Berhasil!',
-                        'success'
+                     showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Berhasil Dihapus.'
                     );
+
                     var id_transaksi_jual_beli=$("#get_id_transaksi_jual_beli_detail").html();
                     //Reload Data
                     ShowDetailTransaksiInline(id_transaksi_jual_beli);
@@ -2211,11 +2216,12 @@ $(document).ready(function() {
                     $('#ModalTambahJurnal').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Tambah Jurnal Pembelian Berhasil!',
-                        'success'
+                     showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Berhasil Disimpan.'
                     );
+
                     var id_transaksi_jual_beli=$("#get_id_transaksi_jual_beli_detail").html();
                     //Reload Data
                     ShowDetailTransaksiInline(id_transaksi_jual_beli);
@@ -2281,11 +2287,12 @@ $(document).ready(function() {
                     $('#ModalHapusJurnal').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Hapus Jurnal Pembelian Berhasil!',
-                        'success'
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Berhasil Dihapus.'
                     );
+
                     var id_transaksi_jual_beli=$("#get_id_transaksi_jual_beli_detail").html();
                     //Reload Data
                     ShowDetailTransaksiInline(id_transaksi_jual_beli);
@@ -2352,11 +2359,12 @@ $(document).ready(function() {
                     $('#ModalEditJurnal').modal('hide');
                     
                     //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Edit Jurnal Pembelian Berhasil!',
-                        'success'
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Berhasil Disimpan.'
                     );
+
                     var id_transaksi_jual_beli=$("#get_id_transaksi_jual_beli_detail").html();
                     //Reload Data
                     ShowDetailTransaksiInline(id_transaksi_jual_beli);

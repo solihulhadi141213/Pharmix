@@ -24,7 +24,7 @@
     if (empty($SessionIdAkses)) {
         $response["html"] = '
             <tr>
-                <td colspan="10" class="text-center text-danger">
+                <td colspan="11" class="text-center text-danger">
                     Sesi Akses Sudah Berakhir! Silahkan Login Ulang
                 </td>
             </tr>
@@ -100,6 +100,12 @@
     // ======================================================
     // FILTER TANGGAL
     // ======================================================
+    if ($KeywordBy == "id_transaksi" && !empty($Keyword)) {
+        $where[] = "t.id_transaksi LIKE ?";
+        $params[] = '%' . $Keyword . '%';
+        $types .= "s";
+    }
+
     if ($KeywordBy == "tanggal" && !empty($Keyword)) {
         $where[] = "DATE(t.tanggal) = ?";
         $params[] = $Keyword;
@@ -209,7 +215,7 @@
     if (!$stmt) {
         $response["html"] = '
             <tr>
-                <td colspan="10" class="text-center text-danger">
+                <td colspan="11" class="text-center text-danger">
                     Terjadi kesalahan pada query database.
                 </td>
             </tr>
@@ -325,9 +331,10 @@
                 <td class="text-center">' . $no . '</td>
                 <td>
                     <a href="javascript:void(0);" class="text" data-bs-toggle="modal" data-bs-target="#ModalDetailTransaksiOperasional" data-id="' . $id_transaksi . '">
-                        ' . $tanggal . '
+                        ' . $id_transaksi . '
                     </a>
                 </td>
+                <td><small>' . $tanggal . '</small></td>
                 <td><small>' . $nama . '</small></td>
                 <td>' . FormatRupiahOperasional($jumlah) . '</td>
                 <td>' . FormatRupiahOperasional($pembayaran_cash) . '</td>
@@ -351,7 +358,7 @@
     if (empty($html)) {
         $html = '
             <tr>
-                <td colspan="10" class="text-center">
+                <td colspan="11" class="text-center">
                     <small class="text-muted">Tidak Ada Data</small>
                 </td>
             </tr>

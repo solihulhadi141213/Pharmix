@@ -48,7 +48,7 @@
     $kategori                = $_POST['kategori'];
 
     // Ambil data pembayaran
-    $Qry = $Conn->prepare("SELECT tanggal, jumlah FROM transaksi_pembayaran WHERE id_transaksi_pembayaran = ?");
+    $Qry = $Conn->prepare("SELECT * FROM transaksi_pembayaran WHERE id_transaksi_pembayaran = ?");
     $Qry->bind_param("s", $id_transaksi_pembayaran);
 
     if (!$Qry->execute()) {
@@ -78,6 +78,7 @@
     // Ambil data dari hasil query
     $tanggal                = $Data['tanggal'] ?? '';
     $jumlah                 = $Data['jumlah'] ?? 0;
+    $kategori_transaksi                 = $Data['kategori_transaksi'];
 
     // Format tanggal dan jam
     $tanggal_format = $tanggal ? date('Y-m-d', strtotime($tanggal)) : '';
@@ -93,7 +94,26 @@
         <input type="hidden" name="id_transaksi_pembayaran" value="'.$id_transaksi_pembayaran.'">
         <input type="hidden" name="id" value="'.$id.'">
         <input type="hidden" name="kategori" value="'.$kategori.'">
-
+        <div class="row mb-3">
+            <div class="col-4">
+                <label for="id_transaksi_pembayaran_piutang_penjualan_edit">
+                    <small>Tanggal</small>
+                </label>
+            </div>
+            <div class="col-8">
+                <input type="text" readonly class="form-control" id="id_transaksi_pembayaran_piutang_penjualan_edit" name="id_transaksi_pembayaran" value="'.htmlspecialchars($id_transaksi_pembayaran).'">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-4">
+                <label for="kategori_transaksi_edit">
+                    <small>Kategori Transaksi</small>
+                </label>
+            </div>
+            <div class="col-8">
+                <input type="text" readonly class="form-control" id="kategori_transaksi_edit" name="kategori" value="'.htmlspecialchars($kategori_transaksi).'">
+            </div>
+        </div>
         <div class="row mb-3">
             <div class="col-4">
                 <label for="tanggal_pembayaran_piutang_penjualan_edit">

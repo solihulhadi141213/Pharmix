@@ -36,13 +36,13 @@
         }else{
 ?>
     <div class="table-responsive">
-        <table class="table table-hover table-bordered table-striped">
+        <table class="table table-sm table-hover table-bordered table-striped">
             <thead>
                 <tr>
                     <td align="center"><b>No</b></td>
-                    <td align="center" colspan="<?php echo $level_akun_max; ?>"><b>Akun Perkiraan</b></td>
+                    <td align="left" colspan="<?php echo $level_akun_max; ?>"><b>Akun Perkiraan</b></td>
                     <td align="center"><b>Level</b></td>
-                    <td align="center"><b>Saldo Normal</b></td>
+                    <td align="left"><b>Saldo Normal</b></td>
                     <td align="center"><b>Jurnal</b></td>
                     <td align="center"><b>Opsi</b></td>
                 </tr>
@@ -124,8 +124,8 @@
                                 </small>
                             </td>
                             <td class="text-center" align="center">
-                                <a class="btn btn-sm btn-outline-dark btn-floating" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i>
+                                <a class="btn btn-sm btn-secondary btn-floating" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                                     <li class="dropdown-header text-start">

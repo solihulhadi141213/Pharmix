@@ -78,23 +78,6 @@
         exit;
     }
 
-    $id_transaksi = (int) $id_transaksi;
-
-    if ($id_transaksi <= 0) {
-        $response['message'] = 'ID transaksi tidak valid.';
-        $response['html'] = '
-            <div class="row">
-                <div class="col-md-12 mb-2 text-center">
-                    <small class="text-danger">
-                        ID transaksi tidak valid.
-                    </small>
-                </div>
-            </div>
-        ';
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
     // ============================================================
     // QUERY DATA TRANSAKSI
     // ============================================================
@@ -143,7 +126,7 @@
     // ============================================================
     // BIND PARAMETER
     // ============================================================
-    mysqli_stmt_bind_param($stmt, "i", $id_transaksi);
+    mysqli_stmt_bind_param($stmt, "s", $id_transaksi);
 
     // ============================================================
     // EXECUTE
@@ -258,7 +241,7 @@
     $JumlahRincian = 0;
     $HtmlRincian   = '';
     if ($stmt_rincian) {
-        mysqli_stmt_bind_param($stmt_rincian, "i", $id_transaksi);
+        mysqli_stmt_bind_param($stmt_rincian, "s", $id_transaksi);
         if (mysqli_stmt_execute($stmt_rincian)) {
             $result_rincian = mysqli_stmt_get_result($stmt_rincian);
             if ($result_rincian) {

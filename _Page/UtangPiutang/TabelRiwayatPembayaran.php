@@ -52,14 +52,14 @@
         $response["message"] = 'Data Riwayat Pembayaran Tidak Ada';
         $response["html"]    = '
             <tr>
-                <td colspan="6" class="text-center">
+                <td colspan="7" class="text-center">
                     <a href="javascript:void(0);" class="btn btn-md btn-success btn-rounded mt-3 mb-3" data-modal-target="#ModalPembayaran" data-id="'.$id.'" data-kategori="'.$kategori.'">
                         <i class="bi bi-plus-lg"></i> Tambah Pembayaran
                     </a>
                 </td>
             </tr>
             <tr>
-                <td colspan="6" class="text-center">
+                <td colspan="7" class="text-center">
                     <small>
                         Tidak ada riwayat pembayaran untuk <b>'.$nama_transaksi.'</b> dengan ID transaksi <b>'.$id.'</b>
                     </small>
@@ -71,9 +71,9 @@
     }
 
     // Jika Data Ada Tampilkan
-    $html             .= '
+    $html.= '
         <tr>
-            <td colspan="6" class="text-center">
+            <td colspan="7" class="text-center">
                 <a href="javascript:void(0);" class="btn btn-md btn-success btn-rounded mt-3 mb-3" data-modal-target="#ModalPembayaran" data-id="'.$id.'" data-kategori="'.$kategori.'">
                     <i class="bi bi-plus-lg"></i> Tambah Pembayaran
                 </a>
@@ -99,12 +99,19 @@
         $tanggal = date('d/m/Y H:i', strtotime($tanggal));
         $jumlah  = "Rp " . number_format($jumlah, 0, ',', '.');
 
+        if(!empty($data['id_transaksi'])){
+            $id_referensi = $data['id_transaksi'];
+        }else{
+            $id_referensi = $data['id_transaksi_jual_beli'];
+        }
+
         $html .= '
             <tr>
                 <td>'.$no.'</td>
+                <td>'.$id_transaksi_pembayaran.'</td>
                 <td>'.$tanggal.'</td>
                 <td>'.$kategori_transaksi.'</td>
-                <td>'.$kategori_pembayaran.'</td>
+                <td>'.$id_referensi.'</td>
                 <td>'.$jumlah.'</td>
                 <td>
                     <a href="Javascript:(0);" class="btn btn-sm btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
@@ -132,7 +139,7 @@
     $html .= '
         <tr>
             <td></td>
-            <td colspan="3"><b>TOTAL PEMBAYARAN</b></td>
+            <td colspan="4"><b>TOTAL PEMBAYARAN</b></td>
             <td><b>'.$total_pembayaran.'</b></td>
             <td></td>
         </tr>

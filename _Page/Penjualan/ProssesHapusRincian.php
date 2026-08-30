@@ -132,11 +132,14 @@
                     //Hitung cash
                     $cash=GetDetailData($Conn, 'transaksi_jual_beli', 'id_transaksi_jual_beli', $id_transaksi_jual_beli, 'cash');
                     
-                    //Menentukan Status Transaksi
-                    if($cash<$total){
-                        $status="Kredit";
+                    // Status mengikuti kategori dan pembayaran efektif.
+                    $cash = max(0, (int) $cash);
+                    $pembayaran = min($cash, (int) $total);
+                    $kembalian = max(0, $cash - (int) $total);
+                    if($pembayaran < $total){
+                        $status = ($kategori_transaksi === "Retur Penjualan") ? "Utang" : "Piutang";
                     }else{
-                        $status="Lunas";
+                        $status = "Lunas";
                     }
                     
                     //Update Transaksi
@@ -145,12 +148,23 @@
                         diskon='$jumlah_diskon',
                         ppn='$jumlah_ppn',
                         total='$total',
+                        cash='$pembayaran',
+                        kembalian='$kembalian',
                         status='$status',
                         update_by_id='$SessionIdAkses', 
                         update_by_name='$SessionNama', 
                         update_at='$now' 
                     WHERE id_transaksi_jual_beli='$id_transaksi_jual_beli'") or die(mysqli_error($Conn)); 
                     if($UpdateTransaksi){
+
+                        mysqli_query($Conn, "DELETE FROM jurnal WHERE id_transaksi_jual_beli='" . mysqli_real_escape_string($Conn, $id_transaksi_jual_beli) . "'");
+                        $tanggal_jurnal = GetDetailData($Conn, 'transaksi_jual_beli', 'id_transaksi_jual_beli', $id_transaksi_jual_beli, 'tanggal');
+                        $auto_jurnal = AutoJurnalJualBeli($Conn, $kategori_transaksi, date('Y-m-d', strtotime($tanggal_jurnal)), $id_transaksi_jual_beli, $total, $pembayaran, $status);
+                        if($auto_jurnal !== "Success"){
+                            $response = ["status" => "Error", "message" => $auto_jurnal];
+                            echo json_encode($response);
+                            exit;
+                        }
 
                         //Update Barang
                         $update_barang = mysqli_query($Conn,"UPDATE barang SET 

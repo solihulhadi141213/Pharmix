@@ -75,11 +75,51 @@
     }
 
     // ==========================================
-    // TENTUKAN KOLOM BERDASARKAN KATEGORI
+    // TENTUKAN TRANSAKSI DAN KATEGORI ASLI
     // ==========================================
+    if (!in_array($kategori_param, ['jual_beli', 'operasional'], true)) {
+        $response["message"] = "Kategori transaksi tidak valid.";
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
     $is_jual_beli = ($kategori_param === 'jual_beli');
     $kolom_id = $is_jual_beli ? 'id_transaksi_jual_beli' : 'id_transaksi';
-    $type_id  = $is_jual_beli ? 's' : 'i';
+    $type_id = 's';
+
+    if ($is_jual_beli) {
+        $stmt_transaksi = mysqli_prepare(
+            $Conn,
+            'SELECT kategori FROM transaksi_jual_beli WHERE id_transaksi_jual_beli = ? LIMIT 1'
+        );
+    } else {
+        $stmt_transaksi = mysqli_prepare(
+            $Conn,
+            'SELECT tj.kategori
+             FROM transaksi t
+             INNER JOIN transaksi_jenis tj ON tj.id_transaksi_jenis = t.id_transaksi_jenis
+             WHERE t.id_transaksi = ? LIMIT 1'
+        );
+    }
+
+    if (!$stmt_transaksi) {
+        $response["message"] = "Gagal mempersiapkan query transaksi.";
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    mysqli_stmt_bind_param($stmt_transaksi, 's', $id_param);
+    mysqli_stmt_execute($stmt_transaksi);
+    $transaksi = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_transaksi));
+    mysqli_stmt_close($stmt_transaksi);
+
+    if (!$transaksi) {
+        $response["message"] = "Transaksi tidak ditemukan.";
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    $kategori_tempo = $transaksi['kategori'];
 
     // ==========================================
     // CEK APAKAH DATA TEMPO SUDAH ADA
@@ -117,9 +157,11 @@
     } else {
         // --- INSERT DATA ---
         if ($is_jual_beli) {
-            $sql_action = "INSERT INTO transaksi_tempo (id_transaksi_jual_beli, tanggal_tempo) VALUES (?, ?)";
+            $sql_action = "INSERT INTO transaksi_tempo
+                (id_transaksi_jual_beli, kategori, tanggal_tempo) VALUES (?, ?, ?)";
         } else {
-            $sql_action = "INSERT INTO transaksi_tempo (id_transaksi, tanggal_tempo) VALUES (?, ?)";
+            $sql_action = "INSERT INTO transaksi_tempo
+                (id_transaksi, kategori, tanggal_tempo) VALUES (?, ?, ?)";
         }
 
         $stmt_action = mysqli_prepare($Conn, $sql_action);
@@ -131,9 +173,9 @@
         }
 
         if ($is_jual_beli) {
-            mysqli_stmt_bind_param($stmt_action, "ss", $id_param, $tanggal_tempo);
+            mysqli_stmt_bind_param($stmt_action, "sss", $id_param, $kategori_tempo, $tanggal_tempo);
         } else {
-            mysqli_stmt_bind_param($stmt_action, "is", $id_param, $tanggal_tempo);
+            mysqli_stmt_bind_param($stmt_action, "sss", $id_param, $kategori_tempo, $tanggal_tempo);
         }
     }
 

@@ -70,6 +70,7 @@
     function insertJurnal(
         mysqli $Conn,
         string $id_transaksi,
+        string $uuid_jurnal,
         string $tanggal,
         array $akun,
         string $dk,
@@ -86,8 +87,6 @@
             throw new Exception('Data akun jurnal tidak lengkap.');
         }
 
-        $uuid_jurnal = generateUuidV4();
-        
         // 8 tanda tanya (?) -> mapping: kategori(s), uuid(s), id_transaksi(s), tanggal(s), kode_perkiraan(s), nama_perkiraan(s), d_k(s), nilai(i)
         $sql = "
             INSERT INTO jurnal (
@@ -109,7 +108,7 @@
             $stmt,
             'sssssssi',
             $kategori_jurnal,
-            $uuid_jurnal,
+            $id_transaksi,
             $id_transaksi,
             $tanggal,
             $kode_perkiraan,
@@ -191,7 +190,7 @@
     $id_utang_piutang = (int)($dataJenis['id_utang_piutang'] ?? 0);
 
     $kode_awal = ($kategori === "Pengeluaran") ? "PNG" : "PMS";
-    $id_transaksi = $kode_awal . "-" . GenerateKodeBarang(6);
+    $id_transaksi = $kode_awal . "-" . GenerateKodeTransaksi();
 
     if (!in_array($kategori, ['Pengeluaran', 'Pemasukan'], true)) {
         responseError('Kategori jenis transaksi tidak valid.');
@@ -209,7 +208,6 @@
     // ============================================================
     // PROSES RINCIAN & TOTAL
     // ============================================================
-    $jumlahInput = cleanMoney($JumlahTotal);
     $pembayaran = cleanMoney($JumlahPembayaran);
 
     $uraianArray = $_POST['uraian'] ?? [];
@@ -246,8 +244,11 @@
         ];
     }
 
-    $jumlah = (count($dataRincian) > 0) ? $totalRincian : $jumlahInput;
-    if ($jumlah <= 0) responseError('Jumlah transaksi harus lebih dari 0.');
+    // Nilai tagihan selalu berasal dari akumulasi rincian transaksi.
+    if (count($dataRincian) === 0 || $totalRincian <= 0) {
+        responseError('Rincian transaksi wajib diisi.');
+    }
+    $jumlah = $totalRincian;
     if ($pembayaran < 0) responseError('Jumlah pembayaran tidak valid.');
     if ($pembayaran > $jumlah) responseError('Jumlah pembayaran tidak boleh melebihi total transaksi.');
 
@@ -342,28 +343,28 @@
         }
 
         // Insert Jurnal Berdasarkan Kategori
+        $uuidJurnal = generateUuidV4();
         if ($kategori === 'Pemasukan') {
             if ($pembayaran > 0) {
-                insertJurnal($Conn, $id_transaksi, $tanggal_jurnal, $akunDebet, 'D', $pembayaran, $kategori);
+                insertJurnal($Conn, $id_transaksi, $uuidJurnal, $tanggal_jurnal, $akunDebet, 'D', $pembayaran, $kategori);
             }
+            insertJurnal($Conn, $id_transaksi, $uuidJurnal, $tanggal_jurnal, $akunKredit, 'K', $jumlah, $kategori);
             if ($sisa > 0) {
-                insertJurnal($Conn, $id_transaksi, $tanggal_jurnal, $akunUtangPiutang, 'D', $sisa, $kategori);
+                insertJurnal($Conn, $id_transaksi, $uuidJurnal, $tanggal_jurnal, $akunUtangPiutang, 'D', $sisa, $kategori);
             }
-            insertJurnal($Conn, $id_transaksi, $tanggal_jurnal, $akunKredit, 'K', $jumlah, $kategori);
         } elseif ($kategori === 'Pengeluaran') {
-            insertJurnal($Conn, $id_transaksi, $tanggal_jurnal, $akunDebet, 'D', $jumlah, $kategori);
+            insertJurnal($Conn, $id_transaksi, $uuidJurnal, $tanggal_jurnal, $akunDebet, 'D', $jumlah, $kategori);
             if ($pembayaran > 0) {
-                insertJurnal($Conn, $id_transaksi, $tanggal_jurnal, $akunKredit, 'K', $pembayaran, $kategori);
+                insertJurnal($Conn, $id_transaksi, $uuidJurnal, $tanggal_jurnal, $akunKredit, 'K', $pembayaran, $kategori);
             }
             if ($sisa > 0) {
-                insertJurnal($Conn, $id_transaksi, $tanggal_jurnal, $akunUtangPiutang, 'K', $sisa, $kategori);
+                insertJurnal($Conn, $id_transaksi, $uuidJurnal, $tanggal_jurnal, $akunUtangPiutang, 'K', $sisa, $kategori);
             }
         }
 
-        // Validasi Balance Jurnal
-        $totalDebet = ($kategori === 'Pemasukan') ? ($pembayaran + $sisa) : $jumlah;
-        $totalKredit = ($kategori === 'Pemasukan') ? $jumlah : ($pembayaran + $sisa);
-
+        // Pastikan jurnal selalu balance: jumlah tagihan = pembayaran + kekurangan.
+        $totalDebet = ($kategori === 'Pemasukan') ? $pembayaran + $sisa : $jumlah;
+        $totalKredit = ($kategori === 'Pemasukan') ? $jumlah : $pembayaran + $sisa;
         if ($totalDebet !== $totalKredit) {
             throw new Exception("Jurnal tidak balance. Debet: {$totalDebet}, Kredit: {$totalKredit}");
         }

@@ -53,6 +53,7 @@
                             </label>
                             <select name="keyword_by" id="keyword_by_operasional" class="form-control">
                                 <option value="">Pilih</option>
+                                <option value="id_transaksi">ID/Kode Transaksi</option>
                                 <option value="tanggal">Tanggal Transaksi</option>
                                 <option value="nama">Nama Transaksi</option>
                             </select>
@@ -234,16 +235,17 @@
                                 <thead>
                                     <tr>
                                         <th><b>No</b></th>
+                                        <th><b>ID</b></th>
                                         <th><b>Tanggal</b></th>
                                         <th><b>Transaksi</b></th>
-                                        <th><b>Pembayaran</b></th>
+                                        <th><b>Ref</b></th>
                                         <th><b>Nominal</b></th>
                                         <th><b>Opsi</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="tabel_riwayat_pembayaran">
                                     <tr>
-                                        <td colspan="6" class="text-center">
+                                        <td colspan="7" class="text-center">
                                             <small>No Data</small>
                                         </td>
                                     </tr>

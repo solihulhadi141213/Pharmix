@@ -139,18 +139,18 @@
                         <td><small>'.$no.'</small></td>
                         <td>
                             <a href="javascript:void(0);" class="text text-decoration-underline" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="'.$id_transaksi_jual_beli.'">
-                                <small>'.$TanggalTransaksi.'</small>
+                                <small>'.$id_transaksi_jual_beli.'</small>
                             </a>
                         </td>
+                        <td><small>'.$TanggalTransaksi.'</small></td>
                         <td><small>'.$label_kategori.'</small></td>
                         <td>
-                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalListSupplierEdit" data-id="'.$id_transaksi_jual_beli.'" data-mode="List">
-                                <small class="text text-muted">'.$nama_supplier.'</small>
+                            <a href="javascript:void(0);" class="text-info" data-bs-toggle="modal" data-bs-target="#ModalListSupplierEdit" data-id="'.$id_transaksi_jual_beli.'" data-mode="List">
+                                <small class="text text-info">'.$nama_supplier.'</small>
                             </a>
                         </td>
                         <td><small>'.$total_rp.'</small></td>
                         <td><small>'.$label_status.'</small></td>
-                        <td><small>'.$label_jurnal.'</small></td>
                         <td>
                             <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-three-dots-vertical"></i>

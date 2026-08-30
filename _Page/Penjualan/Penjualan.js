@@ -278,7 +278,7 @@ function ShowDetailTransaksiInline(id_transaksi_jual_beli) {
                 if(status=="Lunas"){
                     var LabelStatus='<span class="badge badge-success">Lunas</span>';
                 }else{
-                    var LabelStatus='<span class="badge badge-warning">Kredit</span>';
+                    var LabelStatus='<span class="badge badge-warning">'+status+'</span>';
                 }
                 //Tempelkan Ke Element
                 $('#form_detail_transaksi_inline').html(`
@@ -291,7 +291,7 @@ function ShowDetailTransaksiInline(id_transaksi_jual_beli) {
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-4"><small>Anggota</small></div>
+                                <div class="col-4"><small>Pasien</small></div>
                                 <div class="col-8">
                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalListAnggotaEdit" data-id="${id_transaksi_jual_beli}" data-mode="Detail">
                                         <small class="text text-primary">${data.nama_anggota} <i class="bi bi-pencil"></i></small>
@@ -1745,11 +1745,11 @@ $(document).ready(function() {
                     //Tutup Modal
                     $('#ModalHapus').modal('hide');
                     
-                    //Tampilkan Alert
-                    Swal.fire(
-                        'Success!',
-                        'Hapus Transaksi Berhasil!',
-                        'success'
+                    //Tampilkan Toast
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data Berhasil Dihapus.'
                     );
 
                     //Reload Data

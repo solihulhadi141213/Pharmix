@@ -24,8 +24,8 @@
                         <div class="col-md-12">
                             <label for="OrderBy">Order By</label>
                             <select name="OrderBy" id="OrderBy" class="form-control">
-                                <option value="">Pilih</option>
-                                <option value="tanggal">Tanggal</option>
+                                <option value="id_transaksi" selected>Kode/ID</option>
+                                <option selected value="tanggal" selected>Tanggal</option>
                                 <option value="nama_transaksi">Nama Transaksi</option>
                                 <option value="kategori">Kategori</option>
                                 <option value="status">Status</option>
@@ -36,8 +36,8 @@
                         <div class="col-md-12">
                             <label for="ShortBy">Short By</label>
                             <select name="ShortBy" id="ShortBy" class="form-control">
-                                <option value="DESC">Z To A</option>
-                                <option value="ASC">A To Z</option>
+                                <option selected value="DESC">Terbaru</option>
+                                <option value="ASC">Terlama</option>
                             </select>
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                             <label for="keyword_by">Keyword By</label>
                             <select name="keyword_by" id="keyword_by" class="form-control">
                                 <option value="">Pilih</option>
-                                <option value="id_transaksi">ID</option>
+                                <option value="id_transaksi">Kode/ID</option>
                                 <option value="tanggal">Tanggal</option>
                                 <option value="nama_transaksi">Nama Transaksi</option>
                                 <option value="kategori">Kategori</option>
