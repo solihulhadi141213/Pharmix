@@ -100,19 +100,25 @@
             SELECT
                 t.id_transaksi,
                 t.tanggal,
-                t.keterangan,
-                t.status,
                 t.jumlah,
                 t.pembayaran,
-                (
-                    SELECT COUNT(*)
-                    FROM transaksi_rincian r
-                    WHERE r.id_transaksi = t.id_transaksi
-                ) AS jumlah_rincian
+                t.status,
+                tj.nama AS nama_transaksi,
+                tj.kategori AS kategori_transaksi,
+                COALESCE(
+                    (
+                        SELECT SUM(tp.jumlah)
+                        FROM transaksi_pembayaran tp
+                        WHERE tp.id_transaksi = t.id_transaksi
+                    ),
+                    0
+                ) AS total_pembayaran_termin
             FROM transaksi t
+            INNER JOIN transaksi_jenis tj
+                ON tj.id_transaksi_jenis = t.id_transaksi_jenis
             WHERE t.tanggal >= ?
             AND t.tanggal < ?
-            ORDER BY t.tanggal ASC, t.id_transaksi ASC
+            ORDER BY t.creat_at DESC, t.id_transaksi ASC
         ";
     } else {
         $sql = "
@@ -243,12 +249,15 @@
             <thead>
                 <tr>
                     <th>No</th>
+                    <th>Kode</th>
                     <th>Tanggal</th>
-                    <th>Keterangan</th>
-                    <th>Status</th>
+                    <th>Nama</th>
+                    <th>Kategori</th>
                     <th>Jumlah</th>
-                    <th>Pembayaran</th>
-                    <th>Jumlah Rincian</th>
+                    <th>Cash/Tunai</th>
+                    <th>Termin</th>
+                    <th>Utang/Piutang</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -256,33 +265,35 @@
             <?php $no = 1; ?>
 
             <?php foreach ($data as $row) { ?>
+                <?php
+                    $id_transaksi = $row['id_transaksi'];
+                    $tanggal = $row['tanggal'] ?? '';
+                    $nama_transaksi = htmlspecialchars($row['nama_transaksi'] ?? '-', ENT_QUOTES, 'UTF-8');
+                    $kategori_transaksi = htmlspecialchars($row['kategori_transaksi'] ?? '-', ENT_QUOTES, 'UTF-8');
+                    $jumlah = (int)($row['jumlah'] ?? 0);
+                    $pembayaran_cash = (int)($row['pembayaran'] ?? 0);
+                    $total_pembayaran_termin = (int)($row['total_pembayaran_termin'] ?? 0);
+                    $status = htmlspecialchars($row['status'] ?? '-', ENT_QUOTES, 'UTF-8');
+                    
+                    // Hitung utang/piutang
+                    $total_pembayaran = $pembayaran_cash + $total_pembayaran_termin;
+                    $sisa_tagihan = $jumlah - $total_pembayaran;
+                    if ($sisa_tagihan < 0) {
+                        $sisa_tagihan = 0;
+                    }
+                ?>
 
                 <tr>
                     <td class="text-center"><?= $no++ ?></td>
-
-                    <td>
-                        <?= htmlspecialchars($row['tanggal'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
-                    </td>
-
-                    <td>
-                        <?= htmlspecialchars($row['keterangan'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
-                    </td>
-
-                    <td class="text-center">
-                        <?= htmlspecialchars($row['status'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
-                    </td>
-
-                    <td class="text-right">
-                        <?= number_format((float)($row['jumlah'] ?? 0), 0, ',', '.') ?>
-                    </td>
-
-                    <td class="text-right">
-                        <?= number_format((float)($row['pembayaran'] ?? 0), 0, ',', '.') ?>
-                    </td>
-
-                    <td class="text-center">
-                        <?= (int)$row['jumlah_rincian'] ?>
-                    </td>
+                    <td><?= htmlspecialchars($id_transaksi, ENT_QUOTES, 'UTF-8') ?></td>
+                    <td><?= htmlspecialchars($tanggal, ENT_QUOTES, 'UTF-8') ?></td>
+                    <td><?= $nama_transaksi ?></td>
+                    <td><?= $kategori_transaksi ?></td>
+                    <td class="text-right"><?= number_format($jumlah, 0, ',', '.') ?></td>
+                    <td class="text-right"><?= number_format($pembayaran_cash, 0, ',', '.') ?></td>
+                    <td class="text-right"><?= number_format($total_pembayaran_termin, 0, ',', '.') ?></td>
+                    <td class="text-right"><?= number_format($sisa_tagihan, 0, ',', '.') ?></td>
+                    <td class="text-center"><?= $status ?></td>
                 </tr>
 
             <?php } ?>
@@ -382,25 +393,40 @@
 
             fputcsv($output, [
                 'No',
+                'Kode',
                 'Tanggal',
-                'Keterangan',
-                'Status',
+                'Nama',
+                'Kategori',
                 'Jumlah',
-                'Pembayaran',
-                'Jumlah Rincian'
+                'Cash/Tunai',
+                'Termin',
+                'Utang/Piutang',
+                'Status'
             ], ';');
 
             $no = 1;
 
             foreach ($data as $row) {
+                $jumlah = (int)($row['jumlah'] ?? 0);
+                $pembayaran_cash = (int)($row['pembayaran'] ?? 0);
+                $total_pembayaran_termin = (int)($row['total_pembayaran_termin'] ?? 0);
+                $total_pembayaran = $pembayaran_cash + $total_pembayaran_termin;
+                $sisa_tagihan = $jumlah - $total_pembayaran;
+                if ($sisa_tagihan < 0) {
+                    $sisa_tagihan = 0;
+                }
+                
                 fputcsv($output, [
                     $no++,
+                    $row['id_transaksi'],
                     $row['tanggal'],
-                    $row['keterangan'],
-                    $row['status'],
-                    $row['jumlah'],
-                    $row['pembayaran'],
-                    $row['jumlah_rincian']
+                    $row['nama_transaksi'],
+                    $row['kategori_transaksi'],
+                    $jumlah,
+                    $pembayaran_cash,
+                    $total_pembayaran_termin,
+                    $sisa_tagihan,
+                    $row['status']
                 ], ';');
             }
 
@@ -512,12 +538,15 @@
                 <thead>
                     <tr>
                         <th width="5%">No</th>
-                        <th width="12%">Tanggal</th>
-                        <th>Keterangan</th>
-                        <th width="10%">Status</th>
-                        <th width="15%">Jumlah</th>
-                        <th width="15%">Pembayaran</th>
-                        <th width="12%">Jumlah Rincian</th>
+                        <th width="12%">Kode</th>
+                        <th width="13%">Tanggal</th>
+                        <th width="14%">Nama</th>
+                        <th width="11%">Kategori</th>
+                        <th width="10%">Jumlah</th>
+                        <th width="10%">Cash/Tunai</th>
+                        <th width="10%">Termin</th>
+                        <th width="10%">Utang/Piutang</th>
+                        <th width="9%">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -526,34 +555,27 @@
             $no = 1;
 
             foreach ($data as $row) {
+                $jumlah = (int)($row['jumlah'] ?? 0);
+                $pembayaran_cash = (int)($row['pembayaran'] ?? 0);
+                $total_pembayaran_termin = (int)($row['total_pembayaran_termin'] ?? 0);
+                $total_pembayaran = $pembayaran_cash + $total_pembayaran_termin;
+                $sisa_tagihan = $jumlah - $total_pembayaran;
+                if ($sisa_tagihan < 0) {
+                    $sisa_tagihan = 0;
+                }
 
                 $html .= '
                     <tr>
                         <td class="center">' . $no++ . '</td>
-
-                        <td>
-                            ' . htmlspecialchars($row['tanggal'] ?? '-', ENT_QUOTES, 'UTF-8') . '
-                        </td>
-
-                        <td>
-                            ' . htmlspecialchars($row['keterangan'] ?? '-', ENT_QUOTES, 'UTF-8') . '
-                        </td>
-
-                        <td class="center">
-                            ' . htmlspecialchars($row['status'] ?? '-', ENT_QUOTES, 'UTF-8') . '
-                        </td>
-
-                        <td class="right">
-                            ' . number_format((float)($row['jumlah'] ?? 0), 0, ',', '.') . '
-                        </td>
-
-                        <td class="right">
-                            ' . number_format((float)($row['pembayaran'] ?? 0), 0, ',', '.') . '
-                        </td>
-
-                        <td class="center">
-                            ' . (int)$row['jumlah_rincian'] . '
-                        </td>
+                        <td>' . htmlspecialchars($row['id_transaksi'] ?? '-', ENT_QUOTES, 'UTF-8') . '</td>
+                        <td>' . htmlspecialchars($row['tanggal'] ?? '-', ENT_QUOTES, 'UTF-8') . '</td>
+                        <td>' . htmlspecialchars($row['nama_transaksi'] ?? '-', ENT_QUOTES, 'UTF-8') . '</td>
+                        <td>' . htmlspecialchars($row['kategori_transaksi'] ?? '-', ENT_QUOTES, 'UTF-8') . '</td>
+                        <td class="right">' . number_format($jumlah, 0, ',', '.') . '</td>
+                        <td class="right">' . number_format($pembayaran_cash, 0, ',', '.') . '</td>
+                        <td class="right">' . number_format($total_pembayaran_termin, 0, ',', '.') . '</td>
+                        <td class="right">' . number_format($sisa_tagihan, 0, ',', '.') . '</td>
+                        <td class="center">' . htmlspecialchars($row['status'] ?? '-', ENT_QUOTES, 'UTF-8') . '</td>
                     </tr>
                 ';
             }

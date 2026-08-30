@@ -81,7 +81,7 @@
         }
         $rincian = mysqli_fetch_assoc($result);
         mysqli_stmt_close($stmt);
-        $id_transaksi = (int)$rincian['id_transaksi'];
+        $id_transaksi = $rincian['id_transaksi'];
         if ($id_transaksi <= 0) {
             throw new Exception('Transaksi induk tidak valid.');
         }
@@ -113,7 +113,7 @@
         if (!$stmtTotal) {
             throw new Exception('Gagal menghitung total transaksi.');
         }
-        mysqli_stmt_bind_param($stmtTotal, 'i', $id_transaksi);
+        mysqli_stmt_bind_param($stmtTotal, 's', $id_transaksi);
         if (!mysqli_stmt_execute($stmtTotal)) {
             mysqli_stmt_close($stmtTotal);
             throw new Exception('Gagal menghitung total rincian.');
@@ -131,7 +131,7 @@
         if (!$stmtTransaksi) {
             throw new Exception('Gagal mengambil data transaksi.');
         }
-        mysqli_stmt_bind_param($stmtTransaksi, 'i', $id_transaksi);
+        mysqli_stmt_bind_param($stmtTransaksi, 's', $id_transaksi);
         if (!mysqli_stmt_execute($stmtTransaksi)) {
             mysqli_stmt_close($stmtTransaksi);
             throw new Exception('Gagal mengambil informasi transaksi.');
@@ -176,7 +176,7 @@
         if (!$stmtUpdate) {
             throw new Exception('Gagal menyiapkan update transaksi.');
         }
-        mysqli_stmt_bind_param($stmtUpdate, 'issisi', $jumlah, $status, $now, $SessionIdAkses, $SessionNama, $id_transaksi);
+        mysqli_stmt_bind_param($stmtUpdate, 'ississ', $jumlah, $status, $now, $SessionIdAkses, $SessionNama, $id_transaksi);
         if (!mysqli_stmt_execute($stmtUpdate)) {
             mysqli_stmt_close($stmtUpdate);
             throw new Exception('Gagal memperbarui transaksi.');

@@ -18,7 +18,7 @@
             "status"     => "error",
             "html"       => '
                 <tr>
-                    <td colspan="10" class="text-center text-danger">
+                    <td colspan="11" class="text-center text-danger">
                         <small>' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '</small>
                     </td>
                 </tr>
@@ -42,7 +42,7 @@
     // =====================================================
     $page       = $_POST['page'] ?? 1;
     $batas      = $_POST['batas'] ?? 10;
-    $OrderBy    = $_POST['OrderBy'] ?? 'id_transaksi';
+    $OrderBy    = $_POST['OrderBy'] ?? 'creat_at';
     $ShortBy    = $_POST['ShortBy'] ?? 'DESC';
     $keyword_by = trim($_POST['keyword_by'] ?? '');
     $keyword    = trim($_POST['keyword'] ?? '');
@@ -75,7 +75,8 @@
         'kategori'           => 'tj.kategori',
         'jumlah'             => 't.jumlah',
         'pembayaran'         => 't.pembayaran',
-        'status'             => 't.status'
+        'status'             => 't.status',
+        'creat_at'           => 't.creat_at'
     ];
     if (!array_key_exists($OrderBy, $allowedOrder)) {
         $OrderBy = 'id_transaksi';
@@ -93,7 +94,8 @@
         'kategori'           => 'tj.kategori',
         'jumlah'             => 't.jumlah',
         'pembayaran'         => 't.pembayaran',
-        'status'             => 't.status'
+        'status'             => 't.status',
+        'creat_at'           => 't.creat_at'
     ];
     if (!empty($keyword_by) && !array_key_exists($keyword_by, $allowedKeywordBy)) {
         $keyword_by = '';
@@ -247,7 +249,7 @@
     if ($query->num_rows === 0) {
         $html .= '
             <tr>
-                <td colspan="10" class="text-center text-danger py-4">
+                <td colspan="11" class="text-center text-danger py-4">
                     <small>
                         <i class="bi bi-info-circle"></i>
                         Tidak ada data yang ditampilkan.
@@ -257,7 +259,7 @@
         ';
     } else {
         while ($data = $query->fetch_assoc()) {
-            $id_transaksi       = (int) $data['id_transaksi'];
+            $id_transaksi       = $data['id_transaksi'];
             $id_transaksi_jenis = (int) $data['id_transaksi_jenis'];
             $nama_transaksi     = htmlspecialchars($data['nama_transaksi'] ?? '-', ENT_QUOTES, 'UTF-8');
             $kategori           = htmlspecialchars($data['kategori'] ?? '-', ENT_QUOTES, 'UTF-8');
@@ -313,8 +315,11 @@
                     </td>
                     <td>
                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="' . $id_transaksi . '" class="text-decoration-none">
-                            <small>' . $TanggalFormat . '</small>
+                            <small>' . $id_transaksi . '</small>
                         </a>
+                    </td>
+                    <td>
+                        <small>' . $TanggalFormat . '</small>
                     </td>
                     <td>
                         <small class="text-muted">' . $nama_transaksi . '</small>

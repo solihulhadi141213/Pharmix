@@ -93,7 +93,7 @@
     // =========================================================
     // AMBIL DATA
     // =========================================================
-    $id_transaksi       = (int) ($data['id_transaksi'] ?? 0);
+    $id_transaksi       = $data['id_transaksi'];
     $rincian_transaksi  = $data['rincian_transaksi'] ?? '';
     $harga              = (int) ($data['harga'] ?? 0);
     $qty                = (int) ($data['qty'] ?? 0);

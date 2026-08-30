@@ -32,15 +32,13 @@
         responseError('Metode request tidak valid.');
     }
 
-    $id_transaksi = trim($_POST['id_transaksi'] ?? '');
-    if ($id_transaksi === '' || !ctype_digit($id_transaksi)) {
+    if(empty($_POST['id_transaksi'])){
         responseError('ID Transaksi tidak boleh kosong.');
     }
+    
 
-    $id_transaksi = (int) $id_transaksi;
-    if ($id_transaksi <= 0) {
-        responseError('ID Transaksi tidak valid.');
-    }
+    $id_transaksi = $_POST['id_transaksi'];
+    
 
     // Form Tambah Rincian
     $html = '

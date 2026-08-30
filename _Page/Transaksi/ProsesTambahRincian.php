@@ -52,24 +52,22 @@
     }
 
     // =========================================================
+    // VALIDASI ID TRANSAKSI
+    // =========================================================
+    if(empty($_POST['id_transaksi'])){
+        responseError('ID transaksi tidak Boleh kosong.');
+    }
+
+    // =========================================================
     // AMBIL DATA POST
     // =========================================================
-    $id_transaksi = trim($_POST['id_transaksi'] ?? '');
+    $id_transaksi = $_POST['id_transaksi'];
     $uraian       = trim($_POST['uraian_rincian'] ?? '');
     $harga_input  = trim($_POST['uraian_harga'] ?? '');
     $qty_input    = trim($_POST['uraian_qty'] ?? '');
     $satuan       = trim($_POST['uraian_satuan'] ?? '');
 
-    // =========================================================
-    // VALIDASI ID TRANSAKSI
-    // =========================================================
-    if ($id_transaksi === '' || !ctype_digit($id_transaksi)) {
-        responseError('ID transaksi tidak valid.');
-    }
-    $id_transaksi = (int) $id_transaksi;
-    if ($id_transaksi <= 0) {
-        responseError('ID transaksi tidak valid.');
-    }
+    
 
     // =========================================================
     // VALIDASI URAIAN
@@ -109,7 +107,7 @@
     if (!$stmt_transaksi) {
         responseError('Gagal mempersiapkan validasi transaksi.');
     }
-    mysqli_stmt_bind_param($stmt_transaksi, 'i', $id_transaksi);
+    mysqli_stmt_bind_param($stmt_transaksi, 's', $id_transaksi);
     if (!mysqli_stmt_execute($stmt_transaksi)) {
         mysqli_stmt_close($stmt_transaksi);
         responseError('Gagal memvalidasi transaksi.');
@@ -135,7 +133,7 @@
         if (!$stmt_insert) {
             throw new Exception('Gagal mempersiapkan penyimpanan rincian.');
         }
-        mysqli_stmt_bind_param($stmt_insert, 'isiisi', $id_transaksi, $uraian, $harga, $qty, $satuan, $jumlah);
+        mysqli_stmt_bind_param($stmt_insert, 'ssiisi', $id_transaksi, $uraian, $harga, $qty, $satuan, $jumlah);
         if (!mysqli_stmt_execute($stmt_insert)) {
             mysqli_stmt_close($stmt_insert);
             throw new Exception('Gagal menyimpan rincian transaksi.');
@@ -150,7 +148,7 @@
         if (!$stmt_total) {
             throw new Exception('Gagal menghitung total transaksi.');
         }
-        mysqli_stmt_bind_param($stmt_total, 'i', $id_transaksi);
+        mysqli_stmt_bind_param($stmt_total, 's', $id_transaksi);
         if (!mysqli_stmt_execute($stmt_total)) {
             mysqli_stmt_close($stmt_total);
             throw new Exception('Gagal mengambil total transaksi.');
@@ -168,7 +166,7 @@
         if (!$stmt_kategori) {
             throw new Exception('Gagal mengambil kategori transaksi.');
         }
-        mysqli_stmt_bind_param($stmt_kategori, 'i', $id_transaksi);
+        mysqli_stmt_bind_param($stmt_kategori, 's', $id_transaksi);
         if (!mysqli_stmt_execute($stmt_kategori)) {
             mysqli_stmt_close($stmt_kategori);
             throw new Exception('Gagal membaca kategori transaksi.');
@@ -212,7 +210,7 @@
         if (!$stmt_update) {
             throw new Exception('Gagal mempersiapkan pembaruan transaksi.');
         }
-        mysqli_stmt_bind_param($stmt_update, 'issisi', $total_jumlah, $status, $now, $SessionIdAkses, $SessionNama, $id_transaksi);
+        mysqli_stmt_bind_param($stmt_update, 'ississ', $total_jumlah, $status, $now, $SessionIdAkses, $SessionNama, $id_transaksi);
         if (!mysqli_stmt_execute($stmt_update)) {
             mysqli_stmt_close($stmt_update);
             throw new Exception('Gagal memperbarui transaksi.');

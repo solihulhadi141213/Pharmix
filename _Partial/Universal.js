@@ -71,7 +71,7 @@ function showToast(type, title, message) {
     const bsToast = bootstrap.Toast.getOrCreateInstance(
         toastElement,
         {
-            delay: 2000
+            delay: 1500
         }
     );
 

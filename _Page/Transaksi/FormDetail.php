@@ -60,40 +60,22 @@
     // ============================================================
     // VALIDASI ID TRANSAKSI
     // ============================================================
+    if(empty($_POST['id_transaksi'])) {
+        $response['message'] = 'ID transaksi tidak valid.';
+        $response['html'] = '
+            <div class="row">
+                <div class="col-md-12 mb-2 text-center">
+                    <small class="text-danger">
+                        ID transaksi tidak valid.
+                    </small>
+                </div>
+            </div>
+        ';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
     $id_transaksi = $_POST['id_transaksi'] ?? '';
-    $id_transaksi = trim($id_transaksi);
-
-    if ($id_transaksi === '' || !ctype_digit($id_transaksi)) {
-        $response['message'] = 'ID transaksi tidak valid.';
-        $response['html'] = '
-            <div class="row">
-                <div class="col-md-12 mb-2 text-center">
-                    <small class="text-danger">
-                        ID transaksi tidak valid.
-                    </small>
-                </div>
-            </div>
-        ';
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
-    $id_transaksi = (int) $id_transaksi;
-
-    if ($id_transaksi <= 0) {
-        $response['message'] = 'ID transaksi tidak valid.';
-        $response['html'] = '
-            <div class="row">
-                <div class="col-md-12 mb-2 text-center">
-                    <small class="text-danger">
-                        ID transaksi tidak valid.
-                    </small>
-                </div>
-            </div>
-        ';
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
-        exit;
-    }
 
     // ============================================================
     // QUERY DATA TRANSAKSI
@@ -143,7 +125,7 @@
     // ============================================================
     // BIND PARAMETER
     // ============================================================
-    mysqli_stmt_bind_param($stmt, "i", $id_transaksi);
+    mysqli_stmt_bind_param($stmt, "s", $id_transaksi);
 
     // ============================================================
     // EXECUTE
@@ -258,7 +240,7 @@
     $JumlahRincian = 0;
     $HtmlRincian   = '';
     if ($stmt_rincian) {
-        mysqli_stmt_bind_param($stmt_rincian, "i", $id_transaksi);
+        mysqli_stmt_bind_param($stmt_rincian, "s", $id_transaksi);
         if (mysqli_stmt_execute($stmt_rincian)) {
             $result_rincian = mysqli_stmt_get_result($stmt_rincian);
             if ($result_rincian) {
@@ -329,7 +311,7 @@
     // ============================================================
     // ESCAPE OUTPUT
     // ============================================================
-    $id_transaksi_html       = htmlspecialchars((string) $id_transaksi, ENT_QUOTES, 'UTF-8');
+    $id_transaksi       = htmlspecialchars((string) $id_transaksi, ENT_QUOTES, 'UTF-8');
     $id_transaksi_jenis_html = htmlspecialchars((string) $id_transaksi_jenis, ENT_QUOTES, 'UTF-8');
     $nama_transaksi_html     = htmlspecialchars($nama_transaksi, ENT_QUOTES, 'UTF-8');
     $kategori_html           = htmlspecialchars($kategori, ENT_QUOTES, 'UTF-8');
@@ -371,13 +353,13 @@
     // HTML DETAIL
     // ============================================================
     $html = '
-        <input type="hidden" name="id_transaksi" id="put_id_transaksi" value="' . $id_transaksi_html . '">
+        <input type="hidden" name="id_transaksi" id="put_id_transaksi" value="' . $id_transaksi . '">
         <input type="hidden" name="id_transaksi_jenis" value="' . $id_transaksi_jenis_html . '">
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="row mb-2">
                     <div class="col-6"><small>ID Transaksi</small></div>
-                    <div class="col-6"><small class="text-muted">' . $id_transaksi_html . '</small></div>
+                    <div class="col-6"><small class="text-muted">' . $id_transaksi . '</small></div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-6"><small>Tanggal Transaksi</small></div>

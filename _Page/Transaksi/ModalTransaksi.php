@@ -46,6 +46,7 @@
                             <label for="keyword_by">Keyword By</label>
                             <select name="keyword_by" id="keyword_by" class="form-control">
                                 <option value="">Pilih</option>
+                                <option value="id_transaksi">ID</option>
                                 <option value="tanggal">Tanggal</option>
                                 <option value="nama_transaksi">Nama Transaksi</option>
                                 <option value="kategori">Kategori</option>

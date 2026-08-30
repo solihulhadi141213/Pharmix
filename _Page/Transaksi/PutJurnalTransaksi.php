@@ -37,8 +37,7 @@
     }
 
     // VALIDASI ID TRANSAKSI
-    $id_transaksi = $_POST['id_transaksi'] ?? '';
-    if (empty($id_transaksi)) {
+    if (empty($_POST['id_transaksi'])) {
         $response['status']  = 'error';
         $response['message'] = 'ID Transaksi Tidak Boleh Kosong!';
         $response['html'] = '
@@ -54,6 +53,7 @@
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
         exit;
     }
+    $id_transaksi = $_POST['id_transaksi'];
     $id_transaksi = validateAndSanitizeInput($id_transaksi);
 
     // Hitung Jumlah Jurnal
@@ -80,7 +80,7 @@
     }
     $response['status']  = 'success';
     $response['message'] = 'Jurnal Berhasil Ditampilkan';
-    $query = mysqli_query($Conn, "SELECT*FROM jurnal WHERE kategori='Transaksi' AND id_transaksi='$id_transaksi' ORDER BY id_jurnal ASC");
+    $query = mysqli_query($Conn, "SELECT*FROM jurnal WHERE id_transaksi='$id_transaksi' ORDER BY id_jurnal ASC");
     while ($data = mysqli_fetch_array($query)) {
         $id_jurnal= $data['id_jurnal'];
         $kode_perkiraan= $data['kode_perkiraan'];

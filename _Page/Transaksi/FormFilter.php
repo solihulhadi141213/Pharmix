@@ -72,7 +72,7 @@
 
         // Filter ID Transaksi (Input Angka)
         case 'id_transaksi':
-            echo '<input type="number" name="keyword" id="keyword" class="form-control" placeholder="ID Transaksi" min="1">';
+            echo '<input type="text" name="keyword" id="keyword" class="form-control" placeholder="ID Transaksi" min="1">';
             break;
 
         // Filter ID Jenis Transaksi (Input Angka)

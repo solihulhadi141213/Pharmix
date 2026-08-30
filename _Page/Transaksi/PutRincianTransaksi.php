@@ -67,7 +67,6 @@
     // SANITASI INPUT
     // ============================================================
     $id_transaksi = validateAndSanitizeInput($id_transaksi);
-    $id_transaksi_int = (int) $id_transaksi;
 
     // ============================================================
     // AMBIL DATA UTAMA TRANSAKSI (UNTUK NOMINAL PEMBAYARAN)
@@ -79,7 +78,7 @@
     $pembayaran_transaksi_utama = 0;
 
     if ($stmt_transaksi) {
-        $stmt_transaksi->bind_param("i", $id_transaksi_int);
+        $stmt_transaksi->bind_param("s", $id_transaksi);
         if ($stmt_transaksi->execute()) {
             $result_transaksi = $stmt_transaksi->get_result();
             if ($row_transaksi = $result_transaksi->fetch_assoc()) {
@@ -118,7 +117,7 @@
     // ============================================================
     // BIND PARAMETER
     // ============================================================
-    $stmt->bind_param("i", $id_transaksi_int);
+    $stmt->bind_param("s", $id_transaksi);
 
     // ============================================================
     // EXECUTE QUERY

@@ -53,26 +53,23 @@
     $now = date('Y-m-d H:i:s');
 
     // ============================================================
+    // VALIDASI ID TRANSAKSI
+    // ============================================================
+    if(empty($_POST['id_transaksi'])){
+        responseError('ID transaksi tidak valid.');
+    }
+
+    // ============================================================
     // AMBIL INPUT
     // ============================================================
-    $id_transaksi       = trim($_POST['id_transaksi'] ?? '');
+    $id_transaksi       = $_POST['id_transaksi'];
     $id_transaksi_jenis = trim($_POST['id_transaksi_jenis'] ?? '');
     $tanggal            = trim($_POST['tanggal'] ?? '');
     $jam                = trim($_POST['jam'] ?? '');
     $pembayaran         = trim($_POST['JumlahPembayaran'] ?? '');
     $keterangan         = trim($_POST['keterangan'] ?? '');
 
-    // ============================================================
-    // VALIDASI ID TRANSAKSI
-    // ============================================================
-    if ($id_transaksi === '' || !ctype_digit($id_transaksi)) {
-        responseError('ID transaksi tidak valid.');
-    }
-    $id_transaksi = (int) $id_transaksi;
-    if ($id_transaksi <= 0) {
-        responseError('ID transaksi tidak valid.');
-    }
-
+    
     // ============================================================
     // VALIDASI JENIS TRANSAKSI
     // ============================================================
@@ -139,7 +136,7 @@
         if (!$stmt) {
             throw new Exception('Gagal mempersiapkan query transaksi.');
         }
-        mysqli_stmt_bind_param($stmt, 'i', $id_transaksi);
+        mysqli_stmt_bind_param($stmt, 's', $id_transaksi);
         if (!mysqli_stmt_execute($stmt)) {
             mysqli_stmt_close($stmt);
             throw new Exception('Gagal mengambil data transaksi.');
@@ -185,7 +182,7 @@
         if (!$stmt) {
             throw new Exception('Gagal mempersiapkan query rincian transaksi.');
         }
-        mysqli_stmt_bind_param($stmt, 'i', $id_transaksi);
+        mysqli_stmt_bind_param($stmt, 's', $id_transaksi);
         if (!mysqli_stmt_execute($stmt)) {
             mysqli_stmt_close($stmt);
             throw new Exception('Gagal menghitung rincian transaksi.');
@@ -241,7 +238,7 @@
         if (!$stmt) {
             throw new Exception('Gagal mempersiapkan penghapusan jurnal lama.');
         }
-        mysqli_stmt_bind_param($stmt, 'i', $id_transaksi);
+        mysqli_stmt_bind_param($stmt, 's', $id_transaksi);
         if (!mysqli_stmt_execute($stmt)) {
             mysqli_stmt_close($stmt);
             throw new Exception('Gagal menghapus jurnal lama.');
@@ -293,7 +290,7 @@
                 if (!$stmt) {
                     throw new Exception('Gagal mempersiapkan jurnal debet.');
                 }
-                mysqli_stmt_bind_param($stmt, 'ssissssi', $kategori, $uuid, $id_transaksi, $tanggal_jurnal, $kode_perkiraan, $nama_perkiraan, $d_k, $jumlah);
+                mysqli_stmt_bind_param($stmt, 'sssssssi', $kategori, $uuid, $id_transaksi, $tanggal_jurnal, $kode_perkiraan, $nama_perkiraan, $d_k, $jumlah);
                 if (!mysqli_stmt_execute($stmt)) {
                     mysqli_stmt_close($stmt);
                     throw new Exception('Gagal mencatat jurnal debet.');
@@ -330,7 +327,7 @@
                 if (!$stmt) {
                     throw new Exception('Gagal mempersiapkan jurnal kredit.');
                 }
-                mysqli_stmt_bind_param($stmt, 'ssissssi', $kategori, $uuid, $id_transaksi, $tanggal_jurnal, $kode_perkiraan, $nama_perkiraan, $d_k, $jumlah);
+                mysqli_stmt_bind_param($stmt, 'sssssssi', $kategori, $uuid, $id_transaksi, $tanggal_jurnal, $kode_perkiraan, $nama_perkiraan, $d_k, $jumlah);
                 if (!mysqli_stmt_execute($stmt)) {
                     mysqli_stmt_close($stmt);
                     throw new Exception('Gagal mencatat jurnal kredit.');

@@ -66,7 +66,7 @@
         ]);
         exit;
     }
-    mysqli_stmt_bind_param($StmtDelete, "i", $id_transaksi);
+    mysqli_stmt_bind_param($StmtDelete, "s", $id_transaksi);
     $DeleteStockOpename = mysqli_stmt_execute($StmtDelete);
     mysqli_stmt_close($StmtDelete);
 

@@ -45,7 +45,10 @@
     // ============================================================
     // TANGKAP DATA FORM
     // ============================================================
-    $id_transaksi   = trim($_POST['id_transaksi'] ?? '');
+    if(empty($_POST['id_transaksi'])){
+        responseError('ID transaksi tidak boleh kosong.');
+    }
+    $id_transaksi   = $_POST['id_transaksi'];
     $kode_perkiraan = trim($_POST['kode_perkiraan'] ?? '');
     $d_k            = strtoupper(trim($_POST['d_k'] ?? ''));
     $nilai          = trim($_POST['nilai'] ?? '');
@@ -54,22 +57,6 @@
     // ============================================================
     // VALIDASI MANDATORI
     // ============================================================
-
-    // ID Transaksi
-    if ($id_transaksi === '') {
-        responseError('ID transaksi tidak boleh kosong.');
-    }
-
-    if (!ctype_digit($id_transaksi)) {
-        responseError('ID transaksi tidak valid.');
-    }
-
-    $id_transaksi = (int) $id_transaksi;
-
-    if ($id_transaksi <= 0) {
-        responseError('ID transaksi tidak valid.');
-    }
-
 
     // Kode Perkiraan
     if ($kode_perkiraan === '') {
@@ -124,41 +111,24 @@
     // TIDAK mengambil kategori karena kolom kategori tidak ada
     // pada tabel transaksi.
 
-    $sql_transaksi = "
-        SELECT
-            id_transaksi,
-            tanggal
-        FROM transaksi
-        WHERE id_transaksi = ?
-        LIMIT 1
-    ";
-
+    $sql_transaksi = "SELECT id_transaksi, tanggal FROM transaksi WHERE id_transaksi = ? LIMIT 1";
     $stmt_transaksi = mysqli_prepare($Conn, $sql_transaksi);
-
     if (!$stmt_transaksi) {
         responseError('Gagal mempersiapkan query transaksi.');
     }
-
-    mysqli_stmt_bind_param(
-        $stmt_transaksi,
-        'i',
-        $id_transaksi
-    );
-
+    mysqli_stmt_bind_param($stmt_transaksi,'s',$id_transaksi);
     if (!mysqli_stmt_execute($stmt_transaksi)) {
         mysqli_stmt_close($stmt_transaksi);
         responseError('Gagal mengambil data transaksi.');
     }
 
     $result_transaksi = mysqli_stmt_get_result($stmt_transaksi);
-
     if (!$result_transaksi || mysqli_num_rows($result_transaksi) === 0) {
         mysqli_stmt_close($stmt_transaksi);
         responseError('Data transaksi tidak ditemukan.');
     }
 
     $data_transaksi = mysqli_fetch_assoc($result_transaksi);
-
     mysqli_stmt_close($stmt_transaksi);
 
 
@@ -313,7 +283,7 @@
 
     mysqli_stmt_bind_param(
         $stmt_insert,
-        'ssissssi',
+        'sssssssi',
         $kategori,
         $uuid,
         $id_transaksi,

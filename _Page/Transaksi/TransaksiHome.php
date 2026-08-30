@@ -57,6 +57,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center"><small><b>No</b></small></th>
+                                        <th><small><b>Kode</b></small></th>
                                         <th><small><b>Tanggal</b></small></th>
                                         <th><small><b>Nama Transaksi</b></small></th>
                                         <th><small><b>Kategori</b></small></th>
@@ -70,7 +71,7 @@
                                 </thead>
                                 <tbody id="tabel_transaksi">
                                     <tr>
-                                        <td class="text-center" colspan="10">
+                                        <td class="text-center" colspan="11">
                                             <small>No Data</small>
                                         </td>
                                     </tr>
@@ -86,10 +87,10 @@
                                 </small>
                             </div>
                             <div class="col-6 text-end">
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="prev_button">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button">
                                     <i class="bi bi-chevron-left"></i>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="next_button">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button">
                                     <i class="bi bi-chevron-right"></i>
                                 </button>
                             </div>

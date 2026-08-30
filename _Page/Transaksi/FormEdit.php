@@ -27,16 +27,11 @@
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         responseError('Metode request tidak valid.');
     }
-
-    $id_transaksi = trim($_POST['id_transaksi'] ?? '');
-    if ($id_transaksi === '' || !ctype_digit($id_transaksi)) {
-        responseError('ID Transaksi tidak boleh kosong.');
-    }
-
-    $id_transaksi = (int) $id_transaksi;
-    if ($id_transaksi <= 0) {
+    if(empty($_POST['id_transaksi'])){
         responseError('ID Transaksi tidak valid.');
     }
+
+    $id_transaksi = $_POST['id_transaksi'];
 
     // [PETUNJUK PENGEMBANGAN] Sesuaikan query utama di sini jika ada penambahan kolom dari tabel relasi
     $sql = "SELECT t.id_transaksi, t.id_transaksi_jenis, t.tanggal, t.jumlah, t.pembayaran, t.keterangan, t.status, tj.nama AS nama_transaksi, tj.kategori AS kategori FROM transaksi AS t LEFT JOIN transaksi_jenis AS tj ON tj.id_transaksi_jenis = t.id_transaksi_jenis WHERE t.id_transaksi = ? LIMIT 1";
@@ -46,7 +41,7 @@
         responseError('Gagal menyiapkan query transaksi.');
     }
 
-    mysqli_stmt_bind_param($stmt, 'i', $id_transaksi);
+    mysqli_stmt_bind_param($stmt, 's', $id_transaksi);
     if (!mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
         responseError('Gagal menjalankan query transaksi.');

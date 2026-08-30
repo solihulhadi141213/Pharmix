@@ -68,15 +68,7 @@
     if ($id_transaksi === '') {
         responseError('ID transaksi tidak boleh kosong.');
     }
-    // ID transaksi harus angka
-    if (!ctype_digit($id_transaksi)) {
-        responseError('ID transaksi tidak valid.');
-    }
-    $id_transaksi = (int) $id_transaksi;
-    // Pastikan lebih dari 0
-    if ($id_transaksi <= 0) {
-        responseError('ID transaksi tidak valid.');
-    }
+    
 
     // ============================================================
     // QUERY TRANSAKSI
@@ -116,7 +108,7 @@
     // ============================================================
     // BIND PARAMETER
     // ============================================================
-    mysqli_stmt_bind_param($stmt, 'i', $id_transaksi);
+    mysqli_stmt_bind_param($stmt, 's', $id_transaksi);
 
     // ============================================================
     // EXECUTE
@@ -213,7 +205,7 @@
     $stmt_rincian = mysqli_prepare($Conn, $sql_rincian);
     $JumlahRincian = 0;
     if ($stmt_rincian) {
-        mysqli_stmt_bind_param($stmt_rincian, 'i', $id_transaksi);
+        mysqli_stmt_bind_param($stmt_rincian, 's', $id_transaksi);
         if (mysqli_stmt_execute($stmt_rincian)) {
             $result_rincian = mysqli_stmt_get_result($stmt_rincian);
             if ($result_rincian) {

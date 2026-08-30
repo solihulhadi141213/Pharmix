@@ -23,21 +23,19 @@
         responseError('Metode request tidak valid.');
     }
 
-    $id_transaksi = trim($_POST['id_transaksi'] ?? '');
-    if ($id_transaksi === '' || !ctype_digit($id_transaksi)) {
-        responseError('ID Transaksi tidak valid.');
+    if(empty($_POST['id_transaksi'])){
+        responseError('ID Transaksi Tidak Boleh Kosong');
     }
-    $id_transaksi = (int) $id_transaksi;
-    if ($id_transaksi <= 0) {
-        responseError('ID Transaksi tidak valid.');
-    }
+
+    $id_transaksi = $_POST['id_transaksi'] ;
+   
 
     $sql = "SELECT id_transaksi, tanggal FROM transaksi WHERE id_transaksi = ? LIMIT 1";
     $stmt = mysqli_prepare($Conn, $sql);
     if (!$stmt) {
         responseError('Gagal mempersiapkan query transaksi.');
     }
-    mysqli_stmt_bind_param($stmt, 'i', $id_transaksi);
+    mysqli_stmt_bind_param($stmt, 's', $id_transaksi);
     if (!mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
         responseError('Gagal mengambil data transaksi.');

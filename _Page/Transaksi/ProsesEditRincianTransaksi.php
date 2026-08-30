@@ -119,7 +119,7 @@
         }
         $data_old = mysqli_fetch_assoc($result_old);
         mysqli_stmt_close($stmt_old);
-        $id_transaksi = (int) $data_old['id_transaksi'];
+        $id_transaksi = $data_old['id_transaksi'];
 
         // =====================================================
         // UPDATE RINCIAN
@@ -162,7 +162,7 @@
         if (!$stmt_transaksi) {
             throw new Exception('Gagal mempersiapkan query transaksi.');
         }
-        mysqli_stmt_bind_param($stmt_transaksi, 'i', $id_transaksi);
+        mysqli_stmt_bind_param($stmt_transaksi, 's', $id_transaksi);
         if (!mysqli_stmt_execute($stmt_transaksi)) {
             mysqli_stmt_close($stmt_transaksi);
             throw new Exception('Gagal mengambil data transaksi.');
@@ -206,7 +206,7 @@
         if (!$stmt_update_transaksi) {
             throw new Exception('Gagal mempersiapkan update transaksi.');
         }
-        mysqli_stmt_bind_param($stmt_update_transaksi, 'issisi', $total_jumlah, $status, $now, $SessionIdAkses, $SessionNama, $id_transaksi);
+        mysqli_stmt_bind_param($stmt_update_transaksi, 'ississ', $total_jumlah, $status, $now, $SessionIdAkses, $SessionNama, $id_transaksi);
         if (!mysqli_stmt_execute($stmt_update_transaksi)) {
             mysqli_stmt_close($stmt_update_transaksi);
             throw new Exception('Gagal memperbarui total transaksi.');
