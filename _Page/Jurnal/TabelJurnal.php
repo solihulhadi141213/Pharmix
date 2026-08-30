@@ -1,316 +1,153 @@
 <?php
-    //Koneksi
-    include "../../_Config/Connection.php";
-    include "../../_Config/GlobalFunction.php";
-    include "../../_Config/Session.php";
-    //Time Zone
-    date_default_timezone_set('Asia/Jakarta');
-    //Cek Akses
-    if(empty($SessionIdAkses)){
-        echo '<div class="row mb-3">';
-        echo '  <div class="col col-md-12 text-center">';
-        echo '      <code>Sesi Akses Sudah Berakhir. Silahkan Login Ulang!</code>';
-        echo '  </div>';
-        echo '</div>';
-    }else{
-        //Keyword_by
-        if(!empty($_POST['keyword_by'])){
-            $keyword_by=$_POST['keyword_by'];
-        }else{
-            $keyword_by="";
+include "../../_Config/Connection.php";
+include "../../_Config/GlobalFunction.php";
+include "../../_Config/Session.php";
+
+date_default_timezone_set('Asia/Jakarta');
+header('Content-Type: application/json; charset=utf-8');
+
+function jurnalResponse($status, $html, $page = 1, $totalPage = 1)
+{
+    echo json_encode([
+        'status' => $status,
+        'html' => $html,
+        'page' => (int) $page,
+        'total_page' => (int) $totalPage
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+if (empty($SessionIdAkses)) {
+    jurnalResponse('error', '<tr><td colspan="8" class="text-center"><span class="text-danger">Sesi Akses Sudah Berakhir! Silahkan Login Ulang</span></td></tr>');
+}
+
+$batas = filter_input(INPUT_POST, 'batas', FILTER_VALIDATE_INT);
+$batas = ($batas !== false && $batas !== null && $batas > 0 && $batas <= 100) ? $batas : 10;
+$page = filter_input(INPUT_POST, 'page', FILTER_VALIDATE_INT);
+$page = ($page !== false && $page !== null && $page > 0) ? $page : 1;
+$keyword = trim((string) ($_POST['keyword'] ?? ''));
+$keywordBy = trim((string) ($_POST['KeywordBy'] ?? $_POST['keyword_by'] ?? ''));
+$shortBy = strtoupper(trim((string) ($_POST['ShortBy'] ?? 'DESC')));
+$shortBy = in_array($shortBy, ['ASC', 'DESC'], true) ? $shortBy : 'DESC';
+
+$referenceSql = "COALESCE(NULLIF(j.id_transaksi, ''), NULLIF(j.id_transaksi_jual_beli, ''), NULLIF(j.id_transaksi_pembayaran, ''), '')";
+$filterColumns = [
+    'uuid' => 'j.uuid',
+    'id_transaksi' => 'j.id_transaksi',
+    'id_transaksi_jual_beli' => 'j.id_transaksi_jual_beli',
+    'id_transaksi_pembayaran' => 'j.id_transaksi_pembayaran',
+    'tanggal' => 'j.tanggal',
+    'kategori' => 'j.kategori',
+    'referensi' => $referenceSql
+];
+$orderColumns = [
+    'uuid' => 'j.uuid',
+    'id_transaksi' => 'j.id_transaksi',
+    'id_transaksi_jual_beli' => 'j.id_transaksi_jual_beli',
+    'id_transaksi_pembayaran' => 'j.id_transaksi_pembayaran',
+    'tanggal' => 'j.tanggal',
+    'kategori' => 'j.kategori',
+    'referensi' => $referenceSql
+];
+$orderBy = trim((string) ($_POST['OrderBy'] ?? 'tanggal'));
+$orderSql = $orderColumns[$orderBy] ?? 'j.tanggal';
+
+$fromSql = "
+    FROM jurnal j
+    LEFT JOIN transaksi t ON t.id_transaksi = j.id_transaksi
+    LEFT JOIN transaksi_jual_beli tjb ON tjb.id_transaksi_jual_beli = j.id_transaksi_jual_beli
+    LEFT JOIN transaksi_pembayaran tp ON tp.id_transaksi_pembayaran = j.id_transaksi_pembayaran
+";
+$whereSql = '';
+$params = [];
+$types = '';
+if ($keyword !== '') {
+    $searchColumns = ($keywordBy !== '' && isset($filterColumns[$keywordBy]))
+        ? [$filterColumns[$keywordBy]]
+        : array_values($filterColumns);
+    $whereSql = ' WHERE ' . implode(' OR ', array_map(function ($column) {
+        return "$column LIKE CONCAT('%', ?, '%')";
+    }, $searchColumns));
+    foreach ($searchColumns as $unused) {
+        $params[] = $keyword;
+        $types .= 's';
+    }
+}
+
+$countStmt = mysqli_prepare($Conn, "SELECT COUNT(DISTINCT j.uuid) AS total $fromSql $whereSql");
+if (!$countStmt) {
+    jurnalResponse('error', '<tr><td colspan="8" class="text-center"><span class="text-danger">Gagal menyiapkan query jurnal</span></td></tr>');
+}
+if ($types !== '') {
+    mysqli_stmt_bind_param($countStmt, $types, ...$params);
+}
+mysqli_stmt_execute($countStmt);
+$totalData = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($countStmt))['total'];
+mysqli_stmt_close($countStmt);
+
+$totalPage = max(1, (int) ceil($totalData / $batas));
+$page = min($page, $totalPage);
+$offset = ($page - 1) * $batas;
+if ($totalData === 0) {
+    jurnalResponse('error', '<tr><td colspan="8" class="text-center"><span class="text-danger">Tidak ada data yang ditampilkan</span></td></tr>');
+}
+
+$groupSql = "
+    SELECT j.uuid, MIN(j.kategori) AS kategori, MIN(j.tanggal) AS tanggal,
+        MIN(j.id_transaksi) AS id_transaksi,
+        MIN(j.id_transaksi_jual_beli) AS id_transaksi_jual_beli,
+        MIN(j.id_transaksi_pembayaran) AS id_transaksi_pembayaran,
+        COUNT(*) AS jumlah_row
+    $fromSql $whereSql
+    GROUP BY j.uuid
+    ORDER BY $orderSql $shortBy
+    LIMIT ?, ?
+";
+$groupStmt = mysqli_prepare($Conn, $groupSql);
+if (!$groupStmt) {
+    jurnalResponse('error', '<tr><td colspan="8" class="text-center"><span class="text-danger">Gagal menyiapkan data jurnal</span></td></tr>');
+}
+$groupParams = $params;
+$groupParams[] = $offset;
+$groupParams[] = $batas;
+mysqli_stmt_bind_param($groupStmt, $types . 'ii', ...$groupParams);
+mysqli_stmt_execute($groupStmt);
+$groupResult = mysqli_stmt_get_result($groupStmt);
+
+$detailStmt = mysqli_prepare($Conn, "SELECT id_jurnal, kode_perkiraan, nama_perkiraan, d_k, nilai FROM jurnal WHERE uuid = ? ORDER BY d_k ASC, id_jurnal ASC");
+$html = '';
+$no = $offset + 1;
+while ($group = mysqli_fetch_assoc($groupResult)) {
+    $uuid = $group['uuid'];
+    $referensi = $group['id_transaksi'] ?: ($group['id_transaksi_jual_beli'] ?: ($group['id_transaksi_pembayaran'] ?: '-'));
+    $referensi = htmlspecialchars($referensi, ENT_QUOTES, 'UTF-8');
+    $kategori = htmlspecialchars($group['kategori'], ENT_QUOTES, 'UTF-8');
+    $tanggal = htmlspecialchars($group['tanggal'], ENT_QUOTES, 'UTF-8');
+    $jumlahRow = (int) $group['jumlah_row'];
+
+    mysqli_stmt_bind_param($detailStmt, 's', $uuid);
+    mysqli_stmt_execute($detailStmt);
+    $detailResult = mysqli_stmt_get_result($detailStmt);
+    $first = true;
+    while ($detail = mysqli_fetch_assoc($detailResult)) {
+        $html .= '<tr>';
+        if ($first) {
+            $html .= '<td rowspan="'.$jumlahRow.'">'.$no.'</td>';
+            $html .= '<td rowspan="'.$jumlahRow.'">'.$referensi.'</td>';
+            $html .= '<td rowspan="'.$jumlahRow.'">'.$kategori.'</td>';
+            $html .= '<td rowspan="'.$jumlahRow.'">'.$tanggal.'</td>';
         }
-        //keyword
-        if(!empty($_POST['keyword'])){
-            $keyword=$_POST['keyword'];
-        }else{
-            $keyword="";
-        }
-        //batas
-        if(!empty($_POST['batas'])){
-            $batas=$_POST['batas'];
-        }else{
-            $batas="10";
-        }
-        //ShortBy
-        if(!empty($_POST['ShortBy'])){
-            $ShortBy=$_POST['ShortBy'];
-        }else{
-            $ShortBy="DESC";
-        }
-        //OrderBy
-        if(!empty($_POST['OrderBy'])){
-            $OrderBy=$_POST['OrderBy'];
-        }else{
-            $OrderBy="tanggal";
-        }
-        //Atur Page
-        if(!empty($_POST['page'])){
-            $page=$_POST['page'];
-            $posisi = ( $page - 1 ) * $batas;
-        }else{
-            $page="1";
-            $posisi = 0;
-        }
-        if(empty($keyword_by)){
-            if(empty($keyword)){
-                $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT DISTINCT uuid FROM jurnal"));
-            }else{
-                $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT DISTINCT uuid FROM jurnal WHERE kategori like '%$keyword%' OR tanggal like '%$keyword%' OR kode_perkiraan like '%$keyword%' OR nama_perkiraan like '%$keyword%'"));
-            }
-        }else{
-            if(empty($keyword)){
-                $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT DISTINCT uuid FROM jurnal"));
-            }else{
-                $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT DISTINCT uuid FROM jurnal WHERE $keyword_by like '%$keyword%'"));
-            }
-        }
-        //Mengatur Halaman
-        $JmlHalaman = ceil($jml_data/$batas); 
-        $prev=$page-1;
-        $next=$page+1;
-        if($next>$JmlHalaman){
-            $next=$page;
-        }else{
-            $next=$page+1;
-        }
-        if($prev<"1"){
-            $prev="1";
-        }else{
-            $prev=$page-1;
-        }
-?>
-    <script>
-        //ketika klik next
-        $('#NextPage').click(function() {
-            var page=$('#NextPage').val();
-            $('#page').val(page);
-            filterAndLoadTable();
-        });
-        //Ketika klik Previous
-        $('#PrevPage').click(function() {
-            var page = $('#PrevPage').val();
-            $('#page').val(page);
-            filterAndLoadTable();
-        });
-    </script>
-    <div class="row mb-3">
-        <div class="table table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <td align="center"><b>No</b></td>
-                        <td align="center"><b>Referensi</b></td>
-                        <td align="center"><b>Tanggal</b></td>
-                        <td align="center"><b>Kode</b></td>
-                        <td align="center"><b>Akun</b></td>
-                        <td align="center"><b>Debet</b></td>
-                        <td align="center"><b>Kredit</b></td>
-                        <td align="center"><b>Opsi</b></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                        if(empty($jml_data)){
-                            echo '<tr>';
-                            echo '  <td colspan="8" class="text-center">';
-                            echo '      <code class="text-danger">';
-                            echo '          Tidak Ada Data Jurnal Yang Dapat Ditampilkan';
-                            echo '      </code>';
-                            echo '  </td>';
-                            echo '</tr>';
-                        }else{
-                            $no = 1+$posisi;
-                            //KONDISI PENGATURAN MASING FILTER
-                            if(empty($keyword_by)){
-                                if(empty($keyword)){
-                                    $query = mysqli_query($Conn, "SELECT DISTINCT uuid FROM jurnal ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
-                                }else{
-                                    $query = mysqli_query($Conn, "SELECT DISTINCT uuid FROM jurnal WHERE kategori like '%$keyword%' OR tanggal like '%$keyword%' OR kode_perkiraan like '%$keyword%' OR nama_perkiraan like '%$keyword%' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
-                                }
-                            }else{
-                                if(empty($keyword)){
-                                    $query = mysqli_query($Conn, "SELECT DISTINCT uuid FROM jurnal ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
-                                }else{
-                                    $query = mysqli_query($Conn, "SELECT DISTINCT uuid FROM jurnal WHERE $keyword_by like '%$keyword%' ORDER BY $OrderBy $ShortBy LIMIT $posisi, $batas");
-                                }
-                            }
-                            while ($data = mysqli_fetch_array($query)) {
-                                $uuid= $data['uuid'];
-                                
-                                //Buka Detail
-                                $kategori       = GetDetailData($Conn,'jurnal','uuid',$uuid,'kategori');
-                                $tanggal_jurnal = GetDetailData($Conn,'jurnal','uuid',$uuid,'tanggal');
-                                $id_transaksi = GetDetailData($Conn,'jurnal','uuid',$uuid,'id_transaksi');
-                                
-                                //Banyaknya Data Jurnal
-                                $JumlahRow = mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM jurnal WHERE uuid='$uuid' AND kategori='$kategori'"));
-                                
-                                //Mencari Referensi
-                                if($kategori=="Transaksi"){
-                                    $Tanggal            = GetDetailData($Conn,'transaksi','id_transaksi',$id_transaksi,'tanggal');
-                                    $id_transaksi_jenis = mb_strtoupper(GetDetailData($Conn, 'transaksi', 'id_transaksi', $id_transaksi, 'id_transaksi_jenis'), 'UTF-8');
-                                    $nama_transaksi     = mb_strtoupper(GetDetailData($Conn, 'transaksi_jenis', 'id_transaksi_jenis', $id_transaksi_jenis, 'nama'), 'UTF-8');
-                                    $Tanggal            = date('d/m/Y H:i',strtotime($Tanggal));
-                                    $Referensi='
-                                        <a href="javascript:void(0);">
-                                            <small>
-                                                '.$nama_transaksi.' <br>['.$Tanggal.']
-                                            </small>
-                                        </a>
-                                    ';
-                                }else{
-                                   if($kategori=="Penjualan"){
-                                        $Tanggal=GetDetailData($Conn,'transaksi_jual_beli','id_transaksi_jual_beli',$uuid,'tanggal');
-                                        $Tanggal=date('d/m/Y H:i',strtotime($Tanggal));
-                                        $Referensi='
-                                            <a href="javascript:void(0);" class="text-success">
-                                                <small>
-                                                    PENJUALAN <br>['.$Tanggal.']
-                                                </small>
-                                            </a>
-                                        ';
-                                    }else{
-                                        if($kategori=="Retur Penjualan"){
-                                            $Tanggal=GetDetailData($Conn,'transaksi_jual_beli','id_transaksi_jual_beli',$uuid,'tanggal');
-                                            $Tanggal=date('d/m/Y H:i',strtotime($Tanggal));
-                                            $Referensi='
-                                                <a href="javascript:void(0);" class="text-warning">
-                                                    <small>
-                                                        RETUR PENJUALAN <br>['.$Tanggal.']
-                                                    </small>
-                                                </a>
-                                            ';
-                                        }else{
-                                            if($kategori=="Pembelian"){
-                                                $Tanggal=GetDetailData($Conn,'transaksi_jual_beli','id_transaksi_jual_beli',$uuid,'tanggal');
-                                                $Tanggal=date('d/m/Y H:i',strtotime($Tanggal));
-                                                $Referensi='
-                                                    <a href="javascript:void(0);"  class="text-success">
-                                                        <small>
-                                                            PEMBELIAN <br>['.$Tanggal.']
-                                                        </small>
-                                                    </a>
-                                                ';
-                                            }else{
-                                                if($kategori=="Retur Pembelian"){
-                                                    $Tanggal=GetDetailData($Conn,'transaksi_jual_beli','id_transaksi_jual_beli',$uuid,'tanggal');
-                                                    $Tanggal=date('d/m/Y H:i',strtotime($Tanggal));
-                                                    $Referensi='
-                                                        <a href="javascript:void(0);" class="text-warning">
-                                                            <small>
-                                                                RETUR PEMBELIAN <br>['.$Tanggal.']
-                                                            </small>
-                                                        </a>
-                                                    ';
-                                                }else{
-                                                    $Referensi="$kategori";
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                    ?>
-                                <tr>
-                                    <td align="center" rowspan="<?php echo $JumlahRow; ?>"><?php echo $no; ?></td>
-                                    <td align="left" rowspan="<?php echo $JumlahRow; ?>">
-                                        <?php echo '' . $Referensi . ''; ?><br>
-                                    </td>
-                                    <td align="left" rowspan="<?php echo $JumlahRow; ?>">
-                                        <?php echo '<small>' . $tanggal_jurnal . '</small>'; ?>
-                                    </td>
-                                    <?php
-                                        $QrySub = mysqli_query($Conn, "SELECT * FROM jurnal WHERE uuid='$uuid' ORDER BY d_k ASC");
-                                        $first = true;
-                                        while ($DataSub = mysqli_fetch_array($QrySub)) {
-                                            $id_jurnal = $DataSub['id_jurnal'];
-                                            $kode_perkiraan = $DataSub['kode_perkiraan'];
-                                            $nama_perkiraan = $DataSub['nama_perkiraan'];
-                                            $d_k = $DataSub['d_k'];
-                                            $nilai = $DataSub['nilai'];
-                                            $NilaiFormat = "" . number_format($nilai,0,',','.');
-                                            if (!$first) {
-                                                echo '<tr>';
-                                            }
-                                        ?>
-                                            <td align="left">
-                                                <?php echo '<code class="text text-grayish">' . $kode_perkiraan . '</code>'; ?>
-                                            </td>
-                                            <td align="left">
-                                                <?php echo '<code class="text text-grayish">' . $nama_perkiraan . '</code>'; ?>
-                                            </td>
-                                            <td align="right">
-                                                <?php
-                                                if ($d_k == "D") {
-                                                    echo '<code class="text text-grayish">' . $NilaiFormat . '</code>';
-                                                } else {
-                                                    echo '<code class="text text-grayish">-</code>';
-                                                }
-                                                ?>
-                                            </td>
-                                            <td align="right">
-                                                <?php
-                                                if ($d_k == "K") {
-                                                    echo '<code class="text text-grayish">' . $NilaiFormat . '</code>';
-                                                } else {
-                                                    echo '<code class="text text-grayish">-</code>';
-                                                }
-                                                ?>
-                                            </td>
-                                            <td align="right">
-                                                <a class="btn btn-sm btn-outline-dark btn-rounded" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </a>
-                                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
-                                                    <li class="dropdown-header text-start">
-                                                        <h6>Option</h6>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalDetailJurnal" data-id="<?php echo "$id_jurnal"; ?>">
-                                                            <i class="bi bi-info-circle"></i> Detail
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalEditJurnal" data-id="<?php echo "$id_jurnal"; ?>">
-                                                            <i class="bi bi-pencil"></i> Edit
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalHapusJurnal" data-id="<?php echo "$id_jurnal"; ?>">
-                                                            <i class="bi bi-x"></i> Hapus
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                    <?php
-                                        if (!$first) {
-                                            echo '</tr>';
-                                        }
-                                            $first = false;
-                                        } 
-                                    ?>
-                                </tr>
-                    <?php
-                                $no++; 
-                            }
-                        }
-                    ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <div class="btn-group shadow-0" role="group" aria-label="Basic example">
-                <button class="btn btn-sm btn-info" id="PrevPage" value="<?php echo $prev;?>">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-info">
-                    <?php echo "$page of $JmlHalaman"; ?>
-                </button>
-                <button class="btn btn-sm btn-info" id="NextPage" value="<?php echo $next;?>">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-<?php } ?>
+        $kode = htmlspecialchars($detail['kode_perkiraan'], ENT_QUOTES, 'UTF-8');
+        $nama = htmlspecialchars($detail['nama_perkiraan'], ENT_QUOTES, 'UTF-8');
+        $nilai = number_format((int) $detail['nilai'], 0, ',', '.');
+        $debet = $detail['d_k'] === 'D' ? $nilai : '-';
+        $kredit = $detail['d_k'] === 'K' ? $nilai : '-';
+        $html .= '<td>'.$kode.'</td><td>'.$nama.'</td><td>'.$debet.'</td><td>'.$kredit.'</td></tr>';
+        $first = false;
+    }
+    $no++;
+}
+mysqli_stmt_close($detailStmt);
+mysqli_stmt_close($groupStmt);
+
+jurnalResponse('success', $html, $page, $totalPage);

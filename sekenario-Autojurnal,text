@@ -1,0 +1,10 @@
+Berikut ini bagaimana pencatatan jurnal berdasarkan auto jurnal
+
+# Transaksi Operasional
+Auto jurnal ada pada tabel transaksi_jenis, sesuai id_transaksi_jenis masing-masing.
+1. Pemasukan
+  - Kondisi 1 : Lunas = yaitu kondisi dimana jumlah rincian sama dengan jumlah pembayaran (cash)
+    -> Pembayaran (cash) masuk ke akun Debet, Jumlah Tagihan masuk ke akun kredit, Utang piutang kosong.
+  - Kondisi 2 : Utang = yaitu kondisi dimana jumlah rincian > jumlah pembayaran (cash)
+    -> Pembayaran (cash) jika ada masuk ke akun Debet,
+  - Kondisi 3 : Piutang ->

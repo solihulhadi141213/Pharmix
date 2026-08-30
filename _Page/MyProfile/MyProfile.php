@@ -41,7 +41,7 @@
                     </b>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-3 border-1 border-bottom">
+                    <div class="row mb-3 mt-4 border-1 border-bottom">
                         <div class="col col-md-12 text-center mb-4">
                             <img src="image_proxy.php?dir=User&filename=<?php echo "$SessionGambar"; ?>" alt="" width="70%" class="rounded-circle">
                         </div>
@@ -131,71 +131,88 @@
                     </b>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-3">
+                    <div class="row mt-3 mb-3">
                         <div class="col-md-12">
-                            <div class="table table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <td align="center" colspan="4"><b>PENGATURAN IJIN AKSES FITUR</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td align="center"><b>No</b></td>
-                                            <td colspan="2" align="center"><b>Kategori/Fitur</b></td>
-                                            <td align="center"><b>Check</b></td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                            //Tampilkan Kategori Ijin Akses
-                                            $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM akses_fitur"));
-                                            if(empty($jml_data)){
-                                                echo '<tr colspan="4">';
-                                                echo '  <td class="text-center text-danger">Belum ada data fitur aplikasi, silahkan tambahkan fitur aplikasi terlebih dulu</td>';
-                                                echo '</tr>';
-                                            }else{
-                                                $no_kategori=1;
-                                                $QryKategoriFitur = mysqli_query($Conn, "SELECT DISTINCT kategori FROM akses_fitur ORDER BY kategori ASC");
-                                                while ($DataKategori = mysqli_fetch_array($QryKategoriFitur)) {
-                                                    $kategori= $DataKategori['kategori'];
-                                                    echo '<tr>';
-                                                    echo '  <td align="center"><b>'.$no_kategori.'</b></td>';
-                                                    echo '  <td align="left" colspan="2"><label for="IdKategoriEdit'.$no_kategori.'"><b>'.$kategori.'</b></label></td>';
-                                                    echo '  <td align="center">';
-                                                    echo '      ';
-                                                    echo '  </td>';
-                                                    echo '</tr>';
-                                                    $no_fitur=1;
-                                                    $QryFitur = mysqli_query($Conn, "SELECT * FROM akses_fitur WHERE kategori='$kategori' ORDER BY nama ASC");
-                                                    while ($DataFitur = mysqli_fetch_array($QryFitur)) {
-                                                        $id_akses_fitur= $DataFitur['id_akses_fitur'];
-                                                        $nama= $DataFitur['nama'];
-                                                        $keterangan= $DataFitur['keterangan'];
-                                                        $kode= $DataFitur['kode'];
-                                                        echo '<tr>';
-                                                        echo '  <td align="center"></td>';
-                                                        echo '  <td align="center"><label for="IdFiturEdit'.$id_akses_fitur.'">'.$no_kategori.'.'.$no_fitur.'</label></td>';
-                                                        echo '  <td align="left"><label for="IdFitur'.$id_akses_fitur.'">'.$nama.'</label><br><code class="text text-grayish">'.$keterangan.'</code></td>';
-                                                        echo '  <td align="center">';
-                                                        //Validasi Apakah Bersangkutan Punya Akses Ini
-                                                        $Validasi=IjinAksesSaya($Conn,$SessionIdAkses,$kode);
-                                                        if($Validasi=="Ada"){
-                                                            echo '<i class="bi bi-check-circle"></i>';
-                                                        }else{
-                                                            echo '<i class="bi bi-x"></i>';
-                                                        }
-                                                        
-                                                        echo '  </td>';
-                                                        echo '</tr>';
-                                                        $no_fitur++;
-                                                    }
-                                                    $no_kategori++;
-                                                }
-                                            }
-                                        ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <?php
+                                //Tampilkan Kategori Ijin Akses
+                                $jml_data = mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM akses_fitur"));
+                                if(empty($jml_data)){
+                                    echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
+                                    echo '  <small>Belum ada data fitur aplikasi, silahkan tambahkan fitur aplikasi terlebih dulu</small>';
+                                    echo '  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                                    echo '</div>';
+                                }else{
+                                    $QryKategoriFitur = mysqli_query($Conn, "SELECT DISTINCT kategori FROM akses_fitur ORDER BY kategori ASC");
+                                    $kategori_list = [];
+                                    while ($DataKategori = mysqli_fetch_array($QryKategoriFitur)) {
+                                        $kategori_list[] = $DataKategori['kategori'];
+                                    }
+                                    
+                                    // Tab Navigation
+                                    echo '<ul class="nav nav-tabs mb-3" id="izinAksesTab" role="tablist">';
+                                    foreach ($kategori_list as $idx => $kategori) {
+                                        $tab_id = 'kategori' . ($idx + 1);
+                                        $active_class = ($idx === 0) ? 'active' : '';
+                                        echo '<li class="nav-item" role="presentation">';
+                                        echo '  <button class="nav-link ' . $active_class . '" id="' . $tab_id . '-tab" data-bs-toggle="tab" data-bs-target="#' . $tab_id . '" type="button" role="tab" aria-controls="' . $tab_id . '" aria-selected="' . ($idx === 0 ? 'true' : 'false') . '">';
+                                        echo '    <i class="bi bi-folder"></i> ' . htmlspecialchars($kategori, ENT_QUOTES, 'UTF-8');
+                                        echo '  </button>';
+                                        echo '</li>';
+                                    }
+                                    echo '</ul>';
+                                    
+                                    // Tab Content
+                                    echo '<div class="tab-content" id="izinAksesTabContent">';
+                                    foreach ($kategori_list as $idx => $kategori) {
+                                        $tab_id = 'kategori' . ($idx + 1);
+                                        $active_class = ($idx === 0) ? 'show active' : '';
+                                        echo '<div class="tab-pane fade ' . $active_class . '" id="' . $tab_id . '" role="tabpanel" aria-labelledby="' . $tab_id . '-tab">';
+                                        
+                                        $QryFitur = mysqli_query($Conn, "SELECT * FROM akses_fitur WHERE kategori='$kategori' ORDER BY nama ASC");
+                                        $jml_fitur = mysqli_num_rows($QryFitur);
+                                        
+                                        echo '<ul class="list-group list-group-flush">';
+                                        $no_fitur = 1;
+                                        while ($DataFitur = mysqli_fetch_array($QryFitur)) {
+                                            $id_akses_fitur = $DataFitur['id_akses_fitur'];
+                                            $nama = htmlspecialchars($DataFitur['nama'], ENT_QUOTES, 'UTF-8');
+                                            $keterangan = htmlspecialchars($DataFitur['keterangan'], ENT_QUOTES, 'UTF-8');
+                                            $kode = $DataFitur['kode'];
+                                            
+                                            $Validasi = IjinAksesSaya($Conn, $SessionIdAkses, $kode);
+                                            $badge_class = ($Validasi == "Ada") ? 'bg-success' : 'bg-danger';
+                                            $icon_class = ($Validasi == "Ada") ? 'bi-check-circle text-success' : 'bi-x-circle text-danger';
+                                            $status_text = ($Validasi == "Ada") ? 'Diizinkan' : 'Tidak Diizinkan';
+                                            
+                                            echo '<li class="list-group-item d-flex justify-content-between align-items-start">';
+                                            echo '  <div class="flex-grow-1">';
+                                            echo '    <div class="fw-bold">';
+                                            echo '      <small>' . $no_fitur . '. ' . $nama . '</small>';
+                                            echo '    </div>';
+                                            echo '    <small class="text-muted">' . $keterangan . '</small>';
+                                            echo '  </div>';
+                                            echo '  <div class="text-end ms-2">';
+                                            echo '    <span class="badge ' . $badge_class . '">';
+                                            echo '      <i class="bi ' . $icon_class . '"></i> ' . $status_text;
+                                            echo '    </span>';
+                                            echo '  </div>';
+                                            echo '</li>';
+                                            
+                                            $no_fitur++;
+                                        }
+                                        echo '</ul>';
+                                        
+                                        if ($jml_fitur === 0) {
+                                            echo '<div class="alert alert-info alert-sm mt-3 mb-0">';
+                                            echo '  <small>Tidak ada fitur dalam kategori ini</small>';
+                                            echo '</div>';
+                                        }
+                                        
+                                        echo '</div>';
+                                    }
+                                    echo '</div>';
+                                }
+                            ?>
                         </div>
                     </div>
                 </div>

@@ -1,11 +1,43 @@
 function filterAndLoadTable() {
-    var ProsesFilter = $('#ProsesFilter').serialize();
+
+    // Target And Filter
+    let target = $('#tabel_jurnal');
+    let data   = $('#ProsesFilter').serialize();
+
+    target.addClass('blur-loading');
+
     $.ajax({
-        type 	    : 'POST',
-        url 	    : '_Page/Jurnal/TabelJurnal.php',
-        data 	    :  ProsesFilter,
-        success     : function(data){
-            $('#MenampilkanTabelJurnal').html(data);
+        type    : 'POST',
+        url     : '_Page/Jurnal/TabelJurnal.php',
+        data    : data,
+        dataType: 'json',
+        success : function(res) {
+
+            if(res.status === "success"){
+
+                target.fadeOut(150, function () {
+                    target.html(res.html).fadeIn(150);
+                });
+
+                // Update info page
+                $('#page').val(res.page);
+                $('#page_info').html('Page ' + res.page + ' Of ' + res.total_page);
+
+                // Handle tombol
+                $('#prev_button').prop('disabled', res.page <= 1);
+                $('#next_button').prop('disabled', res.page >= res.total_page);
+
+            }else{
+                target.html(res.html);
+                $('#page').val(res.page || 1);
+                $('#page_info').html('Page ' + (res.page || 1) + ' Of ' + (res.total_page || 1));
+            }
+
+            target.removeClass('blur-loading');
+        },
+        error: function() {
+            target.html('<tr><td colspan="8" class="text-center"><span class="text-danger">Gagal memuat data jurnal</span></td></tr>');
+            target.removeClass('blur-loading');
         }
     });
 }
@@ -29,194 +61,9 @@ function validatePeriode() {
         $('#NotifikasiFormExport').html('');
     }
 }
-//Ketika Keyword By Dipilih
-$('#KeywordBy').change(function(){
-    var KeywordBy = $('#KeywordBy').val();
-    $('#FormFilter').html('Loading...');
-    $.ajax({
-        type 	    : 'POST',
-        url 	    : '_Page/Jurnal/FormFilter.php',
-        data 	    :  {KeywordBy: KeywordBy},
-        success     : function(data){
-            $('#FormFilter').html(data);
-        }
-    });
-});
-//Ketika Filter Di Submit
-$('#ProsesFilter').submit(function(){
-    $('#page').val('1');
-    filterAndLoadTable();
-    $('#ModalFilter').modal('hide');
-});
-//Menampilkan Data Pertama Kali
-$(document).ready(function() {
-    filterAndLoadTable();
-});
-//Proses Tambah Jurnal
-$('#ProsesTambahJurnal').submit(function(event){
-    event.preventDefault(); // Mencegah form dari reload halaman
-    $('#NotifikasiTambahJurnal').html('Loading...');
-    var form = $('#ProsesTambahJurnal')[0];
-    var data = new FormData(form);
-    $.ajax({
-        type: 'POST',
-        url: '_Page/Jurnal/ProsesTambahJurnal.php',
-        data: data,
-        cache: false,
-        processData: false,
-        contentType: false,
-        enctype: 'multipart/form-data',
-        success: function(response){
-            $('#NotifikasiTambahJurnal').html(response);
-            // Mengecek jika respons sukses
-            var NotifikasiTambahJurnalBerhasil = $('#NotifikasiTambahJurnalBerhasil').html();
-            if(NotifikasiTambahJurnalBerhasil === "Success"){
-                $('#NotifikasiTambahJurnal').html('');
-                $('#ProsesFilter').trigger('reset');
-                $('#ProsesTambahJurnal').trigger('reset');
-                $('#ModalTambahJurnalKeuangan').modal('hide');
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Tambah Jurnal Berhasil!',
-                    icon: 'success'
-                });
-                // Menampilkan data terbaru
-                filterAndLoadTable();
-            }
-        },
-        error: function(xhr, status, error){
-            // Menampilkan pesan error jika terjadi masalah
-            $('#NotifikasiTambahJurnal').html('Error: ' + error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'Ada masalah saat menambahkan jurnal.',
-                icon: 'error'
-            });
-        }
-    });
-});
-//Modal Detail Jurnal
-$('#ModalDetailJurnal').on('show.bs.modal', function (e) {
-    var id_jurnal = $(e.relatedTarget).data('id');
-    $('#FormDetailJurnal').html("Loading...");
-    $.ajax({
-        type 	    : 'POST',
-        url 	    : '_Page/Jurnal/FormDetailJurnal.php',
-        data        : {id_jurnal: id_jurnal},
-        success     : function(data){
-            $('#FormDetailJurnal').html(data);
-        }
-    });
-});
-//Modal Edit Jurnal
-$('#ModalEditJurnal').on('show.bs.modal', function (e) {
-    var id_jurnal = $(e.relatedTarget).data('id');
-    $('#FormEditJurnal').html("Loading...");
-    $.ajax({
-        type 	    : 'POST',
-        url 	    : '_Page/Jurnal/FormEditJurnal.php',
-        data        : {id_jurnal: id_jurnal},
-        success     : function(data){
-            $('#FormEditJurnal').html(data);
-            $('#NotifikasiEditJurnal').html('<small>Pastikan data jurnal sudah sesuai</small>');
-        }
-    });
-});
-$('#ProsesEditJurnal').submit(function(event){
-    event.preventDefault(); // Mencegah form dari reload halaman
-    $('#NotifikasiEditJurnal').html('Loading...');
-    var form = $('#ProsesEditJurnal')[0];
-    var data = new FormData(form);
-    $.ajax({
-        type: 'POST',
-        url: '_Page/Jurnal/ProsesEditJurnal.php',
-        data: data,
-        cache: false,
-        processData: false,
-        contentType: false,
-        enctype: 'multipart/form-data',
-        success: function(response){
-            $('#NotifikasiEditJurnal').html(response);
-            // Mengecek jika respons sukses
-            var NotifikasiEditJurnalBerhasil = $('#NotifikasiEditJurnalBerhasil').html();
-            if(NotifikasiEditJurnalBerhasil === "Success"){
-                $('#NotifikasiEditJurnal').html('');
-                $('#ModalEditJurnal').modal('hide');
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Edit Jurnal Berhasil!',
-                    icon: 'success'
-                });
-                // Menampilkan data terbaru
-                filterAndLoadTable();
-            }
-        },
-        error: function(xhr, status, error){
-            // Menampilkan pesan error jika terjadi masalah
-            $('#NotifikasiEditJurnal').html('Error: ' + error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'Ada masalah saat melakukan update jurnal.',
-                icon: 'error'
-            });
-        }
-    });
-});
-//Modal Hapus Jurnal
-$('#ModalHapusJurnal').on('show.bs.modal', function (e) {
-    var id_jurnal = $(e.relatedTarget).data('id');
-    $('#FormHapusJurnal').html("Loading...");
-    $.ajax({
-        type 	    : 'POST',
-        url 	    : '_Page/Jurnal/FormHapusJurnal.php',
-        data        : {id_jurnal: id_jurnal},
-        success     : function(data){
-            $('#FormHapusJurnal').html(data);
-            $('#NotifikasiHapusJurnal').html('<small>Apakah anda yakin akan menghapus data ini?</small>');
-        }
-    });
-});
-//Proses Hapus Jurnal
-$('#ProsesHapusJurnal').submit(function(event){
-    event.preventDefault(); // Mencegah form dari reload halaman
-    $('#NotifikasiHapusJurnal').html('Loading...');
-    var form = $('#ProsesHapusJurnal')[0];
-    var data = new FormData(form);
-    $.ajax({
-        type: 'POST',
-        url: '_Page/Jurnal/ProsesHapusJurnal.php',
-        data: data,
-        cache: false,
-        processData: false,
-        contentType: false,
-        enctype: 'multipart/form-data',
-        success: function(response){
-            $('#NotifikasiHapusJurnal').html(response);
-            // Mengecek jika respons sukses
-            var NotifikasiHapusJurnalBerhasil = $('#NotifikasiHapusJurnalBerhasil').html();
-            if(NotifikasiHapusJurnalBerhasil === "Success"){
-                $('#NotifikasiHapusJurnal').html('');
-                $('#ModalHapusJurnal').modal('hide');
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Hapus Jurnal Berhasil!',
-                    icon: 'success'
-                });
-                // Menampilkan data terbaru
-                filterAndLoadTable();
-            }
-        },
-        error: function(xhr, status, error){
-            // Menampilkan pesan error jika terjadi masalah
-            $('#NotifikasiEditJurnal').html('Error: ' + error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'Ada masalah saat melakukan update jurnal.',
-                icon: 'error'
-            });
-        }
-    });
-});
+
+
+
 //Modal Export
 $('#ModalExport').on('show.bs.modal', function (e) {
     // Event listener untuk perubahan pada kedua input
@@ -224,25 +71,43 @@ $('#ModalExport').on('show.bs.modal', function (e) {
         validatePeriode();
     });
 });
-//Format Uang
-$('#nominal').keypress(function(event) {
-    // Hanya mengizinkan angka (0-9) dan tombol kontrol seperti backspace
-    var charCode = (event.which) ? event.which : event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-        return false;
-    }
-    return true;
-});
-// Memformat input menjadi format uang dengan pemisah ribuan
-$('.format_uang').on('input', function() {
-    var input = $(this).val();
-    // Hapus semua karakter non-digit
-    input = input.replace(/[\D\s\._\-]+/g, "");
-    if (input) {
-        // Format dengan pemisah ribuan
-        var formattedInput = parseInt(input, 10).toLocaleString('en-US');
-        $(this).val(formattedInput);
-    } else {
-        $(this).val('');
-    }
+
+
+
+$(document).ready(function() {
+    filterAndLoadTable();
+
+    //Ketika Keyword By Dipilih
+    $('#KeywordBy').change(function(){
+        var KeywordBy = $('#KeywordBy').val();
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Jurnal/FormFilter.php',
+            data 	    :  {KeywordBy: KeywordBy},
+            success     : function(data){
+                $('#FormFilter').html(data);
+            }
+        });
+    });
+
+    //Ketika Filter Di Submit
+    $('#ProsesFilter').submit(function(){
+        $('#page').val('1');
+        filterAndLoadTable();
+        $('#ModalFilter').modal('hide');
+    });
+
+    //Pagging
+    $(document).on('click', '#next_button', function() {
+        var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
+        var next_page = page_now + 1;
+        $('#page').val(next_page);
+        filterAndLoadTable(0);
+    });
+    $(document).on('click', '#prev_button', function() {
+        var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
+        var next_page = page_now - 1;
+        $('#page').val(next_page);
+        filterAndLoadTable(0);
+    });
 });

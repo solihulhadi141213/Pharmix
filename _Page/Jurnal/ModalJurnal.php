@@ -2,41 +2,42 @@
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesFilter">
-                <input type="hidden" name="page" id="page">
+                <input type="hidden" name="page" id="page" value="1">
                 <div class="modal-header">
                     <h5 class="modal-title text-dark"><i class="bi bi-filter"></i> Filter Jurnal</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-3">
-                        <div class="col-md-4"><label for="batas">Batas</label></div>
-                        <div class="col-md-8">
+                        <div class="col-md-12">
+                            <label for="batas">Batas/Limit</label>
                             <select name="batas" id="batas" class="form-control">
                                 <option value="5">5</option>
                                 <option selected value="10">10</option>
                                 <option value="25">25</option>
                                 <option value="50">50</option>
                                 <option value="100">100</option>
-                                <option value="250">250</option>
-                                <option value="500">500</option>
                             </select>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4"><label for="OrderBy">Mode Urutan</label></div>
-                        <div class="col-md-8">
+                        <div class="col-md-12">
+                            <label for="OrderBy">Order By</label>
                             <select name="OrderBy" id="OrderBy" class="form-control">
                                 <option value="">Pilih</option>
+                                <option value="uuid">UUID</option>
+                                <option value="referensi">Referensi</option>
+                                <option value="id_transaksi">ID Transaksi</option>
+                                <option value="id_transaksi_jual_beli">ID Jual/Beli</option>
+                                <option value="id_transaksi_pembayaran">ID Pembayaran</option>
                                 <option value="tanggal">Tanggal</option>
                                 <option value="kategori">Kategori</option>
-                                <option value="kode_perkiraan">Kode Perkiraan</option>
-                                <option value="nama_perkiraan">Nama Perkiraan</option>
                             </select>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4"><label for="ShortBy">Tipe Urutan</label></div>
-                        <div class="col-md-8">
+                        <div class="col-md-12">
+                            <label for="ShortBy">Tipe Urutan</label>
                             <select name="ShortBy" id="ShortBy" class="form-control">
                                 <option value="ASC">A To Z</option>
                                 <option selected value="DESC">Z To A</option>
@@ -44,26 +45,29 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4"><label for="KeywordBy">Dasar Pencarian</label></div>
-                        <div class="col-md-8">
+                        <div class="col-md-12">
+                            <label for="KeywordBy">Dasar Pencarian</label>
                             <select name="KeywordBy" id="KeywordBy" class="form-control">
-                                <option value="">Pilih</option>
+                               <option value="">Semua Atribut</option>
+                                <option value="uuid">UUID</option>
+                                <option value="referensi">Referensi</option>
+                                <option value="id_transaksi">ID Transaksi</option>
+                                <option value="id_transaksi_jual_beli">ID Jual/Beli</option>
+                                <option value="id_transaksi_pembayaran">ID Pembayaran</option>
                                 <option value="tanggal">Tanggal</option>
                                 <option value="kategori">Kategori</option>
-                                <option value="kode_perkiraan">Kode Perkiraan</option>
-                                <option value="nama_perkiraan">Nama Perkiraan</option>
                             </select>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4"><label for="keyword">Kata Kunci</label></div>
-                        <div class="col-md-8" id="FormFilter">
+                        <div class="col-md-12" id="FormFilter">
+                            <label for="keyword">Kata Kunci</label>
                             <input type="text" name="keyword" id="keyword" class="form-control">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Filter
                     </button>
                     <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
@@ -87,29 +91,27 @@
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-md-12">
-                            Tentukan periode data jurnal yang ingin anda tampilkan.
+                            <div class="alert alert-info text-center">
+                                <small>Tentukan periode data jurnal yang ingin anda tampilkan.</small>
+                            </div>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-12">
                             <label for="periode_1">Periode Awal</label>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="date" name="periode_1" id="periode_1" class="form-control">
+                            <input type="date" required name="periode_1" id="periode_1" class="form-control">
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-12">
                             <label for="periode_2">Periode Akhir</label>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="date" name="periode_2" id="periode_2" class="form-control">
+                            <input type="date" required name="periode_2" id="periode_2" class="form-control">
                             <small id="NotifikasiFormExport"></small>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-download"></i> Export
                     </button>
                     <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
@@ -232,7 +234,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-md btn-success btn-rounded">
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
                     <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
@@ -287,7 +289,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
                     <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">
@@ -321,7 +323,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-rounded">
+                    <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
                     <button type="button" class="btn btn-dark btn-rounded" data-bs-dismiss="modal">

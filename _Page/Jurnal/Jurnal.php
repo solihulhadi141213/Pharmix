@@ -21,16 +21,13 @@
     <section class="section dashboard">
         <div class="row">
             <div class="col-md-12">
-                <?php
-                    echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
-                    echo '  <small>';
-                    echo '      Berikut ini adalah halaman pengelolaan data jurnal.';
-                    echo '      Beberapa data jurnal ditambahkan secara otomatis melalui transaksi yang berlangsung.';
-                    echo '      Namun anda bisa menambahkan, mengubah dan menghapus jurnal tersebut secara manual.';
-                    echo '      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-                    echo '  </small>';
-                    echo '</div>';
-                ?>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <small>
+                        Berikut ini adalah halaman pengelolaan data jurnal.
+                        Data jurnal ditambahkan secara otomatis melalui transaksi yang berlangsung.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </small>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -38,36 +35,61 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-md-8"></div>
-                            <div class="col-md-4 text-center mt-3">
-                                <a class="btn btn-md btn-outline-dark btn-rounded btn-block" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i> Opsi Lanjutan
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Option</h6>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalFilter">
-                                            <i class="bi bi-funnel"></i> Filter
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalExport">
-                                            <i class="bi bi-cloud-arrow-down"></i> Export
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- <div class="col-md-2 text-center mt-3">
-                                <button type="button" class="btn btn-md btn-primary btn-block btn-rounded" data-bs-toggle="modal" data-bs-target="#ModalTambahJurnalKeuangan" title="Buat Jurnal Baru">
-                                    <i class="bi bi-plus"></i> Buat Jurnal
+                            <div class="col-md-12 text-end">
+                                <button type="button" class="btn btn-md btn-secondary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalFilter" title="Filter Data">
+                                    <i class="bi bi-search"></i>
                                 </button>
-                            </div> -->
+                                <button type="button" class="btn btn-md btn-secondary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalExport" title="Export Data">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-body" id="MenampilkanTabelJurnal">
-
+                    <div class="card-body">
+                       <div class="row mt-4 mb-4">
+                            <div class="col-12">
+                                <div class="table table-responsive">
+                                    <table class="table table-striped table-hover table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th><b>No</b></th>
+                                                <th><b>Referensi</b></th>
+                                                <th><b>Kategori</b></th>
+                                                <th><b>Tanggal</b></th>
+                                                <th><b>Kode</b></th>
+                                                <th><b>Akun</b></th>
+                                                <th><b>Debet</b></th>
+                                                <th><b>Kredit</b></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabel_jurnal">
+                                            <tr>
+                                                <td colspan="8" class="text-center">
+                                                    <span>No Data</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                       </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-6">
+                                <small id="page_info">
+                                    Page 1 Of 100
+                                </small>
+                            </div>
+                            <div class="col-6 text-end">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button">
+                                    <i class="bi bi-chevron-left"></i>
+                                </button>
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button">
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

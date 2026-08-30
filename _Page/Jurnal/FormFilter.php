@@ -4,9 +4,13 @@
     if(!empty($_POST['KeywordBy'])){
         $KeywordBy=$_POST['KeywordBy'];
         if($KeywordBy=="tanggal"){
-            echo ' <input type="date" name="keyword" id="keyword" class="form-control">';
+            echo ' 
+                <label for="keyword">Kata Kunci</label>
+                <input type="date" name="keyword" id="keyword" class="form-control">
+            ';
         }else{
             if($KeywordBy=="kode_perkiraan"){
+                echo '<label for="keyword">Kata Kunci</label>';
                 echo '<select name="keyword" id="keyword" class="form-control">';
                 $query = mysqli_query($Conn, "SELECT DISTINCT kode_perkiraan FROM jurnal ORDER BY kode_perkiraan ASC");
                 while ($data = mysqli_fetch_array($query)) {
@@ -16,6 +20,7 @@
                 echo '</select>';
             }else{
                 if($KeywordBy=="nama_perkiraan"){
+                    echo '<label for="keyword">Kata Kunci</label>';
                     echo '<select name="keyword" id="keyword" class="form-control">';
                     $query = mysqli_query($Conn, "SELECT DISTINCT nama_perkiraan FROM jurnal ORDER BY nama_perkiraan ASC");
                     while ($data = mysqli_fetch_array($query)) {
@@ -25,6 +30,7 @@
                     echo '</select>';
                 }else{
                     if($KeywordBy=="d_k"){
+                        echo '<label for="keyword">Kata Kunci</label>';
                         echo '<select name="keyword" id="keyword" class="form-control">';
                         $query = mysqli_query($Conn, "SELECT DISTINCT d_k FROM jurnal ORDER BY d_k ASC");
                         while ($data = mysqli_fetch_array($query)) {
@@ -34,6 +40,7 @@
                         echo '</select>';
                     }else{
                         if($KeywordBy=="kategori"){
+                            echo '<label for="keyword">Kata Kunci</label>';
                             echo '<select name="keyword" id="keyword" class="form-control">';
                             $query = mysqli_query($Conn, "SELECT DISTINCT kategori FROM jurnal ORDER BY kategori ASC");
                             while ($data = mysqli_fetch_array($query)) {
@@ -42,6 +49,7 @@
                             }
                             echo '</select>';
                         }else{
+                            echo '<label for="keyword">Kata Kunci</label>';
                             echo ' <input type="text" name="keyword" id="keyword" class="form-control">';
                         }
                     }
@@ -49,6 +57,7 @@
             }
         }
     }else{
+        echo '<label for="keyword">Kata Kunci</label>';
         echo ' <input type="text" name="keyword" id="keyword" class="form-control">';
     }
 ?>

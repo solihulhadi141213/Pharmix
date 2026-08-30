@@ -62,44 +62,30 @@
         <hr class="menu-divider">
         <li class="nav-heading">Transaksi</li>
         <li class="nav-item">
-            <a class="nav-link <?php if($PageMenu=="JenisTransaksi"||$PageMenu=="Transaksi"||$PageMenu=="TransaksiJualBeli"||$PageMenu=="Penjualan"||$PageMenu=="Pembelian"){echo "active";}else{echo "collapsed";} ?>" data-bs-target="#transaksi-nav" data-bs-toggle="collapse" href="javascript:void(0);">
+            <a class="nav-link <?php if($PageMenu=="JenisTransaksi"||$PageMenu=="Transaksi"||$PageMenu=="Penjualan"||$PageMenu=="Pembelian"){echo "active";}else{echo "collapsed";} ?>" data-bs-target="#transaksi-nav" data-bs-toggle="collapse" href="javascript:void(0);">
                 <i class="bi bi-cart-check"></i>
                 <span>Transaksi</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="transaksi-nav" class="nav-content collapse <?php if($PageMenu=="JenisTransaksi"||$PageMenu=="Transaksi"||$PageMenu=="TransaksiJualBeli"||$PageMenu=="Penjualan"||$PageMenu=="Pembelian"){echo "show";} ?>" data-bs-parent="#sidebar-nav">
-                <li class="nav-submenu">
-                    <a class="nav-content-toggle <?php if($PageMenu=="JenisTransaksi"||$PageMenu=="Transaksi"){echo "active";}else{echo "collapsed";} ?>" data-bs-target="#transaksi-operasional-nav" data-bs-toggle="collapse" href="javascript:void(0);">
-                        <i class="bi bi-circle"></i><span>Operasional</span><i class="bi bi-chevron-down ms-auto"></i>
+            <ul id="transaksi-nav" class="nav-content collapse <?php if($PageMenu=="JenisTransaksi"||$PageMenu=="Transaksi"||$PageMenu=="Penjualan"||$PageMenu=="Pembelian"){echo "show";} ?>" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="index.php?Page=JenisTransaksi" class="<?php if($PageMenu=="JenisTransaksi"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Kategori Operasional</span>
                     </a>
-                    <ul id="transaksi-operasional-nav" class="nav-content nav-content-nested collapse <?php if($PageMenu=="JenisTransaksi"||$PageMenu=="Transaksi"){echo "show";} ?>" data-bs-parent="#transaksi-nav">
-                        <li>
-                            <a href="index.php?Page=JenisTransaksi" class="<?php if($PageMenu=="JenisTransaksi"){echo "active";} ?>">
-                                <i class="bi bi-circle"></i><span>Kategori Operasional</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="index.php?Page=Transaksi" class="<?php if($PageMenu=="Transaksi"){echo "active";} ?>">
-                                <i class="bi bi-circle"></i><span>Transaksi Operasional</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
-                <li class="nav-submenu">
-                    <a class="nav-content-toggle <?php if($PageMenu=="Penjualan"||$PageMenu=="Pembelian"){echo "active";}else{echo "collapsed";} ?>" data-bs-target="#transaksi-jual-beli-nav" data-bs-toggle="collapse" href="javascript:void(0);">
-                        <i class="bi bi-circle"></i><span>Jual-Beli</span><i class="bi bi-chevron-down ms-auto"></i>
+                <li>
+                    <a href="index.php?Page=Transaksi" class="<?php if($PageMenu=="Transaksi"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Transaksi Operasional</span>
                     </a>
-                    <ul id="transaksi-jual-beli-nav" class="nav-content nav-content-nested collapse <?php if($PageMenu=="Penjualan"||$PageMenu=="Pembelian"){echo "show";} ?>" data-bs-parent="#transaksi-nav">
-                        <li>
-                            <a href="index.php?Page=Penjualan" class="<?php if($PageMenu=="Penjualan"){echo "active";} ?>">
-                                <i class="bi bi-circle"></i><span>Penjualan</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="index.php?Page=Pembelian" class="<?php if($PageMenu=="Pembelian"){echo "active";} ?>">
-                                <i class="bi bi-circle"></i><span>Pembelian</span>
-                            </a>
-                        </li>
-                    </ul>
+                </li>
+                <li>
+                    <a href="index.php?Page=Penjualan" class="<?php if($PageMenu=="Penjualan"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Transaksi Penjualan</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.php?Page=Pembelian" class="<?php if($PageMenu=="Pembelian"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Transaksi Pembelian</span>
+                    </a>
                 </li>
             </ul>
         </li>
