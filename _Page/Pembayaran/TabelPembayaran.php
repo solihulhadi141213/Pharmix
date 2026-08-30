@@ -248,13 +248,13 @@
         ';
     } else {
         while ($data = $query->fetch_assoc()) {
-            $id_pembayaran = (int) $data['id_transaksi_pembayaran'];
-            $id_transaksi  = $data['id_transaksi'];
-            $id_jual_beli  = $data['id_transaksi_jual_beli'];
-            $kat_bayar     = htmlspecialchars($data['kategori_pembayaran'] ?? '-', ENT_QUOTES, 'UTF-8');
-            $kat_trans     = htmlspecialchars($data['kategori_transaksi'] ?? '-', ENT_QUOTES, 'UTF-8');
-            $tanggal       = $data['tanggal'] ?? '';
-            $jumlah        = (int) ($data['jumlah'] ?? 0);
+            $id_transaksi_pembayaran = $data['id_transaksi_pembayaran'];
+            $id_transaksi            = $data['id_transaksi'];
+            $id_jual_beli            = $data['id_transaksi_jual_beli'];
+            $kat_bayar               = htmlspecialchars($data['kategori_pembayaran'] ?? '-', ENT_QUOTES, 'UTF-8');
+            $kat_trans               = htmlspecialchars($data['kategori_transaksi'] ?? '-', ENT_QUOTES, 'UTF-8');
+            $tanggal                 = $data['tanggal'] ?? '';
+            $jumlah                  = (int) ($data['jumlah'] ?? 0);
             
             // Petugas (Prioritaskan nama dari tabel akses, fallback ke creat_by_name)
             $petugas       = !empty($data['nama_akses']) ? $data['nama_akses'] : ($data['creat_by_name'] ?? '-');
@@ -296,20 +296,18 @@
                         <small class="text-muted">' . $no . '</small>
                     </td>
                     <td>
-                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailPembayaran" data-id="' . $id_pembayaran . '">
-                            ' . $TanggalFormat . '
+                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailPembayaran" data-id="' . $id_transaksi_pembayaran . '">
+                            '.$id_transaksi_pembayaran.'
                         </a>
                     </td>
+                    <td>'.$TanggalFormat.'</td>
                     <td>
                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailTransaksi" data-id="' . $id_ref . '" data-database="' . $database_transaksi . '">
-                            <small>' . $ref_text . '</small>
+                            ' . $ref_text . '
                         </a>
                     </td>
                     <td>
                         <small class="text-muted">' . $kat_trans . '</small>
-                    </td>
-                    <td>
-                        <small class="text-muted">' . $kat_bayar . '</small>
                     </td>
                     <td>
                         <small class="text-muted fw-bold">' . $NominalFormat . '</small>
@@ -326,17 +324,17 @@
                                 <h6 class="mb-0">Opsi</h6>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailPembayaran" data-id="' . $id_pembayaran . '">
+                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailPembayaran" data-id="' . $id_transaksi_pembayaran . '">
                                     <i class="bi bi-info-circle me-2"></i>Detail
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalEditPembayaran" data-id="' . $id_pembayaran . '">
+                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalEditPembayaran" data-id="' . $id_transaksi_pembayaran . '">
                                     <i class="bi bi-pencil me-2"></i>Ubah/Edit
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalHapusPembayaran" data-id="' . $id_pembayaran . '">
+                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalHapusPembayaran" data-id="' . $id_transaksi_pembayaran . '">
                                     <i class="bi bi-trash me-2"></i>Hapus
                                 </a>
                             </li>

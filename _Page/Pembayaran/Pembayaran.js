@@ -81,6 +81,57 @@ function initializeMoneyInputs() {
     });
 }
 
+// Fungsi Menampilkan Detail Transaksi
+function ShowDetailTransaksi(id_ref,database_transaksi){
+    // Load Form
+    $('#FormDetailTransaksi').html("Loading...");
+
+    //Buka Detail Barang
+    $.ajax({
+        type 	    : 'POST',
+        url 	    : '_Page/Pembayaran/FormDetailTransaksi.php',
+        data        : {id_ref: id_ref, database_transaksi: database_transaksi},
+        dataType    : "JSON",
+        success     : function(response){
+            if(response.status=="success"){
+                var html = response.html;
+
+                //Tempelkan Detail
+                $('#FormDetailTransaksi').html(html);
+
+            }else{
+                //Tempelkan ke 'FormDetailTransaksiJualBeli'
+                $('#FormDetailTransaksi').html(
+                    `
+                        <div class="alert alert-danger text-center" role="alert">
+                            <small>
+                                <b>Opsss!</b><br>
+                                Terjadi kesalahan pada sistem. <br>
+                                ${response.message}
+                            </small>
+                        </div>
+                    `
+                );
+
+            }
+        },
+        error: function () {
+            //Tempelkan ke 'FormDetailTransaksi'
+            $('#FormDetailTransaksi').html(
+                `
+                    <div class="alert alert-danger text-center" role="alert">
+                        <small>
+                            <b>Opsss!</b><br>
+                            Terjadi kesalahan pada sistem. Silahkan Coba Lagi<br>
+                        </small>
+                    </div>
+                `
+            );
+
+        },
+    });
+}
+
 // =======================================
 // EVENT LISTENER
 // =======================================
@@ -344,5 +395,440 @@ $(document).ready(function() {
     //------------------------------------
     // DETAIL PEMBAYARAN
     //------------------------------------
+    $('#ModalDetailPembayaran').on('show.bs.modal', function (e) {
+        
+        //Tangkap 'id_pembayaran' 
+        var id_pembayaran = $(e.relatedTarget).data('id');
+
+        // Load Form
+        $('#FormDetailPembayaran').html("Loading...");
+
+        //Disable tombol
+        $('#ButtonDetailSelengkapnya').prop("disabled", true);
+
+        //Buka Detail Barang
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Pembayaran/FormDetailPembayaran.php',
+            data        : {id_pembayaran: id_pembayaran},
+            dataType    : "JSON",
+            success     : function(response){
+
+                // Jika Berhasil
+                if(response.status=="success"){
+                    var html = response.html;
+
+                    //Tempelkan Detail
+                    $('#FormDetailPembayaran').html(html);
+
+                    // Enable Tombol
+                    $('#ButtonDetailSelengkapnya').prop("disabled", false);
+                }else{
+                    //Tempelkan ke 'FormDetailTransaksiJualBeli'
+                    $('#FormDetailPembayaran').html(
+                        `
+                            <div class="alert alert-danger text-center" role="alert">
+                                <small>
+                                    <b>Opsss!</b><br>
+                                    Terjadi kesalahan pada sistem. <br>
+                                    ${response.message}
+                                </small>
+                            </div>
+                        `
+                    );
+                    
+                    //Disable tombol
+                    $('#ButtonDetailSelengkapnya').prop("disabled", true);
+                }
+            },
+            error: function () {
+                //Tempelkan ke 'FormDetailTransaksiJualBeli'
+                $('#FormDetailPembayaran').html(
+                    `
+                        <div class="alert alert-danger text-center" role="alert">
+                            <small>
+                                <b>Opsss!</b><br>
+                                Terjadi kesalahan pada sistem. Silahkan Coba Lagi<br>
+                            </small>
+                        </div>
+                    `
+                );
+
+                //Disable tombol
+                $('#ButtonDetailSelengkapnya').prop("disabled", true);
+            },
+        });
+    });
+
+    // ---------------------------------------------
+    // Modal Detail Transaksi
+    // ---------------------------------------------
+    $('#ModalDetailTransaksi').on('show.bs.modal', function (e) {
+        
+        //Tangkap 'id_ref' 
+        var id_ref             = $(e.relatedTarget).data('id');
+        var database_transaksi = $(e.relatedTarget).data('database');
+
+        ShowDetailTransaksi(id_ref,database_transaksi);
+    });
+
+    //------------------------------------
+    // EDIT PEMBAYARAN
+    //------------------------------------
+    $('#ModalEditPembayaran').on('show.bs.modal', function (e) {
+        
+        //Tangkap 'id_pembayaran' 
+        var id_pembayaran = $(e.relatedTarget).data('id');
+
+        // Load Form
+        $('#FormEditPembayaran').html("Loading...");
+
+        // Clear Notification
+        $('#NotifikasiEditPembayaran').html("");
+
+        //Disable tombol
+        $('#ButtonEditPembayaran').prop("disabled", true);
+
+        //Buka Detail Barang
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Pembayaran/FormEditPembayaran.php',
+            data        : {id_pembayaran: id_pembayaran},
+            dataType    : "JSON",
+            success     : function(response){
+
+                // Jika Berhasil
+                if(response.status=="success"){
+                    var html = response.html;
+
+                    //Tempelkan Detail
+                    $('#FormEditPembayaran').html(html);
+
+                    // Enable Tombol
+                    $('#ButtonEditPembayaran').prop("disabled", false);
+
+                    $('#jumlah_edit').focus();
+                    initializeMoneyInputs();
+                }else{
+                    //Tempelkan ke 'FormDetailTransaksiJualBeli'
+                    $('#FormEditPembayaran').html(
+                        `
+                            <div class="alert alert-danger text-center" role="alert">
+                                <small>
+                                    <b>Opsss!</b><br>
+                                    Terjadi kesalahan pada sistem. <br>
+                                    ${response.message}
+                                </small>
+                            </div>
+                        `
+                    );
+                    
+                    //Disable tombol
+                    $('#ButtonEditPembayaran').prop("disabled", true);
+                }
+            },
+            error: function () {
+                //Tempelkan ke 'FormDetailTransaksiJualBeli'
+                $('#FormHapusPembayaran').html(
+                    `
+                        <div class="alert alert-danger text-center" role="alert">
+                            <small>
+                                <b>Opsss!</b><br>
+                                Terjadi kesalahan pada sistem. Silahkan Coba Lagi<br>
+                            </small>
+                        </div>
+                    `
+                );
+
+                //Disable tombol
+                $('#ButtonHapusPembayaran').prop("disabled", true);
+            },
+        });
+    });
+
+    $('#ModalEditPembayaran').on('shown.bs.modal', function (e) {
+        $('#jumlah_edit').focus();
+        initializeMoneyInputs();
+    });
+
+    // Proses Edit Pembayaran
+    $("#ProsesEditPembayaran").on("submit", function (e) {
+        e.preventDefault();
+        
+        // Tombol loading
+        let $btn = $("#ModalEditPembayaran button[type='submit']");
+        let originalBtnHtml = $btn.html();
+        $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="server"></span> Loading...').prop("disabled", true);
+        
+        // Kosongkan notifikasi sebelumnya
+        $("#NotifikasiEditPembayaran").html('');
+
+        // Ambil data form
+        let formData = new FormData(this);
+
+        // Kirim data ke server
+        $.ajax({
+            url         : "_Page/Pembayaran/ProsesEditPembayaran.php",
+            type        : "POST",
+            data        : formData,
+            contentType : false,
+            processData : false,
+            dataType    : "json",
+            success: function (response) {
+                if (response.status === "Success") {
+
+                   // Reload data
+                    ShowPembayaran();
+
+                    // Tutup Modal
+                    $('#ModalEditPembayaran').modal('hide');
+                    
+                    // Tampilkan Toast Sukses
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data berhasil disimpan.'
+                    );
+                    
+                } else {
+                    // Tampilkan pesan error di area notifikasi modal
+                    $("#NotifikasiEditPembayaran").html(`
+                        <div class="alert alert-danger text-center py-2" role="alert">
+                            <small><b>Opsss!</b><br>${response.message}</small>
+                        </div>
+                    `);
+                }
+                $btn.html(originalBtnHtml).prop("disabled", false);
+            },
+            error: function () {
+                $("#NotifikasiEditPembayaran").html(`
+                    <div class="alert alert-danger text-center py-2" role="alert">
+                        <small><b>Opsss!</b><br>Terjadi kesalahan pada sistem. Silakan coba lagi.</small>
+                    </div>
+                `);
+                $btn.html(originalBtnHtml).prop("disabled", false);
+            }
+        });
+    });
+
+    //------------------------------------
+    // HAPUS PEMBAYARAN
+    //------------------------------------
+    $('#ModalHapusPembayaran').on('show.bs.modal', function (e) {
+        
+        //Tangkap 'id_pembayaran' 
+        var id_pembayaran = $(e.relatedTarget).data('id');
+
+        // Load Form
+        $('#FormHapusPembayaran').html("Loading...");
+
+        // Clear Notification
+        $('#NotifikasiHapusPembayaran').html("");
+
+        //Disable tombol
+        $('#ButtonHapusPembayaran').prop("disabled", true);
+
+        //Buka Detail Barang
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Pembayaran/FormHapusPembayaran.php',
+            data        : {id_pembayaran: id_pembayaran},
+            dataType    : "JSON",
+            success     : function(response){
+
+                // Jika Berhasil
+                if(response.status=="success"){
+                    var html = response.html;
+
+                    //Tempelkan Detail
+                    $('#FormHapusPembayaran').html(html);
+
+                    // Enable Tombol
+                    $('#ButtonHapusPembayaran').prop("disabled", false);
+                }else{
+                    //Tempelkan ke 'FormDetailTransaksiJualBeli'
+                    $('#FormHapusPembayaran').html(
+                        `
+                            <div class="alert alert-danger text-center" role="alert">
+                                <small>
+                                    <b>Opsss!</b><br>
+                                    Terjadi kesalahan pada sistem. <br>
+                                    ${response.message}
+                                </small>
+                            </div>
+                        `
+                    );
+                    
+                    //Disable tombol
+                    $('#ButtonHapusPembayaran').prop("disabled", true);
+                }
+            },
+            error: function () {
+                //Tempelkan ke 'FormDetailTransaksiJualBeli'
+                $('#FormHapusPembayaran').html(
+                    `
+                        <div class="alert alert-danger text-center" role="alert">
+                            <small>
+                                <b>Opsss!</b><br>
+                                Terjadi kesalahan pada sistem. Silahkan Coba Lagi<br>
+                            </small>
+                        </div>
+                    `
+                );
+
+                //Disable tombol
+                $('#ButtonHapusPembayaran').prop("disabled", true);
+            },
+        });
+    });
+
+    //Proses Hapus Pembayaran
+    $('#ProsesHapusPembayaran').submit(function(){
+
+        // Menangkap Element Tombol
+        var ButtonHapusPembayaran = $('#ButtonHapusPembayaran').html();
+
+        // Disable Button
+        $('#ButtonHapusPembayaran').prop('disabled', true);
+
+        // Loading Tombol
+        $('#ButtonHapusPembayaran').html('Loading...');
+
+        // Kosongkan Notifikasi
+        $('#NotifikasiHapusPembayaran').html('');
+
+        // Tangkap Data Dari Form
+        var form = $('#ProsesHapusPembayaran')[0];
+        var data = new FormData(form);
+
+        // Kirim Dengan AJAX
+        $.ajax({
+            type       : 'POST',
+            url        : '_Page/Pembayaran/ProsesHapusPembayaran.php',
+            data       : data,
+            cache      : false,
+            processData: false,
+            contentType: false,
+            dataType   : 'JSON',
+            enctype    : 'multipart/form-data',
+            success    : function(response){
+
+                // Tangkap status & message
+                var status = response.status;
+                var message = response.message;
+
+                // Apabila Berhasil
+                if(status=='success'){
+                    
+                    // RESET SELURUH FORM
+                    ShowPembayaran();
+
+                    // Tutup Modal
+                    $('#ModalHapusPembayaran').modal('hide');
+
+                    // Tampilkan Toast
+                    showToast(
+                        'success',
+                        'Berhasil',
+                        'Data berhasil dihapus.'
+                    );
+
+                }else{
+                    $('#NotifikasiHapusPembayaran').html('<div class="alert alert-danger"><small><b>Opss!</b> '+message+'</small></div>');
+                }
+            },
+            
+            // Jika Response Bukan JSON Valid
+            error: function(xhr, status, error){
+                // Consol
+                console.log("XHR:", xhr);
+                console.log("STATUS:", status);
+                console.log("ERROR:", error);
+                console.log("RESPONSE:", xhr.responseText);
+
+                // Tampilkan Notifikasi
+                $('#NotifikasiHapusPembayaran').html(`<div class="alert alert-danger"><small>Terjadi kesalahan server.</small></div>`);
+            },
+
+            complete: function(){
+                // Kembalikan Tombol
+                $('#ButtonHapusPembayaran').prop('disabled', false);
+                $('#ButtonHapusPembayaran').html(ButtonHapusPembayaran);
+            }
+        });
+    });
+
+    //------------------------------------
+    // TAMBAH JURNAL
+    //------------------------------------
+    $('#ModalTambahJurnal').on('show.bs.modal', function (e) {
+        
+        //Tangkap 'kode' dan 'database'
+        var id_transaksi_pembayaran = $(e.relatedTarget).data('id');
+
+        // Load Form
+        $('#FormTambahJurnal').html("Loading...");
+
+        // Clear Notification
+        $('#NotifikasiTambahJurnal').html("");
+
+        //Disable tombol
+        $('#ButtonTambahJurnal').prop("disabled", true);
+
+        //Buka Detail Barang
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Pembayaran/FormTambahJurnal.php',
+            data        : {id_transaksi_pembayaran: id_transaksi_pembayaran},
+            dataType    : "JSON",
+            success     : function(response){
+
+                // Jika Berhasil
+                if(response.status=="success"){
+                    var html = response.html;
+
+                    //Tempelkan Detail
+                    $('#FormTambahJurnal').html(html);
+
+                    // Enable Tombol
+                    $('#ButtonTambahJurnal').prop("disabled", false);
+                }else{
+                    //Tempelkan ke 'FormTambahJurnal'
+                    $('#FormTambahJurnal').html(
+                        `
+                            <div class="alert alert-danger text-center" role="alert">
+                                <small>
+                                    <b>Opsss!</b><br>
+                                    Terjadi kesalahan pada sistem. <br>
+                                    ${response.message}
+                                </small>
+                            </div>
+                        `
+                    );
+                    
+                    //Disable tombol
+                    $('#ButtonTambahJurnal').prop("disabled", true);
+                }
+            },
+            error: function () {
+                //Tempelkan ke 'FormTambahJurnal'
+                $('#FormTambahJurnal').html(
+                    `
+                        <div class="alert alert-danger text-center" role="alert">
+                            <small>
+                                <b>Opsss!</b><br>
+                                Terjadi kesalahan pada sistem. Silahkan Coba Lagi<br>
+                            </small>
+                        </div>
+                    `
+                );
+
+                //Disable tombol
+                $('#ButtonTambahJurnal').prop("disabled", true);
+            },
+        });
+    });
+
+
 
 });

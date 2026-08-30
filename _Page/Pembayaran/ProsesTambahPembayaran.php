@@ -68,16 +68,21 @@
 
     $tanggal_waktu = $tanggal_pembayaran . ' ' . $jam_pembayaran . ':00';
 
+    // Menentukan 'id_transaksi_pembayaran' berbasis String (UUID/Custom String 36 char)
+    // Menggunakan fungsi bawaan/helper Anda untuk menghasilkan string unik
+    $randome                   = GenerateKodeBarang(6);
+    $id_transaksi_pembayaran   = "PBY-$randome";
+
     // 3. Mulai Transaksi Database (ACID)
     mysqli_begin_transaction($Conn);
 
     try {
-        $sisa_maksimal   = 0;
-        $jml_tagihan     = 0;
-        $pembayaran_cash = 0;
-        $total_bayar_lain= 0;
-        $status_baru     = "";
-        $sub_kategori    = "";
+        $sisa_maksimal    = 0;
+        $jml_tagihan      = 0;
+        $pembayaran_cash  = 0;
+        $total_bayar_lain = 0;
+        $status_baru      = "";
+        $sub_kategori     = "";
 
         if ($kategori_transaksi === "jual_beli") {
             // Ambil data tagihan & cash jual/beli
@@ -117,12 +122,13 @@
             if ($total_terbayar_baru >= $jml_tagihan) {
                 $status_baru = "Lunas";
             } else {
-                $status_baru = ($sub_kategori === "Penjualan" || $sub_kategori === "Retur Pembelian") ? "Piutang" : "Utang";
+                $status_baru = ($sub_kategori === "Penjualan" || $sub_kategori === "Pembelian" || $sub_kategori === "Retur Penjualan" || $sub_kategori === "Retur Pembelian") ? "Piutang" : "Utang";
             }
 
             // Insert ke tabel transaksi_pembayaran
             $kategori_pembayaran = "Termin";
             $sql_ins_byr = "INSERT INTO transaksi_pembayaran (
+                id_transaksi_pembayaran, 
                 id_transaksi_jual_beli, 
                 kategori_pembayaran, 
                 kategori_transaksi, 
@@ -134,13 +140,15 @@
                 update_at,
                 update_by_id,
                 update_by_name
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
             $stmt_ins_byr = mysqli_prepare($Conn, $sql_ins_byr);
-            mysqli_stmt_bind_param($stmt_ins_byr, "ssssisissis", $id, $kategori_pembayaran, $sub_kategori, $tanggal_waktu, $jumlah_nominal, $now, $SessionIdAkses, $SessionNama, $now, $SessionIdAkses, $SessionNama);
+            // Perhatikan tipe parameter bind: id_transaksi_pembayaran (s), id_transaksi_jual_beli (s) -> total string "sssssissis"
+            mysqli_stmt_bind_param($stmt_ins_byr, "sssssisissis", $id_transaksi_pembayaran, $id, $kategori_pembayaran, $sub_kategori, $tanggal_waktu, $jumlah_nominal, $now, $SessionIdAkses, $SessionNama, $now, $SessionIdAkses, $SessionNama);
+            
             if (!mysqli_stmt_execute($stmt_ins_byr)) {
                 throw new Exception("Gagal menyimpan data pembayaran jual/beli.");
             }
-            $id_transaksi_pembayaran_baru = mysqli_insert_id($Conn);
             mysqli_stmt_close($stmt_ins_byr);
 
             // Update status tabel induk transaksi_jual_beli
@@ -151,7 +159,6 @@
             mysqli_stmt_close($stmt_up_induk);
 
             // --- PROSES AUTO JURNAL UNTUK JUAL/BELI ---
-            // Ambil konfigurasi dari setting_autojurnal_jual_beli berdasarkan kategori transaksi
             $sql_jurnal_cfg = "SELECT * FROM setting_autojurnal_jual_beli WHERE kategori = ? LIMIT 1";
             $stmt_cfg = mysqli_prepare($Conn, $sql_jurnal_cfg);
             mysqli_stmt_bind_param($stmt_cfg, "s", $sub_kategori);
@@ -160,18 +167,18 @@
             mysqli_stmt_close($stmt_cfg);
 
             if ($cfg_data) {
-                // Catatan: Anda dapat menyesuaikan pemetaan akun debit/kredit sesuai struktur kolom pada setting_autojurnal_jual_beli Anda
                 $kode_perkiraan_debit  = $cfg_data['kode_perkiraan_debit_kas'] ?? $cfg_data['kode_perkiraan_debit'] ?? '';
                 $kode_perkiraan_kredit = $cfg_data['kode_perkiraan_kredit_piutang'] ?? $cfg_data['kode_perkiraan_kredit'] ?? '';
 
                 if (!empty($kode_perkiraan_debit) && !empty($kode_perkiraan_kredit)) {
-                    // Masukkan ke tabel jurnal (Debit & Kredit berpasangan agar balance)
                     $sql_jurnal = "INSERT INTO jurnal (id_transaksi_pembayaran, tanggal, kode_perkiraan, d_k, nilai, keterangan) VALUES (?, ?, ?, 'Debit', ?, ?), (?, ?, ?, 'Kredit', ?, ?)";
                     $stmt_jur = mysqli_prepare($Conn, $sql_jurnal);
                     $ket = "Pembayaran Transaksi Jual/Beli ID: " . $id;
-                    mysqli_stmt_bind_param($stmt_jur, "issdsissds", 
-                        $id_transaksi_pembayaran_baru, $tanggal_waktu, $kode_perkiraan_debit, $jumlah_nominal, $ket,
-                        $id_transaksi_pembayaran_baru, $tanggal_waktu, $kode_perkiraan_kredit, $jumlah_nominal, $ket
+                    
+                    // Karena id_transaksi_pembayaran bertipe string (char), bind menggunakan parameter string 's'
+                    mysqli_stmt_bind_param($stmt_jur, "sssdsissds", 
+                        $id_transaksi_pembayaran, $tanggal_waktu, $kode_perkiraan_debit, $jumlah_nominal, $ket,
+                        $id_transaksi_pembayaran, $tanggal_waktu, $kode_perkiraan_kredit, $jumlah_nominal, $ket
                     );
                     mysqli_stmt_execute($stmt_jur);
                     mysqli_stmt_close($stmt_jur);
@@ -198,7 +205,6 @@
             $pembayaran_cash = (float) $data_induk['pembayaran_cash'];
             $status_sekarang = $data_induk['status'];
             $sub_kategori    = $data_induk['sub_kategori'];
-            $sub_kategori    = "$sub_kategori Operasional";
 
             $sql_akum = "SELECT SUM(jumlah) AS total_lain FROM transaksi_pembayaran WHERE id_transaksi = ?";
             $stmt_akum = mysqli_prepare($Conn, $sql_akum);
@@ -224,6 +230,7 @@
             // Insert ke tabel transaksi_pembayaran
             $kategori_pembayaran = "Termin";
             $sql_ins_byr = "INSERT INTO transaksi_pembayaran (
+                id_transaksi_pembayaran, 
                 id_transaksi, 
                 kategori_pembayaran, 
                 kategori_transaksi, 
@@ -235,9 +242,12 @@
                 update_at,
                 update_by_id,
                 update_by_name
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
             $stmt_ins_byr = mysqli_prepare($Conn, $sql_ins_byr);
-            mysqli_stmt_bind_param($stmt_ins_byr, "isssisissis", $id, $kategori_pembayaran, $sub_kategori, $tanggal_waktu, $jumlah_nominal, $now, $SessionIdAkses, $SessionNama, $now, $SessionIdAkses, $SessionNama);
+            // Perhatikan tipe parameter bind: id_transaksi_pembayaran (s), id_transaksi (i) -> total string "sisssisissis"
+            mysqli_stmt_bind_param($stmt_ins_byr, "sisssisissis", $id_transaksi_pembayaran, $id, $kategori_pembayaran, $sub_kategori, $tanggal_waktu, $jumlah_nominal, $now, $SessionIdAkses, $SessionNama, $now, $SessionIdAkses, $SessionNama);
+            
             if (!mysqli_stmt_execute($stmt_ins_byr)) {
                 throw new Exception("Gagal menyimpan data pembayaran operasional.");
             }
@@ -250,7 +260,6 @@
             mysqli_stmt_execute($stmt_up_induk);
             mysqli_stmt_close($stmt_up_induk);
 
-            // Catatan: Untuk operasional, sesuai instruksi belum memerlukan pencatatan jurnal otomatis saat ini.
         } else {
             throw new Exception("Kategori transaksi tidak valid.");
         }

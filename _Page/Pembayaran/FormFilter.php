@@ -43,12 +43,29 @@
                     }
                     echo '</select>';
                 }else{
-                    echo '
-                        <label for="keyword">
-                            <small>Keyword</small>
-                        </label>
-                        <input type="text" name="keyword" id="keyword" class="form-control">
-                    ';
+                    if($KeywordBy=="creat_by_name"){
+                        echo '
+                            <label for="keyword">
+                                <small>Keyword</small>
+                            </label>
+                        ';
+                        echo '<select name="keyword" id="keyword" class="form-control">';
+                        echo '  <option value="">Pilih</option>';
+                        //Buka Tabel Supplier
+                        $query = mysqli_query($Conn, "SELECT DISTINCT creat_by_name FROM transaksi_pembayaran ORDER BY creat_by_name ASC");
+                        while ($data = mysqli_fetch_array($query)) {
+                            $creat_by_name= $data['creat_by_name'];
+                            echo '<option value="'.$creat_by_name.'">'.$creat_by_name.'</option>';
+                        }
+                        echo '</select>';
+                    }else{
+                        echo '
+                            <label for="keyword">
+                                <small>Keyword</small>
+                            </label>
+                            <input type="text" name="keyword" id="keyword" class="form-control">
+                        ';
+                    }
                 }
             }
         }

@@ -39,10 +39,10 @@
                                     <thead>
                                         <tr>
                                             <th><b>No</b></th>
+                                            <th><b>ID Pembayaran</b></th>
                                             <th><b>Tanggal</b></th>
-                                            <th><b>Ref</b></th>
+                                            <th><b>Referensi</b></th>
                                             <th><b>Transaksi</b></th>
-                                            <th><b>Kategori</b></th>
                                             <th><b>Nominal</b></th>
                                             <th><b>Petugas</b></th>
                                             <th><b>Opsi</b></th>
