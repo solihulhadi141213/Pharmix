@@ -1,227 +1,204 @@
 <?php
-    //Koneksi
+    date_default_timezone_set('Asia/Jakarta');
+
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
-    //Time Zone
-    date_default_timezone_set('Asia/Jakarta');
-    //Cek Akses
-    if(empty($SessionIdAkses)){
-        echo '<div class="row mb-3">';
-        echo '  <div class="col col-md-12 text-center">';
-        echo '      <code>Sesi Akses Sudah Berakhir. Silahkan Login Ulang!</code>';
-        echo '  </div>';
-        echo '</div>';
-    }else{
-        //Tangkap periode1
-        if(empty($_POST['periode1'])){
-            echo '<div class="card-body">';
-            echo '  <div class="row">';
-            echo '      <div class="col-md-12 text-center">';
-            echo '          <div class="alert alert-danger" role="alert">';
-            echo '              Periode Awal Tidak Boleh Kosong';
-            echo '          </div>';
-            echo '      </div>';
-            echo '  </div>';
-            echo '</div>';
-        }else{
-        //Tangkap periode2
-            if(empty($_POST['periode2'])){
-                echo '<div class="card-body">';
-                echo '  <div class="row">';
-                echo '      <div class="col-md-12 text-center">';
-                echo '          <div class="alert alert-danger" role="alert">';
-                echo '              Periode Akhir Tidak Boleh Kosong';
-                echo '          </div>';
-                echo '      </div>';
-                echo '  </div>';
-                echo '</div>';
-            }else{
-                //Tangkap akun_pemasukan
-                if(empty($_POST['akun_pemasukan'])){
-                    echo '<div class="card-body">';
-                    echo '  <div class="row">';
-                    echo '      <div class="col-md-12 text-center">';
-                    echo '          <div class="alert alert-danger" role="alert">';
-                    echo '              Akun Pemasukan Tidak Boleh Kosong';
-                    echo '          </div>';
-                    echo '      </div>';
-                    echo '  </div>';
-                    echo '</div>';
-                }else{
-                    //Tangkap akun_pengeluaran
-                    if(empty($_POST['akun_pengeluaran'])){
-                        echo '<div class="card-body">';
-                        echo '  <div class="row">';
-                        echo '      <div class="col-md-12 text-center">';
-                        echo '          <div class="alert alert-danger" role="alert">';
-                        echo '              Akun Pengeluaran Tidak Boleh Kosong';
-                        echo '          </div>';
-                        echo '      </div>';
-                        echo '  </div>';
-                        echo '</div>';
-                    }else{
-                        $periode2=$_POST['periode2'];
-                        $periode1=$_POST['periode1'];
-                        $akun_pemasukan=$_POST['akun_pemasukan'];
-                        $akun_pengeluaran=$_POST['akun_pengeluaran'];
-?>
-                    <div class="card-body">
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <div class="table table-responsive">
-                                    <table class="table table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center"><b>No</b></th>
-                                                <th class="text-center"><b>Tanggal</b></th>
-                                                <th class="text-center"><b>Kategori</b></th>
-                                                <th class="text-center"><b>Akun Perkiraan</b></th>
-                                                <th class="text-center"><b>Debet/Kredit</b></th>
-                                                <th class="text-center"><b>Nominal</b></th>
-                                                <th class="text-center"><b>Saldo</b></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class="bg-info">
-                                                <td><b>A.</b></td>
-                                                <td colspan="6"><b>Transaksi Pemasukan</b></td>
-                                            </tr>
-                                            <?php
-                                                //Data pemasukan
-                                                $NoPemasukan = 1;
-                                                $SaldoPemasukan=0;
-                                                //Menampilkan Akun Perkiraan Pemasukan
-                                                $QruAkunPerkiraanPemasukan = mysqli_query($Conn, "SELECT*FROM akun_perkiraan WHERE kd1='$akun_pemasukan' ORDER BY kode ASC");
-                                                while ($DataAkunPemasukan = mysqli_fetch_array($QruAkunPerkiraanPemasukan)) {
-                                                    $KodeAkunPemasukan= $DataAkunPemasukan['kode'];
-                                                    $SaldoNormal= $DataAkunPemasukan['saldo_normal'];
-                                                    //Menampilkan Jurnal
-                                                    $QryJurnalPemasukan = mysqli_query($Conn, "SELECT*FROM jurnal WHERE (kode_perkiraan='$KodeAkunPemasukan') AND (tanggal>='$periode1') AND (tanggal<='$periode2') ORDER BY id_jurnal DESC");
-                                                    while ($DataJurnalPemasukan = mysqli_fetch_array($QryJurnalPemasukan)) {
-                                                        $KategoriPemasukan= $DataJurnalPemasukan['kategori'];
-                                                        $NamaAkunPemasukan= $DataJurnalPemasukan['nama_perkiraan'];
-                                                        $TanggalPemasukan= $DataJurnalPemasukan['tanggal'];
-                                                        $DebetKreditPemasukan= $DataJurnalPemasukan['d_k'];
-                                                        $NilaiPemasukan= $DataJurnalPemasukan['nilai'];
-                                                        if($DebetKreditPemasukan=="D"){
-                                                            $DebetKreditReal='Debet';
-                                                        }else{
-                                                            $DebetKreditReal='Kredit';
-                                                        }
-                                                        if($DebetKreditReal==$SaldoNormal){
-                                                            $SaldoPemasukan=$SaldoPemasukan+$NilaiPemasukan;
-                                                            $DebetKredit='<span class="text-success">'.$DebetKreditReal.'</span>';
-                                                        }else{
-                                                            $SaldoPemasukan=$SaldoPemasukan-$NilaiPemasukan;
-                                                            $DebetKredit='<span class="text-danger">('.$DebetKreditReal.')</span>';
-                                                        }
-                                                        $NilaiPemasukanFormat = "Rp " . number_format($NilaiPemasukan,0,',','.');
-                                                        $SaldoPemasukanFormat = "Rp " . number_format($SaldoPemasukan,0,',','.');
-                                                        echo '<tr>';
-                                                        echo '  <td class="text-center">A.'.$NoPemasukan.'</td>';
-                                                        echo '  <td class="text-left">'.$TanggalPemasukan.'</td>';
-                                                        echo '  <td class="text-left">'.$KategoriPemasukan.'</td>';
-                                                        echo '  <td class="text-left">'.$KodeAkunPemasukan.' '.$NamaAkunPemasukan.'</td>';
-                                                        echo '  <td class="text-left">'.$DebetKredit.'</td>';
-                                                        echo '  <td align="right">'.$NilaiPemasukanFormat.'</td>';
-                                                        echo '  <td align="right">'.$SaldoPemasukanFormat.'</td>';
-                                                        echo '</tr>';
-                                                        $NoPemasukan++;
-                                                    }
-                                                }
-                                                $SaldoPemasukanFormat = "Rp " . number_format($SaldoPemasukan,0,',','.');
-                                            ?>
-                                            <tr>
-                                                <td></td>
-                                                <td colspan="5"><b>JUMLAH SALDO PEMASUKAN</b></td>
-                                                <td align="right"><b><?php echo $SaldoPemasukanFormat; ?></b></td>
-                                            </tr>
-                                            <tr class="bg-info">
-                                                <td><b>B.</b></td>
-                                                <td colspan="6"><b>Transaksi Pengeluaran</b></td>
-                                            </tr>
-                                            <?php
-                                                //Data Pengeluaran
-                                                $NoPengeluaran = 1;
-                                                $SaldoPengeluaran=0;
-                                                //Menampilkan Akun Perkiraan Pengeluaran
-                                                $QruAkunPerkiraanPengeluaran = mysqli_query($Conn, "SELECT*FROM akun_perkiraan WHERE kd1='$akun_pengeluaran' ORDER BY kode ASC");
-                                                while ($DataAkunPengeluaran = mysqli_fetch_array($QruAkunPerkiraanPengeluaran)) {
-                                                    $KodeAkunPengeluaran= $DataAkunPengeluaran['kode'];
-                                                    $SaldoNormal= $DataAkunPengeluaran['saldo_normal'];
-                                                    //Menampilkan Jurnal
-                                                    $QryJurnalPengeluaran = mysqli_query($Conn, "SELECT*FROM jurnal WHERE (kode_perkiraan='$KodeAkunPengeluaran') AND (tanggal>='$periode1') AND (tanggal<='$periode2') ORDER BY id_jurnal DESC");
-                                                    while ($DataJurnalPengeluaran = mysqli_fetch_array($QryJurnalPengeluaran)) {
-                                                        $KategoriPengeluaran= $DataJurnalPengeluaran['kategori'];
-                                                        $NamaAkunPengeluaran= $DataJurnalPengeluaran['nama_perkiraan'];
-                                                        $TanggalPengeluaran= $DataJurnalPengeluaran['tanggal'];
-                                                        $DebetKreditPengeluaran= $DataJurnalPengeluaran['d_k'];
-                                                        $NilaiPengeluaran= $DataJurnalPengeluaran['nilai'];
-                                                        if($DebetKreditPengeluaran=="D"){
-                                                            $DebetKreditReal='Debet';
-                                                        }else{
-                                                            $DebetKreditReal='Kredit';
-                                                        }
-                                                        if($DebetKreditReal==$SaldoNormal){
-                                                            $SaldoPengeluaran=$SaldoPengeluaran+$NilaiPengeluaran;
-                                                            $DebetKredit='<span class="text-success">'.$DebetKreditReal.'</span>';
-                                                        }else{
-                                                            $SaldoPengeluaran=$SaldoPengeluaran-$NilaiPengeluaran;
-                                                            $DebetKredit='<span class="text-danger">('.$DebetKreditReal.')</span>';
-                                                        }
-                                                        $NilaiPengeluaranFormat = "Rp " . number_format($NilaiPengeluaran,0,',','.');
-                                                        $SaldoPengeluaranFormat = "Rp " . number_format($SaldoPengeluaran,0,',','.');
-                                                        echo '<tr>';
-                                                        echo '  <td class="text-center">A.'.$NoPengeluaran.'</td>';
-                                                        echo '  <td class="text-left">'.$TanggalPengeluaran.'</td>';
-                                                        echo '  <td class="text-left">'.$KategoriPengeluaran.'</td>';
-                                                        echo '  <td class="text-left">'.$KodeAkunPengeluaran.' '.$NamaAkunPengeluaran.'</td>';
-                                                        echo '  <td class="text-left">'.$DebetKredit.'</td>';
-                                                        echo '  <td align="right">'.$NilaiPengeluaranFormat.'</td>';
-                                                        echo '  <td align="right">'.$SaldoPengeluaranFormat.'</td>';
-                                                        echo '</tr>';
-                                                        $NoPengeluaran++;
-                                                    }
-                                                }
-                                            ?>
-                                            <tr>
-                                                <td></td>
-                                                <td colspan="5"><b>JUMLAH SALDO PENGELUARAN</b></td>
-                                                <td align="right"><b><?php echo $SaldoPengeluaranFormat; ?></b></td>
-                                            </tr>
-                                            <?php
-                                                //Menghitung Laba Rugi
-                                                $LabaRugi=$SaldoPemasukan-$SaldoPengeluaran;
-                                                $LabaRugiFormat = "Rp " . number_format($LabaRugi,0,',','.');
-                                                if($LabaRugi<0){
-                                                    $LabelLabaRugi='<span class="text-danger">'.$LabaRugiFormat.'</span>';
-                                                }else{
-                                                    $LabelLabaRugi='<span class="text-success">'.$LabaRugiFormat.'</span>';
-                                                }
-                                            ?>
-                                            <tr>
-                                                <td></td>
-                                                <td colspan="5"><b>ESTIMASI LABA/RUGI</b></td>
-                                                <td align="right"><b><?php echo $LabelLabaRugi; ?></b></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 mb-4 text-center">
-                                <a href="_Page/LabaRugi/CetakLabaRugi.php?periode1=<?php echo "$periode1"; ?>&periode2=<?php echo "$periode2"; ?>&akun_pemasukan=<?php echo "$akun_pemasukan"; ?>&akun_pengeluaran=<?php echo "$akun_pengeluaran"; ?>" target="_blank" class="btn btn-md btn-outline-dark btn-rounded">
-                                    <i class="bi bi-printer"></i> Export Laporan
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-<?php
-                    }
-                }
+
+    header('Content-Type: application/json; charset=utf-8');
+
+    $response_error = static function (string $message): void {
+        echo json_encode([
+            'status' => 'error',
+            'message' => $message,
+            'html' => '',
+            'title' => '',
+            'data_count' => 0
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    };
+
+    if (empty($SessionIdAkses)) {
+        $response_error('Sesi akses sudah berakhir. Silakan login ulang.');
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        $response_error('Metode request tidak valid.');
+    }
+
+    $akun_pemasukan = trim($_POST['akun_pemasukan'] ?? '');
+    $akun_pengeluaran = trim($_POST['akun_pengeluaran'] ?? '');
+    $periode1 = trim($_POST['periode1'] ?? '');
+    $periode2 = trim($_POST['periode2'] ?? '');
+
+    if ($akun_pemasukan === '' || $akun_pengeluaran === '' || $periode1 === '' || $periode2 === '') {
+        $response_error('Lengkapi akun pemasukan, akun pengeluaran, dan periode laporan.');
+    }
+
+    if (!ctype_digit($akun_pemasukan) || !ctype_digit($akun_pengeluaran)) {
+        $response_error('ID akun perkiraan tidak valid.');
+    }
+
+    $valid_date = static function (string $date): bool {
+        $date_object = DateTime::createFromFormat('Y-m-d', $date);
+        return $date_object !== false && $date_object->format('Y-m-d') === $date;
+    };
+
+    if (!$valid_date($periode1) || !$valid_date($periode2)) {
+        $response_error('Format periode tidak valid.');
+    }
+    if ($periode1 > $periode2) {
+        $response_error('Periode awal tidak boleh lebih besar dari periode akhir.');
+    }
+
+    $periode2_exclusive = (new DateTime($periode2))->modify('+1 day')->format('Y-m-d');
+
+    // Ambil semua akun sekali untuk menghindari query berulang.
+    $result_akun = mysqli_query($Conn, "
+        SELECT id_perkiraan, kode, nama, saldo_normal, level
+        FROM akun_perkiraan
+        ORDER BY kode ASC
+    ");
+    if (!$result_akun) {
+        $response_error('Gagal mengambil data akun perkiraan.');
+    }
+
+    $akun_by_id = [];
+    $akun_list = [];
+    while ($akun = mysqli_fetch_assoc($result_akun)) {
+        $akun['id_perkiraan'] = (string) $akun['id_perkiraan'];
+        $akun['kode'] = (string) $akun['kode'];
+        $akun['level'] = (int) $akun['level'];
+        $akun_by_id[$akun['id_perkiraan']] = $akun;
+        $akun_list[] = $akun;
+    }
+
+    if (!isset($akun_by_id[$akun_pemasukan]) || !isset($akun_by_id[$akun_pengeluaran])) {
+        $response_error('Akun perkiraan yang dipilih tidak ditemukan.');
+    }
+
+    $akun_pilihan = [
+        'pemasukan' => $akun_by_id[$akun_pemasukan],
+        'pengeluaran' => $akun_by_id[$akun_pengeluaran]
+    ];
+
+    $kode_conditions = [];
+    $kode_params = [];
+    foreach ($akun_pilihan as $akun_induk) {
+        $kode_conditions[] = $akun_induk['level'] === 1
+            ? 'j.kode_perkiraan LIKE ?'
+            : 'j.kode_perkiraan = ?';
+        $kode_params[] = $akun_induk['level'] === 1
+            ? $akun_induk['kode'] . '%'
+            : $akun_induk['kode'];
+    }
+
+    // Ambil seluruh jurnal pilihan dalam satu query.
+    $stmt_jurnal = $Conn->prepare("
+        SELECT j.kode_perkiraan, j.tanggal, j.kategori, j.d_k, j.nilai, j.nama_perkiraan
+        FROM jurnal AS j
+        WHERE j.tanggal >= ? AND j.tanggal < ?
+          AND (" . implode(' OR ', $kode_conditions) . ")
+        ORDER BY j.kode_perkiraan ASC, j.id_jurnal DESC
+    ");
+    if (!$stmt_jurnal) {
+        $response_error('Gagal mempersiapkan query jurnal.');
+    }
+
+    $bind_values = array_merge([$periode1, $periode2_exclusive], $kode_params);
+    $stmt_jurnal->bind_param(str_repeat('s', count($bind_values)), ...$bind_values);
+    if (!$stmt_jurnal->execute()) {
+        $stmt_jurnal->close();
+        $response_error('Gagal mengambil data jurnal.');
+    }
+
+    $result_jurnal = $stmt_jurnal->get_result();
+    $jurnal_by_kode = [];
+    while ($jurnal = $result_jurnal->fetch_assoc()) {
+        $jurnal_by_kode[$jurnal['kode_perkiraan']][] = $jurnal;
+    }
+    $stmt_jurnal->close();
+
+    $esc = static function ($value): string {
+        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    };
+    $rupiah = static function ($value): string {
+        return 'Rp ' . number_format((float) $value, 0, ',', '.');
+    };
+
+    $html = '';
+    $total_record = 0;
+    $saldo = ['pemasukan' => 0, 'pengeluaran' => 0];
+    $nomor = ['pemasukan' => 1, 'pengeluaran' => 1];
+
+    foreach (['pemasukan', 'pengeluaran'] as $jenis) {
+        $akun_induk = $akun_pilihan[$jenis];
+        $label = $jenis === 'pemasukan' ? 'A.' : 'B.';
+        $judul = $jenis === 'pemasukan' ? 'Transaksi Pemasukan' : 'Transaksi Pengeluaran';
+
+        $html .= '<tr class="bg-info"><td><b>' . $label . '</b></td>
+            <td colspan="6"><b>' . $judul . '</b></td></tr>';
+
+        foreach ($akun_list as $akun) {
+            $kode = $akun['kode'];
+            $termasuk = $akun_induk['level'] === 1
+                ? $akun['level'] > 1 && strpos($kode, $akun_induk['kode']) === 0
+                : $kode === $akun_induk['kode'];
+
+            if (!$termasuk || empty($jurnal_by_kode[$kode])) {
+                continue;
+            }
+
+            foreach ($jurnal_by_kode[$kode] as $jurnal) {
+                $nilai = (float) ($jurnal['nilai'] ?? 0);
+                $d_k = strtoupper(trim((string) ($jurnal['d_k'] ?? '')));
+                $posisi = $d_k === 'D' ? 'Debet' : 'Kredit';
+                $normal = strcasecmp($posisi, (string) $akun['saldo_normal']) === 0;
+                $saldo[$jenis] += $normal ? $nilai : -$nilai;
+                $warna = $normal ? 'text-success' : 'text-danger';
+                $tanda = $normal ? $posisi : '(' . $posisi . ')';
+                $nama_akun = $jurnal['nama_perkiraan'] ?: $akun['nama'];
+
+                $html .= '<tr>
+                    <td class="text-center">' . $label . $nomor[$jenis] . '</td>
+                    <td>' . $esc($jurnal['tanggal']) . '</td>
+                    <td>' . $esc($jurnal['kategori']) . '</td>
+                    <td>' . $esc($kode . ' ' . $nama_akun) . '</td>
+                    <td><span class="' . $warna . '">' . $esc($tanda) . '</span></td>
+                    <td class="text-end">' . $rupiah($nilai) . '</td>
+                    <td class="text-end">' . $rupiah($saldo[$jenis]) . '</td>
+                </tr>';
+                $nomor[$jenis]++;
+                $total_record++;
             }
         }
+
+        $html .= '<tr><td></td><td colspan="5"><b>JUMLAH SALDO ' .
+            strtoupper($jenis) . '</b></td><td class="text-end"><b>' .
+            $rupiah($saldo[$jenis]) . '</b></td></tr>';
     }
+
+    $laba_rugi = $saldo['pemasukan'] - $saldo['pengeluaran'];
+    $warna_laba = $laba_rugi < 0 ? 'text-danger' : 'text-success';
+    $html .= '<tr><td></td><td colspan="5"><b>ESTIMASI LABA/RUGI</b></td>
+        <td class="text-end"><b><span class="' . $warna_laba . '">' .
+        $rupiah($laba_rugi) . '</span></b></td></tr>';
+
+    $title = '<b>LAPORAN LABA / RUGI</b><br>
+        <span>Periode: <b>' . $esc(date('d F Y', strtotime($periode1)) .
+        ' s/d ' . date('d F Y', strtotime($periode2))) . '</b></span><br>
+        <small>Pemasukan: <b>' . $esc($akun_pilihan['pemasukan']['nama']) .
+        '</b> | Pengeluaran: <b>' .
+        $esc($akun_pilihan['pengeluaran']['nama']) . '</b></small>';
+
+    echo json_encode([
+        'status' => 'success',
+        'message' => $total_record > 0
+            ? 'Data Laba Rugi berhasil ditampilkan.'
+            : 'Tidak ada jurnal pada periode yang dipilih.',
+        'html' => $html,
+        'title' => $title,
+        'data_count' => $total_record
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
 ?>
