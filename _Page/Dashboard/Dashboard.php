@@ -69,21 +69,12 @@
                                             <i class="bi bi-cart-dash"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <span class="text-muted small pt-1 ps-1" 
-                                                data-bs-toggle="tooltip" 
-                                                data-bs-placement="top" 
-                                                data-bs-custom-class="custom-tooltip" 
-                                                data-bs-title="Jumlah Total Nominal Penjualan" 
-                                                id="put_nominal_penjualan">
-                                                <i class="bi bi-coin"></i> 0.000.000
-                                            </span><br>
-                                            <span class="text-muted small pt-2 ps-1" 
-                                                data-bs-toggle="tooltip" 
-                                                data-bs-placement="top" 
-                                                data-bs-custom-class="custom-tooltip" 
-                                                data-bs-title="Jumlah Total Record Penjualan" 
-                                                id="put_record_penjualan">
-                                                <i class="bi bi-table"></i> (0.000.000)
+                                            <b class="text-muted small pt-1 ps-1" id="put_nominal_penjualan">
+                                                0.000.000
+                                            </b>
+                                            <br>
+                                            <span class="text-muted small pt-2 ps-1" id="put_record_penjualan">
+                                                0.000 Record
                                             </span>
                                         </div>
                                     </div>
@@ -100,21 +91,12 @@
                                             <i class="bi bi-cart-plus"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <span class="text-muted small pt-2 ps-1"
-                                                data-bs-toggle="tooltip" 
-                                                data-bs-placement="top" 
-                                                data-bs-custom-class="custom-tooltip" 
-                                                data-bs-title="Jumlah Total Nominal Pembelian" 
-                                                id="put_nominal_pembelian">
-                                                <i class="bi bi-coin"></i> 0.00.000
-                                            </span><br>
-                                            <span class="text-muted small pt-2 ps-1"
-                                                data-bs-toggle="tooltip" 
-                                                data-bs-placement="top" 
-                                                data-bs-custom-class="custom-tooltip" 
-                                                data-bs-title="Jumlah Total Record Pembelian" 
-                                                id="put_record_pembelian">
-                                                <i class="bi bi-table"></i> (0.00.000)
+                                            <b class="text-muted small pt-2 ps-1" id="put_nominal_pembelian">
+                                                0.00.000
+                                            </b>
+                                            <br>
+                                            <span class="text-muted small pt-2 ps-1" id="put_record_pembelian">
+                                                0.00.000
                                             </span>
                                         </div>
                                     </div>
@@ -131,21 +113,12 @@
                                             <i class="bi bi-arrow-left-right"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <span class="text-muted small pt-2 ps-1"
-                                                data-bs-toggle="tooltip" 
-                                                data-bs-placement="top" 
-                                                data-bs-custom-class="custom-tooltip" 
-                                                data-bs-title="Jumlah Total Nominal Transaksi Operasional" 
-                                                id="put_nominal_transaksi">
-                                                <i class="bi bi-coin"></i> 0.00.000
-                                            </span><br>
-                                            <span class="text-muted small pt-2 ps-1"
-                                                data-bs-toggle="tooltip" 
-                                                data-bs-placement="top" 
-                                                data-bs-custom-class="custom-tooltip" 
-                                                data-bs-title="Jumlah Total Record Transaksi Operasional" 
-                                                id="put_record_transaksi">
-                                                <i class="bi bi-table"></i> (0.00.000)
+                                            <b class="text-muted small pt-2 ps-1" id="put_nominal_transaksi">
+                                                0.00.000
+                                            </b>
+                                            <br>
+                                            <span class="text-muted small pt-2 ps-1" id="put_record_transaksi">
+                                                0.00.000
                                             </span>
                                         </div>
                                     </div>
@@ -199,8 +172,66 @@
                     </div>
                 </div>
             </div>
-            
+
+            <div class="row dashboard-report-row">
+                <div class="col-md-4 dashboard-report-column">
+                    <div class="card dashboard-report-card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-12">
+                                    <b class="card-title">Segera Expire</b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4 mt-4">
+                                <div class="col-12" id="barang_expire">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 dashboard-report-column">
+                    <div class="card dashboard-report-card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-12">
+                                    <b class="card-title">Segera Habis</b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4 mt-4">
+                                <div class="col-12" id="barang_limit">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 dashboard-report-column">
+                    <div class="card dashboard-report-card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-12">
+                                    <b class="card-title">Jatuh Tempo</b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4 mt-4">
+                                <div class="col-12" id="jatuh_tempo">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </section>

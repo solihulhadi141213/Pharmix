@@ -23,7 +23,7 @@
     $JumlahNominalTransaksi = $SumNominalTransaksi['jumlah'];
 
     //Jumlah Nomiinal Bagi Hasil Format
-    $JumlahNominalTransaksiFormat = "" . number_format($JumlahNominalTransaksi,0,',','.');
+    $JumlahNominalTransaksiFormat = "Rp " . number_format($JumlahNominalTransaksi,0,',','.');
 
     $response = [
         "status" => "Success",

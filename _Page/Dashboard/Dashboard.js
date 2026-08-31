@@ -8,34 +8,12 @@ function CountOfBarang() {
             if (response.status == "Success") {
                 $('#put_count_rp_barang').hide().html(response.rp_barang).fadeIn(500);
                 $('#put_count_item_barang').hide().html(response.item_barang).fadeIn(500);
-                CountOfAnggota();
             } else {
                 $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>' + response.message + '</small></div>').fadeIn(500);
             }
         },
         error: function() {
             $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>Terjadi Kesalahan Pada Sistem Saat Menghitung Barang!</small></div>').fadeIn(500);
-        },
-    });
-}
-
-// Fungsi Untuk Menampilkan Data Anggota
-function CountOfAnggota() {
-    $.ajax({
-        type: 'POST',
-        url: '_Page/Dashboard/CountOfAnggota.php',
-        dataType: "json",
-        success: function(response) {
-            if (response.status == "Success") {
-                $('#put_anggota_aktif').hide().html(response.anggota_aktif).fadeIn(500);
-                $('#put_anggota_keluar').hide().html(response.anggota_keluar).fadeIn(500);
-                CountOfSimpanan();
-            } else {
-                $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>' + response.message + '</small></div>').fadeIn(500);
-            }
-        },
-        error: function() {
-            $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>Terjadi Kesalahan Pada Sistem Saat Menghitung Anggota!</small></div>').fadeIn(500);
         },
     });
 }
@@ -49,8 +27,8 @@ function CountOfPenjualan() {
         dataType: "json",
         success: function(response) {
             if (response.status == "Success") {
-                $('#put_nominal_penjualan').hide().html('<i class="bi bi-coin"></i> '+response.put_nominal_penjualan+'').fadeIn(500);
-                $('#put_record_penjualan').hide().html('<i class="bi bi-table"></i> ('+response.put_record_penjualan+')').fadeIn(500);
+                $('#put_nominal_penjualan').hide().html(''+response.put_nominal_penjualan+'').fadeIn(500);
+                $('#put_record_penjualan').hide().html(''+response.put_record_penjualan+' Record').fadeIn(500);
                 CountOfPembelian();
             } else {
                 $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>' + response.message + '</small></div>').fadeIn(500);
@@ -70,9 +48,8 @@ function CountOfPembelian() {
         dataType: "json",
         success: function(response) {
             if (response.status == "Success") {
-                $('#put_nominal_pembelian').hide().html('<i class="bi bi-coin"></i> '+response.put_nominal_pembelian+'').fadeIn(500);
-                $('#put_record_pembelian').hide().html('<i class="bi bi-table"></i> ('+response.put_record_pembelian+')').fadeIn(500);
-                CountOfBagiHasil();
+                $('#put_nominal_pembelian').hide().html(''+response.put_nominal_pembelian+'').fadeIn(500);
+                $('#put_record_pembelian').hide().html(''+response.put_record_pembelian+' Record').fadeIn(500);
             } else {
                 $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>' + response.message + '</small></div>').fadeIn(500);
             }
@@ -91,8 +68,8 @@ function CountOfTransaksiOperasional() {
         dataType: "json",
         success: function(response) {
             if (response.status == "Success") {
-                $('#put_nominal_transaksi').hide().html('<i class="bi bi-coin"></i> '+response.put_nominal_transaksi+'').fadeIn(500);
-                $('#put_record_transaksi').hide().html('<i class="bi bi-table"></i> ('+response.put_record_transaksi+')').fadeIn(500);
+                $('#put_nominal_transaksi').hide().html(''+response.put_nominal_transaksi+'').fadeIn(500);
+                $('#put_record_transaksi').hide().html(''+response.put_record_transaksi+' Record').fadeIn(500);
                 ShowPemberitahuanSistem();
             } else {
                 $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>' + response.message + '</small></div>').fadeIn(500);
@@ -111,22 +88,11 @@ function ShowPemberitahuanSistem() {
         url: '_Page/Dashboard/ShowPemberitahuanSistem.php',
         success: function(response) {
             $('#ShowPemberitahuanSistem').hide().html(response).fadeIn(500);
-            ShowAnggotaTerbaru();
+            
         }
     });
 }
 
-// Fungsi Untuk Menampilkan Anggota Terbaru
-function ShowAnggotaTerbaru() {
-    $.ajax({
-        type: 'POST',
-        url: '_Page/Dashboard/ShowAnggotaTerbaru.php',
-        success: function(response) {
-            $('#ShowAnggotaTerbaru').hide().html(response).fadeIn(500);
-            ShowSimpananTerbaru();
-        }
-    });
-}
 
 // Fungsi Untuk Menampilkan Grafik
 function ShowGrafikSiimpanPinjam() {
@@ -214,11 +180,88 @@ function TransaksiTerbaru() {
     });
 }
 
+function escapeDashboardHtml(value) {
+    return $('<div>').text(value == null ? '' : value).html();
+}
+
+function formatDashboardDate(value) {
+    if (!value) return '-';
+    const parts = String(value).split('-');
+    return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : value;
+}
+
+function formatDashboardNumber(value) {
+    return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 2 }).format(Number(value) || 0);
+}
+
+function renderDashboardList(selector, items, renderer, emptyMessage) {
+    const $target = $(selector);
+    if (!items || items.length === 0) {
+        $target.html(`<div class="text-center text-muted py-3"><i class="bi bi-inbox"></i><br>${emptyMessage}</div>`);
+        return;
+    }
+    $target.html(`<div class="list-group list-group-flush">${items.map(renderer).join('')}</div>`);
+}
+
+function LoadDashboardPeringatan() {
+    $('#barang_expire, #barang_limit, #jatuh_tempo').html('<div class="text-center text-muted py-3">Loading...</div>');
+
+    $.ajax({
+        type: 'POST',
+        url: '_Page/Dashboard/DataPeringatan.php',
+        dataType: 'json',
+        success: function (response) {
+            if (response.status !== 'Success') {
+                const message = escapeDashboardHtml(response.message || 'Gagal memuat data.');
+                $('#barang_expire, #barang_limit, #jatuh_tempo').html(`<div class="text-center text-danger py-3">${message}</div>`);
+                return;
+            }
+
+            renderDashboardList('#barang_expire', response.barang_expire, function (item) {
+                return `<div class="list-group-item px-0">
+                    <div class="d-flex justify-content-between gap-2">
+                        <div><div class="fw-bold text-dark">${escapeDashboardHtml(item.nama_barang)}</div>
+                        <small class="text-muted">${escapeDashboardHtml(item.kode_barang)} | Batch ${escapeDashboardHtml(item.no_batch)}</small></div>
+                        <div class="text-end"><small class="text-danger fw-bold">Expire ${formatDashboardDate(item.expired_date)}</small>
+                        <br><small class="text-muted">Stok ${formatDashboardNumber(item.qty_batch)} ${escapeDashboardHtml(item.satuan_barang)}</small></div>
+                    </div>
+                </div>`;
+            }, 'Tidak ada barang yang segera expire.');
+
+            renderDashboardList('#barang_limit', response.barang_limit, function (item) {
+                return `<div class="list-group-item px-0">
+                    <div class="d-flex justify-content-between gap-2">
+                        <div><div class="fw-bold text-dark">${escapeDashboardHtml(item.nama_barang)}</div>
+                        <small class="text-muted">${escapeDashboardHtml(item.kode_barang)}</small></div>
+                        <div class="text-end"><small class="text-warning fw-bold">Stok ${formatDashboardNumber(item.stok_barang)} ${escapeDashboardHtml(item.satuan_barang)}</small>
+                        <br><small class="text-muted">Minimum ${formatDashboardNumber(item.stok_minimum)}</small></div>
+                    </div>
+                </div>`;
+            }, 'Tidak ada barang yang hampir habis.');
+
+            renderDashboardList('#jatuh_tempo', response.jatuh_tempo, function (item) {
+                return `<div class="list-group-item px-0">
+                    <div class="d-flex justify-content-between gap-2">
+                        <div><div class="fw-bold text-dark">${escapeDashboardHtml(item.id_transaksi)}</div>
+                        <small class="text-muted">${escapeDashboardHtml(item.kategori)}</small></div>
+                        <div class="text-end"><small class="text-danger fw-bold">${formatDashboardDate(item.tanggal_tempo)}</small>
+                        <br><small class="text-muted">Sisa Rp ${formatDashboardNumber(item.sisa_tagihan)}</small></div>
+                    </div>
+                </div>`;
+            }, 'Tidak ada transaksi yang hampir jatuh tempo.');
+        },
+        error: function () {
+            $('#barang_expire, #barang_limit, #jatuh_tempo').html('<div class="text-center text-danger py-3">Terjadi kesalahan saat memuat data.</div>');
+        }
+    });
+}
+
 $(document).ready(function () {
     //Menampilkan Data Pertama Kali
     CountOfBarang();
     ShowGrafikSiimpanPinjam();
     TransaksiTerbaru();
+    LoadDashboardPeringatan();
     //Jam Menarik
     tampilkanTanggal(); // Tampilkan tanggal saat halaman dimuat
     tampilkanJam();     // Tampilkan jam pertama kali

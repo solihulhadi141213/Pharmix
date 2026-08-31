@@ -28,7 +28,7 @@
 
     //Jumlah Pembelian Bersih
     $JumlahNomnalPembelianBersh=$JumlahNomiinalPembelian-$JumlahNomiinalReturPembelian;
-    $JumlahNomnalPembelianBershFormat = "" . number_format($JumlahNomnalPembelianBersh,0,',','.');
+    $JumlahNomnalPembelianBershFormat = "Rp " . number_format($JumlahNomnalPembelianBersh,0,',','.');
 
     $response = [
         "status" => "Success",
