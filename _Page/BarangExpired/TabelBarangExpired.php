@@ -116,7 +116,7 @@
                 <tr>
                     <td><small class="text-muted">' . $no . '</small></td>
                     <td>
-                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailBarang" data-id="' . $id_barang . '">
+                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="' . $id_barang_bacth . '">
                             <small>' . $kode_barang . '</small>
                         </a>
                     </td>

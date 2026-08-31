@@ -22,7 +22,7 @@ try{
         )
     );
 
-    $Allow = ['png','jpg','jpeg','webp','ico'];
+    $Allow = ['png','jpg','jpeg','webp','ico','svg'];
 
     if(!in_array($Extensi,$Allow)){
         throw new Exception("Format file tidak didukung.");
