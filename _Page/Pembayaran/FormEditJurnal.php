@@ -11,8 +11,8 @@
     // Default $html
     $html ="";
     
-    // Validasi 'id_transaksi_pembayaran'
-    if(empty($_POST['id_transaksi_pembayaran'])){
+    // Validasi 'id_jurnal'
+    if(empty($_POST['id_jurnal'])){
         $response = [
             "status"  => "error",
             "message" => "ID Pembayaran Tidak Boleh Kosong",
@@ -23,11 +23,11 @@
     }
 
     // Variabel dan sanitasi
-    $id_transaksi_pembayaran = validateAndSanitizeInput($_POST['id_transaksi_pembayaran']);
+    $id_jurnal = validateAndSanitizeInput($_POST['id_jurnal']);
 
-    // Buka Data 'transaksi_pembayaran'
-    $Qry = $Conn->prepare("SELECT * FROM transaksi_pembayaran WHERE id_transaksi_pembayaran = ?");
-    $Qry->bind_param("s", $id_transaksi_pembayaran);
+    // Buka Data 'jurnal'
+    $Qry = $Conn->prepare("SELECT * FROM jurnal WHERE id_jurnal = ?");
+    $Qry->bind_param("i", $id_jurnal);
     if (!$Qry->execute()) {
         $response = [
             "status"  => "error",
@@ -44,7 +44,7 @@
     if (!$Data) {
         $response = [
             "status"  => "error",
-            "message" => 'ID Pembayaran <i>'.$id_transaksi_pembayaran.'</i> Tidak Ditemukan Pada Database',
+            "message" => 'ID Jurnal <i>'.$id_jurnal.'</i> Tidak Ditemukan Pada Database',
             "html"    => ""
         ];
         echo json_encode($response);
@@ -53,8 +53,15 @@
 
     // Ambil Data Transaksi Pembayaran
     $tanggal                = $Data['tanggal'];
-    $tanggal                = date('Y-m-d', strtotime($tanggal));
-    $jumlah                 = pembulatan_nilai($Data['jumlah']);
+    $kode_perkiraan = trim($Data['kode_perkiraan'] ?? '');
+    $nama_perkiraan = trim($Data['nama_perkiraan'] ?? '');
+    $d_k            = strtoupper(trim($Data['d_k'] ?? ''));
+    $tanggal        = date('Y-m-d', strtotime($tanggal));
+    $nilai          = pembulatan_nilai($Data['nilai']);
+
+    // Nilai pada tabel jurnal menggunakan D/K, sedangkan option form menggunakan Debet/Kredit.
+    $debet_selected  = ($d_k === 'D' || $d_k === 'DEBET') ? ' selected' : '';
+    $kredit_selected = ($d_k === 'K' || $d_k === 'KREDIT') ? ' selected' : '';
 
     // Ambil daftar akun perkiraan yang bisa dipilih
     $html_akun_perkiraan = '<option value="">Pilih Akun Perkiraan</option>';
@@ -77,8 +84,13 @@
             $LevelTerbawah = mysqli_num_rows(mysqli_query($Conn, "SELECT id_perkiraan FROM akun_perkiraan WHERE $kolom_level='$kode_raw'"));
 
             if($LevelTerbawah == 1){
+                $akun_terpilih = (
+                    (string) $kode_raw === (string) $kode_perkiraan &&
+                    (string) $DataAkun['nama'] === (string) $nama_perkiraan
+                ) ? ' selected' : '';
+
                 $html_akun_perkiraan .= '
-                    <option value="'.$id_perkiraan.'">'.$kode.' - '.$nama.'</option>
+                    <option value="'.$id_perkiraan.'"'.$akun_terpilih.'>'.$kode.' - '.$nama.'</option>
                 ';
             }
         }
@@ -86,20 +98,9 @@
 
     $response = [
         "status"  => "success",
-        "message" => "ID Pembayaran Tidak Boleh Kosong",
+        "message" => "Jurnal Berhasil Ditampilkan",
         "html"    => '
-            <div class="row mb-3">
-                <div class="col-12">
-                    <label for="id_transaksi_pembayaran">ID Pembayaran</label>
-                    <input type="text" readonly name="id_transaksi_pembayaran" class="form-control" value="'.$id_transaksi_pembayaran.'">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-12">
-                    <label for="kategori_jurnal">Kategori Jurnal</label>
-                    <input type="text" readonly name="kategori_jurnal" class="form-control" value="Pembayaran">
-                </div>
-            </div>
+            <input type="hidden" name="id_jurnal" value="'.$id_jurnal.'">
             <div class="row mb-3">
                 <div class="col-12">
                     <label for="tanggal_jurnal">Tanggal</label>
@@ -108,23 +109,23 @@
             </div>
             <div class="row mb-3">
                 <div class="col-12">
-                    <label for="nominal_jurnal">Nominal</label>
-                    <input type="text" name="nominal" id="nominal_jurnal" class="form-control form-money" value="'.$jumlah.'" required>
+                    <label for="nominal_jurnal_edit">Nominal</label>
+                    <input type="text" name="nominal" id="nominal_jurnal_edit" class="form-control form-money" value="'.$nilai.'" required>
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-12">
-                    <label for="debet_kredit">Debet/Kredit</label>
-                    <select name="debet_kredit" id="debet_kredit" class="form-control" required>
-                        <option value="Debet">Debet</option>
-                        <option value="Kredit">Kredit</option>
+                    <label for="debet_kredit_edit">Debet/Kredit</label>
+                    <select name="debet_kredit" id="debet_kredit_edit" class="form-control" required>
+                        <option value="Debet"'.$debet_selected.'>Debet</option>
+                        <option value="Kredit"'.$kredit_selected.'>Kredit</option>
                     </select>
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-12">
-                    <label for="id_akun_perkiraan">Akun Perkiraan</label>
-                    <select name="id_akun_perkiraan" id="id_akun_perkiraan" class="form-control" required>
+                    <label for="id_akun_perkiraan_edit">Akun Perkiraan</label>
+                    <select name="id_akun_perkiraan" id="id_akun_perkiraan_edit" class="form-control" required>
                         '.$html_akun_perkiraan.'
                     </select>
                 </div>

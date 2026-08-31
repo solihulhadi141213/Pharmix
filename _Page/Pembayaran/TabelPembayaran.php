@@ -70,13 +70,14 @@
     // Mapping Order By
     // =====================================================
     $allowedOrder = [
-        'tanggal'              => 'tp.tanggal',
-        'id_transaksi'         => 'tp.id_transaksi',
-        'id_transaksi_jual_beli' => 'tp.id_transaksi_jual_beli',
-        'kategori_pembayaran'  => 'tp.kategori_pembayaran',
-        'kategori_transaksi'   => 'tp.kategori_transaksi',
-        'jumlah'               => 'tp.jumlah',
-        'creat_by_name'        => 'tp.creat_by_name'
+        'id_transaksi_pembayaran' => 'tp.id_transaksi_pembayaran',
+        'tanggal'                 => 'tp.tanggal',
+        'id_transaksi'            => 'tp.id_transaksi',
+        'id_transaksi_jual_beli'  => 'tp.id_transaksi_jual_beli',
+        'kategori_pembayaran'     => 'tp.kategori_pembayaran',
+        'kategori_transaksi'      => 'tp.kategori_transaksi',
+        'jumlah'                  => 'tp.jumlah',
+        'creat_by_name'           => 'tp.creat_by_name'
     ];
     if (!array_key_exists($OrderBy, $allowedOrder)) {
         $OrderBy = 'id_transaksi_pembayaran';
@@ -89,12 +90,13 @@
     // Validasi Keyword By
     // =====================================================
     $allowedKeywordBy = [
-        'tanggal'              => 'tp.tanggal',
-        'id_transaksi'         => 'tp.id_transaksi',
-        'id_transaksi_jual_beli' => 'tp.id_transaksi_jual_beli',
-        'kategori_pembayaran'  => 'tp.kategori_pembayaran',
-        'kategori_transaksi'   => 'tp.kategori_transaksi',
-        'creat_by_name'        => 'tp.creat_by_name'
+        'id_transaksi_pembayaran' => 'tp.id_transaksi_pembayaran',
+        'tanggal'                 => 'tp.tanggal',
+        'id_transaksi'            => 'tp.id_transaksi',
+        'id_transaksi_jual_beli'  => 'tp.id_transaksi_jual_beli',
+        'kategori_pembayaran'     => 'tp.kategori_pembayaran',
+        'kategori_transaksi'      => 'tp.kategori_transaksi',
+        'creat_by_name'           => 'tp.creat_by_name'
     ];
     if (!empty($keyword_by) && !array_key_exists($keyword_by, $allowedKeywordBy)) {
         $keyword_by = '';
@@ -119,7 +121,8 @@
         } else {
             $where[] = "
                 (
-                    tp.tanggal LIKE ?
+                    tp.id_transaksi_pembayaran LIKE ?
+                    OR tp.tanggal LIKE ?
                     OR tp.id_transaksi LIKE ?
                     OR tp.id_transaksi_jual_beli LIKE ?
                     OR tp.kategori_pembayaran LIKE ?
@@ -127,7 +130,8 @@
                     OR tp.creat_by_name LIKE ?
                 )
             ";
-            $bindTypes .= 'ssssss';
+            $bindTypes .= 'sssssss';
+            $bindValues[] = $keywordLike;
             $bindValues[] = $keywordLike;
             $bindValues[] = $keywordLike;
             $bindValues[] = $keywordLike;

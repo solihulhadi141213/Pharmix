@@ -4,9 +4,12 @@
     include "../../_Config/Connection.php";
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
+    include "../../_Config/FungsiAkses.php";
 
     // Default Response JSON
     header('Content-Type: application/json; charset=utf-8');
+
+    $now = date('Y-m-d H:i:s');
 
     $response = [
         "status"  => "error",
@@ -55,7 +58,7 @@
 
     // 3. Buka Data Pembayaran Lama Berdasarkan id_transaksi_pembayaran
     $QryOld = $Conn->prepare("SELECT * FROM transaksi_pembayaran WHERE id_transaksi_pembayaran = ?");
-    $QryOld->bind_param("i", $id_transaksi_pembayaran);
+    $QryOld->bind_param("s", $id_transaksi_pembayaran);
     $QryOld->execute();
     $ResultOld = $QryOld->get_result();
     $DataOld = $ResultOld->fetch_assoc();
@@ -84,7 +87,7 @@
         if (!empty($id_transaksi)) {
             // Ambil data tagihan transaksi utama
             $QryTrx = $Conn->prepare("SELECT jumlah, pembayaran FROM transaksi WHERE id_transaksi = ?");
-            $QryTrx->bind_param("i", $id_transaksi);
+            $QryTrx->bind_param("s", $id_transaksi);
             $QryTrx->execute();
             $DataTrx = $QryTrx->get_result()->fetch_assoc();
             $QryTrx->close();
@@ -95,7 +98,7 @@
 
                 // Hitung akumulasi pembayaran lain selain ID pembayaran yang sedang diedit
                 $QrySum = $Conn->prepare("SELECT SUM(jumlah) as total_bayar_lain FROM transaksi_pembayaran WHERE id_transaksi = ? AND id_transaksi_pembayaran != ?");
-                $QrySum->bind_param("ii", $id_transaksi, $id_transaksi_pembayaran);
+                $QrySum->bind_param("ss", $id_transaksi, $id_transaksi_pembayaran);
                 $QrySum->execute();
                 $SumResult = $QrySum->get_result()->fetch_assoc();
                 $QrySum->close();
@@ -127,7 +130,7 @@
 
                 // Hitung akumulasi pembayaran lain selain ID pembayaran yang sedang diedit
                 $QrySumJB = $Conn->prepare("SELECT SUM(jumlah) as total_bayar_lain FROM transaksi_pembayaran WHERE id_transaksi_jual_beli = ? AND id_transaksi_pembayaran != ?");
-                $QrySumJB->bind_param("si", $id_transaksi_jual_beli, $id_transaksi_pembayaran);
+                $QrySumJB->bind_param("ss", $id_transaksi_jual_beli, $id_transaksi_pembayaran);
                 $QrySumJB->execute();
                 $SumJBResult = $QrySumJB->get_result()->fetch_assoc();
                 $QrySumJB->close();
@@ -146,7 +149,7 @@
 
         // 2 (Lanjutan). Simpan Perubahan pada tabel 'transaksi_pembayaran'
         $QryUpdate = $Conn->prepare("UPDATE transaksi_pembayaran SET tanggal = ?, jumlah = ?, update_at = NOW(), update_by_id = ?, update_by_name = ? WHERE id_transaksi_pembayaran = ?");
-        $QryUpdate->bind_param("siisi", $gabung_tanggal, $jumlah_baru, $IdAkses, $NamaAkses, $id_transaksi_pembayaran);
+        $QryUpdate->bind_param("siiss", $gabung_tanggal, $jumlah_baru, $SessionIdAkses, $SessionNama, $id_transaksi_pembayaran);
         if (!$QryUpdate->execute()) {
             throw new Exception("Gagal memperbarui data transaksi pembayaran: " . $Conn->error);
         }
@@ -155,7 +158,7 @@
         // UPDATE STATUS PADA TABEL 'transaksi' (Jika memenuhi tagihan)
         if (!empty($id_transaksi) && isset($status_transaksi_baru)) {
             $QryUpTrx = $Conn->prepare("UPDATE transaksi SET status = ?, update_at = NOW(), update_by_id = ?, update_by_name = ? WHERE id_transaksi = ?");
-            $QryUpTrx->bind_param("sisi", $status_transaksi_baru, $IdAkses, $NamaAkses, $id_transaksi);
+            $QryUpTrx->bind_param("siss", $status_transaksi_baru, $SessionIdAkses, $SessionNama, $id_transaksi);
             if (!$QryUpTrx->execute()) {
                 throw new Exception("Gagal memperbarui status pada tabel transaksi: " . $Conn->error);
             }
@@ -165,7 +168,7 @@
         // UPDATE STATUS PADA TABEL 'transaksi_jual_beli' (Jika memenuhi total)
         if (!empty($id_transaksi_jual_beli) && isset($status_jual_beli_baru)) {
             $QryUpJB = $Conn->prepare("UPDATE transaksi_jual_beli SET status = ?, update_at = NOW(), update_by_id = ?, update_by_name = ? WHERE id_transaksi_jual_beli = ?");
-            $QryUpJB->bind_param("siss", $status_jual_beli_baru, $IdAkses, $NamaAkses, $id_transaksi_jual_beli);
+            $QryUpJB->bind_param("siss", $status_jual_beli_baru, $SessionIdAkses, $SessionNama, $id_transaksi_jual_beli);
             if (!$QryUpJB->execute()) {
                 throw new Exception("Gagal memperbarui status pada tabel transaksi_jual_beli: " . $Conn->error);
             }
@@ -174,7 +177,7 @@
 
         // 10. Update atribut nilai pada tabel 'jurnal' berdasarkan id_transaksi_pembayaran
         $QryJurnal = $Conn->prepare("UPDATE jurnal SET nilai = ? WHERE id_transaksi_pembayaran = ?");
-        $QryJurnal->bind_param("ii", $jumlah_baru, $id_transaksi_pembayaran);
+        $QryJurnal->bind_param("is", $jumlah_baru, $id_transaksi_pembayaran);
         if (!$QryJurnal->execute()) {
             throw new Exception("Gagal memperbarui nominal pada tabel jurnal: " . $Conn->error);
         }

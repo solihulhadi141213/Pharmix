@@ -58,6 +58,7 @@
                             </label>
                             <select name="keyword_by" id="keyword_by" class="form-control">
                                 <option value="">Pilih</option>
+                                <option value="id_transaksi_pembayaran">ID Pembayaran</option>
                                 <option value="tanggal">Tanggal</option>
                                 <option value="id_transaksi">Ref Operasional</option>
                                 <option value="id_transaksi_jual_beli">Ref Jual/Beli</option>
@@ -315,6 +316,125 @@
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary btn-rounded" id="ButtonTambahJurnal">
                         <i class="bi bi-save"></i> Simpan
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 'ModalEditJurnal' -->
+<div class="modal fade" id="ModalEditJurnal" tabindex="-1">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form action="javascript:void(0);" id="ProsesEditJurnal">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">
+                        <i class="bi bi-pencil"></i> Edit Jurnal
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12" id="FormEditJurnal">
+                            <!-- Form Edit Jurnal -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12" id="NotifikasiEditJurnal">
+                            <!-- Notifikasi Edit Jurnal -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="ButtonEditJurnal">
+                        <i class="bi bi-save"></i> Simpan
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 'ModalHapusJurnnal' -->
+<div class="modal fade" id="ModalHapusJurnnal" tabindex="-1">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form action="javascript:void(0);" id="ProsesHapusJurnnal">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">
+                        <i class="bi bi-trash"></i> Hapus Jurnal
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12" id="FormHapusJurnnal">
+                            <!-- Form Hapus Jurnal -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12" id="NotifikasiHapusJurnnal">
+                            <!-- Notifikasi Hapus Jurnal -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-rounded" id="ButtonHapusJurnnal">
+                        <i class="bi bi-check"></i> Ya, Hapus
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 'ModalExport' -->
+<div class="modal fade" id="ModalExport" tabindex="-1">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form action="_Page/Pembayaran/ProsesExport.php" method="POST" target="_blank">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">
+                        <i class="bi bi-download"></i> Export Pembayaran
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label for="periode_awal">Periode Awal</label>
+                            <input type="date" name="periode_awal" id="periode_awal" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label for="periode_akhir">Periode Akhir</label>
+                            <input type="date" name="periode_akhir" id="perperiode_akhiriode_awal" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label for="format_data">Format Data</label>
+                            <select name="format_data" id="format_data" class="form-control">
+                                <option value="HTML">HTML</option>
+                                <option value="Excel">Excel</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-rounded">
+                        <i class="bi bi-download"></i> Simpan
                     </button>
                     <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup

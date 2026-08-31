@@ -192,7 +192,7 @@
                           INNER JOIN transaksi_jenis tj ON t.id_transaksi_jenis = tj.id_transaksi_jenis 
                           WHERE t.id_transaksi = ? LIMIT 1";
             $stmt_induk = mysqli_prepare($Conn, $sql_induk);
-            mysqli_stmt_bind_param($stmt_induk, "i", $id);
+            mysqli_stmt_bind_param($stmt_induk, "s", $id);
             mysqli_stmt_execute($stmt_induk);
             $data_induk = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_induk));
             mysqli_stmt_close($stmt_induk);
@@ -208,7 +208,7 @@
 
             $sql_akum = "SELECT SUM(jumlah) AS total_lain FROM transaksi_pembayaran WHERE id_transaksi = ?";
             $stmt_akum = mysqli_prepare($Conn, $sql_akum);
-            mysqli_stmt_bind_param($stmt_akum, "i", $id);
+            mysqli_stmt_bind_param($stmt_akum, "s", $id);
             mysqli_stmt_execute($stmt_akum);
             $data_akum = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_akum));
             mysqli_stmt_close($stmt_akum);
@@ -246,7 +246,7 @@
             
             $stmt_ins_byr = mysqli_prepare($Conn, $sql_ins_byr);
             // Perhatikan tipe parameter bind: id_transaksi_pembayaran (s), id_transaksi (i) -> total string "sisssisissis"
-            mysqli_stmt_bind_param($stmt_ins_byr, "sisssisissis", $id_transaksi_pembayaran, $id, $kategori_pembayaran, $sub_kategori, $tanggal_waktu, $jumlah_nominal, $now, $SessionIdAkses, $SessionNama, $now, $SessionIdAkses, $SessionNama);
+            mysqli_stmt_bind_param($stmt_ins_byr, "sssssisissis", $id_transaksi_pembayaran, $id, $kategori_pembayaran, $sub_kategori, $tanggal_waktu, $jumlah_nominal, $now, $SessionIdAkses, $SessionNama, $now, $SessionIdAkses, $SessionNama);
             
             if (!mysqli_stmt_execute($stmt_ins_byr)) {
                 throw new Exception("Gagal menyimpan data pembayaran operasional.");

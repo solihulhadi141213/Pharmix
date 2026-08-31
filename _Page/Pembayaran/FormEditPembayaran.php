@@ -27,7 +27,7 @@
     
     // Buka Data 'transaksi_pembayaran'
     $Qry = $Conn->prepare("SELECT * FROM transaksi_pembayaran WHERE id_transaksi_pembayaran = ?");
-    $Qry->bind_param("i", $id_transaksi_pembayaran);
+    $Qry->bind_param("s", $id_transaksi_pembayaran);
     if (!$Qry->execute()) {
         $response = [
             "status"  => "error",

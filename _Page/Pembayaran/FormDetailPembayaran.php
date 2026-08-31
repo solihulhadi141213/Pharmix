@@ -103,7 +103,7 @@
     ");
     
     if($QryJurnal){
-        $QryJurnal->bind_param("i", $id_transaksi_pembayaran);
+        $QryJurnal->bind_param("s", $id_transaksi_pembayaran);
         $QryJurnal->execute();
         $ResultJurnal = $QryJurnal->get_result();
 
@@ -145,12 +145,12 @@
                                 <h6 class="mb-0">Opsi</h6>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalEditJurnal" data-id="' . $id_jurnal . '">
+                                <a class="dropdown-item js-modal-nested" href="javascript:void(0);" data-bs-target="#ModalEditJurnal" data-id="' . $id_jurnal . '">
                                     <i class="bi bi-pencil me-2"></i>Ubah/Edit
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalHapusJurnnal" data-id="' . $id_jurnal . '">
+                                <a class="dropdown-item js-modal-nested" href="javascript:void(0);" data-bs-target="#ModalHapusJurnnal" data-id="' . $id_jurnal . '">
                                     <i class="bi bi-trash me-2"></i>Hapus
                                 </a>
                             </li>
@@ -193,7 +193,7 @@
                 </div>
                 <div class="row mb-2">
                     <div class="col-4">
-                        <small>ID Transaksi</small>
+                        <small>ID Pembayaran</small>
                     </div>
                     <div class="col-8">
                         <small class="text-muted">'.$KodeTransaksi.'</small>
@@ -284,7 +284,7 @@
                 </small>
             </div>
             <div class="col-4 text-end">
-                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalTambahJurnal" data-id="'.$id_transaksi_pembayaran.'" title="Tambah Jurnal">
+                <a href="javascript:void(0);" class="js-modal-nested js-tambah-jurnal" data-bs-target="#ModalTambahJurnal" data-id="'.$id_transaksi_pembayaran.'" title="Tambah Jurnal">
                     <small><i class="bi bi-plus-lg"></i> Tambah Jurnal</small>
                 </a>
             </div>

@@ -80,7 +80,7 @@
                 INNER JOIN transaksi_jenis tj ON t.id_transaksi_jenis = tj.id_transaksi_jenis 
                 WHERE t.id_transaksi = ? LIMIT 1";
         $stmt = mysqli_prepare($Conn, $sql);
-        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_bind_param($stmt, "s", $id);
         mysqli_stmt_execute($stmt);
         $res = mysqli_stmt_get_result($stmt);
         $data = mysqli_fetch_assoc($res);
@@ -100,7 +100,7 @@
         // Akumulasi riwayat pembayaran
         $sql_byr = "SELECT SUM(jumlah) AS total_bayar FROM transaksi_pembayaran WHERE id_transaksi = ?";
         $stmt_byr = mysqli_prepare($Conn, $sql_byr);
-        mysqli_stmt_bind_param($stmt_byr, "i", $id);
+        mysqli_stmt_bind_param($stmt_byr, "s", $id);
         mysqli_stmt_execute($stmt_byr);
         $res_byr = mysqli_stmt_get_result($stmt_byr);
         $data_byr = mysqli_fetch_assoc($res_byr);

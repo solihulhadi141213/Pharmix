@@ -77,7 +77,7 @@
                 LEFT JOIN transaksi_jenis tj ON t.id_transaksi_jenis = tj.id_transaksi_jenis 
                 WHERE t.id_transaksi = ? LIMIT 1
             ");
-            $QryTrx->bind_param("i", $id_transaksi);
+            $QryTrx->bind_param("s", $id_transaksi);
             $QryTrx->execute();
             $ResTrx = $QryTrx->get_result();
             $DataTrx = $ResTrx->fetch_assoc();
@@ -90,7 +90,7 @@
 
                 // Akumulasi sisa pembayaran lain dari tabel transaksi_pembayaran setelah penghapusan
                 $QryAkum = $Conn->prepare("SELECT SUM(jumlah) AS total_akumulasi FROM transaksi_pembayaran WHERE id_transaksi = ?");
-                $QryAkum->bind_param("i", $id_transaksi);
+                $QryAkum->bind_param("s", $id_transaksi);
                 $QryAkum->execute();
                 $ResAkum = $QryAkum->get_result();
                 $DataAkum = $ResAkum->fetch_assoc();
@@ -111,7 +111,7 @@
 
                 // Update status pada tabel transaksi
                 $UpTrx = $Conn->prepare("UPDATE transaksi SET status = ? WHERE id_transaksi = ?");
-                $UpTrx->bind_param("si", $status_baru, $id_transaksi);
+                $UpTrx->bind_param("ss", $status_baru, $id_transaksi);
                 $UpTrx->execute();
                 $UpTrx->close();
             }

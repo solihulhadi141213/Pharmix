@@ -98,7 +98,7 @@
         }
 
         // BIND PARAMETER
-        mysqli_stmt_bind_param($stmt, "i", $id_transaksi);
+        mysqli_stmt_bind_param($stmt, "s", $id_transaksi);
 
         // EXECUTE
         if (!mysqli_stmt_execute($stmt)) {
@@ -201,7 +201,7 @@
         $JumlahRincian = 0;
         $HtmlRincian   = '';
         if ($stmt_rincian) {
-            mysqli_stmt_bind_param($stmt_rincian, "i", $id_transaksi);
+            mysqli_stmt_bind_param($stmt_rincian, "s", $id_transaksi);
             if (mysqli_stmt_execute($stmt_rincian)) {
                 $result_rincian = mysqli_stmt_get_result($stmt_rincian);
                 if ($result_rincian) {

@@ -51,48 +51,48 @@
                             Nama Lengkap
                         </div>
                         <div class="col col-md-6">
-                            <small class="credit">
-                                <code class="text text-grayish"><?php echo "$SessionNama"; ?></code>
+                            <small class="text-muted">
+                                <?php echo "$SessionNama"; ?>
                             </small>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col col-md-6">Kontak</div>
                         <div class="col col-md-6">
-                            <small class="credit">
-                                <code class="text text-grayish"><?php echo "$SessionKontakAkses"; ?></code>
+                            <small class="text-muted">
+                                <?php echo "$SessionKontakAkses"; ?>
                             </small>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col col-md-6">Email</div>
                         <div class="col col-md-6">
-                            <small class="credit">
-                                <code class="text text-grayish"><?php echo "$SessionEmailAkses"; ?></code>
+                            <small class="text-muted">
+                                <?php echo "$SessionEmailAkses"; ?>
                             </small>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col col-md-6">Level Akses</div>
                         <div class="col col-md-6">
-                            <small class="credit">
-                                <code class="text text-grayish"><?php echo "$SessionLevelAkses"; ?></code>
+                            <small class="text-muted">
+                                <?php echo "$SessionLevelAkses"; ?>
                             </small>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col col-md-6">Waktu Daftar</div>
                         <div class="col col-md-6">
-                            <small class="credit">
-                                <code class="text text-grayish"><?php echo "$SessionWaktuDaftarDatetime"; ?></code>
+                            <small class="text-muted">
+                                <?php echo "$SessionWaktuDaftarDatetime"; ?>
                             </small>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col col-md-6 mb-3">Update</div>
                         <div class="col col-md-6 mb-3">
-                            <small class="credit">
-                                <code class="text text-grayish"><?php echo "$SessionWaktuUpdateDatetime"; ?></code>
+                            <small class="text-muted">
+                               <?php echo "$SessionWaktuUpdateDatetime"; ?>
                             </small>
                         </div>
                     </div>
