@@ -20,83 +20,60 @@
     </div>
     <section class="section dashboard">
         <div class="row">
-            <div class="col-md-12">
-                <?php
-                    echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
-                    echo '  <small>';
-                    echo '      Berikut ini adalah halaman laporan buku besar.';
-                    echo '      Laporan ini menampilkan akumulasi transaksi saldo berdasarkan jurnal pada masing-masing akun.';
-                    echo '      Untuk menampilkan laporan, pilih akun keuangan dan periode transaksi yang diinginkan.';
-                    echo '      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-                    echo '  </small>';
-                    echo '</div>';
-                ?>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <form action="javascript:void(0);" id="ProsesBukuBesar">
-                            <div class="row">
-                                <div class="col-md-4 mt-3">
-                                    <select name="id_perkiraan" id="id_perkiraan" class="form-control">
-                                        <?php
-                                            echo '<option value="">Pilih</option>';
-                                            // Query untuk mengambil akun level 1 (group utama)
-                                            $QryGroupUtama = mysqli_query($Conn, "SELECT * FROM akun_perkiraan WHERE level='1' ORDER BY nama");
-                                            while ($GroupUtama = mysqli_fetch_array($QryGroupUtama)) {
-                                                $id_perkiraan_utama = $GroupUtama['id_perkiraan'];
-                                                $kode_utama = $GroupUtama['kode'];
-                                                $nama_utama = $GroupUtama['nama'];
-                                                $saldo_normal_utama = $GroupUtama['saldo_normal'];
-                                                // Tampilkan group utama
-                                                echo '<optgroup label="'.$nama_utama.' ('.$saldo_normal_utama.')">';
-                                                // Query untuk mengambil anak group dari group utama berdasarkan kode
-                                                $QryAnakGroup = mysqli_query($Conn, "SELECT * FROM akun_perkiraan WHERE kode LIKE '$kode_utama%' AND level != '1' ORDER BY nama");
-                                                while ($AnakGroup = mysqli_fetch_array($QryAnakGroup)) {
-                                                    $id_perkiraan_anak = $AnakGroup['id_perkiraan'];
-                                                    $nama_anak = $AnakGroup['nama'];
-                                                    $saldo_normal_anak = $AnakGroup['saldo_normal'];
-                                                    $kode = $AnakGroup['kode'];
-                                                    $level = $AnakGroup['level'];
-                                                    $LevelTerbawah = mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM akun_perkiraan WHERE kd$level='$kode'"));
-                                                    // Tampilkan anak group
-                                                    if($LevelTerbawah=="1"){
-                                                        echo '<option value="'.$id_perkiraan_anak.'">'.$nama_anak.' ('.$saldo_normal_anak.')</option>';
-                                                    }
-                                                }
-                                                echo '</optgroup>';
-                                            }
-                                        ?>
-                                    </select>
-                                    <small>Akun Perkiraan</small>
-                                </div>
-                                <div class="col-md-3 mt-3">
-                                    <input type="date" name="periode1" id="periode1" class="form-control">
-                                    <small>Periode Awal</small>
-                                </div>
-                                <div class="col-md-3 mt-3">
-                                    <input type="date" name="periode2" id="periode2" class="form-control">
-                                    <small>Periode Akhir</small>
-                                </div>
-                                <div class="col-md-2 mt-3">
-                                    <button type="submit" class="btn btn-md btn-dark btn-block btn-rounded" title="Taapilkan Data Buku Besar">
-                                        <i class="bi bi-search"></i> Tampilkan
-                                    </button>
-                                </div>
+                        <div class="row">
+                            <div class="col-md-12 text-end">
+                                <button type="button" class="btn btn-md btn-secondary" data-bs-toggle="modal" data-bs-target="#ModalFilter">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                <button type="button" class="btn btn-md btn-secondary" data-bs-toggle="modal" data-bs-target="#ModalExport">
+                                    <i class="bi bi-download"></i>
+                                </button>
                             </div>
-                        </form>
+                        </div>
                     </div>
                     <div class="card-body">
+                        <div class="row mt-4 mb-4">
+                            <div class="col-md-12 text-center" id="title_buku_besar">
+                                <b>LAPORAN BUKU BESAR</b>
+                                <p>Periode Data & Akun Perkiraan</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                               <div class="table table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th class="bg-dark text-white"><b>No</b></th>
+                                                <th class="bg-dark text-white"><b>ID</b></th>
+                                                <th class="bg-dark text-white"><b>Tanggal</b></th>
+                                                <th class="bg-dark text-white"><b>Referensi</b></th>
+                                                <th class="bg-dark text-white"><b>Kategori</b></th>
+                                                <th class="bg-dark text-white"><b>Debet</b></th>
+                                                <th class="bg-dark text-white"><b>Kredit</b></th>
+                                                <th class="bg-dark text-white"><b>Saldo</b></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabel_buku_besar">
+                                            <tr>
+                                                <td colspan="8" class="text-center">
+                                                    <h1 class="bi bi-exclamation-triangle text-grayish"></h1>
+                                                    <span class="text text-grayish">Belum Ada Data Yang Ditampilkan!</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
                         <div class="row">
-                            <div class="col-md-12" id="MenampilkanTabelBukuBesar">
-                                <?php
-                                    echo '<div class="alert alert-danger text-center" role="alert">';
-                                    echo ' <b>Keterangan :</b><br>';
-                                    echo ' Untuk menampilkan laporan, anda harus mengisi nama akun perkiraan buku besar, periode awal dan periode akhir.<br>';
-                                    echo '</div>';
-                                ?>
+                            <div class="col-12">
+                                <small id="data_count">Data Count : 00 Record</small>
                             </div>
                         </div>
                     </div>

@@ -25,10 +25,10 @@
     //Data Jual/Beli
     $query_penjualan = "
         SELECT
-            SUM(CASE WHEN kategori='Pembelian' AND status='Kredit' THEN total ELSE 0 END) AS utang_pembelian,
-            SUM(CASE WHEN kategori='Retur Pembelian' AND status='Kredit' THEN total ELSE 0 END) AS piutang_retur_pembelian,
-            SUM(CASE WHEN kategori='Penjualan' AND status='Kredit' THEN total ELSE 0 END) AS piutang_penjualan,
-            SUM(CASE WHEN kategori='Retur Penjualan' AND status='Kredit' THEN total ELSE 0 END) AS utang_retur_penjualan
+            SUM(CASE WHEN kategori='Pembelian' AND status='Utang' THEN total ELSE 0 END) AS utang_pembelian,
+            SUM(CASE WHEN kategori='Retur Pembelian' AND status='Piutang' THEN total ELSE 0 END) AS piutang_retur_pembelian,
+            SUM(CASE WHEN kategori='Penjualan' AND status='Piutang' THEN total ELSE 0 END) AS piutang_penjualan,
+            SUM(CASE WHEN kategori='Retur Penjualan' AND status='Utang' THEN total ELSE 0 END) AS utang_retur_penjualan
         FROM transaksi_jual_beli
     ";
     $stmt_penjualan = mysqli_prepare($Conn, $query_penjualan);
