@@ -78,12 +78,11 @@
                         <div class="col-7">
                             <select name="keyword_by" id="keyword_by" class="form-control">
                                 <option value="">Pilih</option>
+                                <option value="id_pasien">RM</option>
                                 <option value="nik">NIK</option>
                                 <option value="nama">Nama</option>
                                 <option value="gender">Gender</option>
-                                <option value="email">Email</option>
                                 <option value="kontak">Kontak</option>
-                                <option value="alamat">Alamat</option>
                                 <option value="tanggal_masuk">Tanggal Daftar</option>
                             </select>
                         </div>

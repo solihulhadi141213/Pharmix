@@ -198,12 +198,12 @@
         <hr class="menu-divider">
         <li class="nav-heading">Sistem</li>
         <li class="nav-item">
-            <a class="nav-link <?php if($PageMenu=="SettingGeneral"||$PageMenu=="SettingEmailGateway"||$PageMenu=="AutoJurnal"||$PageMenu=="AksesFitur"||$PageMenu=="AksesEntitas"||$PageMenu=="Akses"){echo "active";}else{echo "collapsed";} ?>" data-bs-target="#components-nav" data-bs-toggle="collapse" href="javascript:void(0);">
+            <a class="nav-link <?php if($PageMenu=="SettingGeneral"||$PageMenu=="SettingEmailGateway"||$PageMenu=="AutoJurnal"||$PageMenu=="SettingSatuSehat"||$PageMenu=="AksesFitur"||$PageMenu=="AksesEntitas"||$PageMenu=="Akses"){echo "active";}else{echo "collapsed";} ?>" data-bs-target="#components-nav" data-bs-toggle="collapse" href="javascript:void(0);">
                 <i class="bi bi-gear"></i>
                     <span>Pengaturan</span><i class="bi bi-chevron-down ms-auto">
                 </i>
             </a>
-            <ul id="components-nav" class="nav-content collapse <?php if($PageMenu=="SettingGeneral"||$PageMenu=="SettingEmailGateway"||$PageMenu=="AutoJurnal"||$PageMenu=="AksesFitur"||$PageMenu=="AksesEntitas"||$PageMenu=="Akses"){echo "show";} ?>" data-bs-parent="#sidebar-nav">
+            <ul id="components-nav" class="nav-content collapse <?php if($PageMenu=="SettingGeneral"||$PageMenu=="SettingEmailGateway"||$PageMenu=="AutoJurnal"||$PageMenu=="SettingSatuSehat"||$PageMenu=="AksesFitur"||$PageMenu=="AksesEntitas"||$PageMenu=="Akses"){echo "show";} ?>" data-bs-parent="#sidebar-nav">
                 <li>
                     <a href="index.php?Page=SettingGeneral" class="<?php if($PageMenu=="SettingGeneral"){echo "active";} ?>">
                         <i class="bi bi-circle"></i><span>Pengaturan Umum</span>
@@ -217,6 +217,11 @@
                 <li>
                     <a href="index.php?Page=SettingEmailGateway" class="<?php if($PageMenu=="SettingEmailGateway"){echo "active";} ?>">
                         <i class="bi bi-circle"></i><span>Email Gateway</span>
+                    </a>
+                </li> 
+                <li>
+                    <a href="index.php?Page=SettingSatuSehat" class="<?php if($PageMenu=="SettingSatuSehat"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>SATUSEHAT</span>
                     </a>
                 </li> 
                 <li class="nav-submenu">

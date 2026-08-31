@@ -20,20 +20,6 @@
     </div>
     <section class="section dashboard">
         <div class="row">
-            <div class="col-md-12">
-                <?php
-                    echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
-                    echo '  <small>';
-                    echo '      Berikut ini adalah halaman pengelolaan data pasien. ';
-                    echo '      Anda bisa menambahkan data pasien baru, merubah informasi identitas, melihat detail informasi pasien, dan melihat riwayat transaksi pasien.';
-                    echo '      Apabila anda sudah memiliki data pasien dalam bentuk excel, silahkan gunakan fitur import pada tombol opsi lanjutan.';
-                    echo '      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-                    echo '  </small>';
-                    echo '</div>';
-                ?>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
@@ -57,17 +43,19 @@
                                 <thead>
                                     <tr>
                                         <th><b>No</b></th>
+                                        <th><b>RM</b></th>
                                         <th><b>Nama</b></th>
-                                        <th><b>Gender</b></th>
+                                        <th><b>L/P</b></th>
                                         <th><b>NIK</b></th>
                                         <th><b>Kontak</b></th>
-                                        <th><b>Tanggal Daftar</b></th>
+                                        <th><b>Tgl.Daftar</b></th>
+                                        <th><b>IHS</b></th>
                                         <th><b>Opsi</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="TabelPasien">
                                     <tr>
-                                        <td colspan="6" class="text-center">No Data</td>
+                                        <td colspan="9" class="text-center">No Data</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -81,10 +69,10 @@
                                 </small>
                             </div>
                             <div class="col-6 text-end">
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="prev_button">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button">
                                     <i class="bi bi-chevron-left"></i>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="next_button">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button">
                                     <i class="bi bi-chevron-right"></i>
                                 </button>
                             </div>

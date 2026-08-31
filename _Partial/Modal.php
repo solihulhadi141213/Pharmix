@@ -33,6 +33,7 @@
             "BukuBesar"             => "_Page/BukuBesar/ModalBukuBesar.php",
             "NeracaSaldo"           => "_Page/NeracaSaldo/ModalNeracaSaldo.php",
             "LabaRugi"              => "_Page/LabaRugi/ModalLabaRugi.php",
+            "SettingSatuSehat"              => "_Page/SettingSatuSehat/ModalSettingSatuSehat.php",
             "RekapitulasiTransaksi" => "_Page/RekapitulasiTransaksi/ModalRekapitulasiTransaksi.php"
         ];
 

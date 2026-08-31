@@ -38,6 +38,7 @@
             "BukuBesar"             => "_Page/BukuBesar/BukuBesar.js",
             "NeracaSaldo"           => "_Page/NeracaSaldo/NeracaSaldo.js",
             "LabaRugi"              => "_Page/LabaRugi/LabaRugi.js",
+            "SettingSatuSehat" => "_Page/SettingSatuSehat/SettingSatuSehat.js",
             "RekapitulasiTransaksi" => "_Page/RekapitulasiTransaksi/RekapitulasiTransaksi.js"
         ];
 

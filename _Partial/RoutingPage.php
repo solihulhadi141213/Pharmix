@@ -35,7 +35,7 @@
             "NeracaSaldo"           => "_Page/NeracaSaldo/NeracaSaldo.php",
             "LabaRugi"              => "_Page/LabaRugi/LabaRugi.php",
             "RekapitulasiTransaksi" => "_Page/RekapitulasiTransaksi/RekapitulasiTransaksi.php",
-            "CetakInvoice"          => "_Page/CetakInvoice/CetakInvoice.php",
+            "SettingSatuSehat"          => "_Page/SettingSatuSehat/SettingSatuSehat.php",
             "Error"                 => "_Page/Error/Error.php"
         ];
 
