@@ -19,8 +19,10 @@
         </nav>
     </div>
     <section class="section dashboard">
+
+        <!-- Table View -->
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-12" id="table_view">
                 <div class="card">
                     <div class="card-header">
                         <form action="javascript:void(0);" id="ProsesBatas">
@@ -79,6 +81,13 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Tampilan Detail -->
+        <div class="row">
+            <div class="col-12" id="detail_view">
+                <!-- Form Detail Pasien -->
             </div>
         </div>
     </section>

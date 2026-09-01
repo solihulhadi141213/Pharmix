@@ -65,74 +65,70 @@
                                 </div>
                                 <form action="javascript:void(0);" class="row g-3 login-form" id="ProsesLogin" autocomplete="off" autocapitalize="off" spellcheck="false">
                                     <div class="login-form-inner">
-                                            <div class="pb-2 login-card-header">
-                                                <h5 class="card-title text-center pb-0 fs-4">Login Ke Akun Anda</h5>
-                                                <p class="text-center small">Masukan email, password, dan captcha untuk melanjutkan.</p>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-12">
-                                                    <label for="email" class="form-label">Email</label>
-                                                    <div class="input-group has-validation login-input-group">
-                                                        <span class="input-group-text login-input-icon">
-                                                            <i class="bi bi-envelope"></i>
-                                                        </span>
-                                                        <input type="email" name="email" class="form-control login-control" id="email" placeholder="nama@email.com" autocomplete="off" autocapitalize="off" spellcheck="false" required>
-                                                        <div class="invalid-feedback">Please enter your username.</div>
-                                                    </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <label for="email" class="form-label">Alamat Email</label>
+                                                <div class="input-group has-validation login-input-group">
+                                                    <span class="input-group-text login-input-icon">
+                                                        <i class="bi bi-envelope"></i>
+                                                    </span>
+                                                    <input type="email" name="email" class="form-control login-control" id="email" placeholder="nama@email.com" autocomplete="off" autocapitalize="off" spellcheck="false" autofocus required>
+                                                    <div class="invalid-feedback">Please enter your username.</div>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <div class="row mb-3">
-                                                <div class="col-12">
-                                                    <label for="password" class="form-label">Password</label>
-                                                    <div class="login-password-wrap">
-                                                        <div class="input-group has-validation login-input-group">
-                                                            <span class="input-group-text login-input-icon">
-                                                                <i class="bi bi-key"></i>
-                                                            </span>
-                                                            <input type="password" name="password" class="form-control login-control login-password-input" id="password" placeholder="Masukkan password" autocomplete="new-password" autocapitalize="off" spellcheck="false" required>
-                                                            <button type="button" class="btn login-password-toggle" id="TampilkanPassword2" aria-label="Tampilkan password">
-                                                                <i class="bi bi-eye"></i>
-                                                            </button>
-                                                            <div class="invalid-feedback">Please enter your password!</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                                
-                                            <div class="row mb-3">
-                                                <div class="col-12">
-                                                    <label class="form-label">Captcha</label>
-                                                    <div class="login-captcha-wrap">
-                                                        <button type="button" class="btn btn-floating login-captcha-reload" onclick="reloadCaptcha()" title="Muat ulang kode captcha">
-                                                            <i class="bi bi-arrow-repeat"></i>
-                                                        </button>
-                                                        <img src="_Page/Login/Captcha.php" id="captchaImage" alt="No Image" class="login-captcha-image">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-12">
-                                                    <small class="login-helper-text">
-                                                        Masukan karakter <i>Captcha</i>
-                                                    </small>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <label for="password" class="form-label">Password</label>
+                                                <div class="login-password-wrap">
                                                     <div class="input-group has-validation login-input-group">
                                                         <span class="input-group-text login-input-icon">
-                                                            <i class="bi bi-shield-exclamation"></i>
+                                                            <i class="bi bi-key"></i>
                                                         </span>
-                                                        <input type="text" name="captcha" class="form-control login-control" id="captcha" placeholder="Ketikan captcha di atas" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+                                                        <input type="password" name="password" class="form-control login-control login-password-input" id="password" placeholder="Masukkan password" autocomplete="new-password" autocapitalize="off" spellcheck="false" required>
+                                                        <button type="button" class="btn login-password-toggle" id="TampilkanPassword2" aria-label="Tampilkan password">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                        <div class="invalid-feedback">Please enter your password!</div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row mb-3">
-                                                <div class="col-12" id="NotifikasiLogin"></div>
-                                                <div class="col-12">
-                                                    <button class="btn btn-lg btn-primary w-100 login-submit-btn" id="TombolLogin" type="submit">
-                                                        <i class="bi bi-box-arrow-in-right"></i>
-                                                        <span>Login</span>
+                                        </div>
+                                                
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <label class="form-label">Captcha</label>
+                                                <div class="login-captcha-wrap">
+                                                    <button type="button" class="btn btn-floating login-captcha-reload" onclick="reloadCaptcha()" title="Muat ulang kode captcha">
+                                                        <i class="bi bi-arrow-repeat"></i>
                                                     </button>
+                                                    <img src="_Page/Login/Captcha.php" id="captchaImage" alt="No Image" class="login-captcha-image">
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <small class="login-helper-text">
+                                                    Masukan karakter <i>Captcha</i>
+                                                </small>
+                                                <div class="input-group has-validation login-input-group">
+                                                    <span class="input-group-text login-input-icon">
+                                                        <i class="bi bi-shield-exclamation"></i>
+                                                    </span>
+                                                    <input type="text" name="captcha" class="form-control login-control" id="captcha" placeholder="Ketikan captcha di atas" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12" id="NotifikasiLogin"></div>
+                                            <div class="col-12">
+                                                <button class="btn btn-lg btn-primary w-100 login-submit-btn" id="TombolLogin" type="submit">
+                                                    <i class="bi bi-box-arrow-in-right"></i>
+                                                    <span>Login</span>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </form>
                                 <div class="credits text-center">
@@ -141,10 +137,10 @@
                                             Aplikasi apotek untuk operasional, penjualan, pembelian, dan laporan.
                                         </div>
                                         <div class="copyright text-dark">
-                                            &copy; Copyright <strong><span><?php echo "$title_page"; ?></span></strong>. All Rights Reserved 2023
+                                            &copy; Copyright <strong><span><?php echo "$title_page"; ?></span></strong>. All Rights Reserved 2026
                                         </div>
                                         <div class="credits text-dark">
-                                            Designed by <span class="text text-decoration-underline"><?php echo "$AuthorAplikasi"; ?></span>
+                                            Designed by <span class="text text-decoration-underline">Solihul Hadi</span>
                                         </div>
                                     </small>
                                 </div>
@@ -158,6 +154,11 @@
             include "_Partial/FooterJs.php";
         ?>
         <script>
+            // Fokuskan email ketika halaman siap ditampilkan.
+            $(function() {
+                $('#email').trigger('focus');
+            });
+
             //Fungsi Reload Captcha
             function reloadCaptcha() {
                 document.getElementById('captchaImage').src = '_Page/Login/Captcha.php?' + new Date().getTime();

@@ -125,7 +125,19 @@
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-md-12">
-                            <label for="nama">Nama Lengkap</label>
+                            <label for="id_pasien">* No.RM</label>
+                            <div class="input-group">
+                                <button class="btn btn-secondary" type="button" id="generate_rm">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                    Generate
+                                </button>
+                                <input type="text" name="id_pasien" id="id_pasien" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="nama">* Nama Lengkap</label>
                             <input type="text" name="nama" id="nama" class="form-control" required>
                         </div>
                     </div>
@@ -137,7 +149,22 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-12">
-                            <label for="gender">Jenis Kelamin (Gender)</label>
+                            <label for="id_ihs">ID IHS</label>
+                            <div class="input-group">
+                                <input type="text" name="id_ihs" id="id_ihs" class="form-control">
+                                <button class="btn btn-secondary" type="button" id="cari_ihs">
+                                    <i class="bi bi-cloud"></i> Cari
+                                </button>
+                            </div>
+                            <small>ID Patient Dari Satusehat</small>
+                        </div>
+                    </div>
+                    <div id="notifikasi_pencarian_ihs">
+                        <!-- Notifikasi Pencarian IHS -->
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="gender">*Jenis Kelamin (Gender)</label>
                             <select name="gender" id="gender" class="form-control" required>
                                 <option value="">Pilih</option>
                                 <option value="Male">Laki-laki</option>
@@ -147,8 +174,26 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-12">
+                            <label for="tempat_lahir">Tempat Lahir</label>
+                            <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="tanggal_lahir">Tanggal Lahir</label>
+                            <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
                             <label for="kontak">No.Kontak</label>
                             <input type="text" name="kontak" id="kontak" class="form-control" placeholder="62">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="alamat">Alamat Tinggal</label>
+                            <textarea name="alamat" id="alamat" class="form-control"></textarea>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -176,28 +221,36 @@
     </div>
 </div>
 
+<!-- Modal Detail -->
 <div class="modal fade" id="ModalDetail" tabindex="-1">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-dark">
-                    <i class="bi bi-info-circle"></i> Detail Pasien
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="FormDetail">
-                
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle"></i> Tutup
-                </button>
-            </div>
+            <form action="javascript:void(0);" id="ProsesDetail">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">
+                        <i class="bi bi-info-circle"></i> Detail Pasien
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="FormDetail">
+                    <!-- Form Detail -->
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-rounded">
+                        Selengkapnya <i class="bi bi-chevron-right"></i> 
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<!-- Modal Edit -->
 <div class="modal fade" id="ModalEdit" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesEdit">
                 <div class="modal-header">
@@ -207,7 +260,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12" id="FormEdit">
-
+                            <!-- Form Edit Pasien -->
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -229,6 +282,7 @@
     </div>
 </div>
 
+<!-- Modal Delete -->
 <div class="modal fade" id="ModalDelete" tabindex="-1">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
@@ -243,7 +297,7 @@
 
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-md-12 text-center" id="NotifikasiDelete">
                             <!-- Notifikasi Edit Pasien Muncul Disini -->
                         </div>

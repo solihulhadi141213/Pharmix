@@ -484,39 +484,34 @@ h6 {
   width: 100%;
   position: relative;
   max-width: 100%;
-  padding: 1.75rem 1.6rem 1.5rem;
-  border-radius: 1.5rem;
-  backdrop-filter: blur(18px);
-  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(246,249,255,0.96));
-  border: 1px solid rgba(225, 232, 246, 0.95);
-  box-shadow:
-    0 28px 70px rgba(1, 41, 112, 0.16),
-    0 4px 14px rgba(1, 41, 112, 0.08);
-}
-.login-card-header .card-title {
-  padding-top: 0;
-}
-.login-card-header p {
-  color: #5d708f;
-  margin-bottom: 0;
+  padding: 0.25rem 0 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 .login-input-group {
-  border-radius: 0.95rem;
+  border-radius: 0.45rem;
   overflow: hidden;
-  box-shadow: 0 10px 24px rgba(1, 41, 112, 0.06);
+  box-shadow: 0 6px 16px rgba(1, 41, 112, 0.06);
   background: #fff;
-  border: 1px solid #cfdaf0;
+  border: 2px solid #9fb3d1;
 }
 .login-input-icon {
   background: #f2f6ff;
   color: #012970;
   border: 0;
-  border-right: 1px solid #cfdaf0;
+  border-right: 2px solid #9fb3d1;
 }
 .login-control {
   border: 0;
-  padding: 1rem 1rem;
+  min-height: 3.25rem;
+  padding: 1.05rem 1rem;
   background: #fff;
+}
+.login-input-group:focus-within {
+  border-color: #4154f1;
+  box-shadow: 0 0 0 0.2rem rgba(65, 84, 241, 0.14);
 }
 .login-control:focus {
   box-shadow: none;
@@ -529,7 +524,7 @@ h6 {
 }
 .login-password-toggle {
   border: 0;
-  border-left: 1px solid #cfdaf0;
+  border-left: 2px solid #9fb3d1;
   background: #f9fbff;
   color: #012970;
   min-width: 3.25rem;
@@ -544,11 +539,11 @@ h6 {
 }
 .login-captcha-wrap {
   position: relative;
-  border: 1px solid #cfdaf0;
-  border-radius: 1rem;
+  border: 2px solid #9fb3d1;
+  border-radius: 0.45rem;
   overflow: hidden;
   background: #fff;
-  box-shadow: 0 10px 24px rgba(1, 41, 112, 0.06);
+  box-shadow: 0 6px 16px rgba(1, 41, 112, 0.06);
 }
 .login-captcha-image {
   width: 100%;
@@ -629,7 +624,7 @@ h6 {
     padding: 0.38rem 0.65rem;
   }
   .login-form-inner {
-    padding: 1.25rem 1rem 1rem;
+    padding: 0.25rem 0 0;
   }
   .login-captcha-reload {
     width: 2.2rem;

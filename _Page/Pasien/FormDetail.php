@@ -11,6 +11,26 @@
 
     date_default_timezone_set('Asia/Jakarta');
 
+    function tampilDetail($value)
+    {
+        if ($value === null || trim((string) $value) === '') {
+            return '-';
+        }
+
+        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    }
+
+    function tampilTanggalDetail($value)
+    {
+        if ($value === null || trim((string) $value) === '') {
+            return '-';
+        }
+
+        $timestamp = strtotime((string) $value);
+
+        return $timestamp === false ? '-' : date('d/m/Y H:i', $timestamp);
+    }
+
     /* ============================================================
     * VALIDASI AKSES
     * ============================================================ */
@@ -32,14 +52,6 @@
         exit;
     }
 
-    /* ============================================================
-    * HELPER TAMPIL DATA
-    * ============================================================ */
-    function tampil($value){
-        return ($value === null || trim($value) === '')
-            ? '-'
-            : htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-    }
 
     /* ============================================================
     * AMBIL ID
@@ -78,62 +90,136 @@
     /* ============================================================
     * MAPPING DATA
     * ============================================================ */
-    $tanggal_masuk = tampil($Data['tanggal_masuk'] ?? null);
-    $nik           = tampil($Data['nik'] ?? null);
-    $nama          = tampil($Data['nama'] ?? null);
-    $email         = tampil($Data['email'] ?? null);
-    $kontak        = tampil($Data['kontak'] ?? null);
-    $alamat        = tampil($Data['alamat'] ?? null);
-    $gender        = tampil($Data['gender'] ?? null);
+    $id_pasien     = tampilDetail($Data['id_pasien'] ?? null);
+    $id_ihs        = tampilDetail($Data['id_ihs'] ?? null);
+    $nik           = tampilDetail($Data['nik'] ?? null);
+    $nama          = tampilDetail($Data['nama'] ?? null);
+    $email         = tampilDetail($Data['email'] ?? null);
+    $kontak        = tampilDetail($Data['kontak'] ?? null);
+    $alamat        = tampilDetail($Data['alamat'] ?? null);
+    $gender        = tampilDetail($Data['gender'] ?? null);
+    $tempat_lahir  = tampilDetail($Data['tempat_lahir'] ?? null);
+    $tanggal_lahir = tampilDetail($Data['tanggal_lahir'] ?? null);
 
-    /* ============================================================
+    // Format Tanggal Lahir
+    if(!empty($Data['tanggal_lahir'])){
+        $tanggal_lahir_timestamp = strtotime($Data['tanggal_lahir']);
+        $tanggal_lahir = $tanggal_lahir_timestamp === false
+            ? '-'
+            : date('d/m/Y', $tanggal_lahir_timestamp);
+    }else{
+        $tanggal_lahir = "-";
+    }
+
+    // Metadata
+    $creat_at       = $Data['creat_at'] ?? null;
+    $creat_by_id    = $Data['creat_by_id'] ?? null;
+    $creat_by_name  = $Data['creat_by_name'] ?? null;
+    $update_at      = $Data['update_at'] ?? null;
+    $update_by_id   = $Data['update_by_id'] ?? null;
+    $update_by_name = $Data['update_by_name'] ?? null;
+
+    $creator = !empty($creat_by_id)
+        ? GetDetailData($Conn, 'akses', 'id_akses', $creat_by_id, 'nama_akses')
+        : $creat_by_name;
+    $updater = !empty($update_by_id)
+        ? GetDetailData($Conn, 'akses', 'id_akses', $update_by_id, 'nama_akses')
+        : $update_by_name;
+
+    $creator = tampilDetail($creator);
+    $updater = tampilDetail($updater);
+
+    /* 
+    * ============================================================
     * OUTPUT HTML
-    * ============================================================ */
+    * ============================================================ 
+    */
     echo '
-    <div class="container-fluid">
+        <input type="hidden" name="id_anggota" id="get_id" value="' . $id_anggota . '">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-12"><small><b># Informasi Pasien</b></small></div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4"><small>No.RM</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . $id_pasien . '</small></div>
+            </div>
 
-        <div class="row mb-2">
-            <div class="col-4"><small><i>Nama Lengkap</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small class="text-muted">' . $nama . '</small></div>
+            <div class="row mb-2">
+                <div class="col-4"><small>Nama Lengkap</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . $nama . '</small></div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-4"><small>Gender</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . $gender . '</small></div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-4"><small>NIK/KTP</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . $nik . '</small></div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4"><small>ID IHS</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . $id_ihs . '</small></div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-4"><small>Email</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . $email . '</small></div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-4"><small>Kontak</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . $kontak . '</small></div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-4"><small>Alamat</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . $alamat . '</small></div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-4"><small>Tempat Lahir</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . $tempat_lahir . '</small></div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4"><small>Tanggal Lahir</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . $tanggal_lahir . '</small></div>
+            </div>
+            <div class="row mb-2 mt-4">
+                <div class="col-12"><small><b># Metadata</b></small></div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4"><small>Creat At</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . tampilTanggalDetail($creat_at) . '</small></div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4"><small>Update At</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . tampilTanggalDetail($update_at) . '</small></div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4"><small>Creator</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . $creator . '</small></div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4"><small>Updater</small></div>
+                <div class="col-1"><small>:</small></div>
+                <div class="col-7"><small class="text-muted">' . $updater . '</small></div>
+            </div>
         </div>
-
-        <div class="row mb-2">
-            <div class="col-4"><small>Gender</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small class="text-muted">' . $gender . '</small></div>
-        </div>
-
-        <div class="row mb-2">
-            <div class="col-4"><small>NIK/KTP</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small class="text-muted">' . $nik . '</small></div>
-        </div>
-
-        <div class="row mb-2">
-            <div class="col-4"><small>Email</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small class="text-muted">' . $email . '</small></div>
-        </div>
-
-        <div class="row mb-2">
-            <div class="col-4"><small>Kontak</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small class="text-muted">' . $kontak . '</small></div>
-        </div>
-
-        <div class="row mb-2">
-            <div class="col-4"><small>Alamat</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small class="text-muted">' . $alamat . '</small></div>
-        </div>
-
-        <div class="row mb-2">
-            <div class="col-4"><small>Tanggal Daftar</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small class="text-muted">' . $tanggal_masuk . '</small></div>
-        </div>
-
-    </div>
     ';
 ?>
