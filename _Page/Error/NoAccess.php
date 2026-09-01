@@ -1,39 +1,63 @@
 <div class="pagetitle">
     <h1>
         <a href="">
-            <i class="bi bi-emoji-angry"></i> Error
+            <i class="bi bi-shield-lock"></i> Akses Ditolak
         </a>
     </h1>
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item active">No Access</li>
+            <li class="breadcrumb-item">
+                <a href="index.php">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">Akses Ditolak</li>
         </ol>
     </nav>
 </div>
-<section class="section dashboard">
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <?php
-                echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
-                echo '  <h3>Maaf!!</h3>';
-                echo '  Anda tidak memiliki akses untuk masuk ke halaman ini<br>';
-                echo '  Silahkan hubungi admin atau atasan anda untuk memperoleh ijin menggunakan fitur ini';
-                echo '</div>';
-            ?>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
+
+<section class="section">
+    <div class="row justify-content-center">
+        <div class="col-xl-7 col-lg-8 col-md-10">
+
             <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            <img src="assets/img/notfound.webp" alt="" width="90%">
+                <div class="card-body text-center py-5">
+
+                    <div class="mb-4">
+                        <div class="no-access-icon mx-auto">
+                            <i class="bi bi-shield-lock"></i>
                         </div>
                     </div>
+
+                    <h4 class="mb-2">
+                        Anda Tidak Memiliki Izin Akses
+                    </h4>
+
+                    <p class="text-muted mb-4">
+                        Akun Anda tidak memiliki izin untuk mengakses halaman atau
+                        menggunakan fitur ini.
+                        <br class="d-none d-md-block">
+                        Silakan hubungi administrator atau atasan Anda untuk memperoleh
+                        izin akses yang diperlukan.
+                    </p>
+
+                    <div class="d-flex justify-content-center gap-2">
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            onclick="history.back();"
+                        >
+                            <i class="bi bi-arrow-left"></i>
+                            Kembali
+                        </button>
+
+                        <a href="index.php" class="btn btn-primary">
+                            <i class="bi bi-house-door"></i>
+                            Dashboard
+                        </a>
+                    </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 </section>

@@ -34,6 +34,12 @@
                 <span>Supplier</span>
             </a>
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link <?php if($PageMenu=="Resep"){echo "active";}else{echo "collapsed";} ?>" href="index.php?Page=Resep">
+                <i class="bi bi-receipt"></i> <span>Resep</span>
+            </a>
+        </li>
         
         
         <li class="nav-item">
@@ -245,6 +251,61 @@
                             </a>
                         </li>
                     </ul>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link 
+                <?php 
+                    if(
+                        $PageMenu=="Route"||
+                        $PageMenu=="Sediaan"||
+                        $PageMenu=="SatuanDosis"||
+                        $PageMenu=="Denominator"||
+                        $PageMenu=="Numerator"
+                    ){echo "active";}else{echo "collapsed";} 
+                ?>
+            " data-bs-target="#iconsaa-nav" data-bs-toggle="collapse" href="javascript:void(0);">
+                <i class="bi bi-list-columns"></i>
+                <span>Referensi</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="iconsaa-nav" class="nav-content collapse 
+                <?php 
+                    if(
+                        $PageMenu=="Route"||
+                        $PageMenu=="Sediaan"||
+                        $PageMenu=="SatuanDosis"||
+                        $PageMenu=="Denominator"||
+                        $PageMenu=="Numerator"
+                    ){
+                        echo "show";
+                    } 
+                ?>
+            " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="index.php?Page=Route" class="<?php if($PageMenu=="Route"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Route</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.php?Page=Sediaan" class="<?php if($PageMenu=="Sediaan"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Sediaan</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.php?Page=SatuanDosis" class="<?php if($PageMenu=="SatuanDosis"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Satuan Dosis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.php?Page=Denominator" class="<?php if($PageMenu=="Denominator"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Denominator</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.php?Page=Numerator" class="<?php if($PageMenu=="Numerator"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Numerator</span>
+                    </a>
                 </li>
             </ul>
         </li>

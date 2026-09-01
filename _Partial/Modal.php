@@ -10,6 +10,7 @@
             "AksesEntitas"          => "_Page/AksesEntitas/ModalAksesEntitas.php",
             "Akses"                 => "_Page/Akses/ModalAkses.php",
             "Pasien"                => "_Page/Pasien/ModalPasien.php",
+            "Resep"                 => "_Page/Resep/ModalResep.php",
             "Barang"                => "_Page/Barang/ModalBarang.php",
             "BarangExpired"         => "_Page/BarangExpired/ModalBarangExpired.php",
             "StockOpename"          => "_Page/StockOpename/ModalStockOpename.php",
@@ -20,7 +21,7 @@
             "Penjualan"             => "_Page/Penjualan/ModalPenjualan.php",
             "Pembelian"             => "_Page/Pembelian/ModalPembelian.php",
             "RekapJualBeli"         => "_Page/RekapJualBeli/ModalRekapJualBeli.php",
-            "Pembayaran"          => "_Page/Pembayaran/ModalPembayaran.php",
+            "Pembayaran"            => "_Page/Pembayaran/ModalPembayaran.php",
             "UtangPiutang"          => "_Page/UtangPiutang/ModalUtangPiutang.php",
             "SettingGeneral"        => "_Page/SettingGeneral/ModalSettingGeneral.php",
             "AutoJurnal"            => "_Page/AutoJurnal/ModalAutoJurnal.php",
@@ -33,7 +34,12 @@
             "BukuBesar"             => "_Page/BukuBesar/ModalBukuBesar.php",
             "NeracaSaldo"           => "_Page/NeracaSaldo/ModalNeracaSaldo.php",
             "LabaRugi"              => "_Page/LabaRugi/ModalLabaRugi.php",
-            "SettingSatuSehat"              => "_Page/SettingSatuSehat/ModalSettingSatuSehat.php",
+            "Route"                 => "_Page/Route/ModalRoute.php",
+            "Sediaan"               => "_Page/Sediaan/ModalSediaan.php",
+            "SatuanDosis"           => "_Page/SatuanDosis/ModalSatuanDosis.php",
+            "Denominator"           => "_Page/SatuanDenominator/ModalSatuanDenominator.php",
+            "Numerator"             => "_Page/SatuanNumerator/ModalSatuanNumerator.php",
+            "SettingSatuSehat"      => "_Page/SettingSatuSehat/ModalSettingSatuSehat.php",
             "RekapitulasiTransaksi" => "_Page/RekapitulasiTransaksi/ModalRekapitulasiTransaksi.php"
         ];
 
