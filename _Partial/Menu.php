@@ -262,7 +262,9 @@
                         $PageMenu=="Sediaan"||
                         $PageMenu=="SatuanDosis"||
                         $PageMenu=="Denominator"||
-                        $PageMenu=="Numerator"
+                        $PageMenu=="Numerator"||
+                        $PageMenu=="Poliklinik"||
+                        $PageMenu=="Nakes"
                     ){echo "active";}else{echo "collapsed";} 
                 ?>
             " data-bs-target="#iconsaa-nav" data-bs-toggle="collapse" href="javascript:void(0);">
@@ -276,7 +278,9 @@
                         $PageMenu=="Sediaan"||
                         $PageMenu=="SatuanDosis"||
                         $PageMenu=="Denominator"||
-                        $PageMenu=="Numerator"
+                        $PageMenu=="Numerator"||
+                        $PageMenu=="Poliklinik"||
+                        $PageMenu=="Nakes"
                     ){
                         echo "show";
                     } 
@@ -305,6 +309,16 @@
                 <li>
                     <a href="index.php?Page=Numerator" class="<?php if($PageMenu=="Numerator"){echo "active";} ?>">
                         <i class="bi bi-circle"></i><span>Numerator</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.php?Page=Poliklinik" class="<?php if($PageMenu=="Poliklinik"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Poliklinik</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.php?Page=Nakes" class="<?php if($PageMenu=="Nakes"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Nakes</span>
                     </a>
                 </li>
             </ul>

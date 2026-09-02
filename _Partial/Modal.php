@@ -39,6 +39,8 @@
             "SatuanDosis"           => "_Page/SatuanDosis/ModalSatuanDosis.php",
             "Denominator"           => "_Page/SatuanDenominator/ModalSatuanDenominator.php",
             "Numerator"             => "_Page/SatuanNumerator/ModalSatuanNumerator.php",
+            "Poliklinik"            => "_Page/Poliklinik/ModalPoliklinik.php",
+            "Nakes"                 => "_Page/Nakes/ModalNakes.php",
             "SettingSatuSehat"      => "_Page/SettingSatuSehat/ModalSettingSatuSehat.php",
             "RekapitulasiTransaksi" => "_Page/RekapitulasiTransaksi/ModalRekapitulasiTransaksi.php"
         ];

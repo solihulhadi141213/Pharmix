@@ -44,6 +44,8 @@
             "SatuanDosis"           => "_Page/SatuanDosis/SatuanDosis.js",
             "Denominator"           => "_Page/SatuanDenominator/SatuanDenominator.js",
             "Numerator"             => "_Page/SatuanNumerator/SatuanNumerator.js",
+            "Poliklinik"            => "_Page/Poliklinik/Poliklinik.js",
+            "Nakes"                 => "_Page/Nakes/Nakes.js",
             "SettingSatuSehat"      => "_Page/SettingSatuSehat/SettingSatuSehat.js",
             "RekapitulasiTransaksi" => "_Page/RekapitulasiTransaksi/RekapitulasiTransaksi.js"
         ];

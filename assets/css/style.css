@@ -2447,6 +2447,90 @@ textarea.form-control[readonly]:focus {
     box-shadow: none;
     border-color: #ced4da;
 }
+/* =========================================================
+   CARD MOBILE CARD
+   ========================================================= */
+   
+.MobileCard-grid > [class*="col-"],
+.MobileCard-grid #MobileCardList > [class*="col-"] {
+    display: flex;
+}
+
+.MobileCard-grid > [class*="col-"] > .card,
+.MobileCard-grid #MobileCardList > [class*="col-"] > .card {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.MobileCard-grid .card-tambah,
+.MobileCard-grid .card-resep {
+    min-height: 200px;
+}
+
+.MobileCard-grid .card-tambah {
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    border: 2px dashed #aab7cf;
+    background: #fff;
+    color: inherit;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    box-shadow: none;
+}
+
+.MobileCard-grid .card-tambah .card-body {
+    min-height: 0;
+    padding: 0;
+}
+
+.MobileCard-grid .aksi-resep {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.MobileCard-grid .icon-tambah {
+    width: 52px;
+    height: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dce3f0;
+    border-radius: 50%;
+    background: #f6f8ff;
+    color: #4154f1;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    appearance: none;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.MobileCard-grid .icon-tambah:hover {
+    border-color: #4154f1;
+    box-shadow: 0 3px 10px rgba(1, 41, 112, 0.10);
+}
+
+.MobileCard-grid #tombol_tambah {
+    background: #f3f5ff;
+    color: #4154f1;
+}
+
+.MobileCard-grid #tombol_cari {
+    background: #f8f9fa;
+    color: #51678f;
+}
+
+.MobileCard-grid .card-tambah h6 {
+    color: #012970;
+    font-weight: 700;
+}
+
+
 
 /* =========================================================
    CARD AKSI RESEP
