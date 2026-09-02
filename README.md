@@ -1,230 +1,288 @@
 # Pharmix V.1.0.0
 
-Pharmix adalah aplikasi manajemen apotek berbasis web yang dapat digunakan untuk apotek biasa maupun fasilitas kesehatan. Aplikasi ini dirancang untuk membantu pengelolaan data barang, transaksi jual-beli, stok, utang/piutang, jurnal keuangan, laporan, hingga pengaturan akses pengguna dalam satu sistem terpusat.
+Pharmix adalah aplikasi manajemen apotek dan fasilitas kesehatan berbasis web. Aplikasi ini membantu pengelolaan pengguna, master data, resep, stok, transaksi operasional, transaksi jual-beli, pembayaran, akuntansi, laporan, dan integrasi SATUSEHAT.
 
-## Gambaran Singkat
+Pharmix dibangun menggunakan PHP native, MySQL/MariaDB, Bootstrap 5, dan jQuery. Sebagian proses pada halaman menggunakan AJAX sehingga data dapat dimuat tanpa memuat ulang seluruh halaman.
 
-Pharmix dibangun dengan arsitektur PHP native dan MySQL, dengan antarmuka berbasis Bootstrap serta komponen pendukung seperti jQuery, SweetAlert2, ApexCharts, dan berbagai library ekspor/cetak laporan. Aplikasi ini mendukung proses operasional harian seperti:
+## Fitur
 
-- Login dengan captcha
-- Manajemen akses pengguna dan hak fitur
-- Pengelolaan master data apotek
-- Transaksi penjualan dan pembelian
-- Pencatatan transaksi operasional
-- Jurnal dan buku besar
-- Neraca saldo dan laba rugi
-- Rekap transaksi dan laporan riwayat
-- Monitoring aktivitas sistem
-- Pengaturan layanan email, pembayaran, dan notifikasi
+### Dashboard
 
-## Fitur Utama
+- Ringkasan data dan aktivitas operasional.
+- Informasi transaksi, barang, penjualan, dan pembelian.
+- Grafik ringkasan sesuai periode.
 
-### 1. Dashboard
+### Akses dan Profil
 
-Dashboard menampilkan ringkasan data dan informasi operasional penting, termasuk jumlah data transaksi, barang, pembelian, penjualan, serta grafik ringkasan sesuai periode yang dipilih.
+- Login dan validasi sesi berbasis token.
+- Pengelolaan pengguna akses.
+- Pengelolaan fitur aplikasi dan entitas akses.
+- Pengaturan izin fitur per pengguna.
+- Profil pengguna.
+- Perubahan identitas, foto profil, dan password.
+- Pencatatan aktivitas pengguna.
 
-### 2. Manajemen Akses
+### Master Data
 
-Modul akses digunakan untuk mengatur keamanan dan pembagian hak pengguna, meliputi:
+- Pasien dan anggota.
+- Supplier.
+- Barang, satuan, harga, dan kategori harga.
+- Batch barang dan tanggal kedaluwarsa.
+- Resep.
+- Jenis transaksi operasional.
+- Akun perkiraan.
 
-- Fitur aplikasi
-- Entitas akses
-- Data akses pengguna
-- Pengaturan izin fitur per pengguna/role
-- Profil pengguna
-- Ubah password dan foto profil
+### Referensi Kesehatan
 
-### 3. Master Data
+- Route.
+- Sediaan.
+- Satuan dosis.
+- Denominator.
+- Numerator.
+- Poliklinik.
+- Tenaga kesehatan (Nakes).
 
-Pharmix menyediakan pengelolaan data inti yang umum dipakai di apotek dan fasilitas kesehatan:
+Modul Poliklinik mendukung pencarian data Location SATUSEHAT, pemilihan ID Location, pencarian/filter data, pagination, dan pengelolaan status poliklinik.
 
-- Data pasien
-- Data supplier
-- Data barang
-- Kategori harga
-- Satuan barang
-- Data batch dan expired date
-- Data akun perkiraan
-- Jenis transaksi
+### Transaksi
 
-### 4. Transaksi Operasional
+- Transaksi operasional.
+- Transaksi penjualan.
+- Transaksi pembelian.
+- Rincian barang dan layanan transaksi.
+- Diskon, PPN, pembayaran, dan kembalian.
+- Pembatalan, perubahan, dan penghapusan transaksi sesuai izin akses.
+- Cetak invoice dan dokumen transaksi.
+- Rekapitulasi transaksi operasional dan jual-beli.
 
-Modul transaksi operasional mendukung pencatatan aktivitas non-penjualan/non-pembelian yang tetap perlu dibukukan, lengkap dengan:
+### Stok dan Inventaris
 
-- Kategori operasional
-- Input transaksi operasional
-- Jurnal transaksi
-- Rekap transaksi operasional
+- Pengelolaan stok barang.
+- Banyak satuan dan harga barang.
+- Batch dan barang kedaluwarsa.
+- Stock opname.
+- Riwayat transaksi barang.
+- Import, export, dan backup data barang pada modul yang tersedia.
 
-### 5. Transaksi Jual Beli
+### Keuangan dan Laporan
 
-Modul ini menjadi inti proses bisnis aplikasi, dengan dukungan untuk:
+- Pembayaran.
+- Utang dan piutang.
+- Jurnal transaksi.
+- Buku besar.
+- Neraca saldo.
+- Laba rugi.
+- Auto jurnal.
+- Rekapitulasi transaksi.
 
-- Transaksi penjualan
-- Transaksi pembelian
-- Detail item transaksi
-- Pembayaran transaksi
-- Diskon, PPN, dan perhitungan kembalian
-- Riwayat transaksi
-- Pembatalan, edit, dan hapus transaksi
-- Cetak invoice dan preview cetak
-- Rekap jual/beli
-- Laporan utang/piutang
+### Pengaturan dan Integrasi
 
-### 6. Stok dan Barang
+- Pengaturan umum aplikasi.
+- Email gateway.
+- Konfigurasi dan pengujian koneksi SATUSEHAT.
+- Dokumentasi aplikasi dan API.
+- Aktivitas umum, email, dan API.
 
-Manajemen barang dibuat cukup lengkap untuk kebutuhan apotek:
+## Teknologi dan Dependency
 
-- Tambah, edit, hapus, dan detail barang
-- Import dan export data barang
-- Riwayat transaksi barang
-- Pengelolaan banyak satuan
-- Pengelolaan banyak harga
-- Stok opname
-- Pemantauan batch dan barang expired
-- Backup data barang
+### Backend
 
-### 7. Keuangan dan Akuntansi
+- PHP 8.1 atau versi yang kompatibel dengan dependency project.
+- MySQL atau MariaDB.
+- Apache atau Nginx dengan PHP-FPM.
+- Composer.
+- Ekstensi PHP yang umum diperlukan: `mysqli`, `curl`, `json`, `mbstring`, `fileinfo`, `openssl`, `zip`, dan `gd`.
 
-Pharmix juga mendukung pencatatan akuntansi sederhana hingga laporan keuangan:
+### Frontend dan library
 
-- Akun perkiraan
-- Jurnal keuangan
-- Buku besar
-- Neraca saldo
-- Laba rugi
-- Auto jurnal
-- Rekapitulasi transaksi
+- Bootstrap `5.3.x`.
+- Bootstrap Icons.
+- jQuery `3.7.x`.
+- SweetAlert2.
+- ApexCharts.
+- Quill.
+- Select2.
+- html2canvas dan jsPDF.
+- jsqr, signature_pad, dan library frontend lain pada `package.json`.
 
-### 8. Utang dan Piutang
+### Dependency PHP
 
-Modul utang/piutang digunakan untuk memantau transaksi yang belum lunas, histori pembayaran, dan pengelolaan pembayaran lanjutan.
+- PhpSpreadsheet untuk kebutuhan spreadsheet/import/export.
+- Daftar lengkap dependency tersedia pada [`composer.json`](./composer.json).
 
-### 9. Modul Anggota
+## Struktur Direktori
 
-Selain data apotek umum, sistem juga menyediakan modul anggota untuk kebutuhan operasional yang melibatkan data member, simpanan, pinjaman, dan transaksi terkait.
+```text
+Pharmix/
+├── _Config/       Konfigurasi database, session, helper, dan pengaturan aplikasi
+├── _Page/         Halaman dan proses setiap modul aplikasi
+├── _Partial/      Layout, menu, modal, routing, dan komponen bersama
+├── assets/        CSS, JavaScript, font, dan gambar
+├── db/            File SQL database
+├── vendor/        Dependency PHP dari Composer
+├── node_modules/  Dependency frontend dari npm
+├── index.php      Entry point dan routing halaman
+├── Login.php      Halaman login
+├── composer.json  Konfigurasi dependency PHP
+└── package.json   Konfigurasi dependency frontend
+```
 
-### 10. Layanan dan Integrasi
+## Modul yang Terdaftar
 
-Aplikasi menyediakan pengaturan layanan yang dapat disesuaikan, seperti:
+Modul utama yang tersedia pada routing aplikasi meliputi:
 
-- Email gateway
-- Whatsapp service
-- Payment service
-- Pengujian pengiriman email
-- Pengujian token pembayaran
-- Tombol/generate button layanan tertentu
+`Dashboard`, `Akses`, `AksesFitur`, `AksesEntitas`, `MyProfile`, `Pasien`, `Resep`, `Supplier`, `Barang`, `BarangExpired`, `StockOpename`, `JenisTransaksi`, `Transaksi`, `Penjualan`, `Pembelian`, `Pembayaran`, `UtangPiutang`, `RekapTransaksi`, `RekapJualBeli`, `RekapitulasiTransaksi`, `AkunPerkiraan`, `Jurnal`, `BukuBesar`, `NeracaSaldo`, `LabaRugi`, `AutoJurnal`, `Dokumentasi`, `Aktivitas`, `SettingGeneral`, `SettingEmailGateway`, `SettingSatuSehat`, `Route`, `Sediaan`, `SatuanDosis`, `Denominator`, `Numerator`, `Poliklinik`, dan `Nakes`.
 
-### 11. Dokumentasi dan Aktivitas
+Folder lain seperti `Anggota`, `ApiDoc`, `CetakInvoice`, `RiwayatAnggota`, `ResetPassword`, serta `TransaksiJualBeli` berisi halaman/proses pendukung atau bagian dari alur modul utama.
 
-Pharmix memiliki fitur pendukung untuk administrasi sistem:
+## Instalasi Umum Aplikasi PHP
 
-- Log aktivitas umum
-- Aktivitas email
-- Aktivitas API
-- Dokumentasi aplikasi
-- Halaman bantuan
+Langkah berikut berlaku secara umum untuk aplikasi PHP native yang dijalankan pada web server lokal maupun server produksi.
 
-## Teknologi yang Digunakan
+### 1. Siapkan server
 
-- PHP
-- MySQL / MariaDB
-- Bootstrap 5
-- jQuery
-- SweetAlert2
-- ApexCharts
-- Quill
-- html2canvas
-- jsPDF
-- PhpSpreadsheet
-- QR Code library
-- Barcode library
+Pasang komponen berikut pada server:
 
-## Kebutuhan Sistem
+- Web server Apache atau Nginx.
+- PHP dan ekstensi yang dibutuhkan aplikasi.
+- MySQL atau MariaDB.
+- Composer.
+- Node.js dan npm jika dependency frontend perlu dipasang ulang.
 
-Sebelum menjalankan aplikasi, pastikan environment memiliki:
+Pastikan versi PHP yang aktif di command line sama dengan versi PHP yang digunakan web server:
 
-- PHP yang kompatibel dengan project
-- MySQL / MariaDB
-- Web server seperti Apache
-- Composer
-- Node.js dan npm
+```bash
+php -v
+composer --version
+node -v
+npm -v
+```
 
-## Instalasi
+### 2. Tempatkan source code
 
-1. Clone atau salin project ke folder web server, misalnya `htdocs` atau `www`.
-2. Buat database MySQL, lalu impor struktur dan data dari folder `db` jika tersedia.
-3. Atur koneksi database pada file [`_Config/Connection.php`](./_Config/Connection.php).
-4. Jalankan `composer install` untuk dependency PHP.
-5. Jalankan `npm install` untuk dependency frontend.
-6. Pastikan folder `node_modules` dan `vendor` terpasang dengan benar.
-7. Buka aplikasi melalui browser, lalu login melalui halaman [`Login.php`](./Login.php).
+Clone repository atau salin source code ke document root web server. Contoh lokasi umum:
 
-## Cara Login
+- Apache Linux: `/var/www/html/Pharmix`
+- XAMPP: `htdocs/Pharmix`
+- WAMP: `www/Pharmix`
+- Nginx: direktori `root` pada konfigurasi virtual host
 
-Halaman login menggunakan:
+Document root sebaiknya mengarah ke folder project yang berisi `index.php`.
 
-- Email
-- Password
-- Captcha untuk validasi keamanan
+### 3. Pasang dependency
 
-Setelah login berhasil, pengguna diarahkan ke dashboard utama melalui [`index.php`](./index.php).
+Jalankan perintah dari folder project:
 
-## Struktur Aplikasi
+```bash
+composer install
+npm install
+```
 
-Beberapa folder utama di proyek ini adalah:
+`composer install` memasang dependency PHP ke folder `vendor`, sedangkan `npm install` memasang dependency frontend ke folder `node_modules`.
 
-- `_Config` untuk konfigurasi koneksi, session, setting umum, dan helper global
-- `_Partial` untuk komponen layout seperti menu, header, modal, routing, dan notifikasi
-- `_Page` untuk seluruh modul aplikasi
-- `assets` untuk CSS, JS, font, dan image
-- `db` untuk data atau backup basis data
+### 4. Buat dan isi database
 
-## Modul yang Tersedia
+1. Buat database dengan nama `pharmix`, atau gunakan nama lain sesuai konfigurasi.
+2. Import file [`db/pharmix.sql`](./db/pharmix.sql) melalui phpMyAdmin, MySQL client, atau tool database lain.
 
-Berikut ringkasan modul utama yang ditemukan pada aplikasi:
+Contoh melalui MySQL client:
 
-- Dashboard
-- Akses
-- Akses Fitur
-- Akses Entitas
-- Pasien
-- Supplier
-- Barang
-- Barang Expired
-- Stock Opname
-- Jenis Transaksi
-- Transaksi Operasional
-- Rekap Transaksi
-- Transaksi Penjualan
-- Transaksi Pembelian
-- Rekap Jual/Beli
-- Utang/Piutang
-- Akun Perkiraan
-- Jurnal
-- Buku Besar
-- Neraca Saldo
-- Laba Rugi
-- Auto Jurnal
-- My Profile
-- Setting General
-- Setting Email / Service
-- Aktivitas Sistem
-- Dokumentasi
-- Help
+```bash
+mysql -u root -p pharmix < db/pharmix.sql
+```
+
+### 5. Atur koneksi database
+
+Edit [`_Config/Connection.php`](./_Config/Connection.php) dan sesuaikan host, username, password, serta nama database:
+
+```php
+$servername = "localhost";
+$username   = "root";
+$password   = "password_database";
+$db         = "pharmix";
+```
+
+Jangan menggunakan password database contoh pada server produksi. Simpan kredensial menggunakan konfigurasi server atau environment variable bila memungkinkan.
+
+### 6. Atur document root dan permission
+
+Pastikan web server memiliki akses baca ke seluruh source code dan akses tulis hanya pada direktori yang memang digunakan untuk upload/cache. Hindari memberikan permission tulis penuh pada seluruh folder project.
+
+Untuk Apache, aktifkan modul PHP dan rewrite yang dibutuhkan oleh konfigurasi server. Untuk Nginx, arahkan request `.php` ke PHP-FPM dan pastikan `index.php` menjadi file index.
+
+### 7. Jalankan aplikasi
+
+Buka URL sesuai document root, misalnya:
+
+```text
+http://localhost/Pharmix/
+```
+
+Entry point aplikasi adalah [`index.php`](./index.php). Halaman login tersedia pada [`Login.php`](./Login.php).
+
+Untuk pengujian lokal sederhana, PHP built-in server juga dapat digunakan jika konfigurasi database dapat diakses:
+
+```bash
+php -S localhost:8000
+```
+
+Kemudian buka `http://localhost:8000/` pada browser.
+
+### 8. Konfigurasi opsional
+
+Setelah berhasil login, lakukan konfigurasi sesuai kebutuhan:
+
+- Pengaturan umum aplikasi.
+- Data akses dan izin fitur.
+- Email gateway.
+- Koneksi SATUSEHAT dan token akses.
+- Data master apotek.
+- Akun perkiraan dan auto jurnal.
+
+Integrasi SATUSEHAT dan email memerlukan kredensial serta konfigurasi layanan masing-masing. Fitur tersebut tidak dapat digunakan hanya dengan mengimpor database tanpa konfigurasi tambahan.
+
+## Login dan Hak Akses
+
+Login menggunakan email, password, dan validasi keamanan yang tersedia pada halaman login. Setelah login, akses ke halaman dan proses aplikasi diperiksa berdasarkan session serta izin fitur pengguna.
+
+Jika sesi berakhir, lakukan login ulang. Untuk pengguna baru, administrator perlu menambahkan akses, fitur, dan izin yang sesuai sebelum seluruh menu dapat digunakan.
 
 ## Catatan Pengembangan
 
-- Aplikasi menggunakan pola routing berbasis parameter `Page` dan `Sub` pada [`index.php`](./index.php).
-- Hak akses diperiksa sebelum halaman ditampilkan.
-- Beberapa modul mendukung export data, cetak PDF, cetak invoice, dan ekspor Excel.
-- Sebagian fitur mengandalkan library pihak ketiga yang sudah disertakan di project.
+- Routing halaman utama menggunakan parameter `Page` pada [`index.php`](./index.php).
+- Routing JavaScript dan modal dikelola melalui file pada `_Partial`.
+- Banyak proses list, pencarian, filter, pagination, dan form menggunakan AJAX.
+- Output proses AJAX umumnya menggunakan response JSON dengan properti `status`, `message`, dan/atau `html`.
+- Validasi sesi dilakukan pada proses server, bukan hanya pada antarmuka browser.
+- Gunakan prepared statement untuk query baru dan lakukan escaping output HTML.
+- File SQL perlu diperbarui bersama perubahan schema database.
+
+## Troubleshooting Singkat
+
+### Database gagal terhubung
+
+Periksa service MySQL/MariaDB, nama database, username, password, dan konfigurasi pada `_Config/Connection.php`.
+
+### Halaman menampilkan error dependency
+
+Jalankan kembali `composer install` dan `npm install`, lalu pastikan folder `vendor` dan `node_modules` tersedia.
+
+### Session atau login tidak berjalan
+
+Periksa konfigurasi session PHP, permission direktori penyimpanan session, waktu server, dan validitas tabel `akses_login`.
+
+### Fitur SATUSEHAT gagal
+
+Periksa konfigurasi koneksi, URL service, client key, secret key, sertifikat SSL, serta status koneksi pada menu SATUSEHAT.
 
 ## Lisensi
 
-Project ini menggunakan lisensi yang tercantum pada file [`LICENSE`](./LICENSE).
+Lisensi project tercantum pada file [`LICENSE`](./LICENSE).
 
 ## Informasi Versi
 
 - Nama aplikasi: Pharmix
 - Versi: `V.1.0.0`
+- Database utama: `pharmix`
+- File schema: [`db/pharmix.sql`](./db/pharmix.sql)
+

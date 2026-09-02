@@ -148,30 +148,27 @@
                                         $kategori_list[] = $DataKategori['kategori'];
                                     }
                                     
-                                    // Tab Navigation
-                                    echo '<ul class="nav nav-tabs mb-3" id="izinAksesTab" role="tablist">';
+                                    // Tampilkan seluruh izin dalam accordion berdasarkan kategori.
+                                    echo '<div class="accordion accordion-flush rounded-3 shadow-sm" id="IzinAksesAccordion">';
                                     foreach ($kategori_list as $idx => $kategori) {
-                                        $tab_id = 'kategori' . ($idx + 1);
-                                        $active_class = ($idx === 0) ? 'active' : '';
-                                        echo '<li class="nav-item" role="presentation">';
-                                        echo '  <button class="nav-link ' . $active_class . '" id="' . $tab_id . '-tab" data-bs-toggle="tab" data-bs-target="#' . $tab_id . '" type="button" role="tab" aria-controls="' . $tab_id . '" aria-selected="' . ($idx === 0 ? 'true' : 'false') . '">';
-                                        echo '    <i class="bi bi-folder"></i> ' . htmlspecialchars($kategori, ENT_QUOTES, 'UTF-8');
-                                        echo '  </button>';
-                                        echo '</li>';
-                                    }
-                                    echo '</ul>';
-                                    
-                                    // Tab Content
-                                    echo '<div class="tab-content" id="izinAksesTabContent">';
-                                    foreach ($kategori_list as $idx => $kategori) {
-                                        $tab_id = 'kategori' . ($idx + 1);
-                                        $active_class = ($idx === 0) ? 'show active' : '';
-                                        echo '<div class="tab-pane fade ' . $active_class . '" id="' . $tab_id . '" role="tabpanel" aria-labelledby="' . $tab_id . '-tab">';
-                                        
+                                        $kategori_id = 'IzinKategori' . ($idx + 1);
+                                        $kategori_tampil = htmlspecialchars($kategori, ENT_QUOTES, 'UTF-8');
+                                        $collapse_class = ($idx === 0) ? 'show' : '';
+                                        $button_class = ($idx === 0) ? '' : 'collapsed';
+                                        $expanded = ($idx === 0) ? 'true' : 'false';
+
+                                        echo '<div class="accordion-item">';
+                                        echo '  <h2 class="accordion-header" id="' . $kategori_id . 'Header">';
+                                        echo '    <button class="accordion-button ' . $button_class . ' fw-semibold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#' . $kategori_id . '" aria-expanded="' . $expanded . '" aria-controls="' . $kategori_id . '">';
+                                        echo '      <i class="bi bi-folder2-open me-2 text-primary"></i>' . $kategori_tampil;
+                                        echo '    </button>';
+                                        echo '  </h2>';
+                                        echo '  <div id="' . $kategori_id . '" class="accordion-collapse collapse ' . $collapse_class . '" aria-labelledby="' . $kategori_id . 'Header" data-bs-parent="#IzinAksesAccordion">';
+                                        echo '    <div class="accordion-body p-2">';
                                         $QryFitur = mysqli_query($Conn, "SELECT * FROM akses_fitur WHERE kategori='$kategori' ORDER BY nama ASC");
                                         $jml_fitur = mysqli_num_rows($QryFitur);
                                         
-                                        echo '<ul class="list-group list-group-flush">';
+                                        echo '<div class="list-group">';
                                         $no_fitur = 1;
                                         while ($DataFitur = mysqli_fetch_array($QryFitur)) {
                                             $id_akses_fitur = $DataFitur['id_akses_fitur'];
@@ -180,34 +177,34 @@
                                             $kode = $DataFitur['kode'];
                                             
                                             $Validasi = IjinAksesSaya($Conn, $SessionIdAkses, $kode);
-                                            $badge_class = ($Validasi == "Ada") ? 'bg-success' : 'bg-danger';
-                                            $icon_class = ($Validasi == "Ada") ? 'bi-check-circle text-success' : 'bi-x-circle text-danger';
+                                            $badge_class = ($Validasi == "Ada") ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger';
+                                            $icon_class = ($Validasi == "Ada") ? 'bi-check-circle' : 'bi-x-circle';
                                             $status_text = ($Validasi == "Ada") ? 'Diizinkan' : 'Tidak Diizinkan';
                                             
-                                            echo '<li class="list-group-item d-flex justify-content-between align-items-start">';
-                                            echo '  <div class="flex-grow-1">';
-                                            echo '    <div class="fw-bold">';
-                                            echo '      <small>' . $no_fitur . '. ' . $nama . '</small>';
+                                            echo '<div class="list-group-item px-2 py-2">';
+                                            echo '  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">';
+                                            echo '    <div class="flex-grow-1 min-w-0">';
+                                            echo '      <div class="fw-semibold small">' . $no_fitur . '. ' . $nama . '</div>';
+                                            echo '      <small class="text-muted d-block text-break">' . $keterangan . '</small>';
                                             echo '    </div>';
-                                            echo '    <small class="text-muted">' . $keterangan . '</small>';
-                                            echo '  </div>';
-                                            echo '  <div class="text-end ms-2">';
-                                            echo '    <span class="badge ' . $badge_class . '">';
-                                            echo '      <i class="bi ' . $icon_class . '"></i> ' . $status_text;
+                                            echo '    <span class="badge ' . $badge_class . ' rounded-pill flex-shrink-0 align-self-start align-self-sm-center">';
+                                            echo '      <i class="bi ' . $icon_class . ' me-1"></i>' . $status_text;
                                             echo '    </span>';
                                             echo '  </div>';
-                                            echo '</li>';
+                                            echo '</div>';
                                             
                                             $no_fitur++;
                                         }
-                                        echo '</ul>';
+                                        echo '</div>';
                                         
                                         if ($jml_fitur === 0) {
-                                            echo '<div class="alert alert-info alert-sm mt-3 mb-0">';
+                                            echo '<div class="alert alert-info py-2 px-3 mt-2 mb-0">';
                                             echo '  <small>Tidak ada fitur dalam kategori ini</small>';
                                             echo '</div>';
                                         }
                                         
+                                        echo '    </div>';
+                                        echo '  </div>';
                                         echo '</div>';
                                     }
                                     echo '</div>';
