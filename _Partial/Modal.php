@@ -10,6 +10,7 @@
             "AksesEntitas"          => "_Page/AksesEntitas/ModalAksesEntitas.php",
             "Akses"                 => "_Page/Akses/ModalAkses.php",
             "Pasien"                => "_Page/Pasien/ModalPasien.php",
+            "Kunjungan"             => "_Page/Kunjungan/ModalKunjungan.php",
             "Resep"                 => "_Page/Resep/ModalResep.php",
             "Barang"                => "_Page/Barang/ModalBarang.php",
             "BarangExpired"         => "_Page/BarangExpired/ModalBarangExpired.php",

@@ -12,6 +12,7 @@
             "AksesEntitas"          => "_Page/AksesEntitas/AksesEntitas.js",
             "Akses"                 => "_Page/Akses/Akses.js",
             "Pasien"                => "_Page/Pasien/Pasien.js",
+            "Kunjungan"             => "_Page/Kunjungan/Kunjungan.js",
             "Resep"                 => "_Page/Resep/Resep.js",
             "Barang"                => "_Page/Barang/Barang.js",
             "BarangExpired"         => "_Page/BarangExpired/BarangExpired.js",

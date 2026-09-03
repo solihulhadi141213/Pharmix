@@ -27,11 +27,10 @@
                 <span>Pasien</span>
             </a>
         </li>
-
         <li class="nav-item">
-            <a class="nav-link <?php if($PageMenu=="Supplier"){echo "active";}else{echo "collapsed";} ?>" href="index.php?Page=Supplier">
-                <i class="bi bi-truck"></i>
-                <span>Supplier</span>
+            <a class="nav-link <?php if($PageMenu=="Kunjungan"){echo "active";}else{echo "collapsed";} ?>" href="index.php?Page=Kunjungan">
+                <i class="bi bi-clipboard-plus"></i>
+                <span>Kunjungan</span>
             </a>
         </li>
 
@@ -41,6 +40,12 @@
             </a>
         </li>
         
+        <li class="nav-item">
+            <a class="nav-link <?php if($PageMenu=="Supplier"){echo "active";}else{echo "collapsed";} ?>" href="index.php?Page=Supplier">
+                <i class="bi bi-truck"></i>
+                <span>Supplier</span>
+            </a>
+        </li>
         
         <li class="nav-item">
             <a class="nav-link <?php if($PageMenu=="Barang"||$PageMenu=="BarangExpired"||$PageMenu=="StockOpename"){echo "active";}else{echo "collapsed";} ?>" data-bs-target="#icons2-nav" data-bs-toggle="collapse" href="javascript:void(0);">

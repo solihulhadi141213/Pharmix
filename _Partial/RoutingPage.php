@@ -9,6 +9,7 @@
             "AksesEntitas"          => "_Page/AksesEntitas/AksesEntitas.php",
             "Akses"                 => "_Page/Akses/Akses.php",
             "Pasien"                => "_Page/Pasien/Pasien.php",
+            "Kunjungan"             => "_Page/Kunjungan/Kunjungan.php",
             "Resep"                 => "_Page/Resep/Resep.php",
             "JenisTransaksi"        => "_Page/JenisTransaksi/JenisTransaksi.php",
             "Transaksi"             => "_Page/Transaksi/Transaksi.php",

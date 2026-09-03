@@ -241,3 +241,42 @@
         </div>
     ';
 ?>
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-8">
+                <b class="card-title"># Kunjungan Pasien</b>
+            </div>
+            <div class="col-4 text-end">
+                <button type="button" class="btn btn-md btn-secondary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalFilterKunjungan" title="Filter Data">
+                    <i class="bi bi-search"></i>
+                </button>
+
+                <button type="button" class="btn btn-md btn-primary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalTambahKunjungan" title="Tambah Kunjungan">
+                    <i class="bi bi-plus-lg"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-6">
+                <small id="page_info_kunjungan">
+                    Page 1 Of 100
+                </small>
+            </div>
+            <div class="col-6 text-end">
+                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button_kunjungan">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button_kunjungan">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
