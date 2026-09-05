@@ -1,74 +1,150 @@
 <?php
+    // Koneksi dan session
     include "../../_Config/Connection.php";
+    include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
 
+    // Header output JSON
+    header('Content-Type: application/json; charset=utf-8');
+
+    // Validasi Sesi Akses
     if (empty($SessionIdAkses)) {
-        echo '<div class="alert alert-danger mb-0">Sesi akses sudah berakhir. Silakan login ulang.</div>';
+        echo json_encode([
+            "status" => "error",
+            "message" => "Sesi akses sudah berakhir. Silakan login ulang."
+        ], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    $idGroup = (int) ($_POST['id_medication_request_group'] ?? 0);
-    if ($idGroup <= 0) {
-        echo '<div class="alert alert-danger mb-0">ID resep tidak valid.</div>';
+    // Tangkap ID Resep
+    $id_medication_request_group = (int) ($_POST['id_medication_request_group'] ?? 0);
+
+    if ($id_medication_request_group < 1) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "ID Resep Tidak Boleh Kosong."
+        ], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    $stmt = $Conn->prepare("SELECT * FROM medication_request_group WHERE id_medication_request_group = ? LIMIT 1");
-    $stmt->bind_param('i', $idGroup);
+    // Query Data Resep
+    $query = "
+        SELECT *
+        FROM medication_request_group
+        WHERE id_medication_request_group = ?
+        LIMIT 1
+    ";
+
+    $stmt = $Conn->prepare($query);
+    $stmt->bind_param("i", $id_medication_request_group);
     $stmt->execute();
-    $data = $stmt->get_result()->fetch_assoc();
+
+    $result = $stmt->get_result();
+    $data   = $result->fetch_assoc();
+
     $stmt->close();
 
     if (!$data) {
-        echo '<div class="alert alert-warning mb-0">Data resep tidak ditemukan.</div>';
+        echo json_encode([
+            "status" => "error",
+            "message" => "ID Resep Tidak Valid."
+        ], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    function formValue($value)
+    //---------------------------------------
+    // HELPER SELECTED
+    function selected($value, $current)
     {
-        return htmlspecialchars((string) ($value ?? ''), ENT_QUOTES, 'UTF-8');
+        return $value === $current ? 'selected' : '';
     }
 
-    $pasien = mysqli_query($Conn, "SELECT id_anggota, id_pasien, nama FROM anggota ORDER BY nama ASC");
-    $priorities = ['routine', 'urgent', 'asap', 'stat'];
-    $statuses = ['Draft', 'Verified', 'Partially', 'Completed', 'Cancelled'];
+    //---------------------------------------
+    // INFORMASI RESEP
+    $datetime_creat    = $data['datetime_creat'];
+    $priority          = $data['priority'];
+    $reason_code       = $data['reason_code'];
+    $reason_display    = $data['reason_display'];
+    $sumber_resep      = $data['sumber_resep'];
+    $status_resep      = $data['status_resep'];
+    $no_resep_nasional = $data['no_resep_nasional'];
+
+    //---------------------------------------
+    // TANGGAL & JAM RESEP
+    $tanggal_resep = date('Y-m-d', strtotime($datetime_creat));
+    $jam_resep     = date('H:i', strtotime($datetime_creat));
+
+    //---------------------------------------
+    // ESCAPE OUTPUT
+    $sumber_resep      = htmlspecialchars($sumber_resep ?? '', ENT_QUOTES, 'UTF-8');
+    $no_resep_nasional = htmlspecialchars($no_resep_nasional ?? '', ENT_QUOTES, 'UTF-8');
+
+    //---------------------------------------
+    // SUSUN HTML
+    $html = '
+        <input type="hidden" name="id_medication_request_group" value="'.$id_medication_request_group.'">
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <label for="tanggal_resep_edit"><small>* Tanggal Resep</small></label>
+                <input type="date" name="tanggal_resep" id="tanggal_resep_edit" class="form-control" value="'.$tanggal_resep.'" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <label for="jam_resep_edit"><small>* Jam Resep</small></label>
+                <input type="time" name="jam_resep" id="jam_resep_edit" class="form-control" value="'.$jam_resep.'" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label for="priority_edit"><small><i>* Priority</i></small></label>
+                <select name="priority" id="priority_edit" class="form-control" required>
+                    <option value="">Pilih</option>
+                    <option value="routine" '.selected('routine', $priority).'>Biasa</option>
+                    <option value="urgent" '.selected('urgent', $priority).'>Segera</option>
+                    <option value="asap" '.selected('asap', $priority).'>Darurat</option>
+                    <option value="stat" '.selected('stat', $priority).'>Gawat</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label for="sumber_resep_edit"><small>* Sumber Resep</small></label>
+                <input type="text" class="form-control" name="sumber_resep" id="sumber_resep_edit" value="'.$sumber_resep.'" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label for="no_resep_nasional_edit"><small>Nomor Resep Nasional (NRN)</small></label>
+                <input type="text" class="form-control" name="no_resep_nasional" id="no_resep_nasional_edit" value="'.$no_resep_nasional.'">
+                <small class="text-muted">Hanya jika sudah dibuatkan NRN sebelumnya</small>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label for="status_resep_edit"><small>* Status Resep</small></label>
+                <select class="form-control" name="status_resep" id="status_resep_edit" required>
+                    <option value="">Pilih</option>
+                    <option value="Draft" '.selected('Draft', $status_resep).'>Draft</option>
+                    <option value="Verified" '.selected('Verified', $status_resep).'>Verified</option>
+                    <option value="Partially" '.selected('Partially', $status_resep).'>Partially</option>
+                    <option value="Completed" '.selected('Completed', $status_resep).'>Completed</option>
+                    <option value="Cancelled" '.selected('Cancelled', $status_resep).'>Cancelled</option>
+                </select>
+            </div>
+        </div>
+    ';
+
+    //---------------------------------------
+    // RESPONSE
+    echo json_encode([
+        "status" => "success",
+        "html"   => $html
+    ], JSON_UNESCAPED_UNICODE);
 ?>
-<input type="hidden" name="id_medication_request_group" value="<?php echo $idGroup; ?>">
-<div class="row">
-    <div class="col-md-6 mb-3">
-        <label for="id_anggota_edit_resep" class="form-label">Pasien</label>
-        <select name="id_anggota" id="id_anggota_edit_resep" class="form-select">
-            <option value="">Pilih pasien</option>
-            <?php while ($pasienData = mysqli_fetch_assoc($pasien)) { ?>
-                <option value="<?php echo (int) $pasienData['id_anggota']; ?>" <?php echo ((int) $data['id_anggota'] === (int) $pasienData['id_anggota']) ? 'selected' : ''; ?>>
-                    <?php echo formValue($pasienData['id_pasien'] . ' - ' . $pasienData['nama']); ?>
-                </option>
-            <?php } ?>
-        </select>
-    </div>
-    <div class="col-md-6 mb-3">
-        <label for="id_kunjungan_edit_resep" class="form-label">ID Kunjungan</label>
-        <input type="number" name="id_kunjungan" id="id_kunjungan_edit_resep" class="form-control" min="1" value="<?php echo formValue($data['id_kunjungan']); ?>">
-    </div>
-    <div class="col-md-6 mb-3">
-        <label for="priority_edit_resep" class="form-label">Priority <span class="text-danger">*</span></label>
-        <select name="priority" id="priority_edit_resep" class="form-select" required>
-            <?php foreach ($priorities as $priority) { ?><option value="<?php echo $priority; ?>" <?php echo $data['priority'] === $priority ? 'selected' : ''; ?>><?php echo strtoupper($priority); ?></option><?php } ?>
-        </select>
-    </div>
-    <div class="col-md-6 mb-3">
-        <label for="status_edit_resep" class="form-label">Status <span class="text-danger">*</span></label>
-        <select name="status_resep" id="status_edit_resep" class="form-select" required>
-            <?php foreach ($statuses as $status) { ?><option value="<?php echo $status; ?>" <?php echo $data['status_resep'] === $status ? 'selected' : ''; ?>><?php echo $status; ?></option><?php } ?>
-        </select>
-    </div>
-    <div class="col-md-6 mb-3"><label class="form-label">Kode Dokter <span class="text-danger">*</span></label><input type="text" name="dokter_kode" class="form-control" value="<?php echo formValue($data['dokter_kode']); ?>" required></div>
-    <div class="col-md-6 mb-3"><label class="form-label">IHS Dokter <span class="text-danger">*</span></label><input type="text" name="dokter_ihs" class="form-control" value="<?php echo formValue($data['dokter_ihs']); ?>" required></div>
-    <div class="col-md-6 mb-3"><label class="form-label">Nama Dokter <span class="text-danger">*</span></label><input type="text" name="dokter_nama" class="form-control" value="<?php echo formValue($data['dokter_nama']); ?>" required></div>
-    <div class="col-md-6 mb-3"><label class="form-label">Sumber Data <span class="text-danger">*</span></label><input type="text" name="sumber_data" class="form-control" value="<?php echo formValue($data['sumber_data']); ?>" required></div>
-    <div class="col-md-6 mb-3"><label class="form-label">Kode Diagnosa</label><input type="text" name="reason_code" class="form-control" value="<?php echo formValue($data['reason_code']); ?>"></div>
-    <div class="col-md-6 mb-3"><label class="form-label">Diagnosa</label><input type="text" name="reason_display" class="form-control" value="<?php echo formValue($data['reason_display']); ?>"></div>
-    <div class="col-md-12 mb-3"><label class="form-label">Sistem Kode Diagnosa</label><input type="text" name="reason_system" class="form-control" value="<?php echo formValue($data['reason_system']); ?>"></div>
-    <div class="col-md-6 mb-3"><label class="form-label">Nama Apoteker</label><input type="text" name="apoteker_nama" class="form-control" value="<?php echo formValue($data['apoteker_nama']); ?>"></div>
-    <div class="col-md-6 mb-3"><label class="form-label">IHS Apoteker</label><input type="text" name="apoteker_id_ihs" class="form-control" value="<?php echo formValue($data['apoteker_id_ihs']); ?>"></div>
-</div>

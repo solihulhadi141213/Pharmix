@@ -1,0 +1,22 @@
+[
+    {
+        "kode_kfa": "93015422",
+        "nama_kfa": "Paracetamol 500 mg Tablet (AFIFARMA, STRIP)",
+        "kode_numerator": "mg",
+        "nama_numerator": "milligram",
+        "jumlah_numerator": "500",
+        "kode_denominator": "TAB",
+        "nama_denominator": "Tablet",
+        "jumlah_denominator": "1"
+    },
+    {
+        "kode_kfa": "93023512",
+        "nama_kfa": "Caffeine 50 mg / Ekstrak Eleutherococcus senticosus Radix 25 mg / Calcium Ascorbate 90 mg / Cyanocobalamin  2,4 ug Tablet Kunyah (CAFETAB)",
+        "kode_numerator": "mg",
+        "nama_numerator": "milligram",
+        "jumlah_numerator": "50",
+        "kode_denominator": "TAB",
+        "nama_denominator": "Tablet",
+        "jumlah_denominator": "1"
+    }
+]

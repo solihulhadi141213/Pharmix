@@ -139,9 +139,7 @@
     // Susun HTML untuk ditampilkan di modal body (FormDetail)
     $html = '
         <input type="hidden" name="id_medication_request_group" value="'.$id_medication_request_group.'">
-         <div class="row mb-2">
-            <div class="col-12"><small><b>A. Informasi Resep</b></small></div>
-        </div>
+
         <div class="row mb-2">
             <div class="col-4"><small>Tanggal Resep</small></div>
             <div class="col-1"><small>:</small></div>
@@ -173,117 +171,15 @@
             <div class="col-7"><small>'.$status_resep.'</small></div>
         </div>
         <div class="row mb-2 mt-3">
-            <div class="col-12"><small><b>B. Informasi Pasien</b></small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>No. RM</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$id_pasien.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Nama Pasien</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$nama_pasien.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>NIK</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$nik.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Gender</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$gender.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Tanggal Lahir</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$tanggal_lahir.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>ID Patient</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$id_ihs.'</small></div>
-        </div>
-        <div class="row mb-2 mt-3">
-            <div class="col-12"><small><b>C. Informasi Kunjungan</b></small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Tanggal Kunjungan</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$tanggal_kunjungan.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Kategori</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$jenis_kunjungan.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>ID Encounter</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$id_encounter.'</small></div>
-        </div>
-
-        <div class="row mb-2 mt-3">
-            <div class="col-12"><small><b>D. Dokter Pemberi Resep</b></small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Kode Dokter</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$dokter_code.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Nama Dokter</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$dokter_nama.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>IHS Dokter</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$dokter_ihs.'</small></div>
-        </div>
-
-        <div class="row mb-2 mt-3">
-            <div class="col-12"><small><b>E. Informasi Apoteker</b></small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Kode Apoteker</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$apoteker_code.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Nama Apoteker</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$apoteker_nama.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>IHS Apoteker</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$apoteker_ihs.'</small></div>
-        </div>
-
-        <div class="row mb-2 mt-3">
-            <div class="col-12"><small><b>F. Metadata</b></small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>Creat At</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.date('d/m/Y H:i', strtotime($creat_at)).'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>Update At</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.date('d/m/Y H:i', strtotime($update_at)).'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>Creator</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$creator.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>Updater</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$updater.'</small></div>
+            <div class="col-12">
+                <div class="alert alert-danger text-center">
+                    <small>
+                        <b>PENTING!</b><br>
+                        Data Yang Sudah Dihapus Tidak Akan Bisa Dikembalikan Lagi<br><br>
+                        <i>Apakah Anda Yakin AKan Menghapus Data Ini?</i>
+                    </small>
+                </div>
+            </div>
         </div>
        
     ';

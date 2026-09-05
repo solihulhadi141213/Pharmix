@@ -1,82 +1,269 @@
 <?php
+    //------------------------------------------
+    // Koneksi, Session dan Helper
     include "../../_Config/Connection.php";
+    include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
+    include "../../_Config/FungsiAkses.php";
 
+    //------------------------------------------
+    // Default JSON Response
     header('Content-Type: application/json; charset=utf-8');
 
-    function editResepResponse($status, $message)
-    {
-        echo json_encode(['status' => $status, 'message' => $message], JSON_UNESCAPED_UNICODE);
+    //------------------------------------------
+    // Default Datetime Zone
+    date_default_timezone_set('Asia/Jakarta');
+    $now = date('Y-m-d H:i:s');
+
+    //------------------------------------------
+    // Default Response
+    $response = [
+        'status'  => 'error',
+        'message' => 'Terjadi kesalahan.'
+    ];
+
+    //------------------------------------------
+    // Validasi Session
+    if (empty($SessionIdAkses)) {
+        $response['message'] = 'Sesi akses sudah berakhir.';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    if (empty($SessionIdAkses)) editResepResponse('error', 'Sesi akses sudah berakhir. Silakan login ulang.');
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') editResepResponse('error', 'Metode request tidak valid.');
-
-    $idGroup = (int) ($_POST['id_medication_request_group'] ?? 0);
-    $idAnggota = trim((string) ($_POST['id_anggota'] ?? ''));
-    $idKunjungan = trim((string) ($_POST['id_kunjungan'] ?? ''));
-    $priority = trim((string) ($_POST['priority'] ?? ''));
-    $dokterKode = trim((string) ($_POST['dokter_kode'] ?? ''));
-    $dokterIhs = trim((string) ($_POST['dokter_ihs'] ?? ''));
-    $dokterNama = trim((string) ($_POST['dokter_nama'] ?? ''));
-    $reasonCode = trim((string) ($_POST['reason_code'] ?? ''));
-    $reasonDisplay = trim((string) ($_POST['reason_display'] ?? ''));
-    $reasonSystem = trim((string) ($_POST['reason_system'] ?? ''));
-    $apotekerNama = trim((string) ($_POST['apoteker_nama'] ?? ''));
-    $apotekerIhs = trim((string) ($_POST['apoteker_id_ihs'] ?? ''));
-    $sumberData = trim((string) ($_POST['sumber_data'] ?? ''));
-    $status = trim((string) ($_POST['status_resep'] ?? ''));
-
-    if ($idGroup <= 0) editResepResponse('error', 'ID resep tidak valid.');
-    if ($priority === '' || !in_array($priority, ['routine', 'urgent', 'asap', 'stat'], true)) editResepResponse('error', 'Priority resep tidak valid.');
-    if (($idAnggota !== '' && !ctype_digit($idAnggota)) || ($idKunjungan !== '' && !ctype_digit($idKunjungan))) editResepResponse('error', 'ID pasien atau ID kunjungan tidak valid.');
-    if ($dokterKode === '' || $dokterIhs === '' || $dokterNama === '') editResepResponse('error', 'Data dokter wajib diisi.');
-    if ($sumberData === '') editResepResponse('error', 'Sumber data wajib diisi.');
-    if (!in_array($status, ['Draft', 'Verified', 'Partially', 'Completed', 'Cancelled'], true)) editResepResponse('error', 'Status resep tidak valid.');
-
-    $idAnggotaValue = $idAnggota === '' ? null : (int) $idAnggota;
-    $idKunjunganValue = $idKunjungan === '' ? null : (int) $idKunjungan;
-
-    $check = $Conn->prepare("SELECT id_medication_request_group FROM medication_request_group WHERE id_medication_request_group = ? LIMIT 1");
-    $check->bind_param('i', $idGroup);
-    $check->execute();
-    if (!$check->get_result()->fetch_assoc()) {
-        $check->close();
-        editResepResponse('error', 'Data resep tidak ditemukan.');
-    }
-    $check->close();
-
-    if ($idAnggotaValue !== null) {
-        $check = $Conn->prepare("SELECT id_anggota FROM anggota WHERE id_anggota = ? LIMIT 1");
-        $check->bind_param('i', $idAnggotaValue);
-        $check->execute();
-        if (!$check->get_result()->fetch_assoc()) {
-            $check->close();
-            editResepResponse('error', 'Pasien tidak ditemukan.');
-        }
-        $check->close();
+    //------------------------------------------
+    // Validasi Method
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        $response['message'] = 'Metode request tidak valid.';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
-    $stmt = $Conn->prepare("UPDATE medication_request_group SET
-        id_anggota = ?, id_kunjungan = ?, priority = ?, dokter_kode = ?, dokter_ihs = ?,
-        dokter_nama = ?, reason_code = ?, reason_display = ?, reason_system = ?,
-        apoteker_nama = ?, apoteker_id_ihs = ?, sumber_data = ?, status_resep = ?
-        WHERE id_medication_request_group = ? LIMIT 1");
+    //------------------------------------------
+    // Tangkap Parameter
+    $id_medication_request_group = (int) ($_POST['id_medication_request_group'] ?? 0);
+    $tanggal_resep               = trim($_POST['tanggal_resep'] ?? '');
+    $jam_resep                   = trim($_POST['jam_resep'] ?? '');
+    $priority                    = trim($_POST['priority'] ?? '');
+    $sumber_resep                = trim($_POST['sumber_resep'] ?? '');
+    $no_resep_nasional           = trim($_POST['no_resep_nasional'] ?? '');
+    $status_resep                = trim($_POST['status_resep'] ?? '');
 
-    if (!$stmt) editResepResponse('error', 'Gagal menyiapkan perubahan resep.');
+    //------------------------------------------
+    // Validasi ID Resep
+    if ($id_medication_request_group < 1) {
+        $response['message'] = 'ID resep tidak valid.';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
 
-    $stmt->bind_param('iissssssssssi',
-        $idAnggotaValue, $idKunjunganValue, $priority, $dokterKode, $dokterIhs,
-        $dokterNama, $reasonCode, $reasonDisplay, $reasonSystem, $apotekerNama,
-        $apotekerIhs, $sumberData, $status, $idGroup
+    //------------------------------------------
+    // Validasi Tanggal Resep
+    if ($tanggal_resep === '') {
+        $response['message'] = 'Tanggal resep tidak boleh kosong.';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    //------------------------------------------
+    // Validasi Jam Resep
+    if ($jam_resep === '') {
+        $response['message'] = 'Jam resep tidak boleh kosong.';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    //------------------------------------------
+    // Validasi Priority
+    $priorityValid = [
+        'routine',
+        'urgent',
+        'asap',
+        'stat'
+    ];
+
+    if (!in_array($priority, $priorityValid, true)) {
+        $response['message'] = 'Priority resep tidak valid.';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    //------------------------------------------
+    // Validasi Sumber Resep
+    if ($sumber_resep === '') {
+        $response['message'] = 'Sumber resep tidak boleh kosong.';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    //------------------------------------------
+    // Validasi Status Resep
+    $statusValid = [
+        'Draft',
+        'Verified',
+        'Partially',
+        'Completed',
+        'Cancelled'
+    ];
+
+    if (!in_array($status_resep, $statusValid, true)) {
+        $response['message'] = 'Status resep tidak valid.';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    //------------------------------------------
+    // Validasi Format Datetime
+    $datetimeObject = DateTime::createFromFormat(
+        'Y-m-d H:i',
+        $tanggal_resep . ' ' . $jam_resep
     );
 
+    if (
+        !$datetimeObject ||
+        $datetimeObject->format('Y-m-d H:i') !== $tanggal_resep . ' ' . $jam_resep
+    ) {
+        $response['message'] = 'Format tanggal atau jam resep tidak valid.';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    $datetime_creat = $datetimeObject->format('Y-m-d H:i:s');
+
+    //------------------------------------------
+    // Normalisasi NRN
+    if ($no_resep_nasional === '') {
+        $no_resep_nasional = null;
+    }
+
+    //------------------------------------------
+    // Ambil Data Resep Sebelumnya
+    $sql = "
+        SELECT
+            status_resep,
+            datetime_verified,
+            datetime_completed
+        FROM medication_request_group
+        WHERE id_medication_request_group = ?
+        LIMIT 1
+    ";
+
+    $stmt = $Conn->prepare($sql);
+
+    if (!$stmt) {
+        $response['message'] = 'Gagal mempersiapkan data resep.';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    $stmt->bind_param("i", $id_medication_request_group);
+
+    //------------------------------------------
+    // Eksekusi
     if (!$stmt->execute()) {
+        $response['message'] = 'Gagal mengambil data resep.';
         $stmt->close();
-        editResepResponse('error', 'Gagal memperbarui resep.');
+
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    //------------------------------------------
+    // Ambil Data
+    $result   = $stmt->get_result();
+    $dataLama = $result->fetch_assoc();
+    $stmt->close();
+
+    if (!$dataLama) {
+        $response['message'] = 'Data resep tidak ditemukan.';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    //------------------------------------------
+    // Datetime Status Sebelumnya
+    $datetime_verified  = $dataLama['datetime_verified'] ?? null;
+    $datetime_completed = $dataLama['datetime_completed'] ?? null;
+
+    //------------------------------------------
+    // Atur Datetime Verified
+    if (
+        in_array($status_resep, ['Verified', 'Partially', 'Completed'], true) &&
+        empty($datetime_verified)
+    ) {
+        $datetime_verified = $now;
+    }
+
+    //------------------------------------------
+    // Atur Datetime Completed
+    if ($status_resep === 'Completed') {
+        if (empty($datetime_completed)) {
+            $datetime_completed = $now;
+        }
+    } else {
+        $datetime_completed = null;
+    }
+
+    //------------------------------------------
+    // Update Data Resep
+    $sql = "
+        UPDATE medication_request_group SET
+            datetime_creat      = ?,
+            priority            = ?,
+            sumber_resep        = ?,
+            no_resep_nasional   = ?,
+            status_resep        = ?,
+            datetime_verified   = ?,
+            datetime_completed  = ?,
+            update_at           = ?,
+            update_by_id        = ?,
+            update_by_name      = ?
+        WHERE id_medication_request_group = ?
+    ";
+
+    $stmt = $Conn->prepare($sql);
+
+    if (!$stmt) {
+        $response['message'] = 'Gagal mempersiapkan proses update resep.';
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    $stmt->bind_param(
+        "ssssssssisi",
+        $datetime_creat,
+        $priority,
+        $sumber_resep,
+        $no_resep_nasional,
+        $status_resep,
+        $datetime_verified,
+        $datetime_completed,
+        $now,
+        $SessionIdAkses,
+        $SessionNama,
+        $id_medication_request_group
+    );
+
+    //------------------------------------------
+    // Eksekusi Update
+    if (!$stmt->execute()) {
+        $response['message'] = 'Gagal memperbarui data resep.';
+        $stmt->close();
+
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     $stmt->close();
-    editResepResponse('success', 'Resep berhasil diperbarui.');
+
+    //------------------------------------------
+    // Response Success
+    $response = [
+        'status'  => 'success',
+        'message' => 'Data resep berhasil diperbarui.'
+    ];
+
+    echo json_encode(
+        $response,
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+    );
 ?>

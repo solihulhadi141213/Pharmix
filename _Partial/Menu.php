@@ -326,6 +326,11 @@
                         <i class="bi bi-circle"></i><span>Nakes</span>
                     </a>
                 </li>
+                <li>
+                    <a href="index.php?Page=Medication" class="<?php if($PageMenu=="Medication"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Medication</span>
+                    </a>
+                </li>
             </ul>
         </li>
         <li class="nav-item">

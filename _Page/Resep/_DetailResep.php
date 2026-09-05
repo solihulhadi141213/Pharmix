@@ -4,15 +4,20 @@
     include "../../_Config/GlobalFunction.php";
     include "../../_Config/Session.php";
 
-    // Header output JSON
-    header('Content-Type: application/json');
-
     // Validasi Sesi Akses
     if (empty($SessionIdAkses)) {
-        echo json_encode([
-            "status" => "error",
-            "message" => "Sesi akses sudah berakhir. Silakan login ulang."
-        ]);
+        echo '
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-danger text-center">
+                        <small>
+                            <b>Opss!</b><br>
+                            Sesi Akses Sudah Berakhir! Silahkan Login Ulang!
+                        </small>
+                    </div>
+                </div>
+            </div>
+        ';
         exit;
     }
 
@@ -20,10 +25,18 @@
     $id_medication_request_group = $_POST['id_medication_request_group'] ?? '';
 
     if (empty($id_medication_request_group)) {
-        echo json_encode([
-            "status" => "error",
-            "message" => "ID Resep Tidak Boleh Kosong."
-        ]);
+        echo '
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-danger text-center">
+                        <small>
+                            <b>Opss!</b><br>
+                            ID Resep Tidak Boleh Kosong!
+                        </small>
+                    </div>
+                </div>
+            </div>
+        ';
         exit;
     }
 
@@ -37,10 +50,18 @@
     mysqli_stmt_close($stmt);
 
     if (!$data) {
-        echo json_encode([
-            "status" => "error",
-            "message" => "ID Resep Tidak Valid"
-        ]);
+        echo '
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-danger text-center">
+                        <small>
+                            <b>Opss!</b><br>
+                            ID Resep Tidak Valid!
+                        </small>
+                    </div>
+                </div>
+            </div>
+        ';
         exit;
     }
 
@@ -163,7 +184,7 @@
             <div class="col-7"><small>'.$sumber_resep.'</small></div>
         </div>
         <div class="row mb-2">
-            <div class="col-4"><small>Nomor Resep Nasional (NRN)</small></div>
+            <div class="col-4"><small>Resep Nasional (NRN)</small></div>
             <div class="col-1"><small>:</small></div>
             <div class="col-7"><small>'.$no_resep_nasional.'</small></div>
         </div>
@@ -287,12 +308,66 @@
         </div>
        
     ';
-
-    // Mengaktifkan kembali tombol "Selengkapnya" pada modal dan menyematkan data-id
-    // Catatan: Kita mengirimkan id_kunjungan ke response agar jQuery bisa menyematkannya ke form submit
-    echo json_encode([
-        "status"       => "success",
-        "html"         => $html,
-        "id_kunjungan" => $id_kunjungan
-    ]);
 ?>
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                
+                <!-- Tombol Kembali -->
+                <button type="button" class="mt-4 btn btn-lg btn-primary btn-floating tombol_kembali">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+
+                <!-- Edit Resep -->
+                <button type="button" class="mt-4 btn btn-lg btn-info btn-floating edit_resep" data-id="<?php echo $id_medication_request_group; ?>">
+                    <i class="bi bi-pencil"></i>
+                </button>
+
+                <!-- Delete Resep -->
+                <button type="button" class="mt-4 btn btn-lg btn-danger btn-floating hapus_resep" data-id="<?php echo $id_medication_request_group; ?>">
+                    <i class="bi bi-trash"></i>
+                </button>
+
+                <!-- Cetak Resep -->
+                <button type="button" class="mt-4 btn btn-lg btn-secondary btn-floating cetak_resep" data-id="<?php echo $id_medication_request_group; ?>">
+                    <i class="bi bi-printer"></i>
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <b class="card-title"># Informasi Resep</b>
+            </div>
+            <div class="card-body">
+                <div class="row mt-4 mb-4">
+                    <div class="col-12">
+                        <?php echo $html; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <button type="button" class="btn btn-lg btn-block text-primary border border-primary border-2 py-3 tambah_item_resep" style="border-style: dashed !important;" data-id="<?php echo $id_medication_request_group; ?>">
+            <i class="bi bi-plus-lg"></i> Tambah Item Resep
+        </button>
+
+        <div class="row mt-3 mb-3" id="list_item_resep">
+            <div class="col-12">
+                 <!-- List Item Resep Akan Muncul Disini -->
+                <div class="alert alert-secondary text-center">
+                    No Data
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

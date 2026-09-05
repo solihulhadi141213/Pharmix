@@ -161,6 +161,37 @@ h6 {
   background-color: #e7efff;
 }
 
+/* Resep action dropdown:
+   - lebih lembut dengan nuansa ungu muda
+   - item tetap tegas tanpa radius
+   - shadow dibuat sedikit lebih jelas agar terasa timbul
+   Selector ini sengaja sangat spesifik agar menu lain tidak ikut berubah. */
+.dropdown-menu.dropdown-menu-end.shadow-sm:has(.detail_resep),
+.dropdown-menu.dropdown-menu-end.shadow-sm:has(.edit_resep),
+.dropdown-menu.dropdown-menu-end.shadow-sm:has(.delete_resep) {
+  background-color: #eee7ff;
+  background: linear-gradient(180deg, #f2ecff 0%, #e9e0ff 100%);
+  border: 1px solid rgba(122, 92, 198, 0.14);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(54, 37, 89, 0.24);
+  overflow: hidden;
+}
+
+.dropdown-menu.dropdown-menu-end.shadow-sm:has(.detail_resep) .dropdown-item,
+.dropdown-menu.dropdown-menu-end.shadow-sm:has(.edit_resep) .dropdown-item,
+.dropdown-menu.dropdown-menu-end.shadow-sm:has(.delete_resep) .dropdown-item {
+  border-radius: 0 !important;
+}
+
+.dropdown-menu.dropdown-menu-end.shadow-sm:has(.detail_resep) .dropdown-item:hover,
+.dropdown-menu.dropdown-menu-end.shadow-sm:has(.edit_resep) .dropdown-item:hover,
+.dropdown-menu.dropdown-menu-end.shadow-sm:has(.delete_resep) .dropdown-item:hover,
+.dropdown-menu.dropdown-menu-end.shadow-sm:has(.detail_resep) .dropdown-item:focus,
+.dropdown-menu.dropdown-menu-end.shadow-sm:has(.edit_resep) .dropdown-item:focus,
+.dropdown-menu.dropdown-menu-end.shadow-sm:has(.delete_resep) .dropdown-item:focus {
+  background-color: rgba(124, 96, 214, 0.12);
+}
+
 @media (min-width: 768px) {
   .dropdown-menu-arrow::before {
     content: "";
@@ -2734,4 +2765,21 @@ textarea.form-control[readonly]:focus {
         height: 68px;
         font-size: 30px;
     }
+}
+
+
+#FormCetak {
+    overflow-x: auto;
+    background: #f3f3f3;
+    padding: 15px;
+}
+
+#lembar_resep {
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+}
+#lembar_resep table,
+#lembar_resep tr,
+#lembar_resep .item-resep {
+    page-break-inside: avoid;
+    break-inside: avoid;
 }
