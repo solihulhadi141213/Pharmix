@@ -2907,7 +2907,7 @@ $(document).ready(function() {
     });
 
     // --------------------------------------------
-    // HAPUS ITEM RESEP
+    // DETAIL MEDICATION
     // --------------------------------------------
 
     // Detail Medicationn

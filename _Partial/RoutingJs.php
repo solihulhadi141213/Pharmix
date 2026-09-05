@@ -47,6 +47,7 @@
             "Numerator"             => "_Page/SatuanNumerator/SatuanNumerator.js",
             "Poliklinik"            => "_Page/Poliklinik/Poliklinik.js",
             "Nakes"                 => "_Page/Nakes/Nakes.js",
+            "Medication"                 => "_Page/Medication/Medication.js",
             "SettingSatuSehat"      => "_Page/SettingSatuSehat/SettingSatuSehat.js",
             "RekapitulasiTransaksi" => "_Page/RekapitulasiTransaksi/RekapitulasiTransaksi.js"
         ];

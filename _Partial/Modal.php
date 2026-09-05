@@ -42,6 +42,7 @@
             "Numerator"             => "_Page/SatuanNumerator/ModalSatuanNumerator.php",
             "Poliklinik"            => "_Page/Poliklinik/ModalPoliklinik.php",
             "Nakes"                 => "_Page/Nakes/ModalNakes.php",
+            "Medication"                 => "_Page/Medication/ModalMedication.php",
             "SettingSatuSehat"      => "_Page/SettingSatuSehat/ModalSettingSatuSehat.php",
             "RekapitulasiTransaksi" => "_Page/RekapitulasiTransaksi/ModalRekapitulasiTransaksi.php"
         ];

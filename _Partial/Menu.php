@@ -22,6 +22,12 @@
         <hr class="menu-divider">
         <li class="nav-heading">Master</li>
         <li class="nav-item">
+            <a class="nav-link <?php if($PageMenu=="Medication"){echo "active";}else{echo "collapsed";} ?>" href="index.php?Page=Medication">
+                <i class="bi bi-bookmark"></i>
+                <span>Index Obat/Alkes</span>
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link <?php if($PageMenu=="Pasien"){echo "active";}else{echo "collapsed";} ?>" href="index.php?Page=Pasien">
                 <i class="bi bi-people"></i>
                 <span>Pasien</span>
@@ -324,11 +330,6 @@
                 <li>
                     <a href="index.php?Page=Nakes" class="<?php if($PageMenu=="Nakes"){echo "active";} ?>">
                         <i class="bi bi-circle"></i><span>Nakes</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.php?Page=Medication" class="<?php if($PageMenu=="Medication"){echo "active";} ?>">
-                        <i class="bi bi-circle"></i><span>Medication</span>
                     </a>
                 </li>
             </ul>
