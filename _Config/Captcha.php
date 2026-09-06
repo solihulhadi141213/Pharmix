@@ -1,7 +1,7 @@
 <?php
     // Koneksi Database
     include "Connection.php";
-    include "Function.php";
+    include "GlobalFunction.php";
 
     // Tetapkan Zona Waktu
     date_default_timezone_set('UTC');

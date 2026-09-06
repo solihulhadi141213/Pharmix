@@ -40,7 +40,7 @@
 
     //------------------------------------------
     // Tangkap Parameter
-    $kategori_resep     = trim($_POST['kategori_resep'] ?? '');
+    $kategori_resep     = trim($_POST['kategori_resep'] ?? 'Keluar');
     $sumber_resep       = trim($_POST['sumber_resep'] ?? '');
     $id_anggota         = (int) ($_POST['id_anggota'] ?? 0);
     $id_kunjungan       = (int) ($_POST['id_kunjungan'] ?? 0);
@@ -379,6 +379,7 @@
                 apoteker_code,
                 apoteker_nama,
                 apoteker_ihs,
+                kategori_resep,
                 sumber_resep,
                 status_resep,
                 no_resep_nasional,
@@ -395,7 +396,7 @@
                 ?, ?, ?, ?,
                 ?, ?, ?,
                 ?, ?, ?,
-                ?, ?, ?
+                ?, ?, ?, ?
             )
         ";
 
@@ -406,7 +407,7 @@
         }
 
         $stmt->bind_param(
-            "iisssssissssssisssssssisisi",
+            "iisssssissssssissssssssissis",
             $id_anggota,
             $id_kunjungan,
             $nama_pasien,
@@ -425,6 +426,7 @@
             $apoteker_code,
             $apoteker_nama,
             $apoteker_ihs,
+            $kategori_resep,
             $sumber_resep,
             $status_resep,
             $no_resep_nasional,

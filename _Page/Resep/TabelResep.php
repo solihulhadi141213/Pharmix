@@ -211,6 +211,7 @@
             mrg.dokter_nama,
             mrg.apoteker_id,
             mrg.apoteker_nama,
+            mrg.kategori_resep,
             mrg.sumber_resep,
             mrg.status_resep,
             mrg.no_resep_nasional,
@@ -333,13 +334,31 @@
                 $nrnHtml = '<span class="text-muted">Belum tersedia</span>';
             }
 
+            // Routing kategori resep
+            $kategori_resep = $data['kategori_resep'];
+            if($kategori_resep=="Masuk"){
+                $label_color = "bg-primary";
+                $label_kategori = '
+                    <small class="text text-muted">
+                        <i class="bi bi-arrow-down-circle"></i> Resep Masuk
+                    </small>
+                ';
+            }else{
+                $label_color = "bg-danger";
+                $label_kategori = '
+                    <small class="text text-danger">
+                        <i class="bi bi-arrow-up-circle"></i> Resep Keluar
+                    </small>
+                ';
+            }
+
             // Render Card Item
             $html .= '
                 <div class="col-12 col-md-6 col-xl-4 col-xxl-3 mb-3">
                     <div class="card h-100 border-0 shadow-sm rounded-4 overflow-visible">
                         <div class="card-body p-3">
                             <div class="d-flex align-items-center gap-2 mb-3">
-                                <span class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width:32px; height:32px; font-size:.8rem; font-weight:600;">
+                                <span class="'.$label_color.' text-white rounded-circle d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width:32px; height:32px; font-size:.8rem; font-weight:600;">
                                     '.$no.'
                                 </span>
                                 <div class="flex-grow-1 min-w-0 pe-1">
@@ -373,7 +392,7 @@
                                     </ul>
                                 </div>
                             </div>
-
+                            '.$label_kategori.'
                             <div class="small">
                                 <div class="d-flex justify-content-between gap-2 py-2 border-top">
                                     <span class="text-muted flex-shrink-0"><i class="bi bi-calendar3 me-1"></i> No.RM</span>

@@ -75,7 +75,7 @@
 
 <!-- Jquery -->
 <!-- <script src="node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script> -->
-<script src="node_modules/jQuery-Mask-Plugin/dist/jquery.mask.min.js"></script>
+<script src="node_modules/jquery-mask-plugin/dist/jquery.mask.min.js"></script>
 <script src="node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
 <script src="assets/js/jquery.session.js" type="text/javascript"></script>
 <script src="node_modules/html2canvas/dist/html2canvas.min.js"></script>

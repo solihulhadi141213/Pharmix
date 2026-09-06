@@ -72,9 +72,9 @@
     // Informasi Kunjungan
     if(!empty($data['id_kunjungan'])){
         $id_kunjungan      = $data['id_kunjungan'];
-        $id_encounter      = GetDetailData($Conn, 'kunjungan', 'id_anggota', $id_anggota, 'id_encounter');
-        $tanggal_kunjungan = GetDetailData($Conn, 'kunjungan', 'id_anggota', $id_anggota, 'tanggal_kunjungan');
-        $jenis_kunjungan   = GetDetailData($Conn, 'kunjungan', 'id_anggota', $id_anggota, 'jenis_kunjungan');
+        $id_encounter      = GetDetailData($Conn, 'kunjungan', 'id_kunjungan', $id_kunjungan, 'id_encounter');
+        $tanggal_kunjungan = GetDetailData($Conn, 'kunjungan', 'id_kunjungan', $id_kunjungan, 'tanggal_kunjungan');
+        $jenis_kunjungan   = GetDetailData($Conn, 'kunjungan', 'id_kunjungan', $id_kunjungan, 'jenis_kunjungan');
         if(empty($id_encounter)){
             $id_encounter = "-";
         }
@@ -143,6 +143,16 @@
             <div class="col-12"><small><b>A. Informasi Resep</b></small></div>
         </div>
         <div class="row mb-2">
+            <div class="col-4"><small>ID Resep</small></div>
+            <div class="col-1"><small>:</small></div>
+            <div class="col-7"><small>'.$id_medication_request_group.'</small></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-4"><small>Nomor Resep Nasional (NRN)</small></div>
+            <div class="col-1"><small>:</small></div>
+            <div class="col-7"><small>'.$no_resep_nasional.'</small></div>
+        </div>
+        <div class="row mb-2">
             <div class="col-4"><small>Tanggal Resep</small></div>
             <div class="col-1"><small>:</small></div>
             <div class="col-7"><small>'.$datetime_creat.'</small></div>
@@ -158,14 +168,14 @@
             <div class="col-7"><small>'.$reason_code.' - '.$reason_display.'</small></div>
         </div>
         <div class="row mb-2">
+            <div class="col-4"><small>Dokter Pembuat Resep</small></div>
+            <div class="col-1"><small>:</small></div>
+            <div class="col-7"><small>'.$dokter_nama.'</small></div>
+        </div>
+        <div class="row mb-2">
             <div class="col-4"><small>Sumber Resep</small></div>
             <div class="col-1"><small>:</small></div>
             <div class="col-7"><small>'.$sumber_resep.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Nomor Resep Nasional (NRN)</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$no_resep_nasional.'</small></div>
         </div>
         <div class="row mb-2">
             <div class="col-4"><small>Status Resep</small></div>
@@ -176,19 +186,9 @@
             <div class="col-12"><small><b>B. Informasi Pasien</b></small></div>
         </div>
         <div class="row mb-2">
-            <div class="col-4"><small>No. RM</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$id_pasien.'</small></div>
-        </div>
-        <div class="row mb-2">
             <div class="col-4"><small>Nama Pasien</small></div>
             <div class="col-1"><small>:</small></div>
             <div class="col-7"><small>'.$nama_pasien.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>NIK</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$nik.'</small></div>
         </div>
         <div class="row mb-2">
             <div class="col-4"><small>Gender</small></div>
@@ -199,11 +199,6 @@
             <div class="col-4"><small>Tanggal Lahir</small></div>
             <div class="col-1"><small>:</small></div>
             <div class="col-7"><small>'.$tanggal_lahir.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>ID Patient</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$id_ihs.'</small></div>
         </div>
         <div class="row mb-2 mt-3">
             <div class="col-12"><small><b>C. Informasi Kunjungan</b></small></div>
@@ -218,74 +213,6 @@
             <div class="col-1"><small>:</small></div>
             <div class="col-7"><small>'.$jenis_kunjungan.'</small></div>
         </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>ID Encounter</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$id_encounter.'</small></div>
-        </div>
-
-        <div class="row mb-2 mt-3">
-            <div class="col-12"><small><b>D. Dokter Pemberi Resep</b></small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Kode Dokter</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$dokter_code.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Nama Dokter</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$dokter_nama.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>IHS Dokter</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$dokter_ihs.'</small></div>
-        </div>
-
-        <div class="row mb-2 mt-3">
-            <div class="col-12"><small><b>E. Informasi Apoteker</b></small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Kode Apoteker</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$apoteker_code.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small>Nama Apoteker</small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$apoteker_nama.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>IHS Apoteker</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$apoteker_ihs.'</small></div>
-        </div>
-
-        <div class="row mb-2 mt-3">
-            <div class="col-12"><small><b>F. Metadata</b></small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>Creat At</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.date('d/m/Y H:i', strtotime($creat_at)).'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>Update At</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.date('d/m/Y H:i', strtotime($update_at)).'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>Creator</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$creator.'</small></div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-4"><small><i>Updater</i></small></div>
-            <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$updater.'</small></div>
-        </div>
-       
     ';
 
     // Mengaktifkan kembali tombol "Selengkapnya" pada modal dan menyematkan data-id

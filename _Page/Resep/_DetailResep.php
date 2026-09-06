@@ -93,15 +93,15 @@
     // Informasi Kunjungan
     if(!empty($data['id_kunjungan'])){
         $id_kunjungan      = $data['id_kunjungan'];
-        $id_encounter      = GetDetailData($Conn, 'kunjungan', 'id_anggota', $id_anggota, 'id_encounter');
-        $tanggal_kunjungan = GetDetailData($Conn, 'kunjungan', 'id_anggota', $id_anggota, 'tanggal_kunjungan');
-        $jenis_kunjungan   = GetDetailData($Conn, 'kunjungan', 'id_anggota', $id_anggota, 'jenis_kunjungan');
+        $id_encounter      = GetDetailData($Conn, 'kunjungan', 'id_kunjungan', $id_kunjungan, 'id_encounter');
+        $tanggal_kunjungan = GetDetailData($Conn, 'kunjungan', 'id_kunjungan', $id_kunjungan, 'tanggal_kunjungan');
+        $jenis_kunjungan   = GetDetailData($Conn, 'kunjungan', 'id_kunjungan', $id_kunjungan, 'jenis_kunjungan');
         if(empty($id_encounter)){
             $id_encounter = "-";
         }
     }else{
         $id_kunjungan      = "";
-        $id_encounter      = "-";
+        $id_encounter      = "";
         $tanggal_kunjungan = "-";
         $jenis_kunjungan   = "-";
     }
@@ -133,13 +133,57 @@
     }
 
     // Informasi Resep
-    $datetime_creat    = $data['datetime_creat'] ?: "-";
-    $priority          = $data['priority'] ?: "-";
-    $reason_code       = $data['reason_code'];
-    $reason_display    = $data['reason_display'];
-    $sumber_resep      = $data['sumber_resep']?: "-";
-    $status_resep      = $data['status_resep']?: "-";
-    $no_resep_nasional = $data['no_resep_nasional']?: "-";
+    $datetime_creat        = $data['datetime_creat'] ?: "-";
+    $priority              = $data['priority'] ?: "-";
+    $reason_code           = $data['reason_code'];
+    $reason_display        = $data['reason_display'];
+    $sumber_resep          = $data['sumber_resep']?: "-";
+    $status_resep          = $data['status_resep']?: "-";
+    $no_resep_nasional     = $data['no_resep_nasional']?: "-";
+
+    // Encounter
+    if(!empty($id_encounter)){
+        $id_encounter_short = strlen($id_encounter) > 18
+            ? substr($id_encounter, 0, 8).'...'.substr($id_encounter, -6)
+            : $id_encounter;
+        $show_id_encounter = '
+            <a href="javascript:void(0);" class="text-info show_encounter" data-id="'.$id_encounter.'">
+                '.$id_encounter_short.' <i class="bx bx-windows"></i>
+            </a>
+        ';
+    }else{
+        $show_id_encounter = '-';
+    }
+
+    // NRN
+    if(!empty($data['no_resep_nasional'])){
+        $no_resep_nasional = $data['no_resep_nasional'];
+        $no_resep_nasional_short = strlen($no_resep_nasional) > 18
+            ? substr($no_resep_nasional, 0, 8).'...'.substr($no_resep_nasional, -6)
+            : $no_resep_nasional;
+        $show_no_resep_nasional = '
+            <a href="javascript:void(0);" class="text-info show_no_resep_nasional" data-id="'.$no_resep_nasional.'">
+                '.$no_resep_nasional_short.' <i class="bx bx-windows"></i>
+            </a>
+        ';
+    }else{
+        $show_no_resep_nasional = '-';
+    }
+
+    // Document Reference
+    if(!empty($data['id_document_reference'])){
+        $id_document_reference = $data['id_document_reference'];
+        $id_document_reference_short = strlen($id_document_reference) > 18
+            ? substr($id_document_reference, 0, 8).'...'.substr($id_document_reference, -6)
+            : $id_document_reference;
+        $show_document_reference = '
+            <a href="javascript:void(0);" class="text-info show_document_referense" data-id="'.$id_document_reference.'">
+                '.$id_document_reference_short.' <i class="bx bx-windows"></i>
+            </a>
+        ';
+    }else{
+        $show_document_reference = '-';
+    }
 
     // Metadata
     $creat_at       = $data['creat_at'];
@@ -157,6 +201,35 @@
         $updater = $data['update_by_name'];
     }
 
+    // Menghitung jumlah item resep dan item yang sudah dikirim ke SATUSEHAT
+    $jumlah_item_resep          = 0;
+    $jumlah_medication_request  = 0;
+
+    $Qry = $Conn->prepare("
+        SELECT
+            COUNT(*) AS jumlah_item_resep,
+            SUM(
+                CASE
+                    WHEN id_medication_request IS NOT NULL
+                    AND TRIM(id_medication_request) <> ''
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS jumlah_medication_request
+        FROM medication_request
+        WHERE id_medication_request_group = ?
+    ");
+
+    $Qry->bind_param("i", $id_medication_request_group);
+    $Qry->execute();
+
+    $Result = $Qry->get_result();
+    $Data   = $Result->fetch_assoc();
+
+    $jumlah_item_resep         = (int)($Data['jumlah_item_resep'] ?? 0);
+    $jumlah_medication_request = (int)($Data['jumlah_medication_request'] ?? 0);
+
+    $Qry->close();
     // Susun HTML untuk ditampilkan di modal body (FormDetail)
     $html = '
         <input type="hidden" name="id_medication_request_group" value="'.$id_medication_request_group.'">
@@ -186,13 +259,21 @@
         <div class="row mb-2">
             <div class="col-4"><small>Resep Nasional (NRN)</small></div>
             <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$no_resep_nasional.'</small></div>
+            <div class="col-7"><small>'.$show_no_resep_nasional.'</small></div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-4"><small>Document Reference</small></div>
+            <div class="col-1"><small>:</small></div>
+            <div class="col-7"><small>'.$show_document_reference.'</small></div>
         </div>
         <div class="row mb-2">
             <div class="col-4"><small>Status Resep</small></div>
             <div class="col-1"><small>:</small></div>
             <div class="col-7"><small>'.$status_resep.'</small></div>
         </div>
+
+        <hr>
+
         <div class="row mb-2 mt-3">
             <div class="col-12"><small><b>B. Informasi Pasien</b></small></div>
         </div>
@@ -230,6 +311,11 @@
             <div class="col-12"><small><b>C. Informasi Kunjungan</b></small></div>
         </div>
         <div class="row mb-2">
+            <div class="col-4"><small>ID Kunjungan</small></div>
+            <div class="col-1"><small>:</small></div>
+            <div class="col-7"><small>'.$id_kunjungan.'</small></div>
+        </div>
+        <div class="row mb-2">
             <div class="col-4"><small>Tanggal Kunjungan</small></div>
             <div class="col-1"><small>:</small></div>
             <div class="col-7"><small>'.$tanggal_kunjungan.'</small></div>
@@ -242,11 +328,22 @@
         <div class="row mb-2">
             <div class="col-4"><small><i>ID Encounter</i></small></div>
             <div class="col-1"><small>:</small></div>
-            <div class="col-7"><small>'.$id_encounter.'</small></div>
+            <div class="col-7"><small>'.$show_id_encounter.'</small></div>
         </div>
 
+        <hr>
+
         <div class="row mb-2 mt-3">
-            <div class="col-12"><small><b>D. Dokter Pemberi Resep</b></small></div>
+            <div class="col-8">
+                <small><b>D. Dokter Pemberi Resep</b></small>
+            </div>
+            <div class="col-4 text-end">
+                <small>
+                    <a href="javascript:void(0);" class="edit_dokter" data-id="'.$id_medication_request_group.'">
+                        (<i class="bi bi-pencil"></i> Edit)
+                    </a>
+                </small>
+            </div>
         </div>
         <div class="row mb-2">
             <div class="col-4"><small>Kode Dokter</small></div>
@@ -263,9 +360,20 @@
             <div class="col-1"><small>:</small></div>
             <div class="col-7"><small>'.$dokter_ihs.'</small></div>
         </div>
+        
+        <hr>
 
         <div class="row mb-2 mt-3">
-            <div class="col-12"><small><b>E. Informasi Apoteker</b></small></div>
+            <div class="col-8">
+                <small><b>E. Informasi Apoteker</b></small>
+            </div>
+            <div class="col-4 text-end">
+                <small>
+                    <a href="javascript:void(0);" class="edit_apoteker" data-id="'.$id_medication_request_group.'">
+                        (<i class="bi bi-pencil"></i> Edit)
+                    </a>
+                </small>
+            </div>
         </div>
         <div class="row mb-2">
             <div class="col-4"><small>Kode Apoteker</small></div>
@@ -282,6 +390,8 @@
             <div class="col-1"><small>:</small></div>
             <div class="col-7"><small>'.$apoteker_ihs.'</small></div>
         </div>
+
+        <hr>
 
         <div class="row mb-2 mt-3">
             <div class="col-12"><small><b>F. Metadata</b></small></div>
@@ -368,6 +478,35 @@
                 </div>
             </div>
         </div>
+
+        <?php
+
+            // Jika 'jumlah_item_resep' sama dengan 'jumlah_medication_request'
+            if(!empty($jumlah_item_resep)){
+                if($jumlah_item_resep==$jumlah_medication_request){
+
+                    // Cek Apakah Sudah Punya 'id_document_reference'
+                    if(empty($data['id_document_reference'])){
+                        echo '
+                            <button type="button" class="btn btn-lg btn-block text-warning border border-warning border-2 py-3 kirim_document_reference" style="border-style: dashed !important;" data-id="'.$id_medication_request_group.'">
+                                <i class="bi bi-send"></i> Kirim Document Reference
+                            </button>
+                        ';
+                    }else{
+                        $id_document_reference = $data['id_document_reference'];
+                        // Cek Apakah Sudah Punya 'no_resep_nasional'
+                        if(empty($data['no_resep_nasional'])){
+                            echo '
+                                <button type="button" class="btn btn-lg btn-block text-warning border border-warning border-2 py-3 cari_no_resep" style="border-style: dashed !important;" data-id="'.$id_document_reference.'">
+                                    <i class="bi bi-search"></i> Cari NRN
+                                </button>
+                            ';
+                        }
+                    }
+                    
+                }
+            }
+        ?>
 
     </div>
 </div>

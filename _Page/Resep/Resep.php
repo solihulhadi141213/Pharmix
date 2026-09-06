@@ -38,6 +38,10 @@
                                     <i class="bi bi-search"></i>
                                     <span class="visually-hidden">Cari Resep</span>
                                 </button>
+                                <button type="button" class="icon-tambah" id="tombol_cari" data-bs-toggle="modal" data-bs-target="#ModalCariResepByNrn" title="Cari Resep Berdasarkan NRN">
+                                    <i class="bi bi-cloud"></i>
+                                    <span class="visually-hidden">Cari NRN</span>
+                                </button>
                             </div>
                             <h6 class="mb-1">Kelola Resep</h6>
                             <small class="text-muted">
