@@ -154,6 +154,7 @@
             include "_Partial/FooterJs.php";
         ?>
         <script>
+            reloadCaptcha();
             // Fokuskan email ketika halaman siap ditampilkan.
             $(function() {
                 $('#email').trigger('focus');

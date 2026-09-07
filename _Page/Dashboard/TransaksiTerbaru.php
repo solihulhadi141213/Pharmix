@@ -60,14 +60,27 @@
             );
 
             // Subtotal
-            $subtotal = $Data['subtotal'] ?? 0;
+            $subtotal = (float) ($Data['subtotal'] ?? 0);
 
-            $subtotal_rp = 'Rp ' . number_format(
-                $subtotal,
-                0,
-                ',',
-                '.'
-            );
+            $subtotal_absolut = abs($subtotal);
+            $pembagi = 1;
+            $akhiran = '';
+
+            if ($subtotal_absolut >= 1000 && $subtotal_absolut < 1000000) {
+                $pembagi = 1000;
+                $akhiran = 'K';
+            } elseif ($subtotal_absolut >= 1000000 && $subtotal_absolut < 1000000000) {
+                $pembagi = 1000000;
+                $akhiran = 'M';
+            }
+
+            if ($akhiran !== '') {
+                $nominal = rtrim(rtrim(number_format($subtotal / $pembagi, 2, ',', '.'), '0'), ',');
+            } else {
+                $nominal = number_format($subtotal, 0, ',', '.');
+            }
+
+            $subtotal_rp = 'Rp ' . $nominal . $akhiran;
 
             // Kategori Transaksi
             $kategori = $Data['kategori'] ?? '';
@@ -99,7 +112,7 @@
                     <div class="d-flex justify-content-between align-items-center">
 
                         <div class="me-2">
-                            <div class="fw-bold text-dark">
+                            <div class="fw-bold text-dark small">
                                 ' . $nama_barang . '
                             </div>
 
@@ -112,7 +125,7 @@
                         </div>
 
                         <div class="text-end ' . $class_warna . '">
-                            <div class="fw-bold">
+                            <div class="fw-bold small text-nowrap">
                                 <i class="bi ' . $icon . '"></i>
                                 ' . $subtotal_rp . '
                             </div>
