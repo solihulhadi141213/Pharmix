@@ -44,8 +44,9 @@
             "Numerator"             => "_Page/SatuanNumerator/SatuanNumerator.php",
             "Poliklinik"            => "_Page/Poliklinik/Poliklinik.php",
             "Nakes"                 => "_Page/Nakes/Nakes.php",
-            "Medication"                 => "_Page/Medication/Medication.php",
+            "Medication"            => "_Page/Medication/Medication.php",
             "SettingSatuSehat"      => "_Page/SettingSatuSehat/SettingSatuSehat.php",
+            "Bantuan"               => "_Page/Bantuan/Bantuan.php",
             "Error"                 => "_Page/Error/Error.php"
         ];
 
