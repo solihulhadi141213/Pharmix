@@ -11,6 +11,42 @@ function ShowData() {
     });
 }
 
+//---------------------------------------
+//Fungsi Untuk Menampilkan Data Medication
+function ShowMedication() {
+
+    // Target And Filter
+    let target = $('#list_medication');
+    let data   = $('#FilterMedication').serialize();
+
+    target.addClass('blur-loading');
+
+    $.ajax({
+        type    : 'POST',
+        url     : '_Page/Barang/list_medication.php',
+        data    : data,
+        dataType: 'JSON',
+        success : function(res) {
+
+            if(res.status === "success"){
+
+                target.fadeOut(150, function () {
+                    target.html(res.html).fadeIn(150);
+                });
+
+                // Handle tombol
+                $('#prev_button_medication').prop('disabled', res.page <= 1);
+                $('#next_button_medication').prop('disabled', res.page >= res.total_page);
+
+            }else{
+                target.html(res.html);
+            }
+
+            target.removeClass('blur-loading');
+        }
+    });
+}
+
 function formatRupiah(angka) {
     return 'Rp ' + parseFloat(angka).toLocaleString('id-ID', { minimumFractionDigits: 0 });
 }
@@ -1921,4 +1957,316 @@ $('#ModalExportRiwayatTransaksi').on('show.bs.modal', function (e) {
             $('#FormExportRiwayatTransaksi').html(data);
         }
     });
+});
+
+
+//------------------------------------------
+// INDEX MEDICATION
+//------------------------------------------
+$(document).on('shown.bs.modal', '#ModalListMedication', function() {
+    $('#keyword_medication').trigger('focus');
+});
+
+$(document).on('click', '.add_index', function() {
+    
+    // Tangkap id_barang
+    var id_barang = $(this).data('id');
+
+    // Tempelkan id_barang ke filter
+    $('#put_id_barang_into_medication').val(id_barang);
+
+    // Tampilkan Modal
+    $('#ModalListMedication').modal('show');
+
+    // Reset Halaman
+    $('#page_medication').val(1);
+
+    //Reload Data
+    ShowMedication();
+});
+
+// Submit Filter
+$('#FilterMedication').submit(function(){
+
+    // Reset Page
+    $('#page_medication').val("1");
+
+    // Reload Data
+    ShowMedication();
+    
+});
+
+// Pagination - Next
+$(document).on('click', '#next_button_medication', function() {
+    let page_now  = parseInt($('#page_medication').val(), 10) || 1;
+    let next_page = page_now + 1;
+    $('#page_medication').val(next_page);
+    ShowMedication(0);
+});
+
+
+// Pagination - Previous
+$(document).on('click', '#prev_button_medication', function() {
+    let page_now  = parseInt($('#page_medication').val(), 10) || 1;
+    let prev_page = page_now - 1;
+    // Mencegah halaman kurang dari 1
+    if (prev_page < 1) {
+        prev_page = 1;
+    }
+    $('#page_medication').val(prev_page);
+    ShowMedication(0);
+});
+
+// Ketika Index medication dipilih
+$(document).on('click', '.pilih_data_index', function() {
+    
+    // Tangkap id_barang
+    var id_barang           = $(this).data('barang');
+    var id_index_medication = $(this).data('index');
+
+    // Tampilkan Modal
+    $('#ModalKonfirmasiIndex').modal('show');
+
+    // Kosongkan Notifikasi
+    $('#NotifikasiKonfirmasiIndex').html('');
+
+    // Disable Button
+    $('#TombolKonfirmasiIndex').prop('disabled', true);
+
+    // Kirim Kedua Data Dengan AJAX
+    $.ajax({
+        type    : 'POST',
+        url     : '_Page/Barang/FormKonfirmasiIndex.php',
+        data    : {id_barang: id_barang, id_index_medication: id_index_medication},
+        dataType: 'JSON',
+        success : function(response){
+
+            // Status & Message
+            var status  = response.status;
+            var message = response.message;
+
+            // Ketika status 'success'
+            if(status=='success'){
+                var html = response.html;
+                $('#FormKonfirmasiIndex').html(html);
+                $('#TombolKonfirmasiIndex').prop('disabled', false);
+            }else{
+                $('#FormKonfirmasiIndex').html(`
+                    <div class="alert alert-danger text-center">
+                        <small>
+                            <b>Opss!</b><br>
+                            ${message}
+                        </small>
+                    </div>
+                `);
+            }
+        },
+        // Jika Response Bukan JSON Valid
+        error: function(xhr, status, error){
+            // Consol
+            console.log("XHR:", xhr);
+            console.log("STATUS:", status);
+            console.log("ERROR:", error);
+            console.log("RESPONSE:", xhr.responseText);
+
+            // Tampilkan Notifikasi
+            $('#FormKonfirmasiIndex').html(`
+                <div class="alert alert-danger text-center">
+                    <small>
+                        <b>Opss!</b><br>
+                        Terjadi kesalahan server.
+                    </small>
+                </div>
+            `);
+        }
+    });
+    
+});
+
+// Submit konfirmasi index medication
+$(document).on('submit', '#ProsesKonfirmasiIndex', function(e) {
+    e.preventDefault();
+
+    var form = $(this);
+    var tombol = $('#TombolKonfirmasiIndex');
+    var notifikasi = $('#NotifikasiKonfirmasiIndex');
+
+    if (form.data('submitting') || tombol.prop('disabled')) {
+        return;
+    }
+
+    var id_barang = form.find('[name="id_barang"]').val();
+    var id_index_medication = form.find('[name="id_index_medication"]').val();
+    if (!id_barang || !id_index_medication) {
+        notifikasi.empty().append(
+            $('<div class="alert alert-danger mb-0" role="alert"></div>')
+                .text('Pilih barang dan index medication terlebih dahulu.')
+        );
+        return;
+    }
+
+    var labelTombol = tombol.html();
+    var berhasil = false;
+    form.data('submitting', true);
+    notifikasi.empty();
+    tombol.prop('disabled', true).html(
+        '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> Menyimpan...'
+    );
+
+    $.ajax({
+        type    : 'POST',
+        url     : '_Page/Barang/ProsesKonfirmasiIndex.php',
+        data    : form.serialize(),
+        dataType: 'json',
+        success: function(response) {
+            berhasil = !!response && response.status === 'success';
+            var message = response && response.message
+                ? response.message
+                : (berhasil ? 'Index medication berhasil disimpan.' : 'Gagal menyimpan index medication.');
+
+            notifikasi.empty().append(
+                $('<div class="alert mb-0" role="alert"></div>')
+                    .addClass(berhasil ? 'alert-success' : 'alert-danger')
+                    .text(message)
+            );
+
+            if (berhasil) {
+                $('#ModalKonfirmasiIndex').modal('hide');
+                $('#ModalListMedication').modal('hide');
+                ShowData();
+                ShowMedication();
+            }
+        },
+        error: function() {
+            notifikasi.empty().append(
+                $('<div class="alert alert-danger mb-0" role="alert"></div>')
+                    .text('Terjadi kesalahan saat menyimpan index medication. Silakan coba lagi.')
+            );
+        },
+        complete: function() {
+            form.removeData('submitting');
+            tombol.prop('disabled', berhasil).html(labelTombol);
+        }
+    });
+});
+
+
+// Hapus koneksi index medication dari barang.
+$(document).on('click', '.hapus_koneksi_index', function(e) {
+    e.preventDefault();
+    var tombol = $(this);
+    if (tombol.prop('disabled')) {
+        return;
+    }
+
+    var labelTombol = tombol.html();
+    var notifikasi = $('#NotifikasiHapusIndex');
+    if (!notifikasi.length) {
+        notifikasi = $('<div id="NotifikasiHapusIndex" class="mt-3" role="alert"></div>');
+        tombol.after(notifikasi);
+    }
+    notifikasi.empty();
+    tombol.prop('disabled', true).html(
+        '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> Menghapus...'
+    );
+
+    var berhasil = false;
+    $.ajax({
+        type: 'POST',
+        url: '_Page/Barang/ProsesHapusIndex.php',
+        data: {id_barang: tombol.data('id')},
+        dataType: 'json',
+        success: function(response) {
+            berhasil = !!response && response.status === 'success';
+            if (berhasil) {
+                $('#ModalDetailIndex').modal('hide');
+                ShowData();
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    text: response.message || 'Koneksi index medication berhasil dihapus.',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            } else {
+                notifikasi.append(
+                    $('<div class="alert alert-danger mb-0"></div>').text(
+                        (response && response.message) || 'Gagal menghapus koneksi index.'
+                    )
+                );
+            }
+        },
+        error: function() {
+            notifikasi.append(
+                $('<div class="alert alert-danger mb-0"></div>')
+                    .text('Terjadi kesalahan saat menghapus koneksi index. Silakan coba lagi.')
+            );
+        },
+        complete: function() {
+            tombol.prop('disabled', berhasil).html(labelTombol);
+        }
+    });
+});
+
+// Ketika 'detail_index' Di click
+$(document).on('click', '.detail_index', function() {
+    
+    // Tangkap id_barang
+    var id_barang           = $(this).data('id');
+
+    // Tampilkan Modal 'ModalDetailIndex'
+    $('#ModalDetailIndex').modal('show');
+
+    // Kosongkan 'FormDetailIndex'
+    $('#FormDetailIndex').html('');
+
+    // Kirim Kedua Data Dengan AJAX
+    $.ajax({
+        type    : 'POST',
+        url     : '_Page/Barang/FormDetailIndex.php',
+        data    : {id_barang: id_barang},
+        dataType: 'JSON',
+        success : function(response){
+
+            // Status & Message
+            var status  = response.status;
+            var message = response.message;
+            var html    = response.html;
+
+            // Ketika status 'success'
+            if(status=='success'){
+                $('#FormDetailIndex').html(html);
+            }else{
+                $('#FormDetailIndex').html(`
+                    <div class="alert alert-danger text-center">
+                        <small>
+                            <b>Opss!</b><br>
+                            ${message}
+                        </small>
+                    </div>
+                `);
+            }
+        },
+        // Jika Response Bukan JSON Valid
+        error: function(xhr, status, error){
+            // Consol
+            console.log("XHR:", xhr);
+            console.log("STATUS:", status);
+            console.log("ERROR:", error);
+            console.log("RESPONSE:", xhr.responseText);
+
+            // Tampilkan Notifikasi
+            $('#FormDetailIndex').html(`
+                <div class="alert alert-danger text-center">
+                    <small>
+                        <b>Opss!</b><br>
+                        Terjadi kesalahan server.
+                    </small>
+                </div>
+            `);
+        }
+    });
+    
 });

@@ -1319,3 +1319,116 @@
         </form>
     </div>
 </div>
+
+<div class="modal fade" id="ModalListMedication" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                    <h5 class="modal-title text-dark">
+                        <i class="bi bi-qr-code-scan"></i> List Index Medication
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <form action="javascript:void(0);" id="FilterMedication">
+                                <input type="hidden" name="page_medication" id="page_medication" value="1">
+                                <input type="hidden" name="id_barang" id="put_id_barang_into_medication">
+                                <div class="input-group">
+                                    <input type="text" name="keyword_medication" id="keyword_medication" class="form-control" placeholder="Code/Name Medication">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-search"></i> Cari
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row mt-3 mb-3">
+                        <div class="col-12" id="list_medication">
+                            <div class="alert alert-warning text-center">
+                                <h1 class="bi bi-usb-drive"></h1>
+                                Belum Ada Data Yang Ditampilkan.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3 mb-3">
+                        <div class="col-12 text-center">
+                            <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button_medication">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+                            <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button_medication">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalKonfirmasiIndex" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content bg-secondary">
+            <form action="javascript:void(0);" id="ProsesKonfirmasiIndex">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">
+                        <i class="bi bi-download"></i> Konfirmasi Index
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-12" id="FormKonfirmasiIndex">
+                            <!-- Form -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12" id="NotifikasiKonfirmasiIndex">
+                            <!-- Notifikasi  -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-md btn-primary btn-rounded" id="TombolKonfirmasiIndex">
+                        <i class="bi bi-save"></i> Simpan
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalDetailIndex" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark">
+                    <i class="bi bi-info-circle"></i> Detail Index
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-2">
+                    <div class="col-12" id="FormDetailIndex">
+                        <!-- Form -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

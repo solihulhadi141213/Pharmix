@@ -85,13 +85,14 @@
                                         <th><b>Kategori</b></th>
                                         <th><b>QTY</b></th>
                                         <th><b>Satuan</b></th>
-                                        <th><b>Harga Pokok</b></th>
+                                        <th><b>HPP</b></th>
+                                        <th><b>Index</b></th>
                                         <th><b>Opsi</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="TabelBarang">
                                     <tr>
-                                        <td colspan="8" class="text-center text-danger">
+                                        <td colspan="9" class="text-center text-danger">
                                             Tidak Ada Data yang Ditampilkan
                                         </td>
                                     </tr>

@@ -98,9 +98,34 @@
                 $satuan_barang   = $data['satuan_barang'];
                 $konversi        = $data['konversi'];
                 $harga_beli      = $data['harga_beli'];
+                $id_index_medication      = $data['id_index_medication'];
                 $harga_beli_rp   = "Rp " . number_format($harga_beli,0,',','.');
                 $stok_barang     = $data['stok_barang'];
                 $stok_barang_rp  = "" . number_format($stok_barang,0,',','.');
+
+                // Membuka data index medis
+                if(!empty($data['id_index_medication'])){
+                    $id_medication = GetDetailData($Conn, 'medication', 'id_index_medication', $id_index_medication, 'id_medication');
+                    $id_medication = trim((string) $id_medication);
+                    $id_medication_ringkas = mb_strlen($id_medication, 'UTF-8') > 20
+                        ? mb_substr($id_medication, 0, 16, 'UTF-8') . '...'
+                        : $id_medication;
+                    $id_medication_lengkap = htmlspecialchars($id_medication, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                    $id_medication_ringkas = htmlspecialchars($id_medication_ringkas, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                    $index_medis = '
+                        <a href="javascript:void(0);" class="text-info text-nowra detail_index" data-id="'.$id_barang.'" title="'.$id_medication_lengkap.'">
+                            '.$id_medication_ringkas.' <i class="bx bx-windows"></i>
+                        </a>
+                    ';
+                }else{
+                    $index_medis = '
+                        <a href="javascript:void(0);" class="text-danger add_index" data-id="'.$id_barang.'">
+                            <i class="bi bi-plus-lg"></i> Add Index
+                        </a>
+                    ';
+                }
+               
+                
                 echo '
                     <tr>
                         <td><small>'.$no.'</small></td>
@@ -118,6 +143,7 @@
                         <td><small class="text text-muted">'.$stok_barang_rp.'</small></td>
                         <td><small class="text text-muted">'.$satuan_barang.'</small></td>
                         <td><small class="text text-muted">'.$harga_beli_rp.'</small></td>
+                        <td><small>'.$index_medis.'</small></td>
                         <td>
                             <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-three-dots-vertical"></i>
