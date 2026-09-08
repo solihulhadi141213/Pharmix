@@ -77,3 +77,44 @@ function showToast(type, title, message) {
 
     bsToast.show();
 }
+
+// ============================================================
+// GLOBAL TABLE LOADING
+// ============================================================
+function tableLoading(tableSelector, status = true, message = 'Memuat data...') {
+    const table     = $(tableSelector);
+    const container = table.closest('.table-load-container');
+
+    if (!table.length || !container.length) {
+        return;
+    }
+
+    if (!container.find('.table-loading-overlay').length) {
+        container.append(`
+            <div class="table-loading-overlay">
+                <div class="table-loading-content">
+                    <div class="spinner-border spinner-border-sm text-primary"></div>
+                    <span class="ms-2 table-loading-message"></span>
+                </div>
+            </div>
+        `);
+    }
+
+    container
+        .find('.table-loading-message')
+        .text(message);
+
+    container
+        .toggleClass('table-loading', status)
+        .attr('aria-busy', status ? 'true' : 'false');
+}
+
+// ============================================================
+// SCROLL TOP
+// ============================================================
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}

@@ -8,11 +8,11 @@
     date_default_timezone_set("Asia/Jakarta");
     header('Content-Type: application/json; charset=utf-8');
 
-    function prosesEditResponse($status, $message)
-    {
+    function prosesEditResponse($status, $message, $id_anggota){
         echo json_encode([
             'status'  => $status,
-            'message' => $message
+            'message' => $message,
+            'id_anggota' => $id_anggota,
         ], JSON_UNESCAPED_UNICODE);
         exit;
     }
@@ -179,10 +179,5 @@
     $affectedRows = mysqli_stmt_affected_rows($stmt);
     mysqli_stmt_close($stmt);
 
-    prosesEditResponse(
-        'success',
-        $affectedRows > 0
-            ? 'Data pasien berhasil diperbarui.'
-            : 'Data pasien tidak mengalami perubahan.'
-    );
+    prosesEditResponse('success',$affectedRows > 0 ? 'Data pasien berhasil diperbarui.' : 'Data pasien tidak mengalami perubahan.', $id_anggota);
 ?>

@@ -2,16 +2,185 @@
 // -------------------------------------------------
 // FUNCTION
 // -------------------------------------------------
+// Responsive Table
+function initResponsiveTable(selector = '.table-responsive-card') {
+    $(selector).each(function() {
+        const table  = $(this);
+        const labels = [];
 
-//Fungsi Untuk Menampilkan Data Anggota
+        table.find('thead th').each(function() {
+            labels.push($(this).text().trim());
+        });
+
+        table.find('tbody tr').each(function() {
+            const row   = $(this);
+            const cells = row.find('td');
+
+            // Baris kosong atau menggunakan colspan
+            if (cells.length === 1 && cells.first().is('[colspan]')) {
+                row.addClass('table-empty');
+                cells.first().removeAttr('data-label');
+                return;
+            }
+
+            row.removeClass('table-empty');
+
+            cells.each(function(index) {
+                $(this).attr('data-label', labels[index] || '');
+            });
+        });
+    });
+}
+
+
+//Fungsi Untuk Menampilkan Data Pasien
+// ============================================================
+// MENAMPILKAN DATA PASIEN
+// ============================================================
 function filterAndLoadTable() {
-    var ProsesFilter = $('#ProsesFilter').serialize();
+    const ProsesFilter = $('#ProsesFilter').serialize();
+
     $.ajax({
         type: 'POST',
         url: '_Page/Pasien/TabelPasien.php',
         data: ProsesFilter,
+
+        beforeSend: function() {
+            tableLoading('#tabel_pasien', true);
+        },
+
         success: function(data) {
             $('#TabelPasien').html(data);
+            initResponsiveTable('#tabel_pasien');
+        },
+
+        error: function() {
+            $('#TabelPasien').html(`
+                <tr class="table-empty">
+                    <td colspan="9" class="text-center text-danger">
+                        Gagal memuat data pasien
+                    </td>
+                </tr>
+            `);
+        },
+
+        complete: function() {
+            tableLoading('#tabel_pasien', false);
+        }
+    });
+}
+
+// Fungsi ShowDetailPasien
+function ShowDetailPasien(id_anggota){
+    $('#detail_view').html('Loading...');
+
+    $.ajax({
+        type    : 'POST',
+        url     : '_Page/Pasien/_DetailPasien.php',
+        data    : {id_anggota: id_anggota},
+        success : function(data){
+            $('#detail_view').html(data);
+            RiwayatKunjungan();
+            RiwayatResep();
+            RiwayatTransaksi();
+        },
+        error : function(xhr){
+            console.log(xhr.responseText);
+            $('#detail_view').html(
+                '<div class="alert alert-danger">' +
+                    '<small>Terjadi kesalahan saat membuka detail pasien.</small>' +
+                '</div>'
+            );
+        }
+    });
+
+}
+// Riwayat Kunjungan pasien
+function RiwayatKunjungan() {
+    
+    if (!$('#FilterKunjungan').length) return;
+
+    // Target And Filter
+    let target = $('#riwayat_kunjungan');
+    let data   = $('#FilterKunjungan').serialize();
+
+    target.addClass('blur-loading');
+
+    $.ajax({
+        type    : 'POST',
+        url     : '_Page/Pasien/TabelKunjungan.php',
+        data    : data,
+        dataType: 'JSON',
+        success : function(res) {
+
+            if(res.status === "success"){
+
+                target.fadeOut(150, function () {
+                    target.html(res.html).fadeIn(150);
+                });
+
+                // Handle tombol
+                $('#page_kunjungan').val(res.page);
+                $('#page_info_kunjungan').html('Page ' + res.page + ' Of ' + res.total_page);
+                $('#prev_button_kunjungan').prop('disabled', res.page <= 1);
+                $('#next_button_kunjungan').prop('disabled', res.page >= res.total_page);
+
+            }else{
+                target.html(res.html);
+                $('#page_info_kunjungan').text('Page 1 Of 1');
+                $('#prev_button_kunjungan, #next_button_kunjungan').prop('disabled', true);
+            }
+        },
+        error: function() {
+            target.html('<div class="alert alert-danger"><small>Gagal memuat riwayat kunjungan. Silakan coba lagi.</small></div>');
+        },
+        complete: function() {
+            target.removeClass('blur-loading');
+        }
+    });
+}
+
+function RiwayatResep() {
+    loadRiwayatPasien('Resep');
+}
+
+function RiwayatTransaksi() {
+    loadRiwayatPasien('Transaksi');
+}
+
+function loadRiwayatPasien(jenis) {
+    var key = jenis.toLowerCase();
+    var form = $('#Filter' + jenis);
+    if (!form.length) return;
+    var target = $('#riwayat_' + key);
+    if (target.data('loading')) return;
+    var prev = $('#prev_button_' + key);
+    var next = $('#next_button_' + key);
+    var pageInput = $('#page_' + key);
+    var pageInfo = $('#page_info_' + key);
+    target.data('loading', true).addClass('blur-loading');
+    prev.add(next).prop('disabled', true);
+    $.ajax({
+        type: 'POST',
+        url: '_Page/Pasien/Tabel' + jenis + '.php',
+        data: form.serialize(),
+        dataType: 'json',
+        success: function(res) {
+            target.html(res.html);
+            pageInput.val(res.page);
+            pageInfo.text('Page ' + res.page + ' Of ' + res.total_page);
+            if (res.status === 'success') {
+                prev.prop('disabled', res.page <= 1);
+                next.prop('disabled', res.page >= res.total_page);
+            }
+        },
+        error: function() {
+            target.html('<div class="alert alert-danger"><small>Gagal memuat riwayat ' + key + '. Silakan coba lagi.</small></div>');
+            pageInfo.text('Page 1 Of 1');
+            pageInput.val(1);
+        },
+        complete: function() {
+            target.data('loading', false).removeClass('blur-loading');
         }
     });
 }
@@ -38,7 +207,24 @@ $(document).ready(function() {
     $('#detail_view').hide();
 
     // Menampilkan Data Pertama Kali
+    initResponsiveTable('#tabel_pasien');
     filterAndLoadTable();
+
+    $(document).on('click', '#prev_button_kunjungan, #next_button_kunjungan', function () {
+        var page = parseInt($('#page_kunjungan').val(), 10) || 1;
+        $('#page_kunjungan').val(Math.max(1, page + (this.id === 'next_button_kunjungan' ? 1 : -1)));
+        RiwayatKunjungan();
+    });
+
+    // Form Filter
+    $(document).on('click', '#prev_button_resep, #next_button_resep, #prev_button_transaksi, #next_button_transaksi', function () {
+        var key = this.id.endsWith('_resep') ? 'resep' : 'transaksi';
+        if ($('#riwayat_' + key).data('loading')) return;
+        var input = $('#page_' + key);
+        var page = parseInt(input.val(), 10) || 1;
+        input.val(Math.max(1, page + (this.id.startsWith('next_') ? 1 : -1)));
+        loadRiwayatPasien(key === 'resep' ? 'Resep' : 'Transaksi');
+    });
 
     // Form Filter
     $('#keyword_by').change(function(){
@@ -64,12 +250,14 @@ $(document).ready(function() {
         var next_page = page_now + 1;
         $('#page').val(next_page);
         filterAndLoadTable(0);
+        scrollToTop();
     });
     $(document).on('click', '#prev_button', function() {
         var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
         var next_page = page_now - 1;
         $('#page').val(next_page);
         filterAndLoadTable(0);
+        scrollToTop();
     });
 
     // --------------------------------------------------------------
@@ -314,6 +502,7 @@ $(document).ready(function() {
 
                     // Reload tabel
                     filterAndLoadTable();
+                    ShowDetailPasien(response.id_anggota);
 
                     // Notifikasi berhasil
                     Swal.fire({
@@ -405,8 +594,9 @@ $(document).ready(function() {
                     // Tutup modal
                     $('#ModalDelete').modal('hide');
 
-                    // Kembali ke halaman pertama
-                    $('#page').val('1');
+                    // Pindah ke detail
+                    $('#table_view').show();
+                    $('#detail_view').hide();
 
                     // Reload tabel
                     filterAndLoadTable();
@@ -452,27 +642,7 @@ $(document).ready(function() {
     // HANDLE DETAIL PASIEN
     // =========================================================
 
-    // Fungsi ShowDetailPasien
-    function ShowDetailPasien(id_anggota){
-        $('#detail_view').html('Loading...');
-
-        $.ajax({
-            type    : 'POST',
-            url     : '_Page/Pasien/_DetailPasien.php',
-            data    : {id_anggota: id_anggota},
-            success : function(data){
-                $('#detail_view').html(data);
-            },
-            error : function(xhr){
-                console.log(xhr.responseText);
-                $('#detail_view').html(
-                    '<div class="alert alert-danger">' +
-                        '<small>Terjadi kesalahan saat membuka detail pasien.</small>' +
-                    '</div>'
-                );
-            }
-        });
-    }
+    
     // Modal Detail
     $('#ModalDetail').on('show.bs.modal', function (e) {
         const id_anggota = $(e.relatedTarget).data('id');

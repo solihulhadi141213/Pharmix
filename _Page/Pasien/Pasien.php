@@ -8,7 +8,7 @@
     <div class="pagetitle">
         <h1>
             <a href="">
-                <i class="bi bi-people"></i> Pasien</a>
+                <i class="bi bi-people"></i> Pasien
             </a>
         </h1>
         <nav>
@@ -39,31 +39,32 @@
                             </div>
                         </form>
                     </div>
-                    <div class="card-body">
-                        <div class="table table-responsive mt-3">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th><b>No</b></th>
-                                        <th><b>RM</b></th>
-                                        <th><b>Nama</b></th>
-                                        <th><b>L/P</b></th>
-                                        <th><b>NIK</b></th>
-                                        <th><b>Kontak</b></th>
-                                        <th><b>Tgl.Daftar</b></th>
-                                        <th><b>IHS</b></th>
-                                        <th><b>Opsi</b></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="TabelPasien">
-                                    <tr>
-                                        <td colspan="9" class="text-center">No Data</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-load-container mt-3">
+                        <table class="table table-hover table-responsive-card" id="tabel_pasien">
+                            <thead>
+                                <tr>
+                                    <th><b>No</b></th>
+                                    <th><b>RM</b></th>
+                                    <th><b>Nama</b></th>
+                                    <th><b>L/P</b></th>
+                                    <th><b>NIK</b></th>
+                                    <th><b>Kontak</b></th>
+                                    <th><b>Tgl. Daftar</b></th>
+                                    <th><b>IHS</b></th>
+                                    <th><b>Opsi</b></th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="TabelPasien">
+                                <tr class="table-empty">
+                                    <td colspan="9" class="text-center">
+                                        Tidak ada data
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer border-0">
                         <div class="row">
                             <div class="col-6">
                                 <small id="page_info">
@@ -83,11 +84,12 @@
                 </div>
             </div>
         </div>
-
-        <!-- Tampilan Detail -->
-        <div class="row">
-            <div class="col-12" id="detail_view">
-                <!-- Form Detail Pasien -->
+        <div id="detail_view">
+            <!-- Tampilan Detail -->
+            <div class="row">
+                <div class="col-12" >
+                    <!-- Form Detail Pasien -->
+                </div>
             </div>
         </div>
     </section>

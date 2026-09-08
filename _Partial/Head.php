@@ -1,7 +1,7 @@
 <?php
     // Menentukan environment
-    $environment = "Production"; // Bernilai Production OR Development
-    if($environment=="Development"){
+    $environment = "Development"; // Bernilai Production OR Development
+    if($environment=="Production"){
         $lib_version = "";
     }else{
         $lib_version = date('YmdHis');
@@ -9,7 +9,7 @@
 
     // Menentukan Judul Halaman Berdasarkan Fitur
     if(empty($_GET['Page'])){
-        $subtitle = $title_page;
+        $subtitle = "$title_page | DASHBOARD";
     }else{
         $Page=$_GET['Page'];
         //Index Halaman
@@ -20,10 +20,10 @@
             "Pasien"                => "Master Pasien",
             "JenisTransaksi"        => "Kategori Operasional",
             "Transaksi"             => "Transaksi Operasional",
-            "RekapTransaksi"        => "Rekapitulasi Transaksi Operasional",
+            "RekapTransaksi"        => "Rekapitulasi Operasional",
             "Penjualan"             => "Transaksi Penjualan",
             "Pembelian"             => "Transaksi Pembelian",
-            "RekapJualBeli"         => "Rekapitulasi Transaksi",
+            "RekapJualBeli"         => "Rekapitulasi Jual/Beli",
             "SettingGeneral"        => "Setting General",
             "UtangPiutang"          => "Utang-Piutang",
             "Barang"                => "Master Barang",
@@ -40,8 +40,19 @@
             "BukuBesar"             => "Buku Besar",
             "NeracaSaldo"           => "Neraca Saldo",
             "LabaRugi"              => "Laba Rugi",
-            "RekapitulasiTransaksi" => "Rekapitulasi Transaksi",
-            "CetakInvoice"          => "Cetak Invoice",
+            "RekapitulasiTransaksi" => "Rekapitulasi Jual/Beli",
+            "Medication"            => "Index Obat & Alkes",
+            "Kunjungan"             => "Kunjungan",
+            "Bantuan"               => "Bantuan",
+            "Resep"                 => "Resep",
+            "SettingSatuSehat"      => "Setting Satusehat",
+            "Route"                 => "Route",
+            "Sediaan"               => "Sediaan",
+            "SatuanDosis"           => "Satuan Dosis",
+            "Denominator"           => "Denominator",
+            "Numerator"             => "Numerator",
+            "Poliklinik"            => "Poliklinik",
+            "Nakes"                 => "Nakes",
             "Error"                 => "Error"
         ];
 
@@ -52,7 +63,7 @@
         if (array_key_exists($Page, $page_arry)) { 
             $subtitle = $page_arry[$Page]; 
         } else { 
-            $subtitle = $title_page;
+            $subtitle = "$title_page | DASHBOARD";
         }
     }
 ?>

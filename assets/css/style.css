@@ -2805,3 +2805,186 @@ textarea.form-control[readonly]:focus {
     page-break-inside: avoid;
     break-inside: avoid;
 }
+
+/* ============================================================
+  RESPONSIVE TABLE TO CARD
+  ============================================================ */
+@media (max-width: 767.98px) {
+    .table-responsive {
+        overflow-x: visible;
+    }
+
+    .table-responsive-card {
+        border: 0;
+    }
+
+    .table-responsive-card thead {
+        display: none;
+    }
+
+    .table-responsive-card tbody,
+    .table-responsive-card tr,
+    .table-responsive-card td {
+        display: block;
+        width: 100%;
+    }
+
+    .table-responsive-card tbody {
+        padding: 0.25rem;
+    }
+
+    .table-responsive-card tr {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        background: var(--bs-body-bg);
+        border: 1px solid var(--bs-border-color);
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+
+    .table-responsive-card td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 0.5rem 0;
+        text-align: right;
+        background: transparent;
+        border: 0;
+        border-bottom: 1px dashed var(--bs-border-color);
+    }
+
+    .table-responsive-card td:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+    .table-responsive-card td::before {
+        content: attr(data-label);
+        flex: 0 0 40%;
+        color: var(--bs-secondary-color);
+        font-weight: 600;
+        text-align: left;
+    }
+
+    /* Label kolom menjadi header kartu pada layar kecil. */
+    html.dark-mode .table-responsive-card,
+    body.dark-mode .table-responsive-card {
+        --bs-body-bg: #1e293b;
+        --bs-border-color: #334155;
+        --bs-secondary-color: #cbd5e1;
+        --bs-table-bg: #1e293b;
+        --bs-table-color: #cbd5e1;
+        --bs-table-hover-bg: #334155;
+        --bs-table-hover-color: #f8fafc;
+        --bs-table-striped-bg: #253247;
+        --bs-table-striped-color: #cbd5e1;
+    }
+
+    html.dark-mode .table-responsive-card td::before,
+    body.dark-mode .table-responsive-card td::before {
+        color: #f8fafc;
+    }
+
+    .table-responsive-card td[data-label="Nama"] {
+        font-weight: 600;
+    }
+
+    .table-responsive-card td[data-label="Opsi"] {
+        align-items: center;
+    }
+
+    /* Baris kosong */
+    .table-responsive-card tr.table-empty {
+        display: block;
+    }
+
+    .table-responsive-card tr.table-empty td {
+        display: block;
+        padding: 1rem;
+        text-align: center;
+        border: 0;
+    }
+
+    .table-responsive-card tr.table-empty td::before {
+        display: none;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .table-responsive-card tr.table-empty {
+        display: block;
+    }
+
+    .table-responsive-card tr.table-empty td {
+        display: block;
+        text-align: center;
+        border: 0;
+    }
+
+    .table-responsive-card tr.table-empty td::before {
+        display: none;
+    }
+}
+
+/* ============================================================
+   GLOBAL TABLE LOADING
+   ============================================================ */
+.table-load-container {
+    position: relative;
+}
+
+.table-load-container table {
+    transition:
+        filter 180ms ease-out,
+        opacity 180ms ease-out;
+}
+
+.table-load-container.table-loading table {
+    filter: blur(2px);
+    opacity: 0.55;
+    pointer-events: none;
+    user-select: none;
+}
+
+.table-loading-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    background: rgba(var(--bs-body-bg-rgb), 0.15);
+    opacity: 0;
+    transition:
+        opacity 180ms ease-out,
+        visibility 0s linear 180ms;
+}
+
+.table-load-container.table-loading .table-loading-overlay {
+    visibility: visible;
+    opacity: 1;
+    transition:
+        opacity 180ms ease-out,
+        visibility 0s;
+}
+
+.table-loading-content {
+    display: flex;
+    align-items: center;
+    padding: 0.65rem 0.85rem;
+    color: var(--bs-body-color);
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.12);
+}
+
+/* Kurangi animasi jika pengguna mengaktifkan reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .table-load-container table,
+    .table-loading-overlay {
+        transition: none;
+    }
+}
