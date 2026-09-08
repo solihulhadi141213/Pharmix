@@ -21,8 +21,10 @@
         <div class="col-12">
             <div class="card" id="card_jam_menarik">
                 <div class="card-body">
-                    <div id="tanggal_menarik">Hari, 01 Januari 1900</div>
-                    <div id="jam_menarik">00:00:00</div>
+                    <div class="dashboard-clock">
+                        <div id="tanggal_menarik">Hari, 01 Januari 1900</div>
+                        <div id="jam_menarik">00:00:00</div>
+                    </div>
                     <div class="dashboard-quick-actions">
                         <a class="dashboard-quick-action" href="index.php?Page=Penjualan&Sub=TambahPenjualan&retur=Tidak">
                             <i class="bi bi-cart-dash" aria-hidden="true"></i>
@@ -43,10 +45,95 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="row">
+
                         <div class="col-xxl-3 col-md-12 col-12">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Inventaris</h5>
+                                    <h5 class="card-title">
+                                        <a href="index.php?Page=Medication">
+                                            Index Obat/Alkes <i class="bi bi-arrow-up-right-square"></i>
+                                        </a>
+                                    </h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-capsule-pill"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h2 class="text-muted fw-bold" id="put_count_medication">0.000</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xxl-3 col-md-12 col-12">
+                            <div class="card info-card sales-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="index.php?Page=Pasien">
+                                            Pasien <i class="bi bi-arrow-up-right-square"></i>
+                                        </a>
+                                    </h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-people"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h2 class="text-muted fw-bold" id="put_count_pasien">0.000</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xxl-3 col-md-12 col-12">
+                            <div class="card info-card sales-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="index.php?Page=Kunjungan">
+                                            Kunjungan <i class="bi bi-arrow-up-right-square"></i>
+                                        </a>
+                                    </h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-activity"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h2 class="text-muted fw-bold" id="put_count_kunjungan">0.000</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xxl-3 col-md-12 col-12">
+                            <div class="card info-card sales-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="index.php?Page=Resep">
+                                            Resep <i class="bi bi-arrow-up-right-square"></i>
+                                        </a>
+                                    </h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-receipt"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h2 class="text-muted fw-bold" id="put_count_resep">0.000</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xxl-3 col-md-12 col-12">
+                            <div class="card info-card sales-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="index.php?Page=Barang">
+                                            Inventaris / Barang <i class="bi bi-arrow-up-right-square"></i>
+                                        </a>
+                                    </h5>
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-box"></i>
@@ -63,7 +150,11 @@
                         <div class="col-xxl-3 col-md-12 col-12">
                             <div class="card info-card purple-card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Penjualan</h5>
+                                    <h5 class="card-title">
+                                        <a href="index.php?Page=Penjualan">
+                                            Penjualan <i class="bi bi-arrow-up-right-square"></i>
+                                        </a>
+                                    </h5>
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-cart-dash"></i>
@@ -85,7 +176,11 @@
                         <div class="col-xxl-3 col-md-12 col-12">
                             <div class="card info-card customers-card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Pembelian</h5>
+                                    <h5 class="card-title">
+                                        <a href="index.php?Page=Pembelian">
+                                            Pembelian <i class="bi bi-arrow-up-right-square"></i>
+                                        </a>
+                                    </h5>
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-cart-plus"></i>
@@ -107,7 +202,11 @@
                         <div class="col-xxl-3 col-md-12 col-12">
                             <div class="card info-card transsaction-card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Operasional</h5>
+                                    <h5 class="card-title">
+                                        <a href="index.php?Page=Transaksi">
+                                            Operasional <i class="bi bi-arrow-up-right-square"></i>
+                                        </a>
+                                    </h5>
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-arrow-left-right"></i>
@@ -179,7 +278,11 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12">
-                                    <b class="card-title">Segera Expire</b>
+                                    <b class="card-title">
+                                        <a href="index.php?Page=BarangExpired">
+                                            Segera Expire <i class="bi bi-arrow-up-right-square"></i>
+                                        </a>
+                                    </b>
                                 </div>
                             </div>
                         </div>
@@ -198,7 +301,11 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12">
-                                    <b class="card-title">Segera Habis</b>
+                                    <b class="card-title">
+                                        <a href="index.php?Page=Barang">
+                                            Segera Habis <i class="bi bi-arrow-up-right-square"></i>
+                                        </a>
+                                    </b>
                                 </div>
                             </div>
                         </div>
@@ -217,7 +324,11 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12">
-                                    <b class="card-title">Jatuh Tempo</b>
+                                    <b class="card-title">
+                                        <a href="index.php?Page=UtangPiutang">
+                                            Jatuh Tempo <i class="bi bi-arrow-up-right-square"></i>
+                                        </a>
+                                    </b>
                                 </div>
                             </div>
                         </div>

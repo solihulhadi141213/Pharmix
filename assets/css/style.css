@@ -1884,25 +1884,31 @@ body .title_page_app {
 #card_jam_menarik .card-body {
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 12px;
+  text-align: center;
 }
 
 #tanggal_menarik {
-  font-size: 1.2rem;
+  font-size: clamp(0.95rem, 3vw, 1.2rem);
   color: #fff;
-  margin-bottom: 10px;
-  padding: 5px 10px;
+  margin-bottom: 6px;
   border-radius: 4px;
-  display: inline-block;
+  display: block;
 }
 
 #jam_menarik {
-  font-size: 2rem;
+  font-size: clamp(2.5rem, 10vw, 3.5rem);
   font-weight: bold;
   color: #fff;
   letter-spacing: 2px;
-  padding: 10px 20px;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
   border-radius: 6px;
-  display: inline-block;
+  display: block;
 }
 
 @media (min-width: 768px) {
@@ -1921,16 +1927,20 @@ body .title_page_app {
 
 .dashboard-quick-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 10px;
-  margin-top: 8px;
+  width: 100%;
+  justify-content: center;
 }
 
 .dashboard-quick-action {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
   gap: 8px;
-  padding: 9px 15px;
+  padding: 10px;
   border: 1px solid rgba(255, 255, 255, 0.75);
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.16);
@@ -1952,10 +1962,22 @@ body .title_page_app {
   font-size: 1rem;
 }
 
-@media (max-width: 575px) {
-  .dashboard-quick-action {
-    flex: 1 1 130px;
-    justify-content: center;
+@media (min-width: 992px) {
+  #card_jam_menarik .card-body {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+    padding: 16px 20px;
+  }
+
+  #card_jam_menarik .dashboard-quick-actions {
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  #card_jam_menarik .dashboard-quick-action {
+    flex: 0 0 auto;
+    padding: 12px 20px;
   }
 }
 

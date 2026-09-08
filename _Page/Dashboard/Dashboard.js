@@ -1,3 +1,80 @@
+// Fungsi Untuk Menampilkan Jumlah Medication
+function CountMedication() {
+    $.ajax({
+        type: 'POST',
+        url: '_Page/Dashboard/CountMedication.php',
+        dataType: "json",
+        success: function(response) {
+            if (response.status == "Success") {
+                $('#put_count_medication').hide().html(response.count_medication).fadeIn(500);
+            } else {
+                $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>' + response.message + '</small></div>').fadeIn(500);
+            }
+        },
+        error: function() {
+            $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>Terjadi Kesalahan Pada Sistem Saat Menghitung Barang!</small></div>').fadeIn(500);
+        },
+    });
+}
+
+// Fungsi Untuk Menampilkan Jumlah Pasien
+function CountPasien() {
+    $.ajax({
+        type: 'POST',
+        url: '_Page/Dashboard/CountPasien.php',
+        dataType: "json",
+        success: function(response) {
+            if (response.status == "Success") {
+                $('#put_count_pasien').hide().html(response.count_pasien).fadeIn(500);
+            } else {
+                $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>' + response.message + '</small></div>').fadeIn(500);
+            }
+        },
+        error: function() {
+            $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>Terjadi Kesalahan Pada Sistem Saat Menghitung Barang!</small></div>').fadeIn(500);
+        },
+    });
+}
+
+
+// Fungsi Untuk Menampilkan Jumlah Kunjungan
+function CountKunjungan() {
+    $.ajax({
+        type: 'POST',
+        url: '_Page/Dashboard/CountKunjungan.php',
+        dataType: "json",
+        success: function(response) {
+            if (response.status == "Success") {
+                $('#put_count_kunjungan').hide().html(response.count_kunjungan).fadeIn(500);
+            } else {
+                $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>' + response.message + '</small></div>').fadeIn(500);
+            }
+        },
+        error: function() {
+            $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>Terjadi Kesalahan Pada Sistem Saat Menghitung Barang!</small></div>').fadeIn(500);
+        },
+    });
+}
+
+// Fungsi Untuk Menampilkan Jumlah Resep
+function CountResep() {
+    $.ajax({
+        type: 'POST',
+        url: '_Page/Dashboard/CountResep.php',
+        dataType: "json",
+        success: function(response) {
+            if (response.status == "Success") {
+                $('#put_count_resep').hide().html(response.count_resep).fadeIn(500);
+            } else {
+                $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>' + response.message + '</small></div>').fadeIn(500);
+            }
+        },
+        error: function() {
+            $('#notifikasi_proses').hide().html('<div class="alert alert-danger"><small>Terjadi Kesalahan Pada Sistem Saat Menghitung Barang!</small></div>').fadeIn(500);
+        },
+    });
+}
+
 // Fungsi Untuk Menampilkan Data Barang
 function CountOfBarang() {
     $.ajax({
@@ -220,10 +297,10 @@ function LoadDashboardPeringatan() {
             renderDashboardList('#barang_expire', response.barang_expire, function (item) {
                 return `<div class="list-group-item px-0">
                     <div class="d-flex justify-content-between gap-2">
-                        <div><div class="fw-bold text-dark">${escapeDashboardHtml(item.nama_barang)}</div>
+                        <div><div class="fw-bold text-dark"><small>${escapeDashboardHtml(item.nama_barang)}</small></div>
                         <small class="text-muted">${escapeDashboardHtml(item.kode_barang)} | Batch ${escapeDashboardHtml(item.no_batch)}</small></div>
-                        <div class="text-end"><small class="text-danger fw-bold">Expire ${formatDashboardDate(item.expired_date)}</small>
-                        <br><small class="text-muted">Stok ${formatDashboardNumber(item.qty_batch)} ${escapeDashboardHtml(item.satuan_barang)}</small></div>
+                        <div class="text-end"><small class="text-danger fw-bold"><i class="bi bi-calendar"></i> ${formatDashboardDate(item.expired_date)}</small>
+                        <br><small class="text-muted">${formatDashboardNumber(item.qty_batch)} ${escapeDashboardHtml(item.satuan_barang)}</small></div>
                     </div>
                 </div>`;
             }, 'Tidak ada barang yang segera expire.');
@@ -231,10 +308,10 @@ function LoadDashboardPeringatan() {
             renderDashboardList('#barang_limit', response.barang_limit, function (item) {
                 return `<div class="list-group-item px-0">
                     <div class="d-flex justify-content-between gap-2">
-                        <div><div class="fw-bold text-dark">${escapeDashboardHtml(item.nama_barang)}</div>
+                        <div><div class="fw-bold text-dark"><small>${escapeDashboardHtml(item.nama_barang)}</small></div>
                         <small class="text-muted">${escapeDashboardHtml(item.kode_barang)}</small></div>
-                        <div class="text-end"><small class="text-warning fw-bold">Stok ${formatDashboardNumber(item.stok_barang)} ${escapeDashboardHtml(item.satuan_barang)}</small>
-                        <br><small class="text-muted">Minimum ${formatDashboardNumber(item.stok_minimum)}</small></div>
+                        <div class="text-end"><small class="text-warning fw-bold">${formatDashboardNumber(item.stok_barang)} ${escapeDashboardHtml(item.satuan_barang)}</small>
+                        <br><small class="text-muted">Min ${formatDashboardNumber(item.stok_minimum)}</small></div>
                     </div>
                 </div>`;
             }, 'Tidak ada barang yang hampir habis.');
@@ -257,17 +334,25 @@ function LoadDashboardPeringatan() {
 }
 
 $(document).ready(function () {
+    CountMedication();
+    CountPasien();
+    CountKunjungan();
+    CountResep();
     //Menampilkan Data Pertama Kali
     CountOfBarang();
+    CountOfPenjualan();
+    CountOfPembelian();
+    CountOfTransaksiOperasional();
+
+    // Show grafik
     ShowGrafikSiimpanPinjam();
     TransaksiTerbaru();
     LoadDashboardPeringatan();
+
     //Jam Menarik
     tampilkanTanggal(); // Tampilkan tanggal saat halaman dimuat
     tampilkanJam();     // Tampilkan jam pertama kali
     setInterval(tampilkanJam, 1000); // Perbarui jam setiap detik
 
-    CountOfPenjualan();
-    CountOfPembelian();
-    CountOfTransaksiOperasional();
+    
 });
