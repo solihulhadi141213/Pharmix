@@ -77,7 +77,37 @@ function showToast(type, title, message) {
 
     bsToast.show();
 }
+// ============================================================
+// RESPONSIVE TABLE
+// ============================================================
+function initResponsiveTable(selector = '.table-responsive-card') {
+    $(selector).each(function() {
+        const table  = $(this);
+        const labels = [];
 
+        table.find('thead th').each(function() {
+            labels.push($(this).text().trim());
+        });
+
+        table.find('tbody tr').each(function() {
+            const row   = $(this);
+            const cells = row.find('td');
+
+            // Baris kosong atau menggunakan colspan
+            if (cells.length === 1 && cells.first().is('[colspan]')) {
+                row.addClass('table-empty');
+                cells.first().removeAttr('data-label');
+                return;
+            }
+
+            row.removeClass('table-empty');
+
+            cells.each(function(index) {
+                $(this).attr('data-label', labels[index] || '');
+            });
+        });
+    });
+}
 // ============================================================
 // GLOBAL TABLE LOADING
 // ============================================================
@@ -108,6 +138,7 @@ function tableLoading(tableSelector, status = true, message = 'Memuat data...') 
         .toggleClass('table-loading', status)
         .attr('aria-busy', status ? 'true' : 'false');
 }
+
 
 // ============================================================
 // SCROLL TOP

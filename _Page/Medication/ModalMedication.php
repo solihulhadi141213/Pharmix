@@ -218,14 +218,14 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-12">
-                        <div class="table table-responsive">
-                            <table class="table table-striped table-hover">
+                        <div class="table-load-container mt-3">
+                            <table class="table table-hover table-responsive-card" id="TableKfa">
                                 <thead>
                                     <tr>
-                                        <td class="text-center"><b>No</b></td>
-                                        <td><b>Produk Obat/Alkes</b></td>
-                                        <td><b>KFA</b></td>
-                                        <td class="text-center"><b>Opsi</b></td>
+                                        <th class="text-center"><b>No</b></th>
+                                        <th><b>Produk Obat/Alkes</b></th>
+                                        <th><b>KFA</b></th>
+                                        <th class="text-center"><b>Opsi</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="tabel_kfa">

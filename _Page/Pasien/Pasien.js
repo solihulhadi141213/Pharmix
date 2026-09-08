@@ -2,41 +2,8 @@
 // -------------------------------------------------
 // FUNCTION
 // -------------------------------------------------
-// Responsive Table
-function initResponsiveTable(selector = '.table-responsive-card') {
-    $(selector).each(function() {
-        const table  = $(this);
-        const labels = [];
-
-        table.find('thead th').each(function() {
-            labels.push($(this).text().trim());
-        });
-
-        table.find('tbody tr').each(function() {
-            const row   = $(this);
-            const cells = row.find('td');
-
-            // Baris kosong atau menggunakan colspan
-            if (cells.length === 1 && cells.first().is('[colspan]')) {
-                row.addClass('table-empty');
-                cells.first().removeAttr('data-label');
-                return;
-            }
-
-            row.removeClass('table-empty');
-
-            cells.each(function(index) {
-                $(this).attr('data-label', labels[index] || '');
-            });
-        });
-    });
-}
-
 
 //Fungsi Untuk Menampilkan Data Pasien
-// ============================================================
-// MENAMPILKAN DATA PASIEN
-// ============================================================
 function filterAndLoadTable() {
     const ProsesFilter = $('#ProsesFilter').serialize();
 

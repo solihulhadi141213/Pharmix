@@ -71,36 +71,34 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table table-responsive mt-4 mb-4">
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <td align="center"><b>No</b></td>
-                                        <td><b>Kode</b></td>
-                                        <td><b>Index Obat/Alkes</b></td>
-                                        <td><b>Kategori</b></td>
-                                        <td><b>Sediaan</b></td>
-                                        <td><b>KFA</b></td>
-                                        <td><b>NC</b></td>
-                                        <td>
-                                            <b><i>ID Medication</i></b>
-                                        </td>
-                                        <td><b>Status</b></td>
-                                        <td><b>Opsi</b></td>
-                                    </tr>
-                                </thead>
-                                <tbody id="TabelMedication">
-                                    <tr>
-                                        <td class="text-center" colspan="10">
-                                            <small>Loading...</small>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-load-container mt-3">
+                        <table class="table table-hover table-responsive-card" id="tabel_medication">
+                            <thead>
+                                <tr>
+                                    <th><b>No</b></th>
+                                    <th><b>Kode</b></tthd>
+                                    <th><b>Index Obat/Alkes</b></th>
+                                    <th><b>Kategori</b></th>
+                                    <th><b>Sediaan</b></th>
+                                    <th><b>KFA</b></th>
+                                    <th><b>NC</b></th>
+                                    <th>
+                                        <b><i>ID Medication</i></b>
+                                    </tdth>
+                                    <th><b>Status</b></th>
+                                    <th><b>Opsi</b></th>
+                                </tr>
+                            </thead>
+                            <tbody id="TabelMedication">
+                                <tr>
+                                    <td class="text-center" colspan="10">
+                                        <small>Loading...</small>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer border-0">
                         <div class="row">
                             <div class="col-6">
                                 <small id="page_info">

@@ -2,83 +2,69 @@
 // FUNCTION
 // ===============================================
 
-//Fungsi Menampilkan Data
 function ShowData() {
-    var ProsesFilter = $('#ProsesFilter').serialize();
-    var $tabel       = $('#TabelMedication');
-
-    // Tambahkan efek visual loading (opacity menurun)
-    $tabel.css({
-        'opacity': '0.5',
-        'pointer-events': 'none',
-        'transition': 'opacity 0.3s ease'
-    });
+    const ProsesFilter = $('#ProsesFilter').serialize();
 
     $.ajax({
-        type   : 'POST',
-        url    : '_Page/Medication/TabelMedication.php',
-        data   : ProsesFilter,
-        success: function(data) {
-            // Ganti isi tabel tanpa mengganti elemen induk
-            $tabel.html(data);
+        type: 'POST',
+        url: '_Page/Medication/TabelMedication.php',
+        data: ProsesFilter,
 
-            // Reset checkbox utama
-            $('input[name="check_all"]').prop('checked', false);
-
-            // Kembalikan efek normal
-            $tabel.css({
-                'opacity': '1',
-                'pointer-events': 'auto'
-            });
-            
-            // 🔁 Re-inisialisasi tooltip setelah data dimuat
-            $('[data-bs-toggle="tooltip"]').tooltip();
+        beforeSend: function() {
+            tableLoading('#tabel_medication', true);
         },
+
+        success: function(data) {
+            $('#TabelMedication').html(data);
+            initResponsiveTable('#tabel_medication');
+        },
+
         error: function() {
-            $tabel.html('<div class="alert alert-danger m-2">Gagal memuat data. Silakan coba lagi.</div>');
-            $tabel.css({
-                'opacity': '1',
-                'pointer-events': 'auto'
-            });
+            $('#TabelMedication').html(`
+                <tr class="table-empty">
+                    <td colspan="10" class="text-center text-danger">
+                        Gagal memuat data pasien
+                    </td>
+                </tr>
+            `);
+        },
+
+        complete: function() {
+            tableLoading('#tabel_medication', false);
         }
     });
 }
 
 //Fungsi Menampilkan Data KFA
 function ShowDataKfa() {
-    var ProsesCariKfa = $('#ProsesCariKfa').serialize();
-    var $tabel       = $('#tabel_kfa');
-
-    // Tambahkan efek visual loading (opacity menurun)
-    $tabel.css({
-        'opacity': '0.5',
-        'pointer-events': 'none',
-        'transition': 'opacity 0.3s ease'
-    });
+    const ProsesCariKfa = $('#ProsesCariKfa').serialize();
 
     $.ajax({
-        type   : 'POST',
-        url    : '_Page/Medication/TabelKfa.php',
-        data   : ProsesCariKfa,
-        success: function(data) {
-            // Ganti isi tabel tanpa mengganti elemen induk
-            $tabel.html(data);
+        type: 'POST',
+       url    : '_Page/Medication/TabelKfa.php',
+        data: ProsesCariKfa,
 
-            // Kembalikan efek normal
-            $tabel.css({
-                'opacity': '1',
-                'pointer-events': 'auto'
-            });
-            
-            // 🔁 Re-inisialisasi tooltip setelah data dimuat
-            $('[data-bs-toggle="tooltip"]').tooltip();
+        beforeSend: function() {
+            tableLoading('#TableKfa', true);
         },
+
+        success: function(data) {
+            $('#tabel_kfa').html(data);
+            initResponsiveTable('#TableKfa');
+        },
+
         error: function() {
-            $tabel.html('<tr><td colspan="4" class="text-center">Gagal Memuat Data! Silahkan Coba Lagi</td></tr>');
-            $tabel.css({
-                'opacity': '1',
-                'pointer-events': 'auto'
-            });
+            $('#tabel_kfa').html(`
+                <tr class="table-empty">
+                    <td colspan="10" class="text-center text-danger">
+                        Gagal memuat data pasien
+                    </td>
+                </tr>
+            `);
+        },
+
+        complete: function() {
+            tableLoading('#TableKfa', false);
         }
     });
 }
@@ -325,6 +311,7 @@ $(document).ready(function() {
 
     //-----------------------------------------------
     //Menampilkan Data Pertama Kali
+    initResponsiveTable('#TabelMedication');
     ShowData();
     ShowDataKfa();
 
@@ -354,12 +341,14 @@ $(document).ready(function() {
         var next_page = page_now + 1;
         $('#page').val(next_page);
         ShowData(0);
+        scrollToTop();
     });
     $(document).on('click', '#prev_button', function() {
         var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
         var next_page = page_now - 1;
         $('#page').val(next_page);
         ShowData(0);
+        scrollToTop();
     });
 
     // Ketika Pencarian KFA
@@ -374,12 +363,14 @@ $(document).ready(function() {
         var next_page = page_now + 1;
         $('#page_kfa').val(next_page);
         ShowDataKfa(0);
+        scrollToTop();
     });
     $(document).on('click', '#prev_button_kfa', function() {
         var page_now = parseInt($('#page_kfa').val(), 10); // Pastikan nilai diambil sebagai angka
         var next_page = page_now - 1;
         $('#page_kfa').val(next_page);
         ShowDataKfa(0);
+        scrollToTop();
     });
 
     // Ketika Generate Kode Lokal
