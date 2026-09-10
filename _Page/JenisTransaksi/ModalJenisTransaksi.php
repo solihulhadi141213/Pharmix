@@ -12,7 +12,7 @@
                         <div class="col-md-12 mb-3">
                             <label for="batas">Batas/Limit</label>
                             <select name="batas" id="batas" class="form-control">
-                                <option value="10">10</option>
+                                <option value="5">5</option>
                                 <option selected value="10">10</option>
                                 <option value="25">25</option>
                                 <option value="50">50</option>
@@ -64,7 +64,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer  modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-filter"></i> Filter
                     </button>
@@ -134,7 +134,7 @@
                                 <small>Akun Perkiraan (Debet)</small>
                             </label>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8" id="form_debet">
                             <select name="id_akun_debet" id="id_akun_debet" class="form-select" style="width: 100%;">
                                 <option value=""></option>
                             </select>
@@ -149,7 +149,7 @@
                                 <small>Akun Perkiraan (Kredit)</small>
                             </label>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8"  id="form_kredit">
                             <select name="id_akun_kredit" id="id_akun_kredit" class="form-select" style="width: 100%;">
                                 <option value=""></option>
                             </select>
@@ -164,7 +164,7 @@
                                 <small>Akun Utang/Piutang</small>
                             </label>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8" id="form_utang_piutang">
                             <select name="id_utang_piutang" id="id_utang_piutang" class="form-select" style="width: 100%;">
                                 <option value=""></option>
                             </select>
@@ -179,7 +179,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer  modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
@@ -231,7 +231,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
@@ -263,7 +263,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer  modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>

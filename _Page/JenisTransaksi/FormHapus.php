@@ -68,54 +68,57 @@
 <input type="hidden" name="id_transaksi_jenis" value="<?= $id_transaksi_jenis; ?>">
 <div class="col-md-12 mb-4">
     <div class="row mb-3">
-        <div class="col-md-5">
-            <small>Nama Transaksi</small>
+        <div class="col-5">
+            <small>Nama</small>
         </div>
-        <div class="col-md-7"><small class="text text-grayish"><?= htmlspecialchars($nama, ENT_QUOTES, 'UTF-8'); ?></small></div>
+        <div class="col-7 text-end"><small class="text text-grayish"><?= htmlspecialchars($nama, ENT_QUOTES, 'UTF-8'); ?></small></div>
     </div>
     <div class="row mb-3">
-        <div class="col-md-5">
+        <div class="col-5">
             <small>Kategori</small>
         </div>
-        <div class="col-md-7">
+        <div class="col-7 text-end">
             <?php echo $label_kategori; ?>
         </div>
     </div>
     <div class="row mb-3">
-        <div class="col-md-5">
-            <small>Deskripsi / Keterangan</small>
+        <div class="col-5">
+            <small>Keterangan</small>
         </div>
-        <div class="col-md-7"><small class="text text-grayish"><?= htmlspecialchars($deskripsi, ENT_QUOTES, 'UTF-8'); ?></small></div>
+        <div class="col-7 text-end"><small class="text text-grayish"><?= htmlspecialchars($deskripsi, ENT_QUOTES, 'UTF-8'); ?></small></div>
     </div>
     <div class="row mb-3">
-        <div class="col-md-5">
-            <small>Akun Debet</small>
+        <div class="col-5">
+            <small>Debet</small>
         </div>
-        <div class="col-md-7"><small class="text text-grayish"><?= htmlspecialchars($text_debet, ENT_QUOTES, 'UTF-8'); ?></small></div>
+        <div class="col-7 text-end"><small class="text text-grayish"><?= htmlspecialchars($text_debet, ENT_QUOTES, 'UTF-8'); ?></small></div>
     </div>
     <div class="row mb-3">
-        <div class="col-md-5">
-            <small>Akun Kredit</small>
+        <div class="col-5">
+            <small>Kredit</small>
         </div>
-        <div class="col-md-7"><small class="text text-grayish"><?= htmlspecialchars($text_kredit, ENT_QUOTES, 'UTF-8'); ?></small></div>
+        <div class="col-7 text-end"><small class="text text-grayish"><?= htmlspecialchars($text_kredit, ENT_QUOTES, 'UTF-8'); ?></small></div>
     </div>
     <div class="row mb-3">
-        <div class="col-md-5">
-            <small>Jumlah Record</small>
+        <div class="col-5">
+            <small>Jumlah</small>
         </div>
-        <div class="col-md-7"><small class="text text-grayish"><?= $jml_transaksi; ?> Record</small></div>
+        <div class="col-7 text-end">
+            <small class="text text-grayish"><?= $jml_transaksi; ?> Record</small>
+        </div>
     </div>
     <div class="row mb-3">
-        <div class="col-md-5">
+        <div class="col-5">
             <small>Total (Rp)</small>
         </div>
-        <div class="col-md-7"><small class="text text-grayish"><?= $total_transaksi; ?></small></div>
+        <div class="col-7 text-end"><small class="text text-grayish"><?= $total_transaksi; ?></small></div>
     </div>
     <div class="row">
         <div class="col-12">
-            <div class="alert alert-danger">
+            <div class="alert alert-danger text-center">
                 <small>
-                    <b>Penting!</b> Menghapus jenis transaksi akan menyebabkan uraian/rincian transaksi yang terhubung ikut terhapus. <br>
+                    <b>Penting!</b><br> 
+                    Menghapus jenis transaksi akan menyebabkan uraian/rincian transaksi yang terhubung ikut terhapus. <br>
                     <i>Apakah anda yakin akan menghapus data tersebut?</i>
                 </small>
             </div>

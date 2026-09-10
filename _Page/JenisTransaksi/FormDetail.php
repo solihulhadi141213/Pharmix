@@ -306,7 +306,7 @@
             </span>
         ';
 
-        $label_utang_piutang = 'Akun Utang';
+        $label_utang_piutang = 'Utang';
 
     } elseif ($kategori === 'Pemasukan') {
 
@@ -316,7 +316,7 @@
             </span>
         ';
 
-        $label_utang_piutang = 'Akun Piutang';
+        $label_utang_piutang = 'Piutang';
 
     } else {
 
@@ -326,7 +326,7 @@
             </span>
         ';
 
-        $label_utang_piutang = 'Akun Utang/Piutang';
+        $label_utang_piutang = 'Utang/Piutang';
     }
 
 ?>
@@ -340,17 +340,13 @@
     <!-- NAMA TRANSAKSI -->
     <div class="row mb-3">
 
-        <div class="col-md-5">
-            <small>Nama Transaksi</small>
+        <div class="col-5">
+            <small>Nama</small>
         </div>
 
-        <div class="col-md-7">
+        <div class="col-7 text-end">
             <small class="text-grayish">
-                <?= htmlspecialchars(
-                    $nama,
-                    ENT_QUOTES,
-                    'UTF-8'
-                ); ?>
+                <?= htmlspecialchars($nama,ENT_QUOTES,'UTF-8'); ?>
             </small>
         </div>
 
@@ -360,11 +356,11 @@
     <!-- KATEGORI -->
     <div class="row mb-3">
 
-        <div class="col-md-5">
-            <small>Kategori Transaksi</small>
+        <div class="col-5">
+            <small>Kategori</small>
         </div>
 
-        <div class="col-md-7">
+        <div class="col-7 text-end">
             <?= $label_kategori; ?>
         </div>
 
@@ -374,17 +370,13 @@
     <!-- DESKRIPSI -->
     <div class="row mb-3">
 
-        <div class="col-md-5">
-            <small>Deskripsi/Keterangan</small>
+        <div class="col-5">
+            <small>Keterangan</small>
         </div>
 
-        <div class="col-md-7">
+        <div class="col-7 text-end">
             <small class="text-grayish">
-                <?= htmlspecialchars(
-                    $deskripsi,
-                    ENT_QUOTES,
-                    'UTF-8'
-                ); ?>
+                <?= htmlspecialchars($deskripsi,ENT_QUOTES,'UTF-8'); ?>
             </small>
         </div>
 
@@ -394,11 +386,11 @@
     <!-- AKUN DEBET -->
     <div class="row mb-3">
 
-        <div class="col-md-5">
-            <small>Akun Debet</small>
+        <div class="col-5">
+            <small>Debet</small>
         </div>
 
-        <div class="col-md-7">
+        <div class="col-7 text-end">
             <small class="text-grayish">
                 <?= htmlspecialchars(
                     $text_debet,
@@ -414,11 +406,11 @@
     <!-- AKUN KREDIT -->
     <div class="row mb-3">
 
-        <div class="col-md-5">
-            <small>Akun Kredit</small>
+        <div class="col-5">
+            <small>Kredit</small>
         </div>
 
-        <div class="col-md-7">
+        <div class="col-7 text-end">
             <small class="text-grayish">
                 <?= htmlspecialchars(
                     $text_kredit,
@@ -434,7 +426,7 @@
     <!-- AKUN UTANG / PIUTANG -->
     <div class="row mb-3">
 
-        <div class="col-md-5">
+        <div class="col-5">
             <small><?= htmlspecialchars(
                 $label_utang_piutang,
                 ENT_QUOTES,
@@ -442,7 +434,7 @@
             ); ?></small>
         </div>
 
-        <div class="col-md-7">
+        <div class="col-7 text-end">
             <small class="text-grayish">
                 <?= htmlspecialchars(
                     $text_utang_piutang,
@@ -458,11 +450,11 @@
     <!-- JUMLAH RECORD -->
     <div class="row mb-3">
 
-        <div class="col-md-5">
-            <small>Jumlah Record</small>
+        <div class="col-5">
+            <small>Jumlah</small>
         </div>
 
-        <div class="col-md-7">
+        <div class="col-7 text-end">
             <small class="text-grayish">
                 <?= $jumlah_transaksi; ?> Record
             </small>
@@ -474,11 +466,11 @@
     <!-- TOTAL TRANSAKSI -->
     <div class="row mb-3">
 
-        <div class="col-md-5">
-            <small>Total / Volume (Rp)</small>
+        <div class="col-5">
+            <small>Volume (Rp)</small>
         </div>
 
-        <div class="col-md-7">
+        <div class="col-7 text-end">
             <small class="text-grayish">
                 <?= $total_transaksi; ?>
             </small>

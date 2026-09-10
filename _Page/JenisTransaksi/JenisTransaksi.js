@@ -2,54 +2,106 @@
 // Function
 // ===============================================
 
-// Tampilkan Data Jenis Transaksi
+// MENAMPILKAN DATA JENIS TRANSAKSI
 function ShowData() {
-    
-    // Target And Filter
-    let target = $('#TabelJenisTransaksi');
-    let data   = $('#ProsesFilter').serialize();
-
-    // Loading or Blur
-    target.addClass('blur-loading');
-
-    // Tampilkan Dtaa Dengan AJAX
+    const table  = '#tabel_jenis_transaksi';
+    const target = $('#TabelJenisTransaksi');
+    const data   = $('#ProsesFilter').serialize();
+    tableLoading('#TabelJenisTransaksi', true);
     $.ajax({
         type    : 'POST',
         url     : '_Page/JenisTransaksi/TabelJenisTransaksi.php',
         data    : data,
         dataType: 'json',
-        success : function(res) {
 
-            if(res.status === "success"){
+        beforeSend: function() {
+            tableLoading(table, true);
+        },
 
-                target.fadeOut(150, function () {
-                    target.html(res.html).fadeIn(150);
-                });
-
-                // Update info page
-                $('#page_info').html('Page ' + res.page + ' Of ' + res.total_page);
-
-                // Handle tombol
-                $('#prev_button').prop('disabled', res.page <= 1);
-                $('#next_button').prop('disabled', res.page >= res.total_page);
-
-            }else{
+        success: function(res) {
+            if (res.status === 'success') {
                 target.html(res.html);
+
+                // Jalankan setelah HTML baru dimasukkan
+                initResponsiveTable(table);
+
+                // Sinkronkan page dengan response
+                $('#page').val(res.page);
+
+                // Informasi pagination
+                $('#page_info').text(
+                    'Page ' + res.page + ' Of ' + res.total_page
+                );
+
+                // Kontrol tombol pagination
+                $('#prev_button').prop(
+                    'disabled',
+                    res.page <= 1
+                );
+
+                $('#next_button').prop(
+                    'disabled',
+                    res.total_page <= 0 ||
+                    res.page >= res.total_page
+                );
+
+                return;
             }
 
-            target.removeClass('blur-loading');
+            target.html(res.html || `
+                <tr class="table-empty">
+                    <td colspan="8" class="text-center text-danger">
+                        <small>
+                            Data jenis transaksi tidak dapat ditampilkan.
+                        </small>
+                    </td>
+                </tr>
+            `);
+
+            initResponsiveTable(table);
+
+            $('#page').val(1);
+            $('#page_info').text('Page 1 Of 1');
+            $('#prev_button, #next_button').prop('disabled', true);
+        },
+
+        error: function(xhr, status) {
+            // Tidak menampilkan error jika request sengaja dibatalkan
+            if (status === 'abort') {
+                return;
+            }
+
+            target.html(`
+                <tr class="table-empty">
+                    <td colspan="8" class="text-center text-danger">
+                        <small>
+                            Terjadi kesalahan saat memuat jenis transaksi.
+                        </small>
+                    </td>
+                </tr>
+            `);
+
+            $('#page').val(1);
+            $('#page_info').text('Page 1 Of 1');
+            $('#prev_button, #next_button').prop('disabled', true);
+
+            console.error(xhr.responseText);
+        },
+
+        complete: function() {
+            tableLoading(table, false);
         }
     });
 }
 
 // SELECT2 AKUN PERKIRAAN
-function initSelectAkunPerkiraan(selector, placeholder) {
+function initSelectAkunPerkiraan(selector, parentId, placeholder) {
     $(selector).select2({
         theme: 'bootstrap-5',
         width: '100%',
         placeholder: placeholder,
         allowClear: true,
-        dropdownParent: $('#ModalTambahJenisTransaksi'),
+        dropdownParent: $(parentId),
         minimumInputLength: 0,
         ajax: {
             url: '_Page/JenisTransaksi/CariAkunPerkiraan.php',
@@ -192,6 +244,23 @@ $(document).ready(function() {
         $('#ModalFilter').modal('hide');
     });
 
+    //Pagging
+    $(document).on('click', '#next_button', function() {
+        var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
+        var next_page = page_now + 1;
+        $('#page').val(next_page);
+        ShowData();
+        scrollToTop();
+    });
+    $(document).on('click', '#prev_button', function() {
+        var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
+        var next_page = page_now - 1;
+        $('#page').val(next_page);
+        ShowData();
+        scrollToTop();
+    });
+
+
     //------------------------------------------
     // TAMBAH JENIS TRANSAKSI
 
@@ -219,13 +288,13 @@ $(document).ready(function() {
     });
 
     // AKUN DEBET
-    initSelectAkunPerkiraan('#id_akun_debet', 'Pilih akun debet');
+    initSelectAkunPerkiraan('#id_akun_debet', '#form_debet', 'Pilih akun debet');
 
     // AKUN KREDIT
-    initSelectAkunPerkiraan('#id_akun_kredit', 'Pilih akun kredit');
+    initSelectAkunPerkiraan('#id_akun_kredit', '#form_kredit', 'Pilih akun kredit');
 
     // AKUN UTANG PIUTANG
-    initSelectAkunPerkiraan('#id_utang_piutang', 'Pilih akun Utang/Piutang');
+    initSelectAkunPerkiraan('#id_utang_piutang', '#form_utang_piutang', 'Pilih akun Utang/Piutang');
 
     // Select 2 'kategori'
     $('#kategori').select2({
