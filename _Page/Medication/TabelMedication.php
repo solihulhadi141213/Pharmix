@@ -164,7 +164,11 @@
                                 <small>'.$medication_code_display.'</small>
                             </a>
                         </td>
-                        <td class="table-title"><small class="text-muted">'.$medication_name.'</small></td>
+                        <td class="table-title">
+                            <a href="javascript:void(0);" class="modal_detail" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="'.$medication_code .'" data-id="'.$id_index_medication .'">
+                                <small class="text-muted">'.$medication_name.'</small>
+                            </a>
+                        </td>
                         <td>'.$medication_category_display.'</td>
                         <td><small class="text-muted">'.$sediaan_display.'</small></td>
                         <td><small class="text-muted">'.$kfa_code.'</small></td>

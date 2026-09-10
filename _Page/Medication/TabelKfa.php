@@ -18,7 +18,7 @@
     * ============================================================ */
     if (empty($SessionIdAkses)) {
         echo '
-            <tr>
+            <tr class="table table-empty">
                 <td colspan="4" class="text-center">
                     <span class="text-danger">Sesi Akses Sudah Berakhir! Silahkan Login Ulang!</span>
                 </td>
@@ -37,7 +37,7 @@
     * ============================================================ */
     if(empty($_POST['versi_pencarian'])){
         echo '
-            <tr>
+            <tr class="table table-empty">
                 <td colspan="4" class="text-center">
                     <span class="text-danger">Versi Pencarian Tidak Boleh Kosong!</span>
                 </td>
@@ -52,7 +52,7 @@
     }
     if(empty($_POST['kategori_pencarian'])){
         echo '
-            <tr>
+            <tr class="table table-empty">
                 <td colspan="4" class="text-center">
                     <span class="text-danger">Kategori Pencarian Tidak Boleh Kosong!</span>
                 </td>
@@ -67,7 +67,7 @@
     }
     if(empty($_POST['keyword_pencarian'])){
         echo '
-            <tr>
+            <tr class="table table-empty">
                 <td colspan="4" class="text-center">
                     <span class="text-danger">Keyword Pencarian Tidak Boleh Kosong!</span>
                 </td>
@@ -82,7 +82,7 @@
     }
     if(empty($_POST['page'])){
         echo '
-            <tr>
+            <tr class="table table-empty">
                 <td colspan="4" class="text-center">
                     <span class="text-danger">Posisi Halaman Tidak Boleh Kosong!</span>
                 </td>
@@ -108,7 +108,7 @@
     $tokenResult = generateTokenSatuSehat($Conn);
     if (empty($tokenResult) || $tokenResult['status'] !== 'success' || empty($tokenResult['token'])) {
         echo '
-            <tr>
+            <tr class="table table-empty">
                 <td colspan="4" class="text-center">
                     <span class="text-danger">Gagal Mendapatkan Token Satu Sehat!</span>
                 </td>
@@ -141,7 +141,7 @@
 
     if (empty($config['url_connection_satu_sehat'])) {
         echo '
-            <tr>
+            <tr class="table table-empty">
                 <td colspan="4" class="text-center">
                     <span class="text-danger">Konfigurasi Koneksi Dengan Satu Sehat Tidak Ditemukan!</span>
                 </td>
@@ -187,7 +187,7 @@
 
     if ($curl_error) {
         echo '
-            <tr>
+            <tr class="table table-empty">
                 <td colspan="4" class="text-center">
                     <span class="text-danger">CURL Error: ' . htmlspecialchars($curl_error) . '</span>
                 </td>
@@ -203,7 +203,7 @@
 
     if ($http_code !== 200) {
         echo '
-            <tr>
+            <tr class="table table-empty">
                 <td colspan="4" class="text-center">
                     <span class="text-danger">Gagal mengambil data (HTTP ' . $http_code . ').</span>
                 </td>
@@ -224,7 +224,7 @@
 
     if (!$data ||!is_array($data) ||isset($data['issue'])) {
         echo '
-            <tr>
+            <tr class="table table-empty">
                 <td colspan="4" class="text-center">
                     <span class="text-danger">Response Server Tidak Valid</span>
                 </td>
@@ -248,7 +248,7 @@
     // Tampilkan Data
     if(empty($data['total'])){
         echo '
-            <tr>
+            <tr class="table table-empty">
                 <td colspan="4" class="text-center">
                     <span class="text-danger">Data Tidak Ditemukan</span>
                 </td>
@@ -260,10 +260,10 @@
         foreach ($items_data as $items_list){
             echo '
                 <tr>
-                    <td class="text-center">'.$no.'</td>
-                    <td>'.$items_list['name'].'</td>
+                    <td class="table-number">'.$no.'</td>
+                    <td class="table-title">'.$items_list['name'].'</td>
                     <td>'.$items_list['kfa_code'].'</td>
-                    <td class="text-center">
+                    <td class="table-action text-center">
                         <button type="button" class="btn btn-sm btn-secondary btn-floating modal_tambah_medication_kfa"  data-id="'.$items_list['kfa_code'].'">
                             <i class="bi bi-chevron-right"></i>
                         </button>

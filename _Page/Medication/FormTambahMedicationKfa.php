@@ -178,12 +178,11 @@
 
         echo '
             <div class="row mb-2 mt-2">
-                <div class="col-5"><small><b>A. Informasi Umum</b></small></div>
+                <div class="col-md-4"><small><b>A. Informasi Umum</b></small></div>
             </div>
             <div class="row mb-2">
-                <div class="col-5"><label for="medication_code"><small>Kode</small></label></div>
-                <div class="col-1"><small>:</small></div>
-                <div class="col-6">
+                <div class="col-md-4"><label for="medication_code"><small>Kode</small></label></div>
+                <div class="col-md-8">
                     <div class="input-group">
                         <input type="text" name="medication_code" id="medication_code" class="form-control">
                         <a href="javascript:void(0)" class="input-group-text generate_kode_lokal" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Generate Kode Lokal">
@@ -194,16 +193,16 @@
                 </div>
             </div>
             <div class="row mb-2">
-                <div class="col-5"><label for="medication_name"><small>Nama/Merek</small></label></div>
-                <div class="col-1"><small>:</small></div>
-                <div class="col-6">
+                <div class="col-md-4"><label for="medication_name"><small>Nama/Merek</small></label></div>
+                
+                <div class="col-md-8">
                     <input type="text" name="medication_name" id="medication_name" class="form-control" value="'.$result['nama_dagang'].'">
                 </div>
             </div>
             <div class="row mb-2">
-                <div class="col-5"><label for="medication_category"><small>Kategori</small></label></div>
-                <div class="col-1"><small>:</small></div>
-                <div class="col-6">
+                <div class="col-md-4"><label for="medication_category"><small>Kategori</small></label></div>
+                
+                <div class="col-md-8">
                     <select name="medication_category" id="medication_category" class="form-control">
                         <option value="">Pilih Kategori</option>
                         <option '.$select_obat.' value="Obat">Obat</option>
@@ -213,9 +212,9 @@
                 </div>
             </div>
             <div class="row mb-2">
-                <div class="col-5"><label for="racikan_code"><small>Obat Racikan</small></label></div>
-                <div class="col-1"><small>:</small></div>
-                <div class="col-6">
+                <div class="col-md-4"><label for="racikan_code"><small>Obat Racikan</small></label></div>
+                
+                <div class="col-md-8">
                     <select name="racikan_code" id="racikan_code" class="form-control">
                         <option value="NC">Non-compound</option>
                         <option value="C">Compound</option>
@@ -223,53 +222,53 @@
                 </div>
             </div>
             <div class="row mb-2 mt-2">
-                <div class="col-5"><small><b>B. Kamus Farmasi Dan Alat Kesehatan (KFA)</b></small></div>
+                <div class="col-md-4"><small><b>B. Kamus Farmasi Dan Alat Kesehatan (KFA)</b></small></div>
             </div>
             <div class="row mb-2">
-                <div class="col-5"><label for="kfa_code"><small>KFA Code</small></label></div>
-                <div class="col-1"><small>:</small></div>
-                <div class="col-6">
+                <div class="col-md-4"><label for="kfa_code"><small>KFA Code</small></label></div>
+                
+                <div class="col-md-8">
                     <input type="text" name="kfa_code" id="kfa_code" class="form-control" value="'.$result['kfa_code'].'">
                 </div>
             </div>
             <div class="row mb-2">
-                <div class="col-5"><label for="kfa_display"><small>KFA Display</small></label></div>
-                <div class="col-1"><small>:</small></div>
-                <div class="col-6">
+                <div class="col-md-4"><label for="kfa_display"><small>KFA Display</small></label></div>
+                
+                <div class="col-md-8">
                     <input type="text" name="kfa_display" id="kfa_display" class="form-control" value="'.$result['name'].'">
                 </div>
             </div>
             <div class="row mb-2 mt-2">
-                <div class="col-5"><small><b>C. Informasi Sediaan</b></small></div>
+                <div class="col-md-4"><small><b>C. Informasi Sediaan</b></small></div>
             </div>
             <div class="row mb-2">
-                <div class="col-5"><label for="sediaan_code"><small><i>Code</i></small></label></div>
-                <div class="col-1"><small>:</small></div>
-                <div class="col-6">
+                <div class="col-md-4"><label for="sediaan_code"><small><i>Code</i></small></label></div>
+                
+                <div class="col-md-8">
                     <input type="text" name="sediaan_code" id="sediaan_code" class="form-control" value="'.$result['dosage_form']['code'].'">
                 </div>
             </div>
             <div class="row mb-2">
-                <div class="col-5"><label for="sediaan_display"><small><i>Display</i></small></label></div>
-                <div class="col-1"><small>:</small></div>
-                <div class="col-6">
+                <div class="col-md-4"><label for="sediaan_display"><small><i>Display</i></small></label></div>
+                
+                <div class="col-md-8">
                     <input type="text" name="sediaan_display" id="sediaan_display" class="form-control" value="'.$result['dosage_form']['name'].'">
                 </div>
             </div>
             <div class="row mb-2 mt-2">
-                <div class="col-5"><small><b>D. Manufaktur</b></small></div>
+                <div class="col-md-4"><small><b>D. Manufaktur</b></small></div>
             </div>
             <div class="row mb-2">
-                <div class="col-5"><label for="manufacturer_id"><small><i>ID Manufacturer</i></small></label></div>
-                <div class="col-1"><small>:</small></div>
-                <div class="col-6">
+                <div class="col-md-4"><label for="manufacturer_id"><small><i>ID Manufacturer</i></small></label></div>
+                
+                <div class="col-md-8">
                     <input type="text" name="manufacturer_id" id="manufacturer_id" class="form-control" value="">
                 </div>
             </div>
             <div class="row mb-2">
-                <div class="col-5"><label for="manufacturer_name"><small><i>Manufacturer Name</i></small></label></div>
-                <div class="col-1"><small>:</small></div>
-                <div class="col-6">
+                <div class="col-md-4"><label for="manufacturer_name"><small><i>Manufacturer Name</i></small></label></div>
+                
+                <div class="col-md-8">
                     <input type="text" name="manufacturer_name" id="manufacturer_name" class="form-control" value="'.$result['manufacturer'].'">
                 </div>
             </div>

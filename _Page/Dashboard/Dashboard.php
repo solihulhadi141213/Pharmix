@@ -46,7 +46,7 @@
                 <div class="col-md-12">
                     <div class="row">
 
-                        <div class="col-xxl-3 col-md-12 col-12">
+                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -66,7 +66,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xxl-3 col-md-12 col-12">
+                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -86,7 +86,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xxl-3 col-md-12 col-12">
+                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -106,7 +106,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xxl-3 col-md-12 col-12">
+                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -126,7 +126,7 @@
                             </div>
                         </div>
                         
-                        <div class="col-xxl-3 col-md-12 col-12">
+                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -147,7 +147,7 @@
                             </div>
                         </div>
                         
-                        <div class="col-xxl-3 col-md-12 col-12">
+                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                             <div class="card info-card purple-card">
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -173,7 +173,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xxl-3 col-md-12 col-12">
+                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                             <div class="card info-card customers-card">
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -199,7 +199,7 @@
                             </div>
                         </div>
                         
-                        <div class="col-xxl-3 col-md-12 col-12">
+                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                             <div class="card info-card transsaction-card">
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -232,7 +232,7 @@
             
             <div class="row dashboard-report-row">
                 <!-- Reports -->
-                <div class="col-md-9 dashboard-report-column">
+                <div class="col-xl-9 col-lg-8 col-md-7 col-sm-12 col-12 dashboard-report-column">
                     <div class="card dashboard-report-card">
                         <div class="card-header">
                             <b class="card-title">
@@ -249,7 +249,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 dashboard-report-column">
+                <div class="col-xl-3 col-lg-4 col-md-5 col-sm-12 col-12 dashboard-report-column">
                     <div class="card dashboard-report-card">
                         <div class="card-header">
                             <div class="row">
@@ -273,7 +273,8 @@
             </div>
 
             <div class="row dashboard-report-row">
-                <div class="col-md-4 dashboard-report-column">
+
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 dashboard-report-column">
                     <div class="card dashboard-report-card">
                         <div class="card-header">
                             <div class="row">
@@ -296,7 +297,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4 dashboard-report-column">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 dashboard-report-column">
                     <div class="card dashboard-report-card">
                         <div class="card-header">
                             <div class="row">
@@ -319,7 +320,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4 dashboard-report-column">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 dashboard-report-column">
                     <div class="card dashboard-report-card">
                         <div class="card-header">
                             <div class="row">

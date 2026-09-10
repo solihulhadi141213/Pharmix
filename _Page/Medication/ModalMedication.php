@@ -85,7 +85,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-check"></i> Tampilkan
                     </button>
@@ -119,7 +119,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer bg-light modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded" id="TombolExport">
                         <i class="bi bi-download"></i> Export
                     </button>
@@ -161,7 +161,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer bg-light modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded" id="TombolImport">
                         <i class="bi bi-upload"></i> Import
                     </button>
@@ -219,17 +219,17 @@
                 <div class="row mb-3">
                     <div class="col-md-12">
                         <div class="table-load-container mt-3">
-                            <table class="table table-hover table-responsive-card" id="TableKfa">
+                             <table class="table table-hover table-responsive-card" id="TableKfa">
                                 <thead>
                                     <tr>
-                                        <th class="text-center"><b>No</b></th>
+                                        <th><b>No</b></th>
                                         <th><b>Produk Obat/Alkes</b></th>
                                         <th><b>KFA</b></th>
-                                        <th class="text-center"><b>Opsi</b></th>
+                                        <th><b>Opsi</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="tabel_kfa">
-                                    <tr>
+                                    <tr class="table table-empty">
                                         <td colspan="4" class="text-center">Loading...</td>
                                     </tr>
                                 </tbody>
@@ -272,7 +272,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Simpan
                     </button>
@@ -314,7 +314,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded" id="TombolTambahManual">
                         <i class="bi bi-save"></i> Simpan
                     </button>
@@ -348,7 +348,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer bg-light modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-plus"></i> Tambahkan
                     </button>
@@ -435,7 +435,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded" id="TombolEdit">
                         <i class="bi bi-save"></i> Simpan
                     </button>
@@ -469,7 +469,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer bg-light modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-plus"></i> Tambahkan
                     </button>
@@ -503,7 +503,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded" id="TombolHapusMedication">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
