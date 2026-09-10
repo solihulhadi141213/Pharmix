@@ -4,84 +4,85 @@ Pharmix adalah aplikasi manajemen apotek dan fasilitas kesehatan berbasis web. A
 
 Pharmix dibangun menggunakan PHP native, MySQL/MariaDB, Bootstrap 5, dan jQuery. Sebagian proses pada halaman menggunakan AJAX sehingga data dapat dimuat tanpa memuat ulang seluruh halaman.
 
+> [!NOTE]
+> Project/repository Pharmix bersifat **gratis dan open source**. Siapa saja dapat menggunakan, memodifikasi, dan mengubah aplikasi ini sesuai keinginan dan kebutuhan dengan mengikuti ketentuan [Lisensi Apache 2.0](./LICENSE).
+>
+> Untuk menghubungi pembuat, silakan melalui WhatsApp [089601154726](https://wa.me/6289601154726) atau email [dhiforester@gmail.com](mailto:dhiforester@gmail.com).
+
 ## Fitur
+
+Daftar berikut mengikuti susunan menu aplikasi pada [`_Partial/Menu.php`](./_Partial/Menu.php). Akses ke masing-masing modul mengikuti izin pengguna.
 
 ### Dashboard
 
-- Ringkasan data dan aktivitas operasional.
-- Informasi transaksi, barang, penjualan, dan pembelian.
-- Grafik ringkasan sesuai periode.
+- **Dashboard** — Menampilkan ringkasan data, aktivitas operasional, informasi barang dan transaksi, serta grafik sesuai periode yang dipilih.
 
-### Akses dan Profil
+### Master
 
-- Login dan validasi sesi berbasis token.
-- Pengelolaan pengguna akses.
-- Pengelolaan fitur aplikasi dan entitas akses.
-- Pengaturan izin fitur per pengguna.
-- Profil pengguna.
-- Perubahan identitas, foto profil, dan password.
-- Pencatatan aktivitas pengguna.
+- **Index Obat/Alkes** — Mengelola katalog obat dan alat kesehatan, termasuk sediaan, komposisi, kode KFA, dan ID Medication SATUSEHAT. Data dapat ditambahkan secara manual atau dari KFA, serta diimpor dan diekspor.
+- **Pasien** — Mengelola identitas pasien, nomor rekam medis, dan ID IHS untuk mendukung pelayanan serta integrasi SATUSEHAT.
+- **Kunjungan** — Mencatat kunjungan pasien, tanggal, kategori, prioritas, poliklinik, tenaga kesehatan, dan status pelayanan, serta mengirim data Encounter ke SATUSEHAT.
+- **Resep** — Mengelola resep dan rincian obat, dokter, apoteker, aturan penggunaan, serta pencetakan resep. Mendukung pencarian resep berdasarkan Nomor Resep Nasional dan proses SATUSEHAT melalui Medication, MedicationRequest, MedicationDispense, serta DocumentReference.
+- **Supplier** — Menyimpan dan memperbarui data pemasok untuk kebutuhan transaksi pembelian barang.
 
-### Master Data
+### Inventaris
 
-- Pasien dan anggota.
-- Supplier.
-- Barang, satuan, harga, dan kategori harga.
-- Batch barang dan tanggal kedaluwarsa.
-- Resep.
-- Jenis transaksi operasional.
-- Akun perkiraan.
-
-### Referensi Kesehatan
-
-- Route.
-- Sediaan.
-- Satuan dosis.
-- Denominator.
-- Numerator.
-- Poliklinik.
-- Tenaga kesehatan (Nakes).
-
-Modul Poliklinik mendukung pencarian data Location SATUSEHAT, pemilihan ID Location, pencarian/filter data, pagination, dan pengelolaan status poliklinik.
+- **Master Barang** — Mengelola data barang, stok, beberapa satuan, harga dan kategori harga, serta riwayat transaksi barang. Tersedia fasilitas import, export, dan backup data pada modul barang.
+- **Batch & Expired** — Mengelola batch barang dan tanggal kedaluwarsa untuk membantu pemantauan persediaan.
+- **Stock Opname** — Mencatat pemeriksaan stok fisik dan membandingkannya dengan stok pada aplikasi untuk mengetahui selisih persediaan.
 
 ### Transaksi
 
-- Transaksi operasional.
-- Transaksi penjualan.
-- Transaksi pembelian.
-- Rincian barang dan layanan transaksi.
-- Diskon, PPN, pembayaran, dan kembalian.
-- Pembatalan, perubahan, dan penghapusan transaksi sesuai izin akses.
-- Cetak invoice dan dokumen transaksi.
-- Rekapitulasi transaksi operasional dan jual-beli.
+- **Kategori Operasional** — Mengatur jenis transaksi operasional agar pencatatan dan pelaporan dapat dikelompokkan sesuai kebutuhan.
+- **Transaksi Operasional** — Mencatat transaksi operasional beserta rincian dan informasi pembayarannya.
+- **Transaksi Penjualan** — Mengelola penjualan barang, rincian item, diskon, PPN, pembayaran, kembalian, dan pencetakan invoice.
+- **Transaksi Pembelian** — Mengelola pembelian dari supplier beserta rincian barang, diskon, PPN, pembayaran, dan dokumen transaksi.
 
-### Stok dan Inventaris
+### Keuangan
 
-- Pengelolaan stok barang.
-- Banyak satuan dan harga barang.
-- Batch dan barang kedaluwarsa.
-- Stock opname.
-- Riwayat transaksi barang.
-- Import, export, dan backup data barang pada modul yang tersedia.
+- **Akun Perkiraan** — Mengelola daftar akun akuntansi yang digunakan dalam jurnal dan laporan keuangan.
+- **Utang/Piutang** — Memantau kewajiban dan tagihan dari transaksi yang belum lunas beserta rincian pembayarannya.
+- **Pembayaran** — Mencatat dan menelusuri pembayaran yang terkait dengan transaksi aplikasi.
 
-### Keuangan dan Laporan
+### Laporan
 
-- Pembayaran.
-- Utang dan piutang.
-- Jurnal transaksi.
-- Buku besar.
-- Neraca saldo.
-- Laba rugi.
-- Auto jurnal.
-- Rekapitulasi transaksi.
+- **Jurnal** — Menampilkan pencatatan debit dan kredit transaksi sebagai dasar pembukuan.
+- **Buku Besar** — Menyajikan mutasi dan saldo transaksi berdasarkan akun serta periode yang dipilih.
+- **Neraca Saldo** — Menampilkan ringkasan saldo debit dan kredit setiap akun untuk pemeriksaan pembukuan.
+- **Laba Rugi** — Menyajikan laporan pendapatan dan beban untuk mengetahui hasil usaha pada suatu periode.
+- **Operasional** — Merekap transaksi operasional berdasarkan periode dan filter laporan.
+- **Jual/Beli** — Merekap transaksi penjualan dan pembelian untuk memantau aktivitas perdagangan.
 
-### Pengaturan dan Integrasi
+### Pengaturan
 
-- Pengaturan umum aplikasi.
-- Email gateway.
-- Konfigurasi dan pengujian koneksi SATUSEHAT.
-- Dokumentasi aplikasi dan API.
-- Aktivitas umum, email, dan API.
+- **Pengaturan Umum** — Mengatur identitas aplikasi dan informasi umum fasilitas atau usaha.
+- **Auto Jurnal** — Mengatur pemetaan akun untuk mendukung pencatatan jurnal otomatis dari transaksi.
+- **Email Gateway** — Mengatur layanan pengiriman email aplikasi dan menguji konfigurasi pengirimannya.
+- **SATUSEHAT** — Mengatur koneksi, kredensial, dan token akses serta menguji koneksi integrasi SATUSEHAT.
+
+### Aksesibilitas
+
+- **Fitur Aplikasi** — Mengelola daftar fitur yang menjadi dasar pemberian izin akses.
+- **Entitas Akses** — Mengelola kelompok atau entitas akses beserta pengaturan izin fiturnya.
+- **Akses Pengguna** — Mengelola akun pengguna dan izin fitur yang dapat diakses oleh masing-masing pengguna.
+
+### Referensi
+
+- **Route** — Mengelola referensi rute pemberian obat untuk melengkapi informasi resep.
+- **Sediaan** — Mengelola referensi bentuk sediaan obat untuk data Medication.
+- **Satuan Dosis** — Mengelola referensi satuan yang digunakan dalam penulisan dosis obat.
+- **Denominator** — Mengelola referensi satuan penyebut pada informasi komposisi atau kekuatan obat dalam Medication.
+- **Numerator** — Mengelola referensi satuan pembilang pada informasi komposisi atau kekuatan obat dalam Medication.
+- **Poliklinik** — Mengelola data dan status poliklinik, termasuk pencarian serta pemilihan ID Location SATUSEHAT.
+- **Nakes** — Mengelola data tenaga kesehatan untuk mendukung pencatatan kunjungan dan resep.
+
+### Sistem dan Fitur Lainnya
+
+- **Log Aktivitas** — Menelusuri catatan aktivitas umum, email, dan API untuk memantau penggunaan aplikasi.
+- **Dokumentasi** — Mengelola dokumentasi aplikasi sebagai sumber informasi penggunaan dan pengembangan.
+- **Bantuan** — Menampilkan panduan penggunaan yang dapat dicari berdasarkan judul atau deskripsi dan disaring menurut topik/tag.
+- **Keluar** — Mengakhiri sesi pengguna melalui konfirmasi logout.
+- **Login dan Profil Pengguna** — Mendukung login dengan validasi sesi berbasis token serta pengelolaan identitas, foto profil, dan password melalui menu profil.
 
 ## Teknologi dan Dependency
 
@@ -131,7 +132,7 @@ Pharmix/
 
 Modul utama yang tersedia pada routing aplikasi meliputi:
 
-`Dashboard`, `Akses`, `AksesFitur`, `AksesEntitas`, `MyProfile`, `Pasien`, `Resep`, `Supplier`, `Barang`, `BarangExpired`, `StockOpename`, `JenisTransaksi`, `Transaksi`, `Penjualan`, `Pembelian`, `Pembayaran`, `UtangPiutang`, `RekapTransaksi`, `RekapJualBeli`, `RekapitulasiTransaksi`, `AkunPerkiraan`, `Jurnal`, `BukuBesar`, `NeracaSaldo`, `LabaRugi`, `AutoJurnal`, `Dokumentasi`, `Aktivitas`, `SettingGeneral`, `SettingEmailGateway`, `SettingSatuSehat`, `Route`, `Sediaan`, `SatuanDosis`, `Denominator`, `Numerator`, `Poliklinik`, dan `Nakes`.
+`Dashboard`, `Akses`, `AksesFitur`, `AksesEntitas`, `MyProfile`, `Medication`, `Pasien`, `Kunjungan`, `Resep`, `Supplier`, `Barang`, `BarangExpired`, `StockOpename`, `JenisTransaksi`, `Transaksi`, `Penjualan`, `Pembelian`, `Pembayaran`, `UtangPiutang`, `RekapTransaksi`, `RekapJualBeli`, `RekapitulasiTransaksi`, `AkunPerkiraan`, `Jurnal`, `BukuBesar`, `NeracaSaldo`, `LabaRugi`, `AutoJurnal`, `Dokumentasi`, `Bantuan`, `Aktivitas`, `SettingGeneral`, `SettingEmailGateway`, `SettingSatuSehat`, `Route`, `Sediaan`, `SatuanDosis`, `Denominator`, `Numerator`, `Poliklinik`, dan `Nakes`.
 
 Folder lain seperti `Anggota`, `ApiDoc`, `CetakInvoice`, `RiwayatAnggota`, `ResetPassword`, serta `TransaksiJualBeli` berisi halaman/proses pendukung atau bagian dari alur modul utama.
 
