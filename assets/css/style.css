@@ -215,10 +215,6 @@ h6 {
   100% {
     opacity: 1;
   }
-
-  0% {
-    opacity: 0;
-  }
 }
 
 @keyframes dropdown-animate {
@@ -228,10 +224,6 @@ h6 {
 
   100% {
     opacity: 1;
-  }
-
-  0% {
-    opacity: 0;
   }
 }
 
@@ -612,7 +604,8 @@ h6 {
   color: #51678f;
 }
 .login-submit-btn {
-  padding: 1rem 1rem;
+  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   border-radius: 1rem;
   font-weight: 700;
   display: inline-flex;
@@ -636,9 +629,6 @@ h6 {
 .credits .text-dark,
 .login-footer-note.text-dark {
   color: #111827 !important;
-}
-.login-submit-btn {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 @media (max-width: 576px) {
   .login-brand-title {
@@ -1781,7 +1771,6 @@ h6 {
   color: #012970;
 }
 
-
 canvas {
   border: 1px solid #ccc;
   border-radius: 0.5rem;
@@ -1981,7 +1970,6 @@ body .title_page_app {
   }
 }
 
-
 /* Table custome */
 .table_custome {
   width: 100%;
@@ -1990,7 +1978,7 @@ body .title_page_app {
   font-family: Arial, sans-serif;
 }
 
-.table_custome th, 
+.table_custome th,
 .table_custome td {
   border: 1px solid #000000;
   padding: 3px;
@@ -2503,7 +2491,7 @@ textarea.form-control[readonly]:focus {
 /* =========================================================
    CARD MOBILE CARD
    ========================================================= */
-   
+
 .MobileCard-grid > [class*="col-"],
 .MobileCard-grid #MobileCardList > [class*="col-"] {
     display: flex;
@@ -2582,8 +2570,6 @@ textarea.form-control[readonly]:focus {
     color: #012970;
     font-weight: 700;
 }
-
-
 
 /* =========================================================
    CARD AKSI RESEP
@@ -2760,7 +2746,6 @@ textarea.form-control[readonly]:focus {
     margin-top: auto;
 }
 
-
 /* =========================================================
    NO ACCESS
    ========================================================= */
@@ -2789,7 +2774,6 @@ textarea.form-control[readonly]:focus {
     }
 }
 
-
 #FormCetak {
     overflow-x: auto;
     background: #f3f3f3;
@@ -2806,15 +2790,94 @@ textarea.form-control[readonly]:focus {
     break-inside: avoid;
 }
 
-/* ============================================================
-  RESPONSIVE TABLE TO CARD
-  ============================================================ */
-@media (max-width: 767.98px) {
-    .table-responsive {
-        overflow-x: visible;
+/* Ponsel dan tablet: pisahkan header dan data dari latar card pembungkus. */
+@media (max-width: 1199.98px) {
+  .card.card-table {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .card-table > .card-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding: 1.25rem;
+    text-align: center;
+    border: 1px dashed var(--bs-border-color, #cbd5e1);
+    border-radius: 1rem;
+  }
+
+  .card-table > .card-header .card-title {
+    flex-basis: 100%;
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .card-table > .card-header .btn {
+    padding: 0.75rem 1rem;
+  }
+
+  /* Tombol ikon tetap bulat dan cukup besar untuk disentuh. */
+  .card-table > .card-header .btn-floating {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .card-table > .card-body,
+  .card-table > .card-footer {
+    background: transparent;
+  }
+
+  /* Gaya tema gelap menggunakan !important pada card global. */
+  html.dark-mode .card.card-table,
+  body.dark-mode .card.card-table {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  html.dark-mode .card-table > .card-footer,
+  body.dark-mode .card-table > .card-footer {
+    background: transparent !important;
+  }
+}
+
+/* Tabel responsif: ponsel 1 card, tablet 2 card, desktop tabel normal.
+   Header menggunakan .table-number, .table-title, dan .table-action. */
+
+/* Container */
+.card,
+.card-body,
+.table-load-container {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.table-load-container {
+    position: relative;
+    overflow: visible;
+}
+
+/* Mobile dan tablet */
+@media (max-width: 1199.98px) {
+    .table-responsive.table-load-container,
+    .table-responsive:has(.table-responsive-card) {
+        overflow: visible;
     }
 
     .table-responsive-card {
+        display: block;
+        width: 100%;
+        margin-bottom: 0;
         border: 0;
     }
 
@@ -2822,57 +2885,235 @@ textarea.form-control[readonly]:focus {
         display: none;
     }
 
-    .table-responsive-card tbody,
-    .table-responsive-card tr,
-    .table-responsive-card td {
+    .table-responsive-card tbody {
         display: block;
         width: 100%;
-    }
-
-    .table-responsive-card tbody {
         padding: 0.25rem;
     }
 
-    .table-responsive-card tr {
+    /* Card */
+    .table-responsive-card tbody tr {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: max-content minmax(0, 1fr) max-content;
+        grid-template-rows: minmax(2.5rem, auto);
+        align-content: start;
+        row-gap: 0.25rem;
+        width: 100%;
         margin-bottom: 1rem;
         padding: 0.75rem;
+        column-gap: 0.5rem;
+        overflow: visible;
+        color: var(--bs-body-color);
         background: var(--bs-body-bg);
         border: 1px solid var(--bs-border-color);
         border-radius: 0.5rem;
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        box-shadow: 0 0.125rem 0.3rem rgba(0, 0, 0, 0.08);
     }
 
-    .table-responsive-card td {
+    .table-responsive-card tbody tr::before {
+        position: absolute;
+        inset: 0 0 auto;
+        z-index: 0;
+        height: 3.25rem;
+        content: "";
+        background: var(--bs-tertiary-bg);
+        border-bottom: 1px solid var(--bs-border-color);
+        border-radius: 0.5rem 0.5rem 0 0;
+    }
+
+    .table-responsive-card tbody tr:focus-within,
+    .table-responsive-card tbody tr:has(.dropdown-menu.show) {
+        z-index: 30;
+    }
+
+    /* Kolom data biasa */
+    .table-responsive-card tbody td {
+        position: relative;
+        z-index: 1;
+        grid-column: 1 / -1;
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
         gap: 1rem;
+        width: 100%;
+        min-width: 0;
         padding: 0.5rem 0;
+        color: var(--bs-body-color);
         text-align: right;
+        overflow-wrap: anywhere;
+        word-break: break-word;
         background: transparent;
         border: 0;
         border-bottom: 1px dashed var(--bs-border-color);
+        box-shadow: none;
     }
 
-    .table-responsive-card td:last-child {
-        padding-bottom: 0;
-        border-bottom: 0;
-    }
-
-    .table-responsive-card td::before {
+    .table-responsive-card tbody td::before {
         content: attr(data-label);
         flex: 0 0 40%;
+        min-width: 0;
         color: var(--bs-secondary-color);
         font-weight: 600;
         text-align: left;
     }
 
-    /* Label kolom menjadi header kartu pada layar kecil. */
+    /* Hilangkan garis pada data terakhir, termasuk tabel tanpa kolom opsi. */
+    .table-responsive-card tbody td:not(.table-number):not(.table-title):not(.table-action):not([data-label="Opsi"]):not(:has(~ td:not(.table-action):not([data-label="Opsi"]))) {
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+    /* Nomor di kiri header */
+    .table-responsive-card tbody td.table-number {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: center;
+        display: flex;
+        align-items: center;
+        width: auto;
+        min-width: max-content;
+        height: 2.5rem;
+        padding: 0;
+        color: var(--bs-secondary-color);
+        gap: 0;
+        font-size: 0.875rem;
+        font-weight: 700;
+        line-height: 1;
+        text-align: left;
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .table-responsive-card tbody td.table-number::before {
+        display: none;
+        content: none;
+    }
+
+    .table-responsive-card tbody td.table-number::after {
+        flex: none;
+        content: ".";
+    }
+
+    /* Judul sejajar vertikal dengan nomor dan tombol pada header. */
+    .table-responsive-card tbody td.table-title {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        display: grid;
+        align-items: center;
+        justify-content: stretch;
+        min-height: 2.5rem;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        padding: 0;
+        overflow: hidden;
+        color: var(--bs-body-color);
+        font-weight: 700;
+        line-height: 1.4;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .table-responsive-card tbody td.table-title::before {
+        display: none;
+        content: none;
+    }
+
+    .table-responsive-card tbody td.table-title > a,
+    .table-responsive-card tbody td.table-title > span,
+    .table-responsive-card tbody td.table-title > small {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow: hidden;
+        color: inherit;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Opsi di kanan header */
+    .table-responsive-card tbody td[data-label="Opsi"],
+    .table-responsive-card tbody td.table-action {
+        z-index: 10;
+        grid-column: 3;
+        grid-row: 1;
+        align-self: center;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: auto;
+        min-width: max-content;
+        height: 2.5rem;
+        padding: 0;
+        text-align: right;
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .table-responsive-card tbody td[data-label="Opsi"]::before,
+    .table-responsive-card tbody td.table-action::before {
+        display: none;
+        content: none;
+    }
+
+    /* Hilangkan ruang baseline pada pembungkus tombol opsi. */
+    .table-responsive-card tbody td.table-action > .dropdown,
+    .table-responsive-card tbody td.table-action > .btn-group {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* Dropdown */
+    .table-responsive-card .dropdown,
+    .table-responsive-card .btn-group {
+        position: relative;
+    }
+
+    .table-responsive-card .dropdown-menu {
+        z-index: 1080;
+    }
+
+    /* Baris kosong */
+    .table-responsive-card tbody tr.table-empty {
+        display: block;
+        width: 100%;
+        height: auto;
+        padding: 0.75rem;
+    }
+
+    .table-responsive-card tbody tr.table-empty::before {
+        display: none;
+    }
+
+    .table-responsive-card tbody tr.table-empty td {
+        position: static;
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 1rem;
+        text-align: center;
+        border: 0;
+    }
+
+    .table-responsive-card tbody tr.table-empty td::before {
+        display: none;
+        content: none;
+    }
+
+    /* Dark mode */
     html.dark-mode .table-responsive-card,
     body.dark-mode .table-responsive-card {
         --bs-body-bg: #1e293b;
+        --bs-body-color: #cbd5e1;
         --bs-border-color: #334155;
-        --bs-secondary-color: #cbd5e1;
+        --bs-secondary-color: #94a3b8;
+        --bs-tertiary-bg: #253247;
         --bs-table-bg: #1e293b;
         --bs-table-color: #cbd5e1;
         --bs-table-hover-bg: #334155;
@@ -2881,63 +3122,79 @@ textarea.form-control[readonly]:focus {
         --bs-table-striped-color: #cbd5e1;
     }
 
-    html.dark-mode .table-responsive-card td::before,
-    body.dark-mode .table-responsive-card td::before {
+    html.dark-mode .table-responsive-card tbody tr,
+    body.dark-mode .table-responsive-card tbody tr {
+        color: #cbd5e1;
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    html.dark-mode .table-responsive-card tbody tr::before,
+    body.dark-mode .table-responsive-card tbody tr::before {
+        background: #253247;
+        border-bottom-color: #334155;
+    }
+
+    html.dark-mode .table-responsive-card tbody td,
+    body.dark-mode .table-responsive-card tbody td {
+        color: #cbd5e1;
+        border-bottom-color: #334155;
+    }
+
+    html.dark-mode .table-responsive-card tbody td::before,
+    body.dark-mode .table-responsive-card tbody td::before {
         color: #f8fafc;
     }
-
-    .table-responsive-card td[data-label="Nama"] {
-        font-weight: 600;
-    }
-
-    .table-responsive-card td[data-label="Opsi"] {
-        align-items: center;
-    }
-
-    /* Baris kosong */
-    .table-responsive-card tr.table-empty {
-        display: block;
-    }
-
-    .table-responsive-card tr.table-empty td {
-        display: block;
-        padding: 1rem;
-        text-align: center;
-        border: 0;
-    }
-
-    .table-responsive-card tr.table-empty td::before {
-        display: none;
-    }
 }
 
+/* Mobile: satu card per baris */
 @media (max-width: 767.98px) {
-    .table-responsive-card tr.table-empty {
-        display: block;
-    }
-
-    .table-responsive-card tr.table-empty td {
-        display: block;
-        text-align: center;
-        border: 0;
-    }
-
-    .table-responsive-card tr.table-empty td::before {
-        display: none;
+    .table-responsive-card tbody tr:last-child {
+        margin-bottom: 0;
     }
 }
 
-/* ============================================================
-   GLOBAL TABLE LOADING
-   ============================================================ */
-.table-load-container {
-    position: relative;
+/* Tablet: dua card per baris */
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .table-responsive-card tbody {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .table-responsive-card tbody tr {
+        height: 100%;
+        margin-bottom: 0;
+    }
+
+    .table-responsive-card tbody tr.table-empty {
+        display: block;
+        grid-column: 1 / -1;
+        height: auto;
+    }
 }
 
+/* Desktop */
+@media (min-width: 1200px) {
+    .table-responsive-card tbody td.table-title,
+    .table-responsive-card tbody td.table-action {
+        vertical-align: middle;
+    }
+
+    .table-responsive-card {
+        width: 100%;
+    }
+
+    .table-responsive-card tbody td[data-label="Opsi"],
+    .table-responsive-card tbody td.table-action {
+        white-space: nowrap;
+    }
+}
+
+/* Overlay loading selama data tabel dimuat. */
 .table-load-container table {
-    transition:
-        filter 180ms ease-out,
-        opacity 180ms ease-out;
+    transition: filter 180ms ease-out, opacity 180ms ease-out;
 }
 
 .table-load-container.table-loading table {
@@ -2950,24 +3207,20 @@ textarea.form-control[readonly]:focus {
 .table-loading-overlay {
     position: absolute;
     inset: 0;
-    z-index: 10;
+    z-index: 100;
     display: flex;
     align-items: center;
     justify-content: center;
     visibility: hidden;
     background: rgba(var(--bs-body-bg-rgb), 0.15);
     opacity: 0;
-    transition:
-        opacity 180ms ease-out,
-        visibility 0s linear 180ms;
+    transition: opacity 180ms ease-out, visibility 0s linear 180ms;
 }
 
 .table-load-container.table-loading .table-loading-overlay {
     visibility: visible;
     opacity: 1;
-    transition:
-        opacity 180ms ease-out,
-        visibility 0s;
+    transition: opacity 180ms ease-out, visibility 0s;
 }
 
 .table-loading-content {
@@ -2981,10 +3234,25 @@ textarea.form-control[readonly]:focus {
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.12);
 }
 
-/* Kurangi animasi jika pengguna mengaktifkan reduced motion */
 @media (prefers-reduced-motion: reduce) {
     .table-load-container table,
     .table-loading-overlay {
         transition: none;
     }
+}
+
+/* Ponsel dan tablet: tombol footer modal berbagi lebar secara merata. */
+@media (max-width: 1199.98px) {
+  .modal-footer.modal-footer-responsive {
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .modal-footer.modal-footer-responsive > .btn {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    text-align: center;
+  }
 }

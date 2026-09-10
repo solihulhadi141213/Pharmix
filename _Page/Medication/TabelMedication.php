@@ -158,13 +158,13 @@
                 // Tampilkan Data
                 echo '
                     <tr>
-                        <td class="text-center"><small>'.$no.'</small></td>
+                        <td class="table-number text-center"><small>'.$no.'</small></td>
                         <td>
                             <a href="javascript:void(0);" class="text-primary text-decoration-underline modal_detail" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="'.$medication_code .'" data-id="'.$id_index_medication .'">
                                 <small>'.$medication_code_display.'</small>
                             </a>
                         </td>
-                        <td><small class="text-muted">'.$medication_name.'</small></td>
+                        <td class="table-title"><small class="text-muted">'.$medication_name.'</small></td>
                         <td>'.$medication_category_display.'</td>
                         <td><small class="text-muted">'.$sediaan_display.'</small></td>
                         <td><small class="text-muted">'.$kfa_code.'</small></td>
@@ -181,7 +181,7 @@
                             </a>
                         </td>
                         <td>'.$status_ketersediaan.'</td>
-                        <td>
+                        <td class="table-action">
                             <button type="button" class="btn btn-sm btn-secondary btn-floating"  data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-three-dots-vertical"></i>
                             </button>

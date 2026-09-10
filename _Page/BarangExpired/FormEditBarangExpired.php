@@ -34,10 +34,8 @@
         <div class="col-md-12 mb-3">
             <label for="no_batch_edit">No/Kode Batch</label>
             <input type="text" name="no_batch" id="no_batch_edit" class="form-control" value="<?php echo $no_batch; ?>">
-            <small>
-                <code class="text text-grayish">
-                    Kode Batch Produk/Barang Pada Kemasan
-                </code>
+            <small class="text text-grayish">
+                Kode Batch Produk/Barang Pada Kemasan
             </small>
         </div>
     </div>
@@ -51,10 +49,8 @@
         <div class="col-md-12 mb-3">
             <label for="reminder_date_edit">Reminder Date</label>
             <input type="date" name="reminder_date" id="reminder_date_edit" class="form-control" value="<?php echo $reminder_date; ?>">
-            <small>
-                <code class="text text-grayish">
-                    Tanggal/Waktu kapan sistem menampilkan pemberitahuan.
-                </code>
+            <small class="text text-grayish">
+                Tanggal/Waktu kapan sistem menampilkan pemberitahuan.
             </small>
         </div>
     </div>
@@ -68,32 +64,19 @@
                 </span>
             </div>
             
-            <small>
-                <code class="text text-grayish">
-                    Jumlah barang dengan nomor batch yang sama
-                </code>
-            </small>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 mb-3">
-            <label for="status_edit">Status</label>
-            <select name="status" id="status_edit" class="form-control">
-                <option <?php if($StatusExpired==""){echo "selected";} ?> value="">Pilih</option>
-                <option <?php if($StatusExpired=="Terdaftar"){echo "selected";} ?> value="Terdaftar">Terdaftar</option>
-                <option <?php if($StatusExpired=="Terjual"){echo "selected";} ?> value="Terjual">Terjual</option>
-            </select>
-            <small>
-                <ul>
-                    <li>Terdaftar : <code class="text text-grayish">Barang tersedia dan belum terjual</code></li>
-                    <li>Terjual : <code class="text text-grayish">Barang tidak tersedia atau sudah terjual</code></li>
-                </ul>
+            <small class="text text-grayish">
+                Jumlah barang dengan nomor batch yang sama
             </small>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <span class="text-dark">Pastikan bahwa informasi data yang anda masukan sudah benar</span>
+            <label for="status_edit">Status</label>
+            <select name="status" id="status_edit" class="form-control">
+                <option <?php if($StatusExpired==""){echo "selected";} ?> value="">Pilih</option>
+                <option <?php if($StatusExpired=="Terdaftar"){echo "selected";} ?> value="Terdaftar">Terdaftar</option>
+                <option <?php if($StatusExpired=="Terjual"){echo "selected";} ?> value="Terjual">Sudah Terjual</option>
+            </select>
         </div>
     </div>
 <?php } ?>

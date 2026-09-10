@@ -130,7 +130,8 @@
             'Authorization: Bearer '.$token,
             'Accept: application/fhir+json'
         ],
-        CURLOPT_SSL_VERIFYPEER => true
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false
     ]);
 
     $satusehatResponse = curl_exec($curl);

@@ -38,8 +38,8 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="table table-responsive mt-4 mb-4">
-                            <table class="table table-striped">
+                        <div class="table-load-container mt-3">
+                            <table class="table table-hover table-responsive-card" id="TabelKunjunganHeader">
                                 <thead>
                                     <tr>
                                         <th><b>No</b></th>
@@ -61,7 +61,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer border-0">
                         <div class="row">
                             <div class="col-6">
                                 <small id="page_info">

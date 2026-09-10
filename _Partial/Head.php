@@ -68,7 +68,7 @@
     }
 ?>
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?php echo "$subtitle"; ?></title>
 <meta content="<?php echo "$deskripsi"; ?>" name="description">
 <meta content="<?php echo "$kata_kunci"; ?>" name="keywords">

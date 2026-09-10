@@ -1,40 +1,93 @@
 // =====================================
 // FUNCTION
 // =====================================
+// ============================================================
+// MENAMPILKAN TABEL KUNJUNGAN KOSONG
+// ============================================================
+function showEmptyKunjungan(message) {
+    $('#tabel_kunjungan').html(`
+        <tr class="table-empty">
+            <td colspan="9" class="text-center">
+                ${message}
+            </td>
+        </tr>
+    `);
+
+    $('#page').val(1);
+    $('#page_info').text('Page 1 Of 1');
+    $('#prev_button, #next_button').prop('disabled', true);
+}
+
+//Fungsi Untuk Menampilkan Data Pasien
+// ============================================================
+// MENAMPILKAN DATA KUNJUNGAN
+// ============================================================
 function ShowData() {
-    let target = $('#tabel_kunjungan');
-    let data = $('#ProsesFilter').serialize() + '&page=' + $('#page').val();
-    target.addClass('blur-loading');
+    const target = $('#tabel_kunjungan');
+    const data   = $('#ProsesFilter').serializeArray();
+
+    data.push({
+        name : 'page',
+        value: parseInt($('#page').val(), 10) || 1
+    });
+
     $.ajax({
-        type: 'POST',
-        url: '_Page/Kunjungan/TabelKunjungan.php',
-        data: data,
-        dataType: 'JSON',
-        success: function(res) {
-            if (res.status === "success") {
-                target.fadeOut(150, function () {
-                    target.html(res.html).fadeIn(150);
-                });
-                $('#page_info').html('Page ' + res.page + ' Of ' + res.total_page);
-                $('#prev_button').prop('disabled', res.page <= 1);
-                $('#next_button').prop('disabled', res.page >= res.total_page);
-            } else {
-                target.html(res.html);
-                $('#prev_button').prop('disabled', true);
-                $('#next_button').prop('disabled', true);
-                $('#page_info').html('Page 1 Of 1');
-            }
-            target.removeClass('blur-loading');
+        type    : 'POST',
+        url     : '_Page/Kunjungan/TabelKunjungan.php',
+        data    : data,
+        dataType: 'json',
+
+        beforeSend: function() {
+            tableLoading('#TabelKunjunganHeader', true);
         },
-        error: function(xhr, status, error) {
-            target.html('<tr><td colspan="9" class="text-center text-danger"><small>Terjadi kesalahan pada sistem atau data tidak valid.</small></td></tr>');
-            $('#prev_button').prop('disabled', true);
-            $('#next_button').prop('disabled', true);
-            $('#page_info').html('Page 1 Of 1');
-            target.removeClass('blur-loading');
+
+        success: function(res) {
+            if (res.status === 'success') {
+                target.html(res.html);
+
+                // Inisialisasi responsive card pada table
+                initResponsiveTable('#TabelKunjunganHeader');
+
+                // Sinkronkan halaman dari response
+                $('#page').val(res.page);
+
+                // Informasi pagination
+                $('#page_info').text(
+                    'Page ' + res.page + ' Of ' + res.total_page
+                );
+
+                // Tombol pagination
+                $('#prev_button').prop('disabled', res.page <= 1);
+
+                $('#next_button').prop(
+                    'disabled',
+                    res.total_page <= 0 || res.page >= res.total_page
+                );
+
+                return;
+            }
+
+            showEmptyKunjungan(
+                res.html || 'Tidak ada data kunjungan.'
+            );
+        },
+
+        error: function(xhr) {
+            showEmptyKunjungan(
+                '<small class="text-danger">' +
+                    'Terjadi kesalahan pada sistem atau data tidak valid.' +
+                '</small>'
+            );
+
+            console.error(xhr.responseText);
+        },
+
+        complete: function() {
+            tableLoading('#TabelKunjunganHeader', false);
         }
     });
 }
+
 
 function ShowDetailKunjungan(id_anggota) {
     $('#detail_view').html('Loading...');
@@ -89,12 +142,14 @@ $(document).ready(function() {
         var page_now = parseInt($('#page').val(), 10);
         $('#page').val(page_now + 1);
         ShowData(0);
+        scrollToTop();
     });
 
     $(document).on('click', '#prev_button', function() {
         var page_now = parseInt($('#page').val(), 10);
         $('#page').val(page_now - 1);
         ShowData(0);
+        scrollToTop();
     });
 
     // --------------------------------

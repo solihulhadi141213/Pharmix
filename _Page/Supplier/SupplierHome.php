@@ -59,8 +59,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="table table-responsive mt-3">
-                        <table class="table table-hover table-striped">
+                    <div class="table-load-container mt-3">
+                        <table class="table table-hover table-responsive-card" id="TableSupplier">
                             <thead>
                                 <tr>
                                     <th><b>No</b></th>
@@ -83,7 +83,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer border-0">
                     <div class="row">
                         <div class="col-6">
                             <small id="page_info">
@@ -91,10 +91,10 @@
                             </small>
                         </div>
                         <div class="col-6 text-end">
-                            <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="prev_button">
+                            <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button">
                                 <i class="bi bi-chevron-left"></i>
                             </button>
-                            <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="next_button">
+                            <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button">
                                 <i class="bi bi-chevron-right"></i>
                             </button>
                         </div>

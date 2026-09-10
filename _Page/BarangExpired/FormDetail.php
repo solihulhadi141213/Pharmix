@@ -53,47 +53,54 @@
     $nama_barang= $DataBarang['nama_barang'];
     $kode_barang= $DataBarang['kode_barang'];
     $satuan_barang= $DataBarang['satuan_barang'];
+
+    // Routing Status
+    if($StatusExpired=='Terdaftar'){
+        $label_status = '<label class="badge bg-success">Terdaftar</label>';
+    }else{
+        $label_status = '<label class="badge bg-danger">Terjual</label>';
+    }
     echo '
         <div class="row mb-3">
-            <div class="col-5"><small>Kode Barang</small></div>
-            <div class="col-7">
+            <div class="col-5"><small>No. Batch</small></div>
+            <div class="col-7 text-end">
+                <small><b class="text text-grayish">'.$no_batch.'</b></small>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-5"><small>Kode</small></div>
+            <div class="col-7 text-end">
                 <small><span class="text text-grayish">'.$kode_barang.'</span></small>
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-5"><small>Nama Barang</small></div>
-            <div class="col-7">
+            <div class="col-5"><small>Nama/Merek</small></div>
+            <div class="col-7 text-end">
                 <small><span class="text text-grayish">'.$nama_barang.'</span></small>
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-5"><small>No. Batch</small></div>
-            <div class="col-7">
-                <small><span class="text text-grayish">'.$no_batch.'</span></small>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-5"><small>Expire Date</small></div>
-            <div class="col-7">
+            <div class="col-5"><small>Expire</small></div>
+            <div class="col-7 text-end">
                 <small><span class="text text-grayish">'.$expired_date.'</span></small>
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-5"><small>Reminder Date</small></div>
-            <div class="col-7">
+            <div class="col-5"><small>Reminder</small></div>
+            <div class="col-7 text-end">
                 <small><span class="text text-grayish">'.$reminder_date.'</span></small>
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-5"><small>Jumlah (QTY)</small></div>
-            <div class="col-7">
+            <div class="col-5"><small>QTY</small></div>
+            <div class="col-7 text-end">
                 <small><span class="text text-grayish">'.$qty_batch.' '.$satuan_barang.'</span></small>
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-5"><small>Status</small></div>
-            <div class="col-7">
-                <small><span class="text text-grayish">'.$StatusExpired.'</span></small>
+            <div class="col-7 text-end">
+                <small>'.$label_status.'</small>
             </div>
         </div>
     ';

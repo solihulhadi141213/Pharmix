@@ -80,15 +80,10 @@
                 $stok_barang= $data['stok_barang'];
                 $stok_barang_rp = "" . number_format($stok_barang,0,',','.');
                 echo '
-                    <tr>
-                        <td><small>'.$no.'</small></td>
-                        <td><small>'.$kode_barang.'</small></td>
-                        <td><small>'.$nama_barang.'</small></td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-floating btn-primary" data-bs-toggle="modal" data-bs-target="#ModalTambahBarangExpired" data-id="'.$id_barang.'">
-                                <i class="bi bi-check"></i>
-                            </button>
-                        </td>
+                    <tr style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#ModalTambahBarangExpired" data-id="'.$id_barang.'">
+                        <td><small class="text-muted">'.$no.'</small></td>
+                        <td><small class="text-muted">'.$kode_barang.'</small></td>
+                        <td><small class="text-muted">'.$nama_barang.'</small></td>
                     </tr>
                 ';
                 $no++;

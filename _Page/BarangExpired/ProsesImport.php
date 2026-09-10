@@ -86,8 +86,8 @@
                                                 $reminder_date=date('Y-m-d',$strtotime2);
 
                                                 //Validasi Jumlah Digit Nomor Batch
-                                                if(strlen($no_batch)>20){
-                                                    $ValidasiDigitBatch="Digit Batch Maksimal 20";
+                                                if(strlen($no_batch)>50){
+                                                    $ValidasiDigitBatch="Digit Batch Maksimal 50";
                                                 }else{
                                                     $ValidasiDigitBatch="Valid";
                                                 }

@@ -75,8 +75,8 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="tabel table-responsive mt-3">
-                            <table class="table table-hover table-striped">
+                        <div class="table-load-container mt-3">
+                            <table class="table table-hover table-responsive-card" id="tabel_barang">
                                 <thead>
                                     <tr>
                                         <th><b>No</b></th>
@@ -101,7 +101,7 @@
                         </div>
                         <!-- Data Barang Akan Ditampilkan Disini -->
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer border-0">
                         <div class="row">
                             <div class="col-6">
                                 <small id="page_info">

@@ -1,12 +1,34 @@
-//Fungsi Menampilkan Data Akses
+
+//Fungsi Untuk Menampilkan Data Pasien
 function ShowData() {
-    var ProsesFilter = $('#ProsesFilter').serialize();
+    const ProsesFilter = $('#ProsesFilter').serialize();
+
     $.ajax({
-        type    : 'POST',
-        url     : '_Page/Barang/TabelBarang.php',
-        data    : ProsesFilter,
+        type: 'POST',
+        url: '_Page/Barang/TabelBarang.php',
+        data: ProsesFilter,
+
+        beforeSend: function() {
+            tableLoading('#tabel_barang', true);
+        },
+
         success: function(data) {
             $('#TabelBarang').html(data);
+            initResponsiveTable('#tabel_barang');
+        },
+
+        error: function() {
+            $('#TabelBarang').html(`
+                <tr class="table-empty">
+                    <td colspan="9" class="text-center text-danger">
+                        Gagal memuat data pasien
+                    </td>
+                </tr>
+            `);
+        },
+
+        complete: function() {
+            tableLoading('#tabel_barang', false);
         }
     });
 }
@@ -451,12 +473,14 @@ $(document).ready(function() {
         var next_page = page_now + 1;
         $('#page').val(next_page);
         ShowData(0);
+        scrollToTop();
     });
     $(document).on('click', '#prev_button', function() {
         var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
         var next_page = page_now - 1;
         $('#page').val(next_page);
         ShowData(0);
+        scrollToTop();
     });
 
 

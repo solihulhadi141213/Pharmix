@@ -12,7 +12,7 @@
     if (empty($SessionIdAkses)) {
         echo '
             <tr>
-                <td colspan="8" class="text-center">
+                <td colspan="9" class="text-center">
                     <small class="text-danger">
                         Sesi Akses Sudah Berakhir! Silahkan Login Ulang
                     </small>
@@ -81,7 +81,7 @@
     if ($jml_data == 0) {
         echo '
             <tr>
-                <td colspan="8" class="text-center text-danger">
+                <td colspan="9" class="text-center text-danger">
                     Tidak Ada Data Yang Ditampilkan.
                 </td>
             </tr>
@@ -111,21 +111,31 @@
             $nama_barang   = htmlspecialchars($data['nama_barang'] ?? '', ENT_QUOTES, 'UTF-8');
             $kode_barang   = htmlspecialchars($data['kode_barang'] ?? '', ENT_QUOTES, 'UTF-8');
             $satuan_barang = htmlspecialchars($data['satuan_barang'] ?? '', ENT_QUOTES, 'UTF-8');
-
+            // Routing Status
+            if($status=='Terdaftar'){
+                $label_status = '<label class="badge bg-success">Terdaftar</label>';
+            }else{
+                $label_status = '<label class="badge bg-danger">Terjual</label>';
+            }
             echo '
                 <tr>
-                    <td><small class="text-muted">' . $no . '</small></td>
-                    <td>
+                    <td class="table-number"><small class="text-muted">' . $no . '</small></td>
+                    <td class="table-title">
                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="' . $id_barang_bacth . '">
-                            <small>' . $kode_barang . '</small>
+                            <small>' . $no_batch . '</small>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailBarang" data-id="' . $id_barang . '">
+                            <small class="text-secondary">' . $kode_barang . '</small>
                         </a>
                     </td>
                     <td><small class="text-muted">' . $nama_barang . '</small></td>
-                    <td><small class="text-muted">' . $no_batch . '</small></td>
-                    <td><small class="text-muted">' . $expired_date . '</small></td>
-                    <td><small class="text-muted">' . $qty_batch . ' ' . $satuan_barang . '</small></td>
-                    <td><small class="text-muted">' . $status . '</small></td>
-                    <td>
+                    <td><small class="text-muted">'.date('d/m/Y', strtotime($expired_date)).'</small></td>
+                    <td><small class="text-muted">' . $qty_batch . '</small></td>
+                    <td><small class="text-muted">' . $satuan_barang . '</small></td>
+                    <td>' . $label_status . '</td>
+                    <td class="table-action">
                         <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots-vertical"></i>
                         </button>

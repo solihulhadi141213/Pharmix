@@ -1,40 +1,68 @@
 //Fungsi Menampilkan Data
+// ============================================================
+// MENAMPILKAN DATA SUPPLIER
+// ============================================================
 function ShowData() {
-
-    // Target And Filter
-    let target = $('#tabel_supplier');
-    let data   = $('#ProsesFilter').serialize();
-
-    target.addClass('blur-loading');
+    const target = $('#tabel_supplier');
+    const data   = $('#ProsesFilter').serialize();
 
     $.ajax({
         type    : 'POST',
         url     : '_Page/Supplier/TabelSupplier.php',
         data    : data,
-        dataType: 'JSON',
-        success : function(res) {
+        dataType: 'json',
 
-            if(res.status === "success"){
+        beforeSend: function() {
+            tableLoading('#TableSupplier', true);
+        },
 
-                target.fadeOut(150, function () {
-                    target.html(res.html).fadeIn(150);
-                });
-
-                  // Update info page
-                $('#page_info').html('Page ' + res.page + ' Of ' + res.total_page);
-
-                  // Handle tombol
-                $('#prev_button').prop('disabled', res.page <= 1);
-                $('#next_button').prop('disabled', res.page >= res.total_page);
-
-            }else{
+        success: function(res) {
+            if (res.status === 'success') {
                 target.html(res.html);
+
+                // Gunakan ID table, bukan ID tbody
+                initResponsiveTable('#TableSupplier');
+
+                // Update informasi halaman
+                $('#page_info').text(
+                    'Page ' + res.page + ' Of ' + res.total_page
+                );
+
+                // Pengaturan tombol pagination
+                $('#prev_button').prop('disabled', res.page <= 1);
+                $('#next_button').prop(
+                    'disabled',
+                    res.total_page <= 0 || res.page >= res.total_page
+                );
+
+                return;
             }
 
-            target.removeClass('blur-loading');
+            target.html(res.html);
+
+            $('#prev_button, #next_button').prop('disabled', true);
+        },
+
+        error: function(xhr) {
+            target.html(`
+                <tr class="table-empty">
+                    <td colspan="8" class="text-center text-danger">
+                        <small>Gagal memuat data supplier.</small>
+                    </td>
+                </tr>
+            `);
+
+            $('#prev_button, #next_button').prop('disabled', true);
+
+            console.error(xhr.responseText);
+        },
+
+        complete: function() {
+            tableLoading('#TableSupplier', false);
         }
     });
 }
+
 
 
 //Fungsi Menampilkan Informasi Detail Supplier
@@ -172,6 +200,7 @@ function ShowRiwayatRincianTransaksi(id_supplier) {
 $(document).ready(function() {
 
     //Inisiasi Data Pertama Kali
+    initResponsiveTable('#TableSupplier');
     ShowData();
 
     // Auto Focus ModalFilter
@@ -198,12 +227,14 @@ $(document).ready(function() {
         var next_page = page_now + 1;
         $('#page').val(next_page);
         ShowData(0);
+        scrollToTop();
     });
     $(document).on('click', '#prev_button', function() {
         var page_now = parseInt($('#page').val(), 10); // Pastikan nilai diambil sebagai angka
         var next_page = page_now - 1;
         $('#page').val(next_page);
         ShowData(0);
+        scrollToTop();
     });
     
     // Auto Focus ModalTambahSupplier
