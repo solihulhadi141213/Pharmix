@@ -1,37 +1,71 @@
 //Fungsi Menampilkan Tabel Sesi
 function ShowSesi() {
-
-    // Target And Filter
-    let target = $('#TabelSesi');
-    let data   = $('#ProsesFilter').serialize();
-
-    target.addClass('blur-loading');
+    const target = $('#TabelSesi');
+    const table  = $('#tabel_sesi');
+    const data   = $('#ProsesFilter').serialize();
 
     $.ajax({
-        type: 'POST',
-        url: '_Page/StockOpename/TabelSesi.php',
-        data: data,
+        type    : 'POST',
+        url     : '_Page/StockOpename/TabelSesi.php',
+        data    : data,
         dataType: 'json',
+
+        beforeSend: function() {
+            tableLoading(table, true);
+        },
+
         success: function(res) {
-
-            if(res.status === "success"){
-
-                target.fadeOut(150, function () {
-                    target.html(res.html).fadeIn(150);
-                });
-
-                // Update info page
-                $('#page_info').html('Page ' + res.page + ' Of ' + res.total_page);
-
-                // Handle tombol
-                $('#prev_button').prop('disabled', res.page <= 1);
-                $('#next_button').prop('disabled', res.page >= res.total_page);
-
-            }else{
+            if (res.status === 'success') {
                 target.html(res.html);
+
+                // Inisialisasi responsive card setelah HTML dimasukkan
+                initResponsiveTable(table);
+
+                // Update pagination
+                $('#page_info').text(
+                    'Page ' + res.page + ' Of ' + res.total_page
+                );
+
+                $('#prev_button').prop('disabled', res.page <= 1);
+                $('#next_button').prop(
+                    'disabled',
+                    res.total_page <= 0 || res.page >= res.total_page
+                );
+
+                return;
             }
 
-            target.removeClass('blur-loading');
+            target.html(res.html || `
+                <tr class="table-empty">
+                    <td colspan="9" class="text-center text-danger">
+                        <small>Data sesi tidak dapat ditampilkan.</small>
+                    </td>
+                </tr>
+            `);
+
+            $('#page_info').text('Page 1 Of 1');
+            $('#prev_button, #next_button').prop('disabled', true);
+        },
+
+        error: function(xhr) {
+            target.html(`
+                <tr class="table-empty">
+                    <td colspan="9" class="text-center text-danger">
+                        <small>
+                            Terjadi kesalahan saat memuat data sesi.
+                        </small>
+                    </td>
+                </tr>
+            `);
+
+            $('#page_info').text('Page 1 Of 1');
+            $('#prev_button, #next_button').prop('disabled', true);
+
+            console.error(xhr.responseText);
+        },
+
+        complete: function() {
+            tableLoading(table, false);
         }
     });
 }
@@ -58,40 +92,79 @@ function ShowDetailSesi(id_stock_opname) {
     });
 }
 
-//Fungsi Menampilkan Barang
+// MENAMPILKAN TABEL BARANG
 function ShowBarang() {
-    
-    // Target And Filter
-    let target = $('#TabelBarang');
-    let data   = $('#ProsesFilterBarang').serialize();
-
-    target.addClass('blur-loading');
+    const target = $('#TabelBarang');
+    const data   = $('#ProsesFilterBarang').serialize();
 
     $.ajax({
         type    : 'POST',
         url     : '_Page/StockOpename/TabelBarang.php',
         data    : data,
         dataType: 'json',
-        success : function(res) {
 
-            if(res.status === "success"){
+        beforeSend: function() {
+            tableLoading('#tabel_barang', true);
+        },
 
-                target.fadeOut(150, function () {
-                    target.html(res.html).fadeIn(150);
-                });
-
-                // Update info page
-                $('#page_info_barang').html('Page ' + res.page + ' Of ' + res.total_page);
-
-                // Handle tombol
-                $('#prev_button_barang').prop('disabled', res.page <= 1);
-                $('#next_button_barang').prop('disabled', res.page >= res.total_page);
-
-            }else{
+        success: function(res) {
+            if (res.status === 'success') {
                 target.html(res.html);
+
+                // Inisialisasi card setelah HTML dimasukkan
+                initResponsiveTable('#tabel_barang');
+
+                // Update pagination
+                $('#page_info_barang').text(
+                    'Page ' + res.page + ' Of ' + res.total_page
+                );
+
+                $('#prev_button_barang').prop(
+                    'disabled',
+                    res.page <= 1
+                );
+
+                $('#next_button_barang').prop(
+                    'disabled',
+                    res.total_page <= 0 || res.page >= res.total_page
+                );
+
+                return;
             }
 
-            target.removeClass('blur-loading');
+            target.html(res.html || `
+                <tr class="table-empty">
+                    <td colspan="9" class="text-center text-danger">
+                        <small>Data barang tidak dapat ditampilkan.</small>
+                    </td>
+                </tr>
+            `);
+
+            $('#page_info_barang').text('Page 1 Of 1');
+            $('#prev_button_barang, #next_button_barang')
+                .prop('disabled', true);
+        },
+
+        error: function(xhr) {
+            target.html(`
+                <tr class="table-empty">
+                    <td colspan="9" class="text-center text-danger">
+                        <small>
+                            Terjadi kesalahan saat memuat data barang.
+                        </small>
+                    </td>
+                </tr>
+            `);
+
+            $('#page_info_barang').text('Page 1 Of 1');
+            $('#prev_button_barang, #next_button_barang')
+                .prop('disabled', true);
+
+            console.error(xhr.responseText);
+        },
+
+        complete: function() {
+            tableLoading('#tabel_barang', false);
         }
     });
 }

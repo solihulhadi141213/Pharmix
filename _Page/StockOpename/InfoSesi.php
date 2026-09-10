@@ -66,15 +66,15 @@
     $status    = $DataStockOpename['status'];
 
     //Format Tanggal
-    $start_at  = date('d F Y H:i:s T',strtotime($start_at));
+    $start_at  = date('d/m/Y H:i',strtotime($start_at));
     if(!empty($DataStockOpename['finish_at'])){
-        $finish_at = date('d F Y H:i:s T',strtotime($finish_at));
+        $finish_at = date('d/m/Y H:i',strtotime($finish_at));
     }else{
         $finish_at = "-";
     }
     
-    $creatAt   = date('d/m/Y H:i:s T',strtotime($creatAt));
-    $updateAt  = date('d/m/Y H:i:s T',strtotime($updateAt));
+    $creatAt   = date('d/m/Y H:i',strtotime($creatAt));
+    $updateAt  = date('d/m/Y H:i',strtotime($updateAt));
 
     if(!empty($creatBy)){
         $creatBy = !empty($creatByNama) ? htmlspecialchars($creatByNama) : htmlspecialchars($creatBy);

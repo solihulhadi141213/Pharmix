@@ -208,8 +208,8 @@
 
             $html .= '
                 <tr>
-                    <td><small class="text-muted">'.$no.'</small></td>
-                    <td>
+                    <td class="table-number"><small class="text-muted">'.$no.'</small></td>
+                    <td class="table-title">
                         <a href="javascript:void(0);" class="show_modal_detail_stock_opname_barang" data-id_barang="'.$id_barang.'" data-id_stock_opname="'.$id_stock_opname.'">
                             <small>'.$kode_barang.'</small>
                         </a>
@@ -220,7 +220,7 @@
                     <td><small class="text-muted">'.$stok_akhir.'</small></td>
                     <td><small class="text-muted">'.$stok_gap.'</small></td>
                     <td><small class="text-muted">'.$jumlah.'</small></td>
-                    <td>'.$tombol.'</td>
+                    <td class="table-action">'.$tombol.'</td>
                 </tr>
             ';
             $no++;

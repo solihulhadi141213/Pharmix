@@ -33,7 +33,7 @@
     <div id="data_view">
         <div class="row">
             <div class="col-lg-12">
-                <div class="card">
+                <div class="card card-data card-table">
                     <div class="card-header">
                         <div class="row">
                             <div class="col-12 mb-2 text-end">
@@ -46,29 +46,27 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table table-responsive mt-3">
-                            <table class="table table-hover table-striped">
-                                <thead>
-                                    <tr>
-                                        <th><b>No</b></th>
-                                        <th><b>Tanggal Sesi</b></th>
-                                        <th><b>Jumlah Item</b></th>
-                                        <th><b>Selisih (+)</b></th>
-                                        <th><b>Selisih (-)</b></th>
-                                        <th><b>Status</b></th>
-                                        <th><b>Opsi</b></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="TabelSesi">
-                                    <tr>
-                                        <td colspan="7" class="text-center text-danger">Tidak Ada Data Yang Ditampilkan</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-load-container mt-3">
+                        <table class="table table-hover table-responsive-card" id="tabel_sesi">
+                            <thead>
+                                <tr>
+                                    <th><b>No</b></th>
+                                    <th><b>Tanggal Sesi</b></th>
+                                    <th><b>Jumlah Item</b></th>
+                                    <th><b>Selisih (+)</b></th>
+                                    <th><b>Selisih (-)</b></th>
+                                    <th><b>Status</b></th>
+                                    <th><b>Opsi</b></th>
+                                </tr>
+                            </thead>
+                            <tbody id="TabelSesi">
+                                <tr>
+                                    <td colspan="7" class="text-center text-danger">Tidak Ada Data Yang Ditampilkan</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer border-0">
                         <div class="row">
                             <div class="col-6">
                                 <small id="page_info">
@@ -76,10 +74,10 @@
                                 </small>
                             </div>
                             <div class="col-6 text-end">
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="prev_button">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button">
                                     <i class="bi bi-chevron-left"></i>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="next_button">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button">
                                     <i class="bi bi-chevron-right"></i>
                                 </button>
                             </div>
@@ -116,7 +114,7 @@
 
         <div class="row">
             <div class="col-12">
-                <div class="card">
+                <div class="card card-data card-table">
                     <div class="card-header">
                         <div class="row">
                             <div class="col-6">
@@ -132,31 +130,31 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table table-responsive mt-3">
-                            <table class="table table-hover table-striped">
-                                <thead>
-                                    <tr>
-                                        <th><b>No</b></th>
-                                        <th><b>Kode</b></th>
-                                        <th><b>Barang</b></th>
-                                        <th><b>Harga (Rp)</b></th>
-                                        <th><b>Stok Awal</b></th>
-                                        <th><b>Stok Akhir</b></th>
-                                        <th><b>Selisih</b></th>
-                                        <th><b>Jumlah (Rp)</b></th>
-                                        <th><b>Opsi</b></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="TabelBarang">
-                                    <tr>
-                                        <td colspan="9" class="text-center text-danger">Tidak Ada Data Yang Ditampilkan</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-load-container mt-3">
+                        <table class="table table-hover table-responsive-card" id="tabel_barang">
+                            <thead>
+                                <tr>
+                                    <th><b>No</b></th>
+                                    <th><b>Kode</b></th>
+                                    <th><b>Barang</b></th>
+                                    <th><b>Harga (Rp)</b></th>
+                                    <th><b>Stok Awal</b></th>
+                                    <th><b>Stok Akhir</b></th>
+                                    <th><b>Selisih</b></th>
+                                    <th><b>Jumlah (Rp)</b></th>
+                                    <th><b>Opsi</b></th>
+                                </tr>
+                            </thead>
+                            <tbody id="TabelBarang">
+                                <tr class="table-empty">
+                                    <td colspan="9" class="text-center text-danger">
+                                        Tidak ada data yang ditampilkan
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer border-0">
                         <div class="row">
                             <div class="col-6">
                                 <small id="page_info_barang">
@@ -164,10 +162,10 @@
                                 </small>
                             </div>
                             <div class="col-6 text-end">
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="prev_button_barang">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="prev_button_barang">
                                     <i class="bi bi-chevron-left"></i>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-info btn-floating" id="next_button_barang">
+                                <button type="button" class="btn btn-md btn-outline-info btn-floating" id="next_button_barang">
                                     <i class="bi bi-chevron-right"></i>
                                 </button>
                             </div>

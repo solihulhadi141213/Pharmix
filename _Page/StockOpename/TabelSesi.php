@@ -258,8 +258,8 @@
 
             $html .= '
                 <tr>
-                    <td><small class="text-muted">'.$no.'</small></td>
-                    <td>
+                    <td class="table-number"><small class="text-muted">'.$no.'</small></td>
+                    <td class="table-title">
                         <a class="modal_detail_sesi" href="javascript:void(0)" data-id="'.$id_stock_opname.'">
                             <small>'.$start_at_format.'</small>
                         </a>
@@ -268,7 +268,7 @@
                     <td><small class="text-muted">'.$JumlahKelebihan_rp.'</small></td>
                     <td><small class="text-muted">'.$JumlahKekurangan_rp.'</small></td>
                     <td><small class="text-muted">'.$label_status.'</small></td>
-                    <td>
+                    <td class="table-action">
                         <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots-vertical"></i>
                         </button>
