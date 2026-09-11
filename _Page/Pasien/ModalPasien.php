@@ -8,16 +8,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-2">
-                        <div class="col-4">
+                    <div class="row mb-3">
+                        <div class="col-12">
                             <label for="batas">
                                 <small>Batas/Limit</small>
                             </label>
-                        </div>
-                        <div class="col-1">
-                            <small>:</small>
-                        </div>
-                        <div class="col-7">
                             <select name="batas" id="batas" class="form-control">
                                 <option value="10">10</option>
                                 <option value="25">25</option>
@@ -28,16 +23,11 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-4">
+                    <div class="row mb-3">
+                        <div class="col-12">
                             <label for="OrderBy">
-                                <small>Mode Urutan</small>
+                                <small><i>Order By</i></small>
                             </label>
-                        </div>
-                        <div class="col-1">
-                            <small>:</small>
-                        </div>
-                        <div class="col-7">
                             <select name="OrderBy" id="OrderBy" class="form-control">
                                 <option value="">Pilih</option>
                                 <option value="nik">NIK</option>
@@ -50,32 +40,22 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-4">
+                    <div class="row mb-3">
+                        <div class="col-12">
                             <label for="ShortBy">
-                                <small>Tipe Urutan</small>
+                                <small><i>Short By</i></small>
                             </label>
-                        </div>
-                        <div class="col-1">
-                            <small>:</small>
-                        </div>
-                        <div class="col-7">
                             <select name="ShortBy" id="ShortBy" class="form-control">
                                 <option value="DESC">Z To A</option>
                                 <option value="ASC">A To Z</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-4">
+                    <div class="row mb-3">
+                        <div class="col-12">
                             <label for="keyword_by">
-                                <small>Dasar Pencarian</small>
+                                <small><i>Keyword By</i></small>
                             </label>
-                        </div>
-                        <div class="col-1">
-                            <small>:</small>
-                        </div>
-                        <div class="col-7">
                             <select name="keyword_by" id="keyword_by" class="form-control">
                                 <option value="">Pilih</option>
                                 <option value="id_pasien">RM</option>
@@ -88,20 +68,15 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-4">
-                            <label for="keyword_by">
-                                <small>Kata Kunci</small>
+                        <div class="col-12" id="FormFilter">
+                            <label for="keyword">
+                                <small><i>Keyword</i></small>
                             </label>
-                        </div>
-                        <div class="col-1">
-                            <small>:</small>
-                        </div>
-                        <div class="col-7" id="FormFilter">
                             <input type="text" name="keyword" id="keyword" class="form-control">
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded">
                         <i class="bi bi-save"></i> Filter
                     </button>
@@ -208,7 +183,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded" id="TombolTambahPasien">
                         <i class="bi bi-save"></i> Simpan
                     </button>
@@ -235,7 +210,7 @@
                 <div class="modal-body" id="FormDetail">
                     <!-- Form Detail -->
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded">
                         Selengkapnya <i class="bi bi-chevron-right"></i> 
                     </button>
@@ -269,7 +244,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded" id="TombolEdit">
                         <i class="bi bi-save"></i> Simpan
                     </button>
@@ -303,10 +278,232 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer modal-footer-responsive">
                     <button type="submit" class="btn btn-primary btn-rounded" id="TombolDelete">
                         <i class="bi bi-check"></i> Ya, Hapus
                     </button>
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Detail Kunjungan -->
+<div class="modal fade" id="ModalDetailKunjungan" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+           <div class="modal-header">
+                <h5 class="modal-title text-dark">
+                    <i class="bi bi-info-circle"></i> Detail Kunjungan Pasien
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="FormDetailKunjungan">
+                <!-- Form Detail -->
+            </div>
+            <div class="modal-footer modal-footer-responsive">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Detail Resep -->
+<div class="modal fade" id="ModalDetailResep" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+           <div class="modal-header">
+                <h5 class="modal-title text-dark">
+                    <i class="bi bi-info-circle"></i> Detail Resep
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="FormDetailResep">
+                <!-- Form Detail -->
+            </div>
+            <div class="modal-footer modal-footer-responsive">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Detail Transaksi -->
+<div class="modal fade" id="ModalDetailTransaksi" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+           <div class="modal-header">
+                <h5 class="modal-title text-dark">
+                    <i class="bi bi-info-circle"></i> Detail Transaksi
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12" id="FormDetailTransaksi">
+                        <!-- Form Detail -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modal-footer-responsive">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Detail IHS -->
+<div class="modal fade" id="ModalDetailIhs" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+           <div class="modal-header">
+                <h5 class="modal-title text-dark">
+                    <i class="bi bi-info-circle"></i> Detail IHS
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12" id="FormDetailIhs">
+                        <!-- Form Detail -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modal-footer-responsive">
+                <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Export -->
+<div class="modal fade" id="ModalExport" tabindex="-1">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form action="_Page/Pasien/ProsesExport.php" method="POST" target="_blank">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">
+                        <i class="bi bi-download"></i> Export/Download
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12" id="FormExport">
+                            <!-- Form Export Akan Tampil Disini -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-rounded">
+                        <i class="bi bi-download"></i> Export
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Import -->
+<div class="modal fade" id="ModalImport" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form action="javascript:void(0);" id="ProsesImport">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark">
+                        <i class="bi bi-upload"></i> Import Data
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <small class="credit">
+                                Sebelum melakukan import data, perhatikan hal berikut ini.
+                                <ol>
+                                    <li>
+                                        Pastikan anda menggunakan template file untuk melakukan import 
+                                        pada link <a href="_Page/Pasien/Template-Pasien.xlsx">berikut ini</a>.
+                                    </li>
+                                    <li>
+                                        Isi kolom <b>No RM, IHS, NIK, Nama, Email, Kontak, Alamat, Gender, Tempat Lahir dan Tanggal Lahir</b> sesuai data yang anda miliki.
+                                    </li>
+                                    <li>
+                                        Kolom <b>IHS</b> diisi hanya jika pasien sudah diketahui IHS nya.
+                                    </li>
+                                    <li>
+                                        ID Pasien, Nama, dan Gender wajib diisi. Gender diisi Male atau Female.
+                                    </li>
+                                    <li>
+                                        ID Pasien tidak boleh duplikat. IHS, NIK, Email, dan Kontak juga tidak boleh duplikat jika diisi.
+                                        Jika ada data tidak valid, seluruh import dibatalkan.
+                                    </li>
+                                </ol>
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label for="file_pasien">Upload File (Excel)</label>
+                            <div class="input-group">
+                                <input type="file" name="file_pasien" id="file_pasien" class="form-control">
+                                <button type="submit" class="btn btn-primary" id="TombolImport">
+                                    <i class="bi bi-upload"></i> Import
+                                </button>
+                            </div>
+                            <small class="text text-muted">Maksimal 5 mb</small>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="table-responsive border rounded" style="max-height: 350px; overflow-y: auto;">
+                                <table class="table table-striped table-hover mb-0">
+                                    <thead class="table-light sticky-top">
+                                        <tr>
+                                            <th><b>No.RM</b></th>
+                                            <th><b>IHS</b></th>
+                                            <th><b>NIK</b></th>
+                                            <th><b>Nama</b></th>
+                                            <th><b>Kontak</b></th>
+                                            <th><b>Gender</b></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="NotifikasiImportPasien">
+                                        <tr>
+                                            <td colspan="6" class="text-center">
+                                                <!-- Notifikasi Import Akan Muncul Disini -->
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="button" class="btn btn-primary btn-md w-100" id="TombolSelesai" disabled>
+                                <i class="bi bi-check"></i> Selesai
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-rounded" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle"></i> Tutup
                     </button>

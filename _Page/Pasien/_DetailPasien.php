@@ -135,7 +135,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12">
 
         <!-- Menampilkan Detail Informasi Pasien -->
          <?php
@@ -263,7 +263,7 @@
     </div>
 
     <!-- Menampilkan Riwayat Kunjungan -->
-    <div class="col-md-4">
+    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12">
          <form id="FilterKunjungan">
             <input type="hidden" name="id_anggota" id="pagid_anggota_kunjungan" value="<?php echo $id_anggota; ?>">
             <input type="hidden" name="page_kunjungan" id="page_kunjungan" value="1">
@@ -307,7 +307,7 @@
     </div>
 
     <!-- Menampilkan Riwayat Resep -->
-    <div class="col-md-4">
+    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12">
         <form id="FilterResep">
             <input type="hidden" name="id_anggota" value="<?php echo tampilDetail($id_anggota); ?>">
             <input type="hidden" name="page_resep" id="page_resep" value="1">
@@ -351,7 +351,7 @@
     </div>
 
     <!-- Menampilkan Riwayat Transaksi -->
-    <div class="col-md-4">
+    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12">
         <form id="FilterTransaksi">
             <input type="hidden" name="id_anggota" value="<?php echo tampilDetail($id_anggota); ?>">
             <input type="hidden" name="page_transaksi" id="page_transaksi" value="1">

@@ -34,7 +34,7 @@
         $total_page = (int) ceil($total_data / $batas);
         $page = min($page, $total_page);
         $posisi = ($page - 1) * $batas;
-        $stmt = mysqli_prepare($Conn, 'SELECT tanggal_kunjungan, nama_dokter_penerima, jenis_kunjungan, priority, status, id_encounter FROM kunjungan WHERE id_anggota = ? ORDER BY tanggal_kunjungan DESC, id_kunjungan DESC LIMIT ?, ?');
+        $stmt = mysqli_prepare($Conn, 'SELECT id_kunjungan, tanggal_kunjungan, nama_dokter_penerima, jenis_kunjungan, priority, status, id_encounter FROM kunjungan WHERE id_anggota = ? ORDER BY tanggal_kunjungan DESC, id_kunjungan DESC LIMIT ?, ?');
         if (!$stmt) throw new RuntimeException('Gagal menyiapkan daftar kunjungan.');
         mysqli_stmt_bind_param($stmt, 'iii', $id_anggota, $posisi, $batas);
         if (!mysqli_stmt_execute($stmt)) throw new RuntimeException('Gagal membaca kunjungan.');
@@ -62,17 +62,23 @@
             $encounterRingkas = strlen($encounter) > 18
                 ? substr($encounter, 0, 8) . '...' . substr($encounter, -6)
                 : $encounter;
-            $html .= '<li class="list-group-item px-0">'
-                . '<div class="d-flex justify-content-between align-items-start gap-2 mb-2">'
-                . '<small><b><i class="bi bi-calendar-event"></i> ' . teksKunjungan($tanggal) . '</b></small>'
-                . '<span class="badge ' . ($statusClasses[$status] ?? 'bg-secondary') . '" title="' . teksKunjungan(ucfirst($status)) . '">' . teksKunjungan($statusLabels[$status] ?? '-') . '</span></div>'
-                . '<div class="small" style="display:grid;grid-template-columns:max-content auto minmax(0,1fr);column-gap:0.5rem;row-gap:0.25rem;">'
-                . '<span>Dokter</span><span>:</span><span class="text-break">' . teksKunjungan($row['nama_dokter_penerima'] ?: '-') . '</span>'
-                . '<span>Jenis Kunjungan</span><span>:</span><span class="text-break">' . teksKunjungan($row['jenis_kunjungan'] ?: '-') . '</span>'
-                . '<span>Prioritas</span><span>:</span><span><span class="badge ' . ($priorityClasses[$priority] ?? 'bg-secondary') . '">' . teksKunjungan($priority) . '</span></span>'
-                . '<span class="text-muted">Encounter</span><span class="text-muted">:</span><span class="text-muted text-break" title="' . teksKunjungan($encounter) . '">' . teksKunjungan($encounterRingkas) . '</span>'
-                . '</div>'
-                . '</li>';
+            $html .= '
+                <li class="list-group-item px-0">
+                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                        <a href="javascript:void(0);" class="detail_kunjungan" data-id="'.$row['id_kunjungan'].'">
+                            <small><i class="bi bi-calendar-event"></i> ' . teksKunjungan($tanggal) . '</small>
+                        </a>
+                    </div>
+
+                    <div class="small" style="display:grid;grid-template-columns:max-content auto minmax(0,1fr);column-gap:0.5rem;row-gap:0.25rem;">
+                        <span>Dokter</span><span>:</span><span class="text-break">' . teksKunjungan($row['nama_dokter_penerima'] ?: '-') . '</span>
+                        <span>Jenis Kunjungan</span><span>:</span><span class="text-break">' . teksKunjungan($row['jenis_kunjungan'] ?: '-') . '</span>
+                        <span>Prioritas</span><span>:</span><span><span class="badge ' . ($priorityClasses[$priority] ?? 'bg-secondary') . '">' . teksKunjungan($priority) . '</span></span>
+                        <span>Status</span><span>:</span><span><span class="badge ' . ($statusClasses[$status] ?? 'bg-secondary') . '" title="' . teksKunjungan(ucfirst($status)) . '">' . teksKunjungan($statusLabels[$status] ?? '-') . '</span></span>
+                        <span class="text-muted">ID Encounter</span><span class="text-muted">:</span><span class="text-muted text-break" title="' . teksKunjungan($encounter) . '">' . teksKunjungan($encounterRingkas) . '</span>
+                    </div>
+                </li>
+            ';
         }
         $html .= '</ul>';
         mysqli_stmt_close($stmt);

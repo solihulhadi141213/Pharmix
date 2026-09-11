@@ -50,6 +50,8 @@ function ShowDetailPasien(id_anggota){
             RiwayatKunjungan();
             RiwayatResep();
             RiwayatTransaksi();
+
+             scrollToTop();
         },
         error : function(xhr){
             console.log(xhr.responseText);
@@ -63,7 +65,7 @@ function ShowDetailPasien(id_anggota){
 
 }
 // Riwayat Kunjungan pasien
-function RiwayatKunjungan() {
+function RiwayatKunjungan(scrollToCard = false) {
     
     if (!$('#FilterKunjungan').length) return;
 
@@ -83,7 +85,17 @@ function RiwayatKunjungan() {
             if(res.status === "success"){
 
                 target.fadeOut(150, function () {
-                    target.html(res.html).fadeIn(150);
+                    target.html(res.html).fadeIn(150, function () {
+                        if (!scrollToCard || !target.is(':visible')) return;
+
+                        var card = target.closest('.card');
+                        if (!card.length) return;
+
+                        var headerHeight = $('#header').outerHeight() || 0;
+                        $('html, body').stop(true).animate({
+                            scrollTop: Math.max(0, card.offset().top - headerHeight - 16)
+                        }, 300);
+                    });
                 });
 
                 // Handle tombol
@@ -180,7 +192,7 @@ $(document).ready(function() {
     $(document).on('click', '#prev_button_kunjungan, #next_button_kunjungan', function () {
         var page = parseInt($('#page_kunjungan').val(), 10) || 1;
         $('#page_kunjungan').val(Math.max(1, page + (this.id === 'next_button_kunjungan' ? 1 : -1)));
-        RiwayatKunjungan();
+        RiwayatKunjungan(true);
     });
 
     // Form Filter
@@ -191,6 +203,11 @@ $(document).ready(function() {
         var page = parseInt(input.val(), 10) || 1;
         input.val(Math.max(1, page + (this.id.startsWith('next_') ? 1 : -1)));
         loadRiwayatPasien(key === 'resep' ? 'Resep' : 'Transaksi');
+    });
+
+    // Event ketika 'ModalFilter' ditampilkan
+    $('#ModalFilter').on('shown.bs.modal', function () {
+        $('#keyword').trigger('focus');
     });
 
     // Form Filter
@@ -684,6 +701,307 @@ $(document).ready(function() {
             behavior: 'smooth'
         });
     });
+
+    // =========================================================
+    // DETAIL KUNJUNGAN
+    // =========================================================
+    $(document).on('click', '.detail_kunjungan', function () {
+
+        // Tangkap 'id_kunjungan'
+        var id_kunjungan = $(this).data('id');
+
+        // Tampilkan Modal
+        $('#ModalDetailKunjungan').modal('show');
+
+       // Loading 'FormDetailKunjungan'
+       $('#FormDetailKunjungan').html('Loading...');
+
+       // Kirim data ke PHP dengan AJAX
+       $.ajax({
+            type     : 'POST',
+            url      : '_Page/Kunjungan/FormDetail.php',
+            dataType : 'JSON',
+            data     : {id_kunjungan: id_kunjungan},
+
+            success: function(response){
+
+                var status  = response.status;
+                var message = response.message;
+                var html    = response.html;
+
+                if(status === 'success'){
+                    $('#FormDetailKunjungan').html(html);
+                    
+                } else {
+                    // Tampilkan Pesan Kesalahan
+                    $('#FormDetailKunjungan').html(
+                        '<div class="alert alert-danger mt-3 mb-3"><small>'+message+'</small></div></div>'
+                    );
+                }
+            },
+
+            error: function(xhr){
+                console.log(xhr.responseText);
+
+                $('#FormDetailKunjungan').html(
+                    '<div class="alert alert-danger mt-3 mb-3"><small>Terjadi kesalahan sistem</small></div>'
+                );
+            }
+        });
+    });
+
+    // =========================================================
+    // DETAIL RESEP
+    // =========================================================
+    $(document).on('click', '.detail_resep', function () {
+
+        // Tangkap 'id_medication_request_group'
+        var id_medication_request_group = $(this).data('id');
+
+        // Tampilkan 'ModalDetailResep'
+        $('#ModalDetailResep').modal('show');
+
+       // Loading 'FormDetailResep'
+       $('#FormDetailResep').html('Loading...');
+
+       // Kirim data ke PHP dengan AJAX
+       $.ajax({
+            type     : 'POST',
+            url      : '_Page/Pasien/FormDetailResep.php',
+            dataType : 'JSON',
+            data     : {id_medication_request_group: id_medication_request_group},
+
+            success: function(response){
+
+                var status  = response.status;
+                var message = response.message;
+                var html    = response.html;
+
+                if(status === 'success'){
+                    $('#FormDetailResep').html(html);
+                    
+                } else {
+                    // Tampilkan Pesan Kesalahan
+                    $('#FormDetailResep').html(
+                        '<div class="alert alert-danger mt-3 mb-3"><small>'+message+'</small></div></div>'
+                    );
+                }
+            },
+
+            error: function(xhr){
+                console.log(xhr.responseText);
+
+                $('#FormDetailResep').html(
+                    '<div class="alert alert-danger mt-3 mb-3"><small>Terjadi kesalahan sistem</small></div>'
+                );
+            }
+        });
+    });
+
+    // =========================================================
+    // DETAIL TRANSAKSI
+    // =========================================================
+    $(document).on('click', '.detail_transaksi', function () {
+
+        // Tangkap 'id_transaksi_jual_beli'
+        var id_transaksi_jual_beli = $(this).data('id');
+
+        // Tampilkan 'ModalDetailTransaksi'
+        $('#ModalDetailTransaksi').modal('show');
+
+       // Loading 'FormDetailResep'
+       $('#FormDetailTransaksi').html('Loading...');
+
+       // Kirim data ke PHP dengan AJAX
+       $.ajax({
+            type     : 'POST',
+            url      : '_Page/Pasien/FormDetailTransaksi.php',
+            dataType : 'JSON',
+            data     : {id_transaksi_jual_beli: id_transaksi_jual_beli},
+
+            success: function(response){
+
+                var status  = response.status;
+                var message = response.message;
+                var html    = response.html;
+
+                if(status === 'success'){
+                    $('#FormDetailTransaksi').html(html);
+                    
+                } else {
+                    // Tampilkan Pesan Kesalahan
+                    $('#FormDetailTransaksi').html(
+                        '<div class="alert alert-danger mt-3 mb-3"><small>'+message+'</small></div></div>'
+                    );
+                }
+            },
+
+            error: function(xhr){
+                console.log(xhr.responseText);
+
+                $('#FormDetailTransaksi').html(
+                    '<div class="alert alert-danger mt-3 mb-3"><small>Terjadi kesalahan sistem</small></div>'
+                );
+            }
+        });
+    });
+
+    // ==================================================
+    // Modal Export
+    // ==================================================
+    
+    $('#ModalExport').on('show.bs.modal', function (e) {
+        $('#FormExport').html("Loading...");
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Pasien/FormExport.php',
+            success     : function(data){
+                $('#FormExport').html(data);
+            }
+        });
+    });
+    
+    // ==================================================
+    // Modal Import
+    // ==================================================
+    
+    // Modal Import
+    $('#ModalImport').on('show.bs.modal', function (e) {
+        //Kosongkan Notifikasi
+        $('#NotifikasiImport').html('<tr><td colspan="7" class="text-center"><small>No Data</small></td></tr>');
+
+        //Disabled Button
+        $('#TombolImport').prop('disabled', true);
+
+        // Reset Form
+        $('#ProsesImport')[0].reset();
+    });
+
+    //Validasi File Import
+    $('#file_pasien').on('change', function () {
+        var file = this.files[0];
+        var validTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+        var maxSize = 5 * 1024 * 1024; // 5 MB
+
+        // Reset notifikasi
+        $('#NotifikasiImportPasien').html('');
+
+        if (file) {
+            if (!validTypes.includes(file.type)) {
+                $('#NotifikasiImportPasien').html('<tr><td colspan="7" class="text-center"><small class="text-danger">Tipe File Tidak Valid</small></td></tr>');
+                $(this).val(''); // Reset input file
+                return;
+            }
+
+            if (file.size > maxSize) {
+                $('#NotifikasiImportPasien').html('<tr><td colspan="7" class="text-center"><small class="text-danger">Ukuran file terlalu besar. Maksimal 5 MB.</small></td></tr>');
+                $(this).val(''); // Reset input file
+                return;
+            }
+            $('#NotifikasiImportPasien').html('<tr><td colspan="7" class="text-center"><small class="text-success">Siap Import</small></td></tr>');
+            $('#TombolImport').prop('disabled', false);
+        }
+    });
+
+    //Proses Import
+    $('#ProsesImport').on('submit', function (e) {
+        e.preventDefault();
+
+        // Tangkap Data
+        var formData = new FormData(this);
+
+        // Loading Notifikasi 'NotifikasiImportPasien'
+        $('#NotifikasiImportPasien').html('<tr><td colspan="7" class="text-center"><small>Loading...</small></td></tr>');
+
+        // Disabled 'TombolImport' dan 'TombolSelesai'
+        $('#TombolImport').prop('disabled', true);
+        $('#TombolSelesai').prop('disabled', true);
+
+        // Proses Data Dengan 'AJAX'
+        $.ajax({
+            url        : '_Page/Pasien/ProsesImport.php',
+            type       : 'POST',
+            data       : formData,
+            dataType   : 'JSON',
+            contentType: false,
+            processData: false,
+            beforeSend : function () {
+                $('#NotifikasiImportPasien').html('<tr><td colspan="7" class="text-center"><small>Sedang Memproses Data</small></td></tr>');
+            },
+
+            success: function (response) {
+                var status  = response.status;
+                var message = response.message;
+                var html    = response.html;
+
+                // Apabila Berhasil
+                if(status=="success"){
+                    // Tampilkan Data
+                    $('#NotifikasiImportPasien').html(html);
+
+                    // Enable Tombol Selesai
+                    $('#TombolSelesai').prop('disabled', false);
+                }else{
+                    $('#NotifikasiImportPasien').html('<tr><td colspan="7" class="text-center"><small class="text-danger">'+message+'</small></td></tr>');
+
+                    // Enamble Tombol
+                    $('#TombolImport').prop('disabled', false);
+                }
+            },
+
+            error: function(xhr, status, error){
+                // Consol
+                console.log("XHR:", xhr);
+                console.log("STATUS:", status);
+                console.log("ERROR:", error);
+                console.log("RESPONSE:", xhr.responseText);
+
+                // Tampilkan Notifikasi
+                $('#NotifikasiImportPasien').html('<tr><td colspan="7" class="text-center"><small class="text-danger">Terjadi kesalahan saat mengimpor data.</small></td></tr>');
+                
+                // Enamble Tombol
+                $('#TombolImport').prop('disabled', false);
+            }
+        });
+    });
+
+    // Tombol Selesai
+    $('#TombolSelesai').on('click', function () {
+        //Reset Filter
+        $('#ProsesFilter')[0].reset();
+        $('#ProsesImport')[0].reset();
+
+        //Tampilkan Data
+        filterAndLoadTable();
+
+        // Tutup Modal
+        $('#ModalImport').modal('hide');
+
+        // Enable Tombol TombolImport dan TombolSelesai
+        $('#TombolImport').prop('disabled', true);
+        $('#TombolSelesai').prop('disabled', true);
+    });
+
+    // ==================================================
+    // Modal DETAIL IHS
+    // ==================================================
+    
+    $('#ModalDetailIhs').on('show.bs.modal', function (e) {
+        var id_ihs = $(e.relatedTarget).attr('data-id');
+        $('#FormDetailIhs').html("Loading...");
+        $.ajax({
+            type 	    : 'POST',
+            url 	    : '_Page/Pasien/FormDetailIhs.php',
+            data        : {id_ihs: id_ihs},
+            success     : function(data){
+                $('#FormDetailIhs').html(data);
+            },
+            error       : function(){
+                $('#FormDetailIhs').html('<div class="alert alert-danger">Gagal memuat detail IHS. Silakan coba lagi.</div>');
+            }
+        });
+    });
+
 });
 
 

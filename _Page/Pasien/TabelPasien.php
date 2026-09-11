@@ -113,13 +113,21 @@
             // Sensor 3 digit terakhir kontak
             if (!empty($kontak)) {
                 $kontak = substr($kontak, 0, -3) . '***';
+            }else{
+                $kontak="-";
             }
 
             // Potong ID IHS
-            if (!empty($id_ihs) && $id_ihs !== '-') {
+            if (!empty($data['id_ihs']) && $id_ihs !== '-') {
                 $id_ihs = strlen($id_ihs) > 12
                     ? substr($id_ihs, 0, 12) . '...'
                     : $id_ihs;
+            }
+
+            if(!empty($data['id_ihs'])){
+                $id_ihs = '
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetailIhs" data-id="'.htmlspecialchars($data['id_ihs'], ENT_QUOTES, 'UTF-8').'">'.htmlspecialchars($id_ihs, ENT_QUOTES, 'UTF-8').'</a>
+                ';
             }
 
             // Routing Gender
@@ -130,23 +138,27 @@
             }
 
             // Format tanggal daftar
-            $creat_at = date('d F Y',strtotime($creat_at));
+            $creat_at = date('d/m/Y',strtotime($creat_at));
             
             echo '
                 <tr>
-                    <td><small>'.$no.'</small></td>
+                    <td class="table-number"><small>'.$no.'</small></td>
                     <td>
                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="'.$id_anggota .'">
                             <small>'.$id_pasien.'</small>
                         </a>
                     </td>
-                    <td><small>'.$nama.'</small></td>
+                    <td class="table-title">
+                        <a href="javascript:void(0);" class="text text-muted" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="'.$id_anggota .'">
+                            <small>'.$nama.'</small>
+                        </a>
+                    </td>
                     <td>'.$label_gender.'</td>
                     <td><small class="text-muted">'.$nik.'</small></td>
                     <td><small class="text-muted">'.$kontak.'</small></td>
                     <td><small class="text-muted">'.$creat_at.'</small></td>
                     <td><small class="text-muted">'.$id_ihs.'</small></td>
-                    <td>
+                    <td class="table-action">
                         <button type="button" class="btn btn-sm btn-secondary btn-floating"  data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots-vertical"></i>
                         </button>

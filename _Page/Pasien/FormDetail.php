@@ -147,7 +147,7 @@
             </div>
 
             <div class="row mb-2">
-                <div class="col-4"><small>Nama Lengkap</small></div>
+                <div class="col-4"><small>Nama</small></div>
                 <div class="col-1"><small>:</small></div>
                 <div class="col-7"><small class="text-muted">' . $nama . '</small></div>
             </div>
@@ -188,12 +188,12 @@
             </div>
 
             <div class="row mb-2">
-                <div class="col-4"><small>Tempat Lahir</small></div>
+                <div class="col-4"><small>Tmp. Lahir</small></div>
                 <div class="col-1"><small>:</small></div>
                 <div class="col-7"><small class="text-muted">' . $tempat_lahir . '</small></div>
             </div>
             <div class="row mb-2">
-                <div class="col-4"><small>Tanggal Lahir</small></div>
+                <div class="col-4"><small>Tgl Lahir</small></div>
                 <div class="col-1"><small>:</small></div>
                 <div class="col-7"><small class="text-muted">' . $tanggal_lahir . '</small></div>
             </div>

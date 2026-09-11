@@ -23,7 +23,7 @@
         <!-- Table View -->
         <div class="row">
             <div class="col-lg-12" id="table_view">
-                <div class="card">
+                <div class="card card-table card-data">
                     <div class="card-header">
                         <form action="javascript:void(0);" id="ProsesBatas">
                             <div class="row">
@@ -31,7 +31,24 @@
                                     <button type="button" class="btn btn-md btn-secondary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalFilter" title="Filter Data">
                                         <i class="bi bi-search"></i>
                                     </button>
-
+                                    <a class="btn btn-md btn-secondary btn-floating" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
+                                        <li class="dropdown-header text-start">
+                                            <h6>Option</h6>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalExport">
+                                                <i class="bi bi-download"></i> Export
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#ModalImport">
+                                                <i class="bi bi-upload"></i> Import
+                                            </a>
+                                        </li>
+                                    </ul>
                                     <button type="button" class="btn btn-md btn-primary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalTambahPasien" title="Tambah Data Pasien Baru">
                                         <i class="bi bi-plus-lg"></i>
                                     </button>
