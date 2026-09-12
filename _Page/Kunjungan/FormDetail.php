@@ -107,7 +107,7 @@
 
     // Susun HTML untuk ditampilkan di modal body (FormDetail)
     $html = '
-        <input type="hidden" name="id_kunjungan" name="id_kunjungan" value="'.$id_kunjungan.'">
+        <input type="hidden" name="id_kunjungan" id="id_kunjungan" value="'.$id_kunjungan.'">
         <div class="row mb-2">
             <div class="col-12"><small><b>A. Informasi Pasien</b></small></div>
         </div>

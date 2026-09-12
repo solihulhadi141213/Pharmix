@@ -23,43 +23,43 @@
         <!-- Table View -->
         <div class="row">
             <div class="col-lg-12" id="table_view">
-                <div class="card">
+                <div class="card card-data card-table">
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-12 text-end">
                                 <button type="button" class="btn btn-md btn-secondary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalFilter" title="Filter Data">
                                     <i class="bi bi-search"></i>
                                 </button>
-
+                                <button type="button" class="btn btn-md btn-secondary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalExport" title="Export Data">
+                                    <i class="bi bi-download"></i>
+                                </button>
                                 <button type="button" class="btn btn-md btn-primary btn-floating" data-bs-toggle="modal" data-bs-target="#ModalTambah" title="Tambah Data Pasien Baru">
                                     <i class="bi bi-plus-lg"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table-load-container mt-3">
-                            <table class="table table-hover table-responsive-card" id="TabelKunjunganHeader">
-                                <thead>
-                                    <tr>
-                                        <th><b>No</b></th>
-                                        <th><b>RM</b></th>
-                                        <th><b>Nama</b></th>
-                                        <th><b>Tanggal</b></th>
-                                        <th><b>Kategori</b></th>
-                                        <th><b><i>Priority</i></b></th>
-                                        <th><b><i>ID Encounter</i></b></th>
-                                        <th><b>Status</b></th>
-                                        <th><b>Opsi</b></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabel_kunjungan">
-                                    <tr>
-                                        <td colspan="9" class="text-center">No Data</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-load-container mt-3">
+                        <table class="table table-hover table-responsive-card" id="TabelKunjunganHeader">
+                            <thead>
+                                <tr>
+                                    <th><b>No</b></th>
+                                    <th><b>RM</b></th>
+                                    <th><b>Nama</b></th>
+                                    <th><b>Tanggal</b></th>
+                                    <th><b>Kategori</b></th>
+                                    <th><b><i>Priority</i></b></th>
+                                    <th><b><i>ID Encounter</i></b></th>
+                                    <th><b>Status</b></th>
+                                    <th><b>Opsi</b></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel_kunjungan">
+                                <tr>
+                                    <td colspan="9" class="text-center">No Data</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="card-footer border-0">
                         <div class="row">

@@ -1,9 +1,8 @@
 // =====================================
 // FUNCTION
 // =====================================
-// ============================================================
+
 // MENAMPILKAN TABEL KUNJUNGAN KOSONG
-// ============================================================
 function showEmptyKunjungan(message) {
     $('#tabel_kunjungan').html(`
         <tr class="table-empty">
@@ -18,10 +17,7 @@ function showEmptyKunjungan(message) {
     $('#prev_button, #next_button').prop('disabled', true);
 }
 
-//Fungsi Untuk Menampilkan Data Pasien
-// ============================================================
 // MENAMPILKAN DATA KUNJUNGAN
-// ============================================================
 function ShowData() {
     const target = $('#tabel_kunjungan');
     const data   = $('#ProsesFilter').serializeArray();
@@ -88,13 +84,13 @@ function ShowData() {
     });
 }
 
-
-function ShowDetailKunjungan(id_anggota) {
+// MNEMAPILKAN DETAIL KUNJUNGAN
+function ShowDetailKunjungan(id_kunjungan) {
     $('#detail_view').html('Loading...');
     $.ajax({
         type: 'POST',
-        url: '_Page/Pasien/_DetailPasien.php',
-        data: {id_anggota: id_anggota},
+        url: '_Page/Kunjungan/_DetailKunjungan.php',
+        data: {id_kunjungan: id_kunjungan},
         success: function(data) {
             $('#detail_view').html(data);
         },
@@ -105,17 +101,38 @@ function ShowDetailKunjungan(id_anggota) {
     });
 }
 
+// MNEMAPILKAN ATTACHMENT
+function ShowAttachment(document,id) {
+    // Loading Page
+    $('#attchment_view').html(`
+        <div class="alert alert-info text-center">
+            <small>
+                Loading...
+            </small>
+        </div>
+    `);
+
+    // Kirim Parameter Melalui AJAX
+    $.ajax({
+        type: 'POST',
+        url: '_Page/Kunjungan/AttachmentView.php',
+        data: { document: document, id: id },
+        success: function (response) {
+            $('#attchment_view').html(response);
+        }
+    });
+}
+
 // =====================================
 // EVENT
 // =====================================
 $(document).ready(function() {
+
+    // Menampilkan Data Pertama kali
     $('#table_view').show();
     $('#detail_view').hide();
     ShowData();
 
-    // --------------------------------
-    // TABEL
-    // --------------------------------
     $('#ModalFilter').on('shown.bs.modal', function () {
         $('#keyword').trigger('focus');
     });
@@ -449,6 +466,36 @@ $(document).ready(function() {
         });
     });
 
+    // --------------------------------
+    // EXPORT
+    // --------------------------------
+    $('#ModalExport').on('show.bs.modal', function (e) {
+
+        // Form Export Loading
+        $('#FormExport').html("Loading...");
+        $('#TombolExport').prop('disabled', true);
+
+        $.ajax({
+            type    : 'POST',
+            url     : '_Page/Kunjungan/FormExport.php',
+            dataType: 'JSON',
+            success : function(response) {
+                var status = response.status;
+                var message = response.message;
+                if (status == 'success') {
+                    $('#FormExport').html(response.html);
+                    $('#TombolExport').prop('disabled', false);
+                } else {
+                    $('#FormExport').html('<div class="alert alert-danger text-center"><small><b>Opss!</b><br>' + message + '</small></div>');
+                }
+            },
+            error: function(xhr) {
+                console.log(xhr.responseText);
+                $('#FormExport').html('<div class="alert alert-danger text-center"><small><b>Opss!</b><br>Terjadi kesalahan sistem</small></div>');
+            }
+        });
+    });
+
     $(document).on('submit', '#ProsesDetail', function (e) {
         e.preventDefault();
         var id_kunjungan = $('#id_kunjungan').val();
@@ -460,6 +507,23 @@ $(document).ready(function() {
         $('#table_view').hide();
         $('#detail_view').show();
         ShowDetailKunjungan(id_kunjungan);
+    });
+
+    // =========================================================
+    // BACK TO DATA
+    // =========================================================
+    $(document).on('click', '.back_to_data', function (e) {
+        e.preventDefault();
+
+        // Kembali ke tabel
+        $('#table_view').show();
+        $('#detail_view').hide();
+
+        // Scroll ke atas
+        window.scrollTo({
+            top     : 0,
+            behavior: 'smooth'
+        });
     });
 
     // --------------------------------
@@ -1081,4 +1145,513 @@ $(document).ready(function() {
     $('#ModalDetailEncounter').on('hidden.bs.modal', function () {
         $('#FormDetailEncounter').html('');
     });
+
+    // ----------------------------------------
+    // HANDDLE ATTACHMENT
+    // ----------------------------------------
+     $(document).on('click', '.sub_feature', function() {
+        var document = $(this).data('doc');
+        var id       = $(this).data('id');
+
+        ShowAttachment(document,id);
+        
+    });
+
+    // ----------------------------------------
+    // CONDITION
+    // ----------------------------------------
+
+    // Modal Tambah Condition
+    let conditionFormRequest = null;
+    let conditionFormGeneration = 0;
+
+    function initConditionSelect(selector, endpoint, placeholder, detailSelector, detailKey, modalSelector = '#ModalTambahCondition') {
+        const $select = $(selector);
+        $select.select2({
+            dropdownParent: $(modalSelector),
+            theme: 'bootstrap-5',
+            width: '100%',
+            placeholder: placeholder,
+            allowClear: true,
+            minimumInputLength: 0,
+            ajax: {
+                url: '_Page/Kunjungan/' + endpoint,
+                type: 'POST',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { keyword: params.term || '', page: params.page || 1 };
+                },
+                processResults: function (data) {
+                    return { results: data.results || [], pagination: data.pagination || { more: false } };
+                }
+            }
+        }).on('select2:select', function (event) {
+            $(detailSelector).val(event.params.data[detailKey] || '');
+        }).on('select2:clear', function () {
+            $(detailSelector).val('');
+        });
+    }
+
+    $('#ModalTambahCondition').on('hide.bs.modal', function () {
+        conditionFormGeneration++;
+        if (conditionFormRequest) {
+            conditionFormRequest.abort();
+            conditionFormRequest = null;
+        }
+        $(this).find('.select2-hidden-accessible').select2('destroy');
+    });
+
+    $('#ModalTambahCondition').on('show.bs.modal', function (e) {
+        const generation = ++conditionFormGeneration;
+
+        // Tangkap id_kunjungan dan category
+        var id_kunjungan = $(e.relatedTarget).data('id');
+        var category     = $(e.relatedTarget).data('category');
+
+        // Kosongkan Notifikasi
+        $('#NotifikasiTambahCondition').html('');
+
+        // Loading Form
+        $('#FormTambahCondition').html('Loading...');
+
+        // Disable Button
+        $('#TombolTambahCondition').prop('disabled', true);
+
+        // Tampilkan Form Dengan AJAX
+        conditionFormRequest = $.ajax({
+            type    : 'POST',
+            url     : '_Page/Condition/FormTambahCondition.php',
+            data    : { id_kunjungan: id_kunjungan, category: category },
+            dataType: 'json',
+            success: function (response) {
+                if (generation !== conditionFormGeneration) return;
+                if (response.status === 'success') {
+
+                    // Tampilkan Form
+                    $('#FormTambahCondition').html(response.html);
+                    initConditionSelect('#condition_medical_personel', 'ProsesSelectConditionMedicalPersonel.php', 'Cari tenaga medis...', '#condition_medical_name', 'name');
+                    initConditionSelect('#condition_icd_code', 'ProsesSelectConditionIcd.php', 'Cari kode atau deskripsi ICD10...', '#condition_icd_description', 'description');
+
+                    // Enable Button
+                    $('#TombolTambahCondition').prop('disabled', false);
+                } else {
+                    $('#FormTambahCondition').html(`
+                        <div class="alert alert-danger text-center">
+                            <small>${$('<div>').text(response.message || 'Gagal memuat form.').html()}</small>
+                        </div>
+                    `);
+                }
+            },
+            error: function (xhr, status) {
+                if (status === 'abort' || generation !== conditionFormGeneration) return;
+                console.log('AJAX ERROR :', xhr.responseText);
+
+                $('#FormTambahCondition').html(`
+                    <div class="alert alert-danger text-center">
+                        <small>Terjadi kesalahan saat memuat Form.</small>
+                    </div>
+                `);
+            }
+        });
+    });
+
+    // HAPUS CONDITION
+    let hapusConditionRequest = null;
+    let hapusConditionGeneration = 0;
+    let hapusConditionBusy = false;
+    let hapusConditionReady = false;
+    const $hapusConditionModal = $('#ModalHapusCondition');
+    const $hapusConditionButton = $('#TombolHapusCondition');
+    const hapusConditionButtonHtml = $hapusConditionButton.html();
+
+    function hapusConditionNotice(message) {
+        $('#NotifikasiHapusCondition').empty().append($('<div>').addClass('alert alert-danger').text(message));
+    }
+    $hapusConditionModal.on('show.bs.modal', function (event) {
+        const generation = ++hapusConditionGeneration;
+        hapusConditionReady = false;
+        $hapusConditionButton.prop('disabled', true).html(hapusConditionButtonHtml);
+        $('#NotifikasiHapusCondition').empty();
+        $('#FormHapusCondition').text('Memuat konfirmasi hapus diagnosis...');
+        if (hapusConditionRequest) hapusConditionRequest.abort();
+        hapusConditionRequest = $.ajax({
+            type: 'POST',
+            url: '_Page/Condition/FormHapusCondition.php',
+            data: { id_diagnosis: $(event.relatedTarget).data('id') },
+            dataType: 'json',
+            success: function (response) {
+                if (generation !== hapusConditionGeneration) return;
+                if (response.status !== 'success') {
+                    $('#FormHapusCondition').empty();
+                    hapusConditionNotice(response.message || 'Gagal memuat konfirmasi hapus.');
+                    return;
+                }
+                $('#FormHapusCondition').html(response.html);
+                hapusConditionReady = true;
+                $hapusConditionButton.prop('disabled', false);
+            },
+            error: function (xhr, status) {
+                if (status === 'abort' || generation !== hapusConditionGeneration) return;
+                $('#FormHapusCondition').empty();
+                hapusConditionNotice('Gagal memuat konfirmasi hapus. Silakan buka kembali modal.');
+            }
+        });
+    }).on('hide.bs.modal', function (event) {
+        if (hapusConditionBusy) { event.preventDefault(); return; }
+        hapusConditionGeneration++;
+        hapusConditionReady = false;
+        $hapusConditionButton.prop('disabled', true);
+        if (hapusConditionRequest) { hapusConditionRequest.abort(); hapusConditionRequest = null; }
+    });
+
+    $('#ProsesHapusCondition').on('submit', function (event) {
+        event.preventDefault();
+        if (hapusConditionBusy || !hapusConditionReady || $hapusConditionButton.prop('disabled')) return;
+        const formData = $(this).serialize();
+        hapusConditionBusy = true;
+        $hapusConditionButton.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1" role="status"></span> Menghapus...');
+        $hapusConditionModal.find('[data-bs-dismiss="modal"]').prop('disabled', true);
+        $('#NotifikasiHapusCondition').empty();
+        $.ajax({
+            type: 'POST',
+            url: '_Page/Condition/ProsesHapusCondition.php',
+            data: formData,
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    hapusConditionBusy = false;
+                    $hapusConditionModal.modal('hide');
+                    showToast('success', 'Diagnosis Dihapus', response.message || 'Diagnosis berhasil dihapus.');
+                    ShowAttachment('Condition', response.id_kunjungan);
+                } else {
+                    hapusConditionNotice(response.message || 'Diagnosis gagal dihapus.');
+                }
+            },
+            error: function (xhr) {
+                hapusConditionNotice((xhr.responseJSON && xhr.responseJSON.message) || 'Respons penghapusan tidak dapat dibaca. Periksa daftar diagnosis sebelum mencoba kembali.');
+            },
+            complete: function () {
+                hapusConditionBusy = false;
+                $hapusConditionModal.find('[data-bs-dismiss="modal"]').prop('disabled', false);
+                $hapusConditionButton.prop('disabled', !hapusConditionReady).html(hapusConditionButtonHtml);
+            }
+        });
+    });
+
+    // EDIT CONDITION
+    let editConditionRequest = null;
+    let editConditionGeneration = 0;
+    let editConditionBusy = false;
+    $('#ModalEditCondition').on('show.bs.modal', function (event) {
+        const generation = ++editConditionGeneration;
+        const idDiagnosis = $(event.relatedTarget).data('id');
+        $('#NotifikasiEditCondition').empty();
+        $('#FormEditCondition').text('Memuat form edit diagnosis...');
+        $('#TombolEditCondition').prop('disabled', true);
+        if (editConditionRequest) editConditionRequest.abort();
+        editConditionRequest = $.ajax({
+            type: 'POST',
+            url: '_Page/Condition/FormEditCondition.php',
+            data: { id_diagnosis: idDiagnosis },
+            dataType: 'json',
+            success: function (response) {
+                if (generation !== editConditionGeneration) return;
+                if (response.status !== 'success') {
+                    $('#FormEditCondition').empty().append($('<div>').addClass('alert alert-danger').text(response.message || 'Gagal memuat form edit diagnosis.'));
+                    return;
+                }
+                $('#FormEditCondition').html(response.html);
+                initConditionSelect('#edit_condition_medical_personel', 'ProsesSelectConditionMedicalPersonel.php', 'Cari tenaga medis...', '#edit_condition_medical_name', 'name', '#ModalEditCondition');
+                initConditionSelect('#edit_condition_icd_code', 'ProsesSelectConditionIcd.php', 'Cari kode atau deskripsi ICD10...', '#edit_condition_icd_description', 'description', '#ModalEditCondition');
+                $('#TombolEditCondition').prop('disabled', false);
+            },
+            error: function (xhr, status) {
+                if (status === 'abort' || generation !== editConditionGeneration) return;
+                $('#FormEditCondition').empty().append($('<div>').addClass('alert alert-danger').text('Gagal memuat form edit diagnosis. Silakan buka kembali modal.'));
+            }
+        });
+    }).on('hide.bs.modal', function (event) {
+        if (editConditionBusy) {
+            event.preventDefault();
+            return;
+        }
+        editConditionGeneration++;
+        if (editConditionRequest) {
+            editConditionRequest.abort();
+            editConditionRequest = null;
+        }
+        $(this).find('.select2-hidden-accessible').select2('destroy');
+        $('#TombolEditCondition').prop('disabled', true);
+    });
+
+    // PROSES EDIT CONDITION
+    $('#ProsesEditCondition').on('submit', function (event) {
+        event.preventDefault();
+        const $form = $(this);
+        const $button = $('#TombolEditCondition');
+        if (editConditionBusy || $button.prop('disabled')) return;
+        const formData = $form.serialize();
+        const buttonHtml = $button.html();
+        const $controls = $form.find(':input:enabled');
+        let saved = false;
+        editConditionBusy = true;
+        $controls.prop('disabled', true);
+        $button.html('<span class="spinner-border spinner-border-sm me-1" role="status"></span> Menyimpan...');
+        $('#NotifikasiEditCondition').empty();
+        $.ajax({
+            type: 'POST',
+            url: '_Page/Condition/ProsesEditCondition.php',
+            data: formData,
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    saved = true;
+                    editConditionBusy = false;
+                    $('#ModalEditCondition').modal('hide');
+                    const syncFailed = response.satusehat && response.satusehat.status === 'error';
+                    showToast(syncFailed ? 'warning' : 'success', 'Diagnosis Diperbarui', response.message || 'Diagnosis berhasil diperbarui.');
+                    ShowAttachment('Condition', response.id_kunjungan);
+                } else {
+                    $('#NotifikasiEditCondition').empty().append($('<div>').addClass('alert alert-danger').text(response.message || 'Diagnosis gagal diperbarui.'));
+                }
+            },
+            error: function (xhr) {
+                const message = (xhr.responseJSON && xhr.responseJSON.message) || 'Respons penyimpanan tidak dapat dibaca. Periksa data diagnosis sebelum mencoba kembali.';
+                $('#NotifikasiEditCondition').empty().append($('<div>').addClass('alert alert-danger').text(message));
+            },
+            complete: function () {
+                editConditionBusy = false;
+                $controls.prop('disabled', false);
+                $button.prop('disabled', saved).html(buttonHtml);
+            }
+        });
+    });
+
+    // PROSES SUBMIT CONDITION
+    $('#ProsesTambahCondition').on('submit', function (e) {
+        e.preventDefault();
+
+        // Form & Button
+        const $form = $(this);
+        const $button = $('#TombolTambahCondition');
+        if ($button.prop('disabled')) {
+            return;
+        }
+
+        // Catch Data Form
+        const formData = $form.serialize();
+        $('#NotifikasiTambahCondition').html('');
+
+        // Loading Button
+        $button.prop('disabled', true).html(`<span class="spinner-border spinner-border-sm me-1" role="status"></span> Mengirim...`);
+
+        // Submit Data Via AJAX
+        $.ajax({
+            type    : 'POST',
+            url     : '_Page/Condition/ProsesTambahCondition.php',
+            data    : formData,
+            dataType: 'json',
+            success : function (response) {
+                if (response.status === 'success') {
+
+                    // Jika Berhasil Tutup Modal
+                    $('#ModalTambahCondition').modal('hide');
+
+                    // Penyimpanan lokal berhasil meskipun pengiriman SATUSEHAT tertunda/gagal.
+                    const syncStatus = response.satusehat ? response.satusehat.status : 'success';
+                    showToast(
+                        syncStatus === 'success' ? 'success' : (syncStatus === 'skipped' ? 'info' : 'warning'),
+                        'Diagnosis Tersimpan',
+                        response.message || 'Data berhasil disimpan.'
+                    );
+
+                    // Reload Data
+                    ShowAttachment('Condition',response.id_kunjungan);
+
+                } else {
+                    $('#NotifikasiTambahCondition').html(`
+                        <div class="alert alert-danger">
+                            <small>${$('<div>').text(response.message || 'Gagal menyimpan diagnosis.').html()}</small>
+                        </div>
+                    `);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log('AJAX ERROR ProsesTambahCondition', xhr.responseText, status, error);
+                let message = 'Terjadi kesalahan sistem.';
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.message) {
+                        message = response.message;
+                    }
+                } catch (e) {}
+
+                $('#NotifikasiTambahCondition').html(`
+                    <div class="alert alert-danger">
+                        <small>${$('<div>').text(message).html()}</small>
+                    </div>
+                `);
+            },
+            complete: function () {
+                $button.prop('disabled', false).html('<i class="bi bi-save"></i> Simpan');
+            }
+        });
+    });
+
+    // Preview dan pengiriman diagnosis yang sudah tersimpan.
+    let kirimConditionRequest = null;
+    let kirimConditionGeneration = 0;
+    let kirimConditionEligible = false;
+    let kirimConditionBusy = false;
+    const $kirimConditionModal = $('#ModalKirimCondition');
+    const $kirimConditionButton = $('#TombolKirimCondition');
+    const kirimConditionButtonHtml = $kirimConditionButton.html();
+
+    function conditionSendNotice(message, type) {
+        $('#NotifikasiKirimCondition').empty().append(
+            $('<div>').addClass('alert alert-' + (type || 'danger')).text(message)
+        );
+    }
+
+    $kirimConditionModal.on('show.bs.modal', function (event) {
+        const generation = ++kirimConditionGeneration;
+        const code = $(event.relatedTarget).attr('data-id') || '';
+        kirimConditionEligible = false;
+        $kirimConditionButton.prop('disabled', true).html(kirimConditionButtonHtml);
+        $('#NotifikasiKirimCondition').empty();
+        $('#FormKirimCondition').text('Memuat preview Condition...');
+        if (kirimConditionRequest) kirimConditionRequest.abort();
+        kirimConditionRequest = $.ajax({
+            type: 'POST',
+            url: '_Page/Condition/FormKirimCondition.php',
+            data: { diagnosis_code: code },
+            dataType: 'json',
+            success: function (response) {
+                if (generation !== kirimConditionGeneration) return;
+                if (response.status !== 'success') {
+                    $('#FormKirimCondition').empty();
+                    conditionSendNotice(response.message || 'Gagal memuat preview Condition.');
+                    return;
+                }
+                $('#FormKirimCondition').html(response.html);
+                kirimConditionEligible = response.eligible === true;
+                $kirimConditionButton.prop('disabled', !kirimConditionEligible);
+            },
+            error: function (xhr, status) {
+                if (status === 'abort' || generation !== kirimConditionGeneration) return;
+                $('#FormKirimCondition').empty();
+                conditionSendNotice('Gagal memuat preview Condition. Silakan buka kembali modal.');
+            }
+        });
+    });
+
+    $kirimConditionModal.on('hide.bs.modal', function (event) {
+        if (kirimConditionBusy) {
+            event.preventDefault();
+            return;
+        }
+        kirimConditionGeneration++;
+        kirimConditionEligible = false;
+        $kirimConditionButton.prop('disabled', true);
+        if (kirimConditionRequest) {
+            kirimConditionRequest.abort();
+            kirimConditionRequest = null;
+        }
+    });
+
+    $('#ProsesKirimCondition').on('submit', function (event) {
+        event.preventDefault();
+        if (kirimConditionBusy || !kirimConditionEligible || $kirimConditionButton.prop('disabled')) return;
+        kirimConditionBusy = true;
+        kirimConditionEligible = false;
+        $kirimConditionButton.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1" role="status"></span> Mengirim...');
+        $kirimConditionModal.find('[data-bs-dismiss="modal"]').prop('disabled', true);
+        $('#NotifikasiKirimCondition').empty();
+        $.ajax({
+            type: 'POST',
+            url: '_Page/Condition/ProsesKirimCondition.php',
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    kirimConditionBusy = false;
+                    $kirimConditionModal.modal('hide');
+                    showToast('success', 'Condition Terkirim', response.message || 'Condition berhasil dikirim ke SATUSEHAT.');
+                    ShowAttachment('Condition', response.id_kunjungan);
+                } else {
+                    conditionSendNotice(response.message || 'Condition belum berhasil dikirim.', response.status === 'warning' ? 'warning' : 'danger');
+                }
+            },
+            error: function (xhr) {
+                conditionSendNotice((xhr.responseJSON && xhr.responseJSON.message) || 'Respons pengiriman tidak dapat dibaca. Periksa status Condition sebelum mengirim ulang.');
+            },
+            complete: function () {
+                kirimConditionBusy = false;
+                $kirimConditionModal.find('[data-bs-dismiss="modal"]').prop('disabled', false);
+                // A new preview is required after a failed or ambiguous send.
+                $kirimConditionButton.prop('disabled', true).html(kirimConditionButtonHtml);
+            }
+        });
+    });
+
+    // DETAIL CONDITION
+    $('#ModalDetailCondition').on('show.bs.modal', function (e) {
+        
+        // Tangkap id_diagnosis 
+        var id_diagnosis  = $(e.relatedTarget).data('id');
+
+        // Loading Form
+        $('#FormDetailCondition').html('Loading...');
+
+        // Tampilkan Form Dengan AJAX
+        $.ajax({
+            type    : 'POST',
+            url     : '_Page/Condition/FormDetailCondition.php',
+            data    : { id_diagnosis: id_diagnosis },
+            success: function (response) {
+                $('#FormDetailCondition').html(response);
+            }
+        });
+    });
+
+    // DETAIL ID CONDITION
+    $('#ModalDetailIdCondition').on('show.bs.modal', function (e) {
+        const id_condition = $(e.relatedTarget).attr('data-id');
+        const target = $('#FormDetailIdCondition');
+
+        if (!id_condition) {
+            target.html('<div class="alert alert-danger mb-0">ID Condition tidak tersedia.</div>');
+            return;
+        }
+
+        target.html(`
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Memuat...</span>
+                </div>
+                <div class="text-muted mt-2">Memuat data Condition...</div>
+            </div>
+        `);
+
+        $.ajax({
+            type: 'POST',
+            url: '_Page/Condition/FormDetailIdCondition.php',
+            data: { id_condition: id_condition },
+            dataType: 'html',
+            success: function (response) {
+                target.html(response);
+            },
+            error: function () {
+                target.html(`
+                    <div class="alert alert-danger mb-0">
+                        Gagal memuat detail Condition. Silakan coba kembali.
+                    </div>
+                `);
+            }
+        });
+    });
+
+    // DELETE CONDITION
+
 });

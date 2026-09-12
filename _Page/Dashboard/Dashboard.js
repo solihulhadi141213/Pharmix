@@ -184,7 +184,17 @@ function ShowGrafikSiimpanPinjam() {
         var options = {
             chart: {
                 type: 'area',
-                height: 400
+                height: 400,
+                toolbar: {
+                    show: false
+                },
+                zoom: {
+                    enabled: false,
+                    allowMouseWheelZoom: false
+                },
+                selection: {
+                    enabled: false
+                }
             },
             series: [
                 {
@@ -197,13 +207,16 @@ function ShowGrafikSiimpanPinjam() {
                 }
             ],
             xaxis: {
-                categories: categories
+                categories: categories,
+                labels: {
+                    formatter: function (value) {
+                        return String(value).slice(0, 3);
+                    }
+                }
             },
             yaxis: {
                 labels: {
-                    formatter: function (value) {
-                        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value);
-                    }
+                    show: false
                 }
             },
             tooltip: {
@@ -333,7 +346,52 @@ function LoadDashboardPeringatan() {
     });
 }
 
+function initDashboardSummary() {
+    const list = document.getElementById('dashboard-summary-list');
+    if (!list) return;
+
+    const previous = document.getElementById('dashboard-summary-prev');
+    const next = document.getElementById('dashboard-summary-next');
+    const controls = document.querySelector('.dashboard-summary-controls');
+    const hint = document.getElementById('dashboard-summary-hint');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function updateControls() {
+        const maxScroll = list.scrollWidth - list.clientWidth;
+        controls.hidden = maxScroll <= 2;
+        hint.hidden = maxScroll <= 2;
+        previous.disabled = list.scrollLeft <= 2;
+        next.disabled = list.scrollLeft >= maxScroll - 2;
+    }
+
+    function scrollCards(direction) {
+        const card = list.querySelector('.dashboard-summary-item');
+        if (!card) return;
+        const step = card.getBoundingClientRect().width + parseFloat(getComputedStyle(list).columnGap || 0);
+        const count = Math.max(1, Math.floor(list.clientWidth / step));
+        list.scrollBy({ left: direction * step * count, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+    }
+
+    previous.addEventListener('click', function () { scrollCards(-1); });
+    next.addEventListener('click', function () { scrollCards(1); });
+    list.addEventListener('scroll', updateControls, { passive: true });
+    list.addEventListener('keydown', function (event) {
+        if (event.target !== list) return;
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+            event.preventDefault();
+            scrollCards(event.key === 'ArrowLeft' ? -1 : 1);
+        }
+    });
+    if ('ResizeObserver' in window) {
+        new ResizeObserver(updateControls).observe(list);
+    } else {
+        window.addEventListener('resize', updateControls);
+    }
+    updateControls();
+}
+
 $(document).ready(function () {
+    initDashboardSummary();
     CountMedication();
     CountPasien();
     CountKunjungan();

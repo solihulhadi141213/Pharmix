@@ -109,6 +109,33 @@
 
     
 ?>
+<style>
+    .detail-pasien-info > .detail-pasien-row {
+        display: grid;
+        grid-template-columns: 5rem 0.5rem minmax(0, 1fr);
+        column-gap: 0.5rem;
+        align-items: baseline;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .detail-pasien-info > .row > .col-4,
+    .detail-pasien-info > .row > .col-1,
+    .detail-pasien-info > .row > .col-7 {
+        width: auto;
+        min-width: 0;
+        padding-left: 0;
+        padding-right: 0;
+        white-space: nowrap;
+    }
+
+    .detail-pasien-info > .row > .col-7 > small {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
 <div class="row mb-3 g-3 MobileCard-grid">
     <!-- Card Aksi -->
     <div class="col-md-12">
@@ -157,66 +184,66 @@
                             </div>
 
                             <div class="card-body">
-                                <div class="container-fluid mt-3 mb-3">
+                                <div class="container-fluid mt-3 mb-3 detail-pasien-info">
                                     <div class="row mb-2">
                                         <div class="col-12"><small><b># Informasi Pasien</b></small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>No.RM</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.$id_pasien.'</small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>Nama</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.$nama.'</small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>Gender</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.$gender.'</small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>NIK/KTP</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.$nik.'</small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>ID IHS</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.$id_ihs.'</small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>Email</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.$email.'</small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>Kontak</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.$kontak.'</small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>Alamat</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.$alamat.'</small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>Tpt.Lahir</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.$tempat_lahir.'</small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>Tgl.Lahir</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.$tanggal_lahir.'</small></div>
@@ -226,25 +253,25 @@
                                         <div class="col-12"><small><b># Metadata</b></small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>Create At</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.tampilTanggalDetail($creat_at).'</small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>Update At</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.tampilTanggalDetail($update_at).'</small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>Creator</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.$creator.'</small></div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-2 detail-pasien-row">
                                         <div class="col-4"><small>Updater</small></div>
                                         <div class="col-1"><small>:</small></div>
                                         <div class="col-7"><small class="text-muted">'.$updater.'</small></div>

@@ -1970,6 +1970,152 @@ body .title_page_app {
   }
 }
 
+/* Ringkasan dashboard: daftar horizontal tanpa pustaka carousel. */
+.dashboard-summary {
+  min-width: 0;
+  margin-bottom: 24px;
+}
+
+.dashboard-summary-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dashboard-summary-heading h2 {
+  margin: 0 0 4px;
+  color: #243654;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.dashboard-summary-heading p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.78rem;
+}
+
+.dashboard-summary-controls:not([hidden]) {
+  display: flex;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.dashboard-summary-nav {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #dce4ef;
+  border-radius: 50%;
+  background: #fff;
+  color: #4154f1;
+}
+
+.dashboard-summary-nav:hover:not(:disabled) {
+  background: #eef1ff;
+}
+
+.dashboard-summary-nav:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.dashboard-summary-list {
+  display: flex;
+  gap: 12px;
+  list-style: none;
+  padding: 4px 3px 12px;
+  margin: 0;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 3px;
+  scrollbar-width: thin;
+  scrollbar-color: #bdc9dd transparent;
+}
+
+.dashboard-summary-list::-webkit-scrollbar {
+  height: 6px;
+}
+
+.dashboard-summary-list::-webkit-scrollbar-thumb {
+  background: #bdc9dd;
+  border-radius: 6px;
+}
+
+.dashboard-summary-item {
+  flex: 0 0 210px;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.dashboard-summary-card {
+  --summary-accent: #4154f1;
+  --summary-tint: #eef1ff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 156px;
+  padding: 14px 16px;
+  border: 1px solid #e4eaf3;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--summary-tint), #fff 65%);
+  color: #243654;
+  box-shadow: 0 3px 10px rgba(36, 54, 84, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-summary-teal { --summary-accent: #087f8c; --summary-tint: #e5f6f3; }
+.dashboard-summary-orange { --summary-accent: #c45e15; --summary-tint: #fff1e5; }
+.dashboard-summary-purple { --summary-accent: #7952c7; --summary-tint: #f2ecff; }
+
+.dashboard-summary-card:hover {
+  color: #243654;
+  border-color: var(--summary-accent);
+  box-shadow: 0 4px 12px rgba(36, 54, 84, 0.1);
+}
+
+.dashboard-summary-card:focus-visible,
+.dashboard-summary-nav:focus-visible,
+.dashboard-summary-list:focus-visible {
+  outline: 2px solid #4154f1;
+  outline-offset: 1px;
+}
+
+.dashboard-summary-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.dashboard-summary-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--summary-tint);
+  color: var(--summary-accent);
+  font-size: 1.15rem;
+}
+
+.dashboard-summary-arrow { color: #8896ad; font-size: 0.8rem; }
+.dashboard-summary-label { font-size: 0.8rem; font-weight: 500; margin-bottom: 4px; }
+.dashboard-summary-value { font-size: 1.6rem; font-weight: 700; line-height: 1.3; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.dashboard-summary-money { font-size: 1rem; }
+.dashboard-summary-detail { margin-top: 4px; font-size: 0.72rem; color: #6c757d; overflow-wrap: anywhere; }
+
+@media (max-width: 575.98px) {
+  .dashboard-summary-item { flex-basis: 185px; }
+  .dashboard-summary-card { padding: 12px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-summary-card { transition: none; }
+}
+
 /* Table custome */
 .table_custome {
   width: 100%;

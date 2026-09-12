@@ -41,7 +41,7 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <div class="alert alert-warning text-center">
-                            <small>Semakin banyak data supplier yang ada maka proses export akan membutuhkan waktu lebih lama.</small>
+                            <small>Semakin banyak data yang ada maka proses export akan membutuhkan waktu lebih lama.</small>
                         </div>
                     </div>
                 </div>

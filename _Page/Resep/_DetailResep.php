@@ -233,7 +233,7 @@
     // Susun HTML untuk ditampilkan di modal body (FormDetail)
     $html = '
         <input type="hidden" name="id_medication_request_group" value="'.$id_medication_request_group.'">
-         <div class="row mb-2">
+        <div class="row mb-2">
             <div class="col-12"><small><b>A. Informasi Resep</b></small></div>
         </div>
         <div class="row mb-2">

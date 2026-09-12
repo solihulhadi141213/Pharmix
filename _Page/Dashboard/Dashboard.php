@@ -42,194 +42,55 @@
 
     <div class="row">
         <div class="col-lg-12">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="row">
-
-                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="card info-card sales-card">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="index.php?Page=Medication">
-                                            Index Obat/Alkes <i class="bi bi-arrow-up-right-square"></i>
-                                        </a>
-                                    </h5>
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-capsule-pill"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h2 class="text-muted fw-bold" id="put_count_medication">0.000</h2>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="card info-card sales-card">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="index.php?Page=Pasien">
-                                            Pasien <i class="bi bi-arrow-up-right-square"></i>
-                                        </a>
-                                    </h5>
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-people"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h2 class="text-muted fw-bold" id="put_count_pasien">0.000</h2>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="card info-card sales-card">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="index.php?Page=Kunjungan">
-                                            Kunjungan <i class="bi bi-arrow-up-right-square"></i>
-                                        </a>
-                                    </h5>
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-activity"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h2 class="text-muted fw-bold" id="put_count_kunjungan">0.000</h2>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="card info-card sales-card">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="index.php?Page=Resep">
-                                            Resep <i class="bi bi-arrow-up-right-square"></i>
-                                        </a>
-                                    </h5>
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-receipt"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h2 class="text-muted fw-bold" id="put_count_resep">0.000</h2>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="card info-card sales-card">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="index.php?Page=Barang">
-                                            Inventaris / Barang <i class="bi bi-arrow-up-right-square"></i>
-                                        </a>
-                                    </h5>
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-box"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <span class="text-muted small pt-1 fw-bold" id="put_count_rp_barang"></span><br>
-                                            <span class="text-muted small pt-2 ps-1" id="put_count_item_barang"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="card info-card purple-card">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="index.php?Page=Penjualan">
-                                            Penjualan <i class="bi bi-arrow-up-right-square"></i>
-                                        </a>
-                                    </h5>
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-cart-dash"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <b class="text-muted small pt-1 ps-1" id="put_nominal_penjualan">
-                                                0.000.000
-                                            </b>
-                                            <br>
-                                            <span class="text-muted small pt-2 ps-1" id="put_record_penjualan">
-                                                0.000 Record
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="card info-card customers-card">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="index.php?Page=Pembelian">
-                                            Pembelian <i class="bi bi-arrow-up-right-square"></i>
-                                        </a>
-                                    </h5>
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-cart-plus"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <b class="text-muted small pt-2 ps-1" id="put_nominal_pembelian">
-                                                0.00.000
-                                            </b>
-                                            <br>
-                                            <span class="text-muted small pt-2 ps-1" id="put_record_pembelian">
-                                                0.00.000
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="card info-card transsaction-card">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="index.php?Page=Transaksi">
-                                            Operasional <i class="bi bi-arrow-up-right-square"></i>
-                                        </a>
-                                    </h5>
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-arrow-left-right"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <b class="text-muted small pt-2 ps-1" id="put_nominal_transaksi">
-                                                0.00.000
-                                            </b>
-                                            <br>
-                                            <span class="text-muted small pt-2 ps-1" id="put_record_transaksi">
-                                                0.00.000
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+            <?php
+                // Tambahkan ringkasan baru di sini; kartu otomatis mengikuti daftar horizontal.
+                $summaryCards = [
+                    ['page' => 'Medication', 'label' => 'Index Obat/Alkes', 'icon' => 'bi-capsule-pill', 'tone' => 'blue', 'value' => 'put_count_medication'],
+                    ['page' => 'Pasien', 'label' => 'Pasien', 'icon' => 'bi-people', 'tone' => 'teal', 'value' => 'put_count_pasien'],
+                    ['page' => 'Kunjungan', 'label' => 'Kunjungan', 'icon' => 'bi-activity', 'tone' => 'orange', 'value' => 'put_count_kunjungan'],
+                    ['page' => 'Resep', 'label' => 'Resep', 'icon' => 'bi-receipt', 'tone' => 'purple', 'value' => 'put_count_resep'],
+                    ['page' => 'Barang', 'label' => 'Inventaris / Barang', 'icon' => 'bi-box', 'tone' => 'blue', 'value' => 'put_count_rp_barang', 'detail' => 'put_count_item_barang'],
+                    ['page' => 'Penjualan', 'label' => 'Penjualan', 'icon' => 'bi-cart-dash', 'tone' => 'purple', 'value' => 'put_nominal_penjualan', 'detail' => 'put_record_penjualan'],
+                    ['page' => 'Pembelian', 'label' => 'Pembelian', 'icon' => 'bi-cart-plus', 'tone' => 'orange', 'value' => 'put_nominal_pembelian', 'detail' => 'put_record_pembelian'],
+                    ['page' => 'Transaksi', 'label' => 'Operasional', 'icon' => 'bi-arrow-left-right', 'tone' => 'teal', 'value' => 'put_nominal_transaksi', 'detail' => 'put_record_transaksi']
+                ];
+                $summaryEscape = static function ($value) {
+                    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+                };
+            ?>
+            <section class="dashboard-summary" aria-labelledby="dashboard-summary-title">
+                <div class="dashboard-summary-heading">
+                    <div>
+                        <h2 id="dashboard-summary-title">Ringkasan Aktivitas</h2>
+                        <p id="dashboard-summary-hint">Geser untuk melihat ringkasan lainnya.</p>
+                    </div>
+                    <div class="dashboard-summary-controls" hidden>
+                        <button type="button" class="dashboard-summary-nav" id="dashboard-summary-prev" aria-label="Geser ringkasan ke kiri" aria-controls="dashboard-summary-list">
+                            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="dashboard-summary-nav" id="dashboard-summary-next" aria-label="Geser ringkasan ke kanan" aria-controls="dashboard-summary-list">
+                            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                        </button>
                     </div>
                 </div>
-                
-            </div>
-            
+                <ul class="dashboard-summary-list" id="dashboard-summary-list" tabindex="0" aria-label="Daftar ringkasan aktivitas" aria-describedby="dashboard-summary-hint">
+                    <?php foreach ($summaryCards as $summaryCard): ?>
+                        <li class="dashboard-summary-item">
+                            <a class="dashboard-summary-card dashboard-summary-<?php echo $summaryEscape($summaryCard['tone']); ?>" href="index.php?Page=<?php echo $summaryEscape($summaryCard['page']); ?>">
+                                <span class="dashboard-summary-top">
+                                    <span class="dashboard-summary-icon"><i class="bi <?php echo $summaryEscape($summaryCard['icon']); ?>" aria-hidden="true"></i></span>
+                                    <i class="bi bi-arrow-up-right dashboard-summary-arrow" aria-hidden="true"></i>
+                                </span>
+                                <span class="dashboard-summary-label"><?php echo $summaryEscape($summaryCard['label']); ?></span>
+                                <span class="dashboard-summary-value<?php echo isset($summaryCard['detail']) ? ' dashboard-summary-money' : ''; ?>" id="<?php echo $summaryEscape($summaryCard['value']); ?>">—</span>
+                                <?php if (isset($summaryCard['detail'])): ?>
+                                    <span class="dashboard-summary-detail" id="<?php echo $summaryEscape($summaryCard['detail']); ?>">Memuat...</span>
+                                <?php endif; ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </section>
             <div class="row dashboard-report-row">
                 <!-- Reports -->
                 <div class="col-xl-9 col-lg-8 col-md-7 col-sm-12 col-12 dashboard-report-column">

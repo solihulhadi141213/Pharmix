@@ -200,20 +200,17 @@
             $id_encounter_tampil = mb_strimwidth($id_encounter, 0, 20, '...');
 
             $tombol_encounter = '
-                <a href="javascript:void(0);" 
-                    class="text-primary"
-                    data-bs-toggle="modal" 
-                    data-bs-target="#ModalDetailEncounter" 
+                <a href="javascript:void(0);" class="text-primary" data-bs-toggle="modal" data-bs-target="#ModalDetailEncounter" 
                     data-id="'.$id_encounter.'"
                     title="'.$id_encounter.'">
-                    <i>'.$id_encounter_tampil.'</i>
+                    <small><i>'.$id_encounter_tampil.'</i></small>
                 </a>
             ';
         }
         
         $html .= '
             <tr>
-                <td><small class="text-muted">'.$no.'</small></td>
+                <td class="table-number"><small class="text-muted">'.$no.'</small></td>
                 <td>
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="'.$id_kunjungan.'">
                         <small class="text-primary">
@@ -221,13 +218,19 @@
                         </small>
                     </a>
                 </td>
-                <td><small class="text-muted">'.$nama_pasien.'</small></td>
+                <td class="table-title">
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#ModalDetail" data-id="'.$id_kunjungan.'">
+                        <small class="text-muted">
+                            '.$nama_pasien.'
+                        </small>
+                    </a>
+                </td>
                 <td><small class="text-muted">'.$tanggal_kunjungan.'</small></td>
                 <td><small class="text-muted">'.$jenis_kunjungan.'</small></td>
                 <td>'.$priorityBadge.'</td>
                 <td>'.$tombol_encounter.'</td>
                 <td>'.$statusBadge.'</td>
-                <td>
+                <td class="table-action">
                     <button type="button" class="btn btn-sm btn-floating btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-three-dots-vertical"></i>
                     </button>
