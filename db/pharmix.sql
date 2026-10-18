@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 04, 2026 at 02:41 PM
--- Server version: 9.1.0
--- PHP Version: 8.2.26
+-- Generation Time: Oct 17, 2026 at 12:42 PM
+-- Server version: 8.4.7
+-- PHP Version: 8.2.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -411,6 +411,22 @@ CREATE TABLE IF NOT EXISTS `dokumentasi_tags` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `google_credential`
+--
+
+DROP TABLE IF EXISTS `google_credential`;
+CREATE TABLE IF NOT EXISTS `google_credential` (
+  `id_google_credential` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `credential_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `client_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `client_secret` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('Active','Inactive','','') COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_google_credential`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `icd`
 --
 
@@ -795,7 +811,7 @@ CREATE TABLE IF NOT EXISTS `referensi_sediaan` (
 DROP TABLE IF EXISTS `setting_autojurnal_jual_beli`;
 CREATE TABLE IF NOT EXISTS `setting_autojurnal_jual_beli` (
   `id_autojurnal_jual_beli` int NOT NULL AUTO_INCREMENT,
-  `kategori` varchar(15) CHARACTER SET latin1 NOT NULL,
+  `kategori` varchar(15) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `debet` int UNSIGNED DEFAULT NULL COMMENT 'Dari id_perkiraan',
   `kredit` int UNSIGNED DEFAULT NULL COMMENT 'Dari id_perkiraan',
   `utang_piutang` int UNSIGNED DEFAULT NULL COMMENT 'Dari id_perkiraan',
@@ -832,16 +848,16 @@ CREATE TABLE IF NOT EXISTS `setting_email_gateway` (
 DROP TABLE IF EXISTS `setting_general`;
 CREATE TABLE IF NOT EXISTS `setting_general` (
   `id_setting_general` int NOT NULL AUTO_INCREMENT,
-  `title_page` varchar(20) CHARACTER SET latin1 NOT NULL,
-  `kata_kunci` text CHARACTER SET latin1 NOT NULL,
-  `deskripsi` text CHARACTER SET latin1 NOT NULL,
-  `alamat_bisnis` text CHARACTER SET latin1 NOT NULL,
-  `email_bisnis` text CHARACTER SET latin1 NOT NULL,
-  `telepon_bisnis` varchar(15) CHARACTER SET latin1 NOT NULL,
-  `favicon` text CHARACTER SET latin1 NOT NULL,
-  `logo` text CHARACTER SET latin1 NOT NULL,
-  `base_url` text CHARACTER SET latin1 NOT NULL,
-  `author` varchar(100) CHARACTER SET latin1 NOT NULL,
+  `title_page` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `kata_kunci` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `deskripsi` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `alamat_bisnis` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `email_bisnis` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `telepon_bisnis` varchar(15) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `favicon` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `logo` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `base_url` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `author` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   PRIMARY KEY (`id_setting_general`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

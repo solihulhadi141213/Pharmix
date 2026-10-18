@@ -45,6 +45,7 @@
             "Nakes"                 => "_Page/Nakes/ModalNakes.php",
             "Medication"            => "_Page/Medication/ModalMedication.php",
             "SettingSatuSehat"      => "_Page/SettingSatuSehat/ModalSettingSatuSehat.php",
+            "GoogleCredential"      => "_Page/GoogleCredential/ModalGoogleCredential.php",
             "Bantuan"               => "_Page/Bantuan/ModalBantuan.php",
             "RekapitulasiTransaksi" => "_Page/RekapitulasiTransaksi/ModalRekapitulasiTransaksi.php"
         ];

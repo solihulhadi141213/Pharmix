@@ -222,6 +222,12 @@
                 "page_url"        : "index.php?Page=SettingEmailGateway"
             },
             {
+                "page_code"       : "iL7XcgWU23DEhlPqQVQ",
+                "page_name"       : "Google Credential",
+                "page_description": "Atur kredensial google",
+                "page_url"        : "index.php?Page=GoogleCredential"
+            },
+            {
                 "page_code"       : "io72fRzU0o0c9pf4ICe",
                 "page_name"       : "Setting SATUSEHAT",
                 "page_description": "Atur kredensial koneksi SATUSEHAT",

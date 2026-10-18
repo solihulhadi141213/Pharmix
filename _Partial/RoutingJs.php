@@ -50,6 +50,7 @@
             "Nakes"                 => "_Page/Nakes/Nakes.js",
             "Medication"            => "_Page/Medication/Medication.js",
             "SettingSatuSehat"      => "_Page/SettingSatuSehat/SettingSatuSehat.js",
+            "GoogleCredential"      => "_Page/GoogleCredential/GoogleCredential.js",
             "Bantuan"               => "_Page/Bantuan/Bantuan.js",
             "RekapitulasiTransaksi" => "_Page/RekapitulasiTransaksi/RekapitulasiTransaksi.js"
         ];
