@@ -1061,7 +1061,7 @@
 </div>
 
 <div class="modal fade" id="ModalImportBarang" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <form action="javascript:void(0);" id="ProsesImportBarang">
                 <div class="modal-header">

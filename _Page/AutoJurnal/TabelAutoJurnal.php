@@ -27,6 +27,28 @@
     $html = '';
     $no   = 1;
 
+    // Pesan akun kosong hanya bergantung pada tabel akun_perkiraan.
+    $QryAkun = $Conn->prepare('SELECT id_perkiraan FROM akun_perkiraan LIMIT 1');
+    $QryAkun->execute();
+    $adaAkun = (bool) $QryAkun->get_result()->fetch_assoc();
+    $QryAkun->close();
+    if (!$adaAkun) {
+        echo json_encode([
+            'status' => 'success',
+            'html' => '<div class="col-md-12"><div class="alert alert-warning text-center mt-4 mb-4"><h1 class="bi bi-exclamation-circle"></h1>Data Akun Perkiraan Belum Ada. Silahkan tambahkan beberapa akun perkiraan terlebih dulu.</div></div>'
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    // Siapkan kategori yang belum ada agar tombol edit memiliki ID pengaturan valid.
+    // Pengaturan yang sudah tersimpan tidak diubah.
+    $QryInit = $Conn->prepare('INSERT INTO setting_autojurnal_jual_beli (kategori) SELECT ? WHERE NOT EXISTS (SELECT 1 FROM setting_autojurnal_jual_beli WHERE kategori = ?)');
+    foreach (['Penjualan', 'Pembelian', 'Retur Penjualan', 'Retur Pembelian'] as $kategoriWajib) {
+        $QryInit->bind_param('ss', $kategoriWajib, $kategoriWajib);
+        $QryInit->execute();
+    }
+    $QryInit->close();
+
     // Lakukan LEFT JOIN ke tabel akun_perkiraan sebanyak 3 kali untuk debet, kredit, dan utang_piutang
     $query = "SELECT 
                 a.*, 
@@ -92,16 +114,7 @@
         $no++;
     }
 
-    if (empty($html)) {
-        $html = '
-            <div class="col-md-12">
-                <div class="alert alert-warning text-center mt-4 mb-4">
-                    <h1 class="bi bi-exclamation-circle"></h1>
-                    Data Akun Perkiraan Belum Ada. Silahkan tambahkan beberapa akun perkiraan terlebih dulu.
-                </div>
-            </div>
-        ';
-    }
+    $Qry->close();
 
     echo json_encode([
         "status"     => "success",

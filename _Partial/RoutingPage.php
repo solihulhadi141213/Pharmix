@@ -37,6 +37,7 @@
             "NeracaSaldo"           => "_Page/NeracaSaldo/NeracaSaldo.php",
             "LabaRugi"              => "_Page/LabaRugi/LabaRugi.php",
             "RekapitulasiTransaksi" => "_Page/RekapitulasiTransaksi/RekapitulasiTransaksi.php",
+            "EstimasiLaba"          => "_Page/EstimasiLaba/EstimasiLaba.php",
             "Route"                 => "_Page/Route/Route.php",
             "Sediaan"               => "_Page/Sediaan/Sediaan.php",
             "SatuanDosis"           => "_Page/SatuanDosis/SatuanDosis.php",
@@ -46,6 +47,7 @@
             "Nakes"                 => "_Page/Nakes/Nakes.php",
             "Medication"            => "_Page/Medication/Medication.php",
             "SettingSatuSehat"      => "_Page/SettingSatuSehat/SettingSatuSehat.php",
+            "GoogleCredential"      => "_Page/GoogleCredential/GoogleCredential.php",
             "Bantuan"               => "_Page/Bantuan/Bantuan.php",
             "Error"                 => "_Page/Error/Error.php"
         ];

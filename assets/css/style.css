@@ -956,6 +956,33 @@ h6 {
   inset: 8px -15px auto auto !important;
 }
 
+/* Beri ruang untuk keterangan notifikasi tanpa melewati lebar layar. */
+.header-nav #MenampilkanNotificationList {
+  width: min(440px, calc(100vw - 32px));
+  min-width: 0;
+}
+
+.header-nav #MenampilkanNotificationList .notification-item {
+  align-items: flex-start;
+  padding: 16px;
+  gap: 14px;
+  white-space: normal;
+}
+
+.header-nav #MenampilkanNotificationList .notification-item i {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.header-nav #MenampilkanNotificationList .notification-item > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.header-nav #MenampilkanNotificationList .notification-item p {
+  line-height: 1.6;
+}
+
 .header-nav .notifications .notification-item {
   display: flex;
   align-items: center;

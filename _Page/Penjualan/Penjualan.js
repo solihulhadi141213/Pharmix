@@ -532,51 +532,7 @@ $(document).ready(function() {
     if ($("#TabelPenjualan").length) {
         ShowData();
     }
-    if ($("#TabelLabaPenjualan").length) {
-        ShowDataLaba();
-
-        //Ketika Filter Di Submit
-        $("#ProsesFilterLaba").on("submit", function (e) {
-            //Reset Halaman
-            $('#page_laba').val(1);
-            
-            //Tampilkan Data
-            ShowDataLaba();
-
-            //Tutup Modal
-            $('#ModalFilterLaba').modal('hide');
-        });
-
-        //Event Listener Ketika keyword_by diubah
-        $('#keyword_by_laba').change(function(){
-            var keyword_by = $('#keyword_by_laba').val();
-            $.ajax({
-                type 	    : 'POST',
-                url 	    : '_Page/Penjualan/FormFilterKeywordLaba.php',
-                data 	    :  {keyword_by: keyword_by},
-                success     : function(data){
-                    $('#FormFilterKeywordLaba').html(data);
-                }
-            });
-        });
-
-        //Event listener ketika proses export
-        $("#ProsesExportLaba").on("submit", function (e) {
-        
-            var periode_1 = $('#periode_1_laba').val();
-            var periode_2 = $('#periode_2_laba').val();
-            var type_data = $('#type_data_laba').val();
-            // Bangun URL dengan parameter
-            var url = '_Page/Penjualan/ProsesExportLaba.php?' + 
-            'periode_1=' + encodeURIComponent(periode_1) + 
-            '&periode_2=' + encodeURIComponent(periode_2) + 
-            '&type_data=' + encodeURIComponent(type_data);
-
-            // Buka tab baru dengan URL tersebut
-            window.open(url, '_blank');
-        });
-
-    }
+    
    
     //Detail Transaksi Inline
     if ($("#get_id_transaksi_jual_beli_detail").length) {

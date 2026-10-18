@@ -271,6 +271,9 @@ Jika sesi berakhir, lakukan login ulang. Untuk pengguna baru, administrator perl
 
 ## Catatan Pengembangan
 
+- Tabel Google Credential membaca semua baris `google_credential` tanpa filter atau pagination dan menampilkan opsi detail, uji koneksi, edit, serta hapus sesuai halaman pengelola.
+- Form tambah Google Credential menyimpan nama, Client ID, Client Secret, dan status ke tabel `google_credential` melalui endpoint AJAX; pilihan status divalidasi dan field URL Satu Sehat yang tidak tersedia di skema tidak ditampilkan.
+- Tampilan `Login.php` menggunakan layout dua panel responsif dengan gambar `assets/img/Left-Background.png`; pada layar mobile gambar memenuhi lebar di bagian atas dan diputar 90 derajat, dengan logo, nama aplikasi, versi, dan petunjuk login berwarna putih di atasnya. Form memiliki jarak yang lega dan ikon tanpa latar khusus yang tidak memakai style `input-group-text` global; autentikasi email, password, captcha, toggle password, dan endpoint AJAX tetap mengikuti alur yang sudah ada. Tombol Google hanya elemen antarmuka dan belum menjalankan autentikasi.
 - Routing halaman utama menggunakan parameter `Page` pada [`index.php`](./index.php).
 - Routing JavaScript dan modal dikelola melalui file pada `_Partial`.
 - Banyak proses list, pencarian, filter, pagination, dan form menggunakan AJAX.

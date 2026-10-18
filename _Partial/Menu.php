@@ -174,7 +174,8 @@
                     $PageMenu=="NeracaSaldo"||
                     $PageMenu=="LabaRugi"||
                     $PageMenu=="RekapTransaksi"||
-                    $PageMenu=="RekapJualBeli"
+                    $PageMenu=="RekapJualBeli" ||
+                    $PageMenu=="EstimasiLaba" 
                 ){
                     echo "show";
                 } 
@@ -210,12 +211,17 @@
                         <i class="bi bi-circle"></i><span>Jual/Beli</span>
                     </a>
                 </li>
+                <li>
+                    <a href="index.php?Page=EstimasiLaba" class="<?php if($PageMenu=="EstimasiLaba"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Estimasi Laba</span>
+                    </a>
+                </li>
             </ul>
         </li>
         <hr class="menu-divider">
         <li class="nav-heading">Sistem</li>
         <li class="nav-item">
-            <a class="nav-link <?php if($PageMenu=="SettingGeneral"||$PageMenu=="SettingEmailGateway"||$PageMenu=="AutoJurnal"||$PageMenu=="SettingSatuSehat"||$PageMenu=="AksesFitur"||$PageMenu=="AksesEntitas"||$PageMenu=="Akses"){echo "active";}else{echo "collapsed";} ?>" data-bs-target="#components-nav" data-bs-toggle="collapse" href="javascript:void(0);">
+            <a class="nav-link <?php if($PageMenu=="SettingGeneral"||$PageMenu=="SettingEmailGateway"||$PageMenu=="GoogleCredential"||$PageMenu=="AutoJurnal"||$PageMenu=="SettingSatuSehat"||$PageMenu=="AksesFitur"||$PageMenu=="AksesEntitas"||$PageMenu=="Akses"){echo "active";}else{echo "collapsed";} ?>" data-bs-target="#components-nav" data-bs-toggle="collapse" href="javascript:void(0);">
                 <i class="bi bi-gear"></i>
                     <span>Pengaturan</span><i class="bi bi-chevron-down ms-auto">
                 </i>
@@ -234,6 +240,11 @@
                 <li>
                     <a href="index.php?Page=SettingEmailGateway" class="<?php if($PageMenu=="SettingEmailGateway"){echo "active";} ?>">
                         <i class="bi bi-circle"></i><span>Email Gateway</span>
+                    </a>
+                </li> 
+                <li>
+                    <a href="index.php?Page=GoogleCredential" class="<?php if($PageMenu=="GoogleCredential"){echo "active";} ?>">
+                        <i class="bi bi-circle"></i><span>Google Credential</span>
                     </a>
                 </li> 
                 <li>

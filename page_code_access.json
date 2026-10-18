@@ -99,9 +99,33 @@
                 "page_url"        : "index.php?Page=Penjualan"
             },
             {
+                "page_code"       : "hE3ordTLe9KBwSRO3t5",
+                "page_name"       : "Tambah Penjualan",
+                "page_description": "Halaman Biling Penjualan",
+                "page_url"        : "index.php?Page=Penjualan"
+            },
+            {
                 "page_code"       : "LTBuBzSi7njYRiLe6la",
                 "page_name"       : "Kasir Pembelian",
                 "page_description": "Kelola data kasir pembelian",
+                "page_url"        : "index.php?Page=Pembelian"
+            },
+            {
+                "page_code"       : "Ay1ssiaoRqiK70E9HM6",
+                "page_name"       : "Detail Penjualan",
+                "page_description": "Halaman yang menampilkan uraian transaksi penjualan",
+                "page_url"        : "index.php?Page=Pembelian"
+            },
+            {
+                "page_code"       : "hBjWkLMFofA8QHRz8C7",
+                "page_name"       : "Tambah Pembelian",
+                "page_description": "Halaman Form Tambah Pembelian",
+                "page_url"        : "index.php?Page=Pembelian"
+            },
+            {
+                "page_code"       : "va9SiDMNXdRPjqLeVcX",
+                "page_name"       : "Detail Pembelian",
+                "page_description": "Halaman Yang menampilkan detail transaki pembelian",
                 "page_url"        : "index.php?Page=Pembelian"
             }
         ]
@@ -167,6 +191,12 @@
                 "page_name"       : "Rekap Jual Beli",
                 "page_description": "Lihat Laporan Rekapitulasi Jual Beli",
                 "page_url"        : "index.php?Page=RekapJualBeli"
+            },
+            {
+                "page_code"       : "WOMiYJdNpb52WMXvFEF",
+                "page_name"       : "Estimasi Laba",
+                "page_description": "Halaman Laporan Estimasi Laba Penjualan",
+                "page_url"        : "index.php?Page=EstimasiLaba"
             }
         ]
     },
@@ -190,6 +220,12 @@
                 "page_name"       : "Email Gateway",
                 "page_description": "Atur kredensial email gateway",
                 "page_url"        : "index.php?Page=SettingEmailGateway"
+            },
+            {
+                "page_code"       : "iL7XcgWU23DEhlPqQVQ",
+                "page_name"       : "Google Credential",
+                "page_description": "Atur kredensial google",
+                "page_url"        : "index.php?Page=GoogleCredential"
             },
             {
                 "page_code"       : "io72fRzU0o0c9pf4ICe",

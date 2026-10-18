@@ -41,6 +41,7 @@
             "NeracaSaldo"           => "Neraca Saldo",
             "LabaRugi"              => "Laba Rugi",
             "RekapitulasiTransaksi" => "Rekapitulasi Jual/Beli",
+            "EstimasiLaba"          => "Estimasi Laba",
             "Medication"            => "Index Obat & Alkes",
             "Kunjungan"             => "Kunjungan",
             "Bantuan"               => "Bantuan",

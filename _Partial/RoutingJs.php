@@ -40,6 +40,7 @@
             "BukuBesar"             => "_Page/BukuBesar/BukuBesar.js",
             "NeracaSaldo"           => "_Page/NeracaSaldo/NeracaSaldo.js",
             "LabaRugi"              => "_Page/LabaRugi/LabaRugi.js",
+            "EstimasiLaba"          => "_Page/EstimasiLaba/EstimasiLaba.js",
             "Route"                 => "_Page/Route/Route.js",
             "Sediaan"               => "_Page/Sediaan/Sediaan.js",
             "SatuanDosis"           => "_Page/SatuanDosis/SatuanDosis.js",
@@ -49,6 +50,7 @@
             "Nakes"                 => "_Page/Nakes/Nakes.js",
             "Medication"            => "_Page/Medication/Medication.js",
             "SettingSatuSehat"      => "_Page/SettingSatuSehat/SettingSatuSehat.js",
+            "GoogleCredential"      => "_Page/GoogleCredential/GoogleCredential.js",
             "Bantuan"               => "_Page/Bantuan/Bantuan.js",
             "RekapitulasiTransaksi" => "_Page/RekapitulasiTransaksi/RekapitulasiTransaksi.js"
         ];
